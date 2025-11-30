@@ -1,4 +1,4 @@
-# OpenWorldMUD
+# OpenTowerdMUD
 
 A procedurally generated MUD (Multi-User Dungeon) server written in Go.
 
@@ -6,8 +6,8 @@ A procedurally generated MUD (Multi-User Dungeon) server written in Go.
 
 ```bash
 cd server
-go build -o openworldmud ./cmd/mud
-./openworldmud
+go build -o opentowermud ./cmd/mud
+./opentowermud
 ```
 
 Connect: `telnet localhost 4000`
