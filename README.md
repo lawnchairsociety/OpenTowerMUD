@@ -1,4 +1,4 @@
-# OpenTowerdMUD
+# OpenTowerMUD
 
 A procedurally generated MUD (Multi-User Dungeon) server written in Go.
 
