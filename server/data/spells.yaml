@@ -1,0 +1,60 @@
+# Spell Dictionary for OpenTowerMUD
+# Format:
+#   spell_id:
+#     name: Display name of the spell
+#     description: Description shown when examining
+#     mana_cost: Mana required to cast
+#     cooldown: Cooldown in seconds (0 = no cooldown)
+#     level: Minimum player level to learn
+#     effects:
+#       - type: heal|damage|heal_percent|stun
+#         target: self|enemy|ally|room_enemy
+#         amount: Effect value (flat, percentage, or duration in seconds)
+#         dice: Dice notation for variable effects (e.g., "1d6", "2d4+2")
+#               - damage uses dice + INT modifier
+#               - heal uses dice + WIS modifier
+
+# Spell IDs that new characters start with
+starter_spells:
+  - heal
+  - flare
+  - dazzle
+
+spells:
+  # Starter Spells (all new players begin with these)
+
+  heal:
+    name: "heal"
+    description: "Restore 5% of your maximum health (can target self or other players)"
+    mana_cost: 10
+    cooldown: 10
+    level: 1
+    effects:
+      - type: "heal_percent"
+        target: "self"
+        amount: 5
+      - type: "heal_percent"
+        target: "ally"
+        amount: 5
+
+  flare:
+    name: "flare"
+    description: "A burst of magical energy that damages an enemy (1d6 + INT mod)"
+    mana_cost: 8
+    cooldown: 5
+    level: 1
+    effects:
+      - type: "damage"
+        target: "enemy"
+        dice: "1d6"
+
+  dazzle:
+    name: "dazzle"
+    description: "A blinding flash of light that stuns all hostile creatures in the room"
+    mana_cost: 15
+    cooldown: 30
+    level: 1
+    effects:
+      - type: "stun"
+        target: "room_enemy"
+        amount: 6

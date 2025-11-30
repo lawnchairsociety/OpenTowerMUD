@@ -1,0 +1,450 @@
+package server
+
+import (
+	"bufio"
+	"errors"
+	"fmt"
+	"net"
+	"strconv"
+	"strings"
+
+	"github.com/lawnchairsociety/opentowermud/server/internal/database"
+	"github.com/lawnchairsociety/opentowermud/server/internal/stats"
+)
+
+// AuthResult contains the result of the authentication flow
+type AuthResult struct {
+	Account   *database.Account
+	Character *database.Character
+}
+
+// handleAuth handles the login/registration flow for a new connection.
+// Returns the authenticated account and selected character, or an error.
+func (s *Server) handleAuth(conn net.Conn, scanner *bufio.Scanner) (*AuthResult, error) {
+	// Welcome screen
+	conn.Write([]byte("\n"))
+	conn.Write([]byte("=====================================\n"))
+	conn.Write([]byte("    Welcome to Open Tower MUD!\n"))
+	conn.Write([]byte("=====================================\n"))
+	conn.Write([]byte("\n"))
+	conn.Write([]byte("  [L] Login\n"))
+	conn.Write([]byte("  [R] Register\n"))
+	conn.Write([]byte("\n"))
+	conn.Write([]byte("Enter choice: "))
+
+	if !scanner.Scan() {
+		return nil, errors.New("connection closed")
+	}
+	choice := strings.ToLower(strings.TrimSpace(scanner.Text()))
+
+	switch choice {
+	case "l", "login":
+		return s.handleLogin(conn, scanner)
+	case "r", "register":
+		return s.handleRegister(conn, scanner)
+	default:
+		conn.Write([]byte("Invalid choice. Disconnecting.\n"))
+		return nil, errors.New("invalid choice")
+	}
+}
+
+// handleLogin handles the login flow
+func (s *Server) handleLogin(conn net.Conn, scanner *bufio.Scanner) (*AuthResult, error) {
+	conn.Write([]byte("\n--- Login ---\n"))
+
+	// Get username
+	conn.Write([]byte("Username: "))
+	if !scanner.Scan() {
+		return nil, errors.New("connection closed")
+	}
+	username := strings.TrimSpace(scanner.Text())
+	if username == "" {
+		conn.Write([]byte("Username cannot be empty.\n"))
+		return nil, errors.New("empty username")
+	}
+
+	// Get password
+	conn.Write([]byte("Password: "))
+	if !scanner.Scan() {
+		return nil, errors.New("connection closed")
+	}
+	password := scanner.Text()
+
+	// Get IP address from connection
+	ipAddress := getIPFromConn(conn)
+
+	// Validate credentials
+	account, err := s.db.ValidateLogin(username, password, ipAddress)
+	if err != nil {
+		if errors.Is(err, database.ErrAccountBanned) {
+			conn.Write([]byte("\n*** YOUR ACCOUNT HAS BEEN BANNED ***\n"))
+			conn.Write([]byte("Contact an administrator if you believe this is an error.\n"))
+			return nil, errors.New("account banned")
+		}
+		if errors.Is(err, database.ErrInvalidCredentials) {
+			conn.Write([]byte("Invalid username or password.\n"))
+			return nil, errors.New("invalid credentials")
+		}
+		conn.Write([]byte("An error occurred. Please try again.\n"))
+		return nil, err
+	}
+
+	conn.Write([]byte(fmt.Sprintf("\nWelcome back, %s!\n", account.Username)))
+
+	// Character selection
+	character, err := s.handleCharacterSelection(conn, scanner, account)
+	if err != nil {
+		return nil, err
+	}
+
+	return &AuthResult{Account: account, Character: character}, nil
+}
+
+// getIPFromConn extracts the IP address from a connection
+func getIPFromConn(conn net.Conn) string {
+	addr := conn.RemoteAddr().String()
+	// Remove port from address (format is usually "ip:port")
+	if host, _, err := net.SplitHostPort(addr); err == nil {
+		return host
+	}
+	return addr
+}
+
+// handleRegister handles the registration flow
+func (s *Server) handleRegister(conn net.Conn, scanner *bufio.Scanner) (*AuthResult, error) {
+	conn.Write([]byte("\n--- Register ---\n"))
+
+	// Get username
+	conn.Write([]byte("Choose a username: "))
+	if !scanner.Scan() {
+		return nil, errors.New("connection closed")
+	}
+	username := strings.TrimSpace(scanner.Text())
+	if username == "" {
+		conn.Write([]byte("Username cannot be empty.\n"))
+		return nil, errors.New("empty username")
+	}
+	if len(username) < 3 {
+		conn.Write([]byte("Username must be at least 3 characters.\n"))
+		return nil, errors.New("username too short")
+	}
+	if len(username) > 20 {
+		conn.Write([]byte("Username must be 20 characters or less.\n"))
+		return nil, errors.New("username too long")
+	}
+
+	// Check if username exists
+	exists, err := s.db.AccountExists(username)
+	if err != nil {
+		conn.Write([]byte("An error occurred. Please try again.\n"))
+		return nil, err
+	}
+	if exists {
+		conn.Write([]byte("That username is already taken.\n"))
+		return nil, errors.New("username taken")
+	}
+
+	// Get password
+	conn.Write([]byte("Choose a password (min 4 characters): "))
+	if !scanner.Scan() {
+		return nil, errors.New("connection closed")
+	}
+	password := scanner.Text()
+	if len(password) < 4 {
+		conn.Write([]byte("Password must be at least 4 characters.\n"))
+		return nil, errors.New("password too short")
+	}
+
+	// Confirm password
+	conn.Write([]byte("Confirm password: "))
+	if !scanner.Scan() {
+		return nil, errors.New("connection closed")
+	}
+	confirmPassword := scanner.Text()
+	if password != confirmPassword {
+		conn.Write([]byte("Passwords do not match.\n"))
+		return nil, errors.New("password mismatch")
+	}
+
+	// Create account
+	account, err := s.db.CreateAccount(username, password)
+	if err != nil {
+		if errors.Is(err, database.ErrAccountExists) {
+			conn.Write([]byte("That username is already taken.\n"))
+			return nil, errors.New("username taken")
+		}
+		conn.Write([]byte("An error occurred. Please try again.\n"))
+		return nil, err
+	}
+
+	conn.Write([]byte(fmt.Sprintf("\nAccount created! Welcome, %s!\n", account.Username)))
+
+	// Go straight to character creation for new accounts
+	character, err := s.handleCharacterCreation(conn, scanner, account)
+	if err != nil {
+		return nil, err
+	}
+
+	return &AuthResult{Account: account, Character: character}, nil
+}
+
+// handleCharacterSelection handles character selection/creation
+func (s *Server) handleCharacterSelection(conn net.Conn, scanner *bufio.Scanner, account *database.Account) (*database.Character, error) {
+	for {
+		// Get characters for this account
+		characters, err := s.db.GetCharactersByAccount(account.ID)
+		if err != nil {
+			conn.Write([]byte("An error occurred. Please try again.\n"))
+			return nil, err
+		}
+
+		conn.Write([]byte("\n--- Character Selection ---\n"))
+
+		if len(characters) == 0 {
+			conn.Write([]byte("You have no characters.\n"))
+		} else {
+			for i, c := range characters {
+				conn.Write([]byte(fmt.Sprintf("  [%d] %s (Level %d, %s)\n", i+1, c.Name, c.Level, c.RoomID)))
+			}
+		}
+
+		conn.Write([]byte("\n  [C] Create new character\n"))
+		if len(characters) > 0 {
+			conn.Write([]byte("  [D] Delete a character\n"))
+		}
+		conn.Write([]byte("\nEnter choice: "))
+
+		if !scanner.Scan() {
+			return nil, errors.New("connection closed")
+		}
+		choice := strings.TrimSpace(scanner.Text())
+
+		// Check for create/delete commands
+		if strings.ToLower(choice) == "c" {
+			character, err := s.handleCharacterCreation(conn, scanner, account)
+			if err != nil {
+				// Show error but continue the loop
+				continue
+			}
+			return character, nil
+		}
+
+		if strings.ToLower(choice) == "d" && len(characters) > 0 {
+			if err := s.handleCharacterDeletion(conn, scanner, account); err != nil {
+				// Show error but continue the loop
+			}
+			continue
+		}
+
+		// Try to parse as character number
+		if len(characters) > 0 {
+			var charIndex int
+			if _, err := fmt.Sscanf(choice, "%d", &charIndex); err == nil {
+				if charIndex >= 1 && charIndex <= len(characters) {
+					selected := characters[charIndex-1]
+
+					// Check if character is already online
+					if s.IsCharacterOnline(selected.Name) {
+						conn.Write([]byte("That character is already logged in.\n"))
+						continue
+					}
+
+					return selected, nil
+				}
+			}
+		}
+
+		conn.Write([]byte("Invalid choice.\n"))
+	}
+}
+
+// handleCharacterCreation handles creating a new character
+func (s *Server) handleCharacterCreation(conn net.Conn, scanner *bufio.Scanner, account *database.Account) (*database.Character, error) {
+	conn.Write([]byte("\n--- Create Character ---\n"))
+	conn.Write([]byte("Enter character name: "))
+
+	if !scanner.Scan() {
+		return nil, errors.New("connection closed")
+	}
+	name := strings.TrimSpace(scanner.Text())
+
+	// Validate name
+	if name == "" {
+		conn.Write([]byte("Character name cannot be empty.\n"))
+		return nil, errors.New("empty name")
+	}
+	if len(name) < 2 {
+		conn.Write([]byte("Character name must be at least 2 characters.\n"))
+		return nil, errors.New("name too short")
+	}
+	if len(name) > 20 {
+		conn.Write([]byte("Character name must be 20 characters or less.\n"))
+		return nil, errors.New("name too long")
+	}
+
+	// Check if name exists
+	exists, err := s.db.CharacterNameExists(name)
+	if err != nil {
+		conn.Write([]byte("An error occurred. Please try again.\n"))
+		return nil, err
+	}
+	if exists {
+		conn.Write([]byte("That character name is already taken.\n"))
+		return nil, errors.New("name taken")
+	}
+
+	// Assign ability scores using the standard array
+	scores, err := s.handleAbilityScoreAssignment(conn, scanner)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create character with assigned ability scores
+	character, err := s.db.CreateCharacterWithStats(account.ID, name,
+		scores.Strength, scores.Dexterity, scores.Constitution,
+		scores.Intelligence, scores.Wisdom, scores.Charisma)
+	if err != nil {
+		if errors.Is(err, database.ErrCharacterExists) {
+			conn.Write([]byte("That character name is already taken.\n"))
+			return nil, errors.New("name taken")
+		}
+		conn.Write([]byte("An error occurred. Please try again.\n"))
+		return nil, err
+	}
+
+	conn.Write([]byte(fmt.Sprintf("\nCharacter '%s' created!\n", character.Name)))
+	return character, nil
+}
+
+// handleAbilityScoreAssignment guides the player through assigning ability scores
+func (s *Server) handleAbilityScoreAssignment(conn net.Conn, scanner *bufio.Scanner) (*stats.AbilityScores, error) {
+	conn.Write([]byte("\n--- Assign Ability Scores ---\n"))
+	conn.Write([]byte("You have these values to assign: 15, 14, 13, 12, 10, 8\n"))
+	conn.Write([]byte("Each value can only be used once.\n\n"))
+
+	// Copy the standard array so we can track which values are still available
+	available := make([]int, len(stats.StandardArray))
+	copy(available, stats.StandardArray)
+
+	// Store the assigned scores
+	assigned := make([]int, 6)
+
+	// Go through each ability in order
+	for i, abilityName := range stats.AbilityNames {
+		for {
+			// Show available values
+			conn.Write([]byte(fmt.Sprintf("Available: %v\n", available)))
+			conn.Write([]byte(fmt.Sprintf("%s: ", abilityName)))
+
+			if !scanner.Scan() {
+				return nil, errors.New("connection closed")
+			}
+			input := strings.TrimSpace(scanner.Text())
+
+			// Parse the input
+			value, err := strconv.Atoi(input)
+			if err != nil {
+				conn.Write([]byte("Please enter a number from the available values.\n"))
+				continue
+			}
+
+			// Check if the value is available
+			found := -1
+			for j, v := range available {
+				if v == value {
+					found = j
+					break
+				}
+			}
+
+			if found == -1 {
+				conn.Write([]byte("That value is not available. Choose from the remaining values.\n"))
+				continue
+			}
+
+			// Assign the value and remove from available
+			assigned[i] = value
+			available = append(available[:found], available[found+1:]...)
+			break
+		}
+	}
+
+	// Show the final assignment
+	conn.Write([]byte("\n--- Your Ability Scores ---\n"))
+	for i, name := range stats.AbilityNames {
+		mod := stats.Modifier(assigned[i])
+		modStr := fmt.Sprintf("%+d", mod)
+		conn.Write([]byte(fmt.Sprintf("  %s: %d (%s)\n", name, assigned[i], modStr)))
+	}
+
+	return stats.NewScores(assigned[0], assigned[1], assigned[2], assigned[3], assigned[4], assigned[5]), nil
+}
+
+// handleCharacterDeletion handles deleting a character
+func (s *Server) handleCharacterDeletion(conn net.Conn, scanner *bufio.Scanner, account *database.Account) error {
+	characters, err := s.db.GetCharactersByAccount(account.ID)
+	if err != nil {
+		conn.Write([]byte("An error occurred. Please try again.\n"))
+		return err
+	}
+
+	conn.Write([]byte("\nWhich character do you want to delete?\n"))
+	for i, c := range characters {
+		conn.Write([]byte(fmt.Sprintf("  [%d] %s (Level %d)\n", i+1, c.Name, c.Level)))
+	}
+	conn.Write([]byte("Enter number (or 0 to cancel): "))
+
+	if !scanner.Scan() {
+		return errors.New("connection closed")
+	}
+	choice := strings.TrimSpace(scanner.Text())
+
+	var charIndex int
+	if _, err := fmt.Sscanf(choice, "%d", &charIndex); err != nil || charIndex < 0 || charIndex > len(characters) {
+		conn.Write([]byte("Invalid choice.\n"))
+		return errors.New("invalid choice")
+	}
+
+	if charIndex == 0 {
+		conn.Write([]byte("Deletion cancelled.\n"))
+		return nil
+	}
+
+	selected := characters[charIndex-1]
+
+	// Confirm deletion
+	conn.Write([]byte(fmt.Sprintf("\nAre you sure you want to delete '%s'? This cannot be undone.\n", selected.Name)))
+	conn.Write([]byte("Type the character name to confirm: "))
+
+	if !scanner.Scan() {
+		return errors.New("connection closed")
+	}
+	confirm := strings.TrimSpace(scanner.Text())
+
+	if !strings.EqualFold(confirm, selected.Name) {
+		conn.Write([]byte("Name does not match. Deletion cancelled.\n"))
+		return errors.New("confirmation failed")
+	}
+
+	// Delete character
+	if err := s.db.DeleteCharacter(selected.ID); err != nil {
+		conn.Write([]byte("An error occurred. Please try again.\n"))
+		return err
+	}
+
+	conn.Write([]byte(fmt.Sprintf("Character '%s' has been deleted.\n", selected.Name)))
+	return nil
+}
+
+// IsCharacterOnline checks if a character is currently logged in
+func (s *Server) IsCharacterOnline(name string) bool {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+
+	for playerName := range s.clients {
+		if strings.EqualFold(playerName, name) {
+			return true
+		}
+	}
+	return false
+}

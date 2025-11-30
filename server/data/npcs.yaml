@@ -1,0 +1,555 @@
+# NPC Dictionary for OpenTowerMUD
+# These are non-hostile NPCs that spawn in city/town areas
+#
+# Format:
+#   npc_id:
+#     name: Display name of the NPC
+#     description: Detailed description shown when examining
+#     level: NPC level (1-10)
+#     health: Max health points
+#     damage: Base damage per attack
+#     armor: Damage reduction
+#     experience: XP awarded on death (0 for non-combat NPCs)
+#     aggressive: true/false (auto-attack players?)
+#     attackable: true/false (can players attack this NPC?)
+#     loot_table: List of items with drop chances (percentage 0-100)
+#       - item: item_id (from items.yaml)
+#         chance: percentage (e.g., 50 = 50% chance)
+#     locations: List of room IDs where this NPC spawns
+#     respawn_median: Median respawn time in seconds (0 = no respawn)
+#     respawn_variation: Variation in respawn time (+/- seconds)
+#
+# For hostile mobs/enemies, see mobs.yaml
+
+npcs:
+  # Town Square NPCs
+  old_guide:
+    name: "Aldric the old guide"
+    description: "A weathered old man with kind eyes and a cloak that has seen better days. He leans on a gnarled walking stick and watches newcomers with a knowing smile. He seems eager to share his wisdom with those who will listen."
+    level: 10
+    health: 100
+    damage: 0
+    armor: 0
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "Greetings, adventurer! New to our little city, are you? Talk to me and I'll tell you all you need to know!"
+      - "The tower looms ever upward... infinite floors, infinite danger, infinite glory."
+      - "I've guided hundreds of adventurers in my day. Some came back heroes. Others... well."
+      - "Remember: the bard saves your story, the priestess saves your soul, and your wits save your life!"
+    locations:
+      - "town_square"
+    respawn_median: 0
+    respawn_variation: 0
+
+  traveling_merchant:
+    name: "traveling merchant"
+    description: "A friendly merchant with a warm smile and colorful robes. He travels between cities selling exotic goods."
+    level: 5
+    health: 50
+    damage: 8
+    armor: 2
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "Ah, a customer! I have wares from distant lands, friend."
+      - "The tower holds great treasures, but greater dangers. Stock up before you climb!"
+      - "I've traveled the world, but nowhere is as strange as this place."
+      - "Business is good when adventurers are brave. And foolish."
+    locations:
+      - "town_square"
+    respawn_median: 0
+    respawn_variation: 0
+
+  town_crier:
+    name: "town crier"
+    description: "A loud man in official garb, announcing news to all who will listen."
+    level: 2
+    health: 30
+    damage: 4
+    armor: 1
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "Hear ye, hear ye! The tower awaits brave souls!"
+      - "News from the upper floors - adventurers report increased monster activity!"
+      - "Remember to pray at the temple before venturing forth!"
+      - "The general store has fresh supplies! Stock up before you climb!"
+    locations:
+      - "town_square"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Temple NPCs
+  high_priestess:
+    name: "High Priestess Sera"
+    description: "A serene woman in flowing white robes. Her eyes hold ancient wisdom and her touch brings comfort to the weary."
+    level: 10
+    health: 100
+    damage: 15
+    armor: 5
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "May the light guide your path through the darkness above."
+      - "The altar will heal your wounds and restore your spirit. Pray when you are weary."
+      - "I sense a great destiny within you. Do not let fear hold you back."
+      - "The tower was not always filled with such evil. Something awakened it long ago."
+    locations:
+      - "temple"
+    respawn_median: 0
+    respawn_variation: 0
+
+  temple_acolyte:
+    name: "temple acolyte"
+    description: "A young devotee in simple robes, tending to the temple's needs."
+    level: 2
+    health: 25
+    damage: 3
+    armor: 0
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "The High Priestess is truly wise. I learn so much from her."
+      - "Would you like to make an offering? The temple always needs support."
+      - "I hope to venture into the tower someday... when I'm ready."
+    locations:
+      - "temple"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Barracks NPCs
+  guard_captain:
+    name: "Guard Captain Marcus"
+    description: "A grizzled veteran with scars telling tales of many battles. His armor gleams with meticulous care."
+    level: 15
+    health: 200
+    damage: 25
+    armor: 10
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "I've lost too many good soldiers to that tower. Be careful up there."
+      - "The creatures grow stronger the higher you climb. Never let your guard down."
+      - "If you see anything unusual, report back to me immediately."
+      - "We guard the city, but the tower... the tower guards itself."
+    locations:
+      - "barracks"
+    respawn_median: 0
+    respawn_variation: 0
+
+  city_guard:
+    name: "city guard"
+    description: "A disciplined soldier in the city's colors, ever watchful for threats."
+    level: 5
+    health: 75
+    damage: 12
+    armor: 5
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "Stay out of trouble, citizen."
+      - "The gates remain closed for everyone's safety."
+      - "Nothing to report. Move along."
+      - "The Captain's in the barracks if you need anything."
+    locations:
+      - "barracks"
+      - "north_gate"
+      - "tower_entrance"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Armory NPCs
+  master_smith:
+    name: "Master Smith Bron"
+    description: "A massive man with arms like tree trunks, his skin darkened by years at the forge. He crafts the finest weapons in the realm."
+    level: 8
+    health: 120
+    damage: 20
+    armor: 6
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "A good blade is the difference between life and death up there."
+      - "I've been smithing for thirty years. Never made a weapon I wasn't proud of."
+      - "The monsters in the tower... their hides get tougher the higher you go. You'll need better steel."
+      - "Bring me rare materials from the tower, and I might forge something special for you."
+    locations:
+      - "armory"
+    respawn_median: 0
+    respawn_variation: 0
+
+  smith_apprentice:
+    name: "smith apprentice"
+    description: "A young worker covered in soot, eagerly learning the craft."
+    level: 2
+    health: 35
+    damage: 5
+    armor: 1
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "Master Bron is teaching me the trade. It's hard work, but honest."
+      - "Careful near the forge - it's hot!"
+      - "Someday I'll be as good as the master. Someday."
+    locations:
+      - "armory"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # General Store NPCs
+  shopkeeper:
+    name: "Shopkeeper Mira"
+    description: "A sharp-eyed woman who knows the value of every item in her store. She drives a hard bargain but is always fair."
+    level: 4
+    health: 40
+    damage: 6
+    armor: 1
+    experience: 0
+    aggressive: false
+    attackable: false
+    shop_inventory:
+      - item: "treasure_key"
+        price: 50
+      - item: "healing_potion"
+        price: 50
+      - item: "mana_potion"
+        price: 50
+      - item: "bandage"
+        price: 5
+      - item: "bread"
+        price: 2
+      - item: "apple"
+        price: 3
+      - item: "water"
+        price: 2
+      - item: "iron_dagger"
+        price: 30
+      - item: "leather_armor"
+        price: 50
+      - item: "leather_cap"
+        price: 15
+    dialogue:
+      - "Welcome! Type 'shop' to see what's for sale."
+      - "I buy items too. Just use 'sell' if you have something to offer."
+      - "Good supplies keep adventurers alive. Don't skimp on healing potions!"
+      - "Everything in here is fairly priced. I don't gouge my customers."
+    locations:
+      - "general_store"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Training Hall NPCs
+  combat_instructor:
+    name: "Combat Instructor Vex"
+    description: "A lean, scarred warrior who has forgotten more about fighting than most will ever learn. Her teaching is harsh but effective."
+    level: 12
+    health: 150
+    damage: 22
+    armor: 7
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "Pain is the best teacher. The dummy doesn't hit back, but the monsters will."
+      - "Keep your guard up. Always. One moment of carelessness is all it takes."
+      - "I've trained hundreds of adventurers. Most didn't come back. Don't be like them."
+      - "Practice your attacks on the dummy. Type 'attack dummy' to begin."
+    locations:
+      - "training_hall"
+    respawn_median: 0
+    respawn_variation: 0
+
+  training_dummy:
+    name: "training dummy"
+    description: "A straw-stuffed dummy on a wooden post, bearing the marks of countless practice strikes."
+    level: 1
+    health: 50
+    damage: 0
+    armor: 0
+    experience: 5
+    aggressive: false
+    attackable: true
+    dialogue: []
+    locations:
+      - "training_hall"
+    respawn_median: 30
+    respawn_variation: 10
+
+  # Tavern NPCs
+  bartender:
+    name: "Bartender Grum"
+    description: "A burly man with a bushy beard, polishing glasses with practiced ease. He hears all the gossip in the city."
+    level: 4
+    health: 50
+    damage: 8
+    armor: 2
+    experience: 0
+    aggressive: false
+    attackable: false
+    shop_inventory:
+      - item: "ale"
+        price: 3
+      - item: "bread"
+        price: 2
+      - item: "roasted_meat"
+        price: 10
+      - item: "herbal_tea"
+        price: 8
+    dialogue:
+      - "What'll it be? We've got ale, bread, and stories aplenty. Type 'shop' to see the menu."
+      - "I've heard tales of great treasures in the upper floors. And great terrors too."
+      - "Stay for a drink. The tower will still be there tomorrow."
+      - "The bard's got some new songs. Stick around if you want to hear 'em."
+    locations:
+      - "tavern"
+    respawn_median: 0
+    respawn_variation: 0
+
+  bard:
+    name: "wandering bard"
+    description: "A charismatic performer with a lute, entertaining patrons with songs of adventure and romance. He's known for composing ballads about brave adventurers - for a small fee, of course. (Talk to him to save your progress!)"
+    level: 3
+    health: 35
+    damage: 5
+    armor: 1
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "~ Oh, the tower rises high, where brave souls go to die... ~"
+      - "I write songs about heroes. Perhaps one day I'll write one about you!"
+      - "The best stories come from those who return from the tower. Care to share yours?"
+      - "~ Gold and glory await the bold, but death awaits the foolish... ~"
+    locations:
+      - "tavern"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Market Street NPCs
+  street_vendor:
+    name: "street vendor"
+    description: "A persistent merchant selling odds and ends from a small cart."
+    level: 2
+    health: 25
+    damage: 3
+    armor: 0
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "Fresh apples! Get your fresh apples here!"
+      - "Best prices in the market! You won't find better!"
+      - "Buy something, friend? I've got just what you need!"
+    locations:
+      - "market_street"
+    respawn_median: 0
+    respawn_variation: 0
+
+  pickpocket:
+    name: "suspicious figure"
+    description: "A shifty-eyed individual lurking in the shadows, eyeing coin purses with hungry eyes."
+    level: 3
+    health: 40
+    damage: 6
+    armor: 1
+    experience: 25
+    aggressive: false
+    attackable: true
+    gold_min: 5
+    gold_max: 15
+    loot_table:
+      - item: "iron_dagger"
+        chance: 20
+    dialogue:
+      - "What are you looking at? Mind your own business."
+      - "I don't know nothing about nothing, understand?"
+      - "Got any coin to spare? No? Then get lost."
+    locations:
+      - "market_street"
+    respawn_median: 300
+    respawn_variation: 60
+
+  # =====================
+  # Castle NPCs
+  # =====================
+
+  # Castle Gate NPCs
+  royal_guard:
+    name: "royal guard"
+    description: "An elite soldier clad in gleaming plate armor bearing the royal crest. They stand at perfect attention, eyes scanning for any threat to the crown."
+    level: 10
+    health: 150
+    damage: 20
+    armor: 8
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "The castle is open to all loyal citizens. Mind your manners within."
+      - "His Majesty welcomes visitors, but troublemakers will be dealt with swiftly."
+      - "Move along. No loitering at the gate."
+      - "The kingdom has stood for a thousand years. We intend to keep it that way."
+    locations:
+      - "castle_gate"
+      - "guard_post"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Throne Room NPCs
+  king_aldric:
+    name: "King Aldric the Wise"
+    description: "An aging but dignified monarch seated upon the stone throne. His crown sits heavy on his silver hair, and his eyes hold the weight of countless difficult decisions. Despite his years, his voice still carries the authority of absolute rule."
+    level: 20
+    health: 300
+    damage: 0
+    armor: 10
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "Welcome, adventurer. The tower's curse weighs heavily on our kingdom."
+      - "My ancestors built this city as a bastion against the darkness above. We shall not abandon it."
+      - "Prove yourself in the tower, and you shall have the crown's gratitude... and its gold."
+      - "The higher floors hold secrets my scholars have sought for generations. Perhaps you will succeed where they failed."
+      - "I was once a warrior myself, you know. These old bones remember the thrill of battle."
+    locations:
+      - "throne_room"
+    respawn_median: 0
+    respawn_variation: 0
+
+  royal_advisor:
+    name: "Royal Advisor Theron"
+    description: "A thin man in dark robes, always hovering near the throne. His sharp eyes miss nothing, and his whispered counsel shapes the kingdom's fate. Some say he knows more about the tower than anyone alive."
+    level: 12
+    health: 80
+    damage: 0
+    armor: 2
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "The King's wisdom guides us all. I merely... illuminate certain paths."
+      - "The tower appeared centuries ago, rising from the earth in a single night. No one knows why."
+      - "Be wary of what you find above. Not all treasures are worth their cost."
+      - "I have studied the tower's mysteries for decades. Each answer only raises more questions."
+      - "The creatures within grow stronger with each passing year. Time is not on our side."
+    locations:
+      - "throne_room"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Castle Hall NPCs
+  castle_servant:
+    name: "castle servant"
+    description: "A humble servant in simple livery, hurrying about their duties with quiet efficiency."
+    level: 1
+    health: 20
+    damage: 0
+    armor: 0
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "Pardon me, just passing through."
+      - "The castle halls must always be spotless for His Majesty."
+      - "If you need directions, the guards can help you."
+      - "I've worked here all my life. Wouldn't have it any other way."
+    locations:
+      - "castle_hall"
+      - "castle_courtyard"
+    respawn_median: 0
+    respawn_variation: 0
+
+  noble_visitor:
+    name: "noble visitor"
+    description: "A wealthy aristocrat in fine silks and jewels, here to petition the crown or conduct business at court."
+    level: 3
+    health: 40
+    damage: 0
+    armor: 1
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "I have an audience with His Majesty. Terribly important matters, you understand."
+      - "The tower brings such... unsavory types to our city. Present company excluded, of course."
+      - "My family has served the crown for twelve generations. What's your lineage?"
+      - "Gold from the tower has made many a fortune. And ruined just as many."
+    locations:
+      - "castle_hall"
+      - "throne_room"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Royal Library NPCs
+  royal_archivist:
+    name: "Royal Archivist Elara"
+    description: "An elderly woman surrounded by towers of books and scrolls. Her spectacles are perpetually perched on her nose, and ink stains cover her fingers. She is said to have read every book in the library twice."
+    level: 8
+    health: 50
+    damage: 0
+    armor: 0
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "Shh! This is a library. Keep your voice down."
+      - "Looking for information about the tower? Section seven, third shelf from the top. Mind the dust."
+      - "The forbidden section? Ha! Come back when you've proven yourself worthy."
+      - "Books hold more power than any sword. Knowledge is the true treasure."
+      - "I've catalogued over forty thousand volumes. The tower alone fills three hundred."
+    locations:
+      - "royal_library"
+    respawn_median: 0
+    respawn_variation: 0
+
+  young_scholar:
+    name: "young scholar"
+    description: "A studious young person hunched over a pile of manuscripts, furiously taking notes. Dark circles under their eyes suggest many sleepless nights of research."
+    level: 2
+    health: 25
+    damage: 0
+    armor: 0
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "I'm researching the tower's origins. The records are... incomplete."
+      - "Some say the tower existed before the world itself. Fascinating, isn't it?"
+      - "The creatures inside seem to regenerate endlessly. How? Why? I must know!"
+      - "Oh, sorry, did you say something? I was lost in thought."
+    locations:
+      - "royal_library"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Castle Courtyard NPCs
+  court_gardener:
+    name: "court gardener"
+    description: "A weathered old man with soil-stained hands, lovingly tending to the royal gardens. He seems more comfortable with plants than people."
+    level: 2
+    health: 30
+    damage: 0
+    armor: 0
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "These roses have bloomed here for three hundred years. I intend to keep it that way."
+      - "The fountain's water comes from a spring deep beneath the castle. Pure as the day the world was made."
+      - "Plants don't lie, don't scheme, don't betray. That's why I prefer their company."
+      - "I've seen kings come and go. The garden remains."
+    locations:
+      - "castle_courtyard"
+    respawn_median: 0
+    respawn_variation: 0

@@ -1,0 +1,150 @@
+package items
+
+import "fmt"
+
+// EquipmentSlot represents where an item can be equipped
+type EquipmentSlot int
+
+const (
+	SlotNone EquipmentSlot = iota
+	SlotHead
+	SlotBody
+	SlotLegs
+	SlotFeet
+	SlotHands
+	SlotWeapon
+	SlotOffHand
+	SlotHeld
+)
+
+// String returns the string representation of an EquipmentSlot
+func (s EquipmentSlot) String() string {
+	switch s {
+	case SlotHead:
+		return "head"
+	case SlotBody:
+		return "body"
+	case SlotLegs:
+		return "legs"
+	case SlotFeet:
+		return "feet"
+	case SlotHands:
+		return "hands"
+	case SlotWeapon:
+		return "weapon"
+	case SlotOffHand:
+		return "off-hand"
+	case SlotHeld:
+		return "held"
+	default:
+		return "none"
+	}
+}
+
+// Item represents an in-game item with properties
+type Item struct {
+	ID          string // Unique identifier from YAML key (e.g., "rusty_sword")
+	Name        string
+	Description string
+	Weight      float64
+	Type        ItemType
+	Value       int // Gold value
+	// Equipment stats (optional, only for equippable items)
+	Slot       EquipmentSlot
+	Armor      int    // Damage reduction for armor
+	Damage     int    // Damage value for weapons (legacy, used as fallback)
+	DamageDice string // Dice notation for damage (e.g., "1d6", "2d4+1")
+	TwoHanded  bool   // Whether weapon requires both hands
+	// Consumable stats (optional, only for consumable items)
+	Consumable bool // Can this item be consumed?
+	HealAmount int  // HP restored when consumed
+	ManaAmount int  // MP restored when consumed
+}
+
+// NewItem creates a new item with the given properties
+func NewItem(name, description string, weight float64, itemType ItemType, value int) *Item {
+	return &Item{
+		Name:        name,
+		Description: description,
+		Weight:      weight,
+		Type:        itemType,
+		Value:       value,
+		Slot:        SlotNone,
+		Armor:       0,
+		Damage:      0,
+		TwoHanded:   false,
+		Consumable:  false,
+		HealAmount:  0,
+		ManaAmount:  0,
+	}
+}
+
+// NewWeapon creates a new weapon item
+func NewWeapon(name, description string, weight float64, value, damage int, twoHanded bool) *Item {
+	return &Item{
+		Name:        name,
+		Description: description,
+		Weight:      weight,
+		Type:        Weapon,
+		Value:       value,
+		Slot:        SlotWeapon,
+		Damage:      damage,
+		TwoHanded:   twoHanded,
+	}
+}
+
+// NewArmor creates a new armor item
+func NewArmor(name, description string, weight float64, value, armor int, slot EquipmentSlot) *Item {
+	return &Item{
+		Name:        name,
+		Description: description,
+		Weight:      weight,
+		Type:        Armor,
+		Value:       value,
+		Slot:        slot,
+		Armor:       armor,
+	}
+}
+
+// NewConsumable creates a new consumable item
+func NewConsumable(name, description string, weight float64, itemType ItemType, value, healAmount, manaAmount int) *Item {
+	return &Item{
+		Name:        name,
+		Description: description,
+		Weight:      weight,
+		Type:        itemType,
+		Value:       value,
+		Consumable:  true,
+		HealAmount:  healAmount,
+		ManaAmount:  manaAmount,
+	}
+}
+
+// NewBossKey creates a boss key item for a specific floor
+func NewBossKey(keyID string, floorNum int) *Item {
+	return &Item{
+		ID:          keyID,
+		Name:        fmt.Sprintf("Boss Key (Floor %d)", floorNum),
+		Description: fmt.Sprintf("A heavy iron key dropped by the boss of floor %d. It unlocks the sealed door to the next level.", floorNum),
+		Weight:      0.0, // Keys have no weight (stored on key ring)
+		Type:        Key,
+		Value:       0, // Boss keys are not sellable
+	}
+}
+
+// NewTreasureKey creates a treasure room key item
+func NewTreasureKey() *Item {
+	return &Item{
+		ID:          "treasure_key",
+		Name:        "Treasure Key",
+		Description: "A golden key that unlocks treasure room doors in the tower. Single use.",
+		Weight:      0.0, // Keys have no weight (stored on key ring)
+		Type:        Key,
+		Value:       50, // Can be purchased at shop
+	}
+}
+
+// String returns a formatted string representation of the item
+func (i *Item) String() string {
+	return fmt.Sprintf("%s (%s, %.1f, %d gold)", i.Name, i.Type.String(), i.Weight, i.Value)
+}

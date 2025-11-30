@@ -1,0 +1,150 @@
+name: Server Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build-and-release:
+    name: Build and Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      discussions: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.21"
+          cache-dependency-path: server/go.sum
+
+      - name: Download dependencies
+        working-directory: ./server
+        run: go mod download
+
+      - name: Build Windows binary
+        working-directory: ./server
+        env:
+          GOOS: windows
+          GOARCH: amd64
+        run: go build -o opentowermud.exe ./cmd/mud
+
+      - name: Build Linux binary
+        working-directory: ./server
+        env:
+          GOOS: linux
+          GOARCH: amd64
+        run: go build -o opentowermud-linux-amd64 ./cmd/mud
+
+      - name: Build macOS Intel binary
+        working-directory: ./server
+        env:
+          GOOS: darwin
+          GOARCH: amd64
+        run: go build -o opentowermud-darwin-amd64 ./cmd/mud
+
+      - name: Build macOS ARM binary
+        working-directory: ./server
+        env:
+          GOOS: darwin
+          GOARCH: arm64
+        run: go build -o opentowermud-darwin-arm64 ./cmd/mud
+
+      - name: Create release README
+        working-directory: ./server
+        run: |
+          # Strip "Building from Source" section for release package
+          sed '/^## Building from Source/,/^## /{ /^## Building from Source/d; /^## /!d }' README.md > README-release.md
+
+      - name: Package Windows release
+        working-directory: ./server
+        run: |
+          VERSION=${{ github.ref_name }}
+          mkdir -p releases/opentowermud-windows-amd64
+          cp opentowermud.exe releases/opentowermud-windows-amd64/
+          cp -r data releases/opentowermud-windows-amd64/
+          cp README-release.md releases/opentowermud-windows-amd64/README.md
+          cd releases
+          zip -r opentowermud-windows-amd64-${VERSION}.zip opentowermud-windows-amd64
+
+      - name: Package Linux release
+        working-directory: ./server
+        run: |
+          VERSION=${{ github.ref_name }}
+          mkdir -p releases/opentowermud-linux-amd64
+          cp opentowermud-linux-amd64 releases/opentowermud-linux-amd64/opentowermud
+          cp -r data releases/opentowermud-linux-amd64/
+          cp README-release.md releases/opentowermud-linux-amd64/README.md
+          cd releases
+          tar -czf opentowermud-linux-amd64-${VERSION}.tar.gz opentowermud-linux-amd64
+
+      - name: Package macOS Intel release
+        working-directory: ./server
+        run: |
+          VERSION=${{ github.ref_name }}
+          mkdir -p releases/opentowermud-darwin-amd64
+          cp opentowermud-darwin-amd64 releases/opentowermud-darwin-amd64/opentowermud
+          cp -r data releases/opentowermud-darwin-amd64/
+          cp README-release.md releases/opentowermud-darwin-amd64/README.md
+          cd releases
+          tar -czf opentowermud-darwin-amd64-${VERSION}.tar.gz opentowermud-darwin-amd64
+
+      - name: Package macOS ARM release
+        working-directory: ./server
+        run: |
+          VERSION=${{ github.ref_name }}
+          mkdir -p releases/opentowermud-darwin-arm64
+          cp opentowermud-darwin-arm64 releases/opentowermud-darwin-arm64/opentowermud
+          cp -r data releases/opentowermud-darwin-arm64/
+          cp README-release.md releases/opentowermud-darwin-arm64/README.md
+          cd releases
+          tar -czf opentowermud-darwin-arm64-${VERSION}.tar.gz opentowermud-darwin-arm64
+
+      - name: Create Release
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        run: |
+          VERSION=${{ github.ref_name }}
+          gh release create "$VERSION" \
+            --repo ${{ github.repository }} \
+            --title "OpenTowerMUD Server $VERSION" \
+            --notes "## OpenTowerMUD Server $VERSION
+
+          Pre-built server packages for Windows, Linux, and macOS.
+
+          **Each package includes the server binary AND required data files.**
+
+          ### Quick Start
+          1. Download the appropriate package for your platform
+          2. Extract the archive (creates \`opentowermud-<platform>\` directory)
+          3. Navigate into the extracted directory: \`cd opentowermud-<platform>\`
+          4. Make the binary executable (Unix/macOS only): \`chmod +x opentowermud\`
+          5. Run the server: \`./opentowermud\` (or \`opentowermud.exe\` on Windows)
+          6. Connect with telnet: \`telnet localhost 4000\`
+
+          ### Command-Line Options
+          \`\`\`
+          ./opentowermud --seed 12345    # Generate world with specific seed
+          ./opentowermud --pilgrim       # Peaceful mode (no combat)
+          \`\`\`
+
+          ### Packages
+          - **opentowermud-windows-amd64-$VERSION.zip** - Windows (64-bit)
+          - **opentowermud-linux-amd64-$VERSION.tar.gz** - Linux (64-bit)
+          - **opentowermud-darwin-amd64-$VERSION.tar.gz** - macOS Intel (64-bit)
+          - **opentowermud-darwin-arm64-$VERSION.tar.gz** - macOS Apple Silicon (ARM64)
+
+          Each package contains:
+          - Server executable (\`opentowermud\` or \`opentowermud.exe\`)
+          - \`data/\` directory with all required YAML configuration files" \
+            server/releases/opentowermud-windows-amd64-$VERSION.zip \
+            server/releases/opentowermud-linux-amd64-$VERSION.tar.gz \
+            server/releases/opentowermud-darwin-amd64-$VERSION.tar.gz \
+            server/releases/opentowermud-darwin-arm64-$VERSION.tar.gz

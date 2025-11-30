@@ -1,0 +1,249 @@
+# Mob (Enemy) Dictionary for Integration Testing
+# Contains fast-respawning mobs for efficient testing
+# Also includes training dummy and city NPCs for comprehensive tests
+
+npcs:
+  # ===================
+  # Fast-respawn test mob for quick combat/respawn tests
+  # ===================
+  test_rat:
+    name: "test rat"
+    description: "A test rat for integration testing"
+    level: 1
+    health: 10
+    damage: 1
+    armor: 0
+    experience: 5
+    aggressive: false
+    attackable: true
+    tier: 1
+    gold_min: 1
+    gold_max: 2
+    respawn_median: 5
+    respawn_variation: 1
+    locations:
+      - "training_hall"
+
+  # ===================
+  # Training dummy (from production npcs.yaml)
+  # Modified with faster respawn for testing
+  # ===================
+  training_dummy:
+    name: "training dummy"
+    description: "A straw-stuffed dummy on a wooden post, bearing the marks of countless practice strikes."
+    level: 1
+    health: 50
+    damage: 0
+    armor: 0
+    experience: 5
+    aggressive: false
+    attackable: true
+    dialogue: []
+    locations:
+      - "training_hall"
+    respawn_median: 10
+    respawn_variation: 2
+
+  # ===================
+  # City NPCs (non-attackable) for NPC interaction tests
+  # ===================
+
+  # Town Square NPCs
+  old_guide:
+    name: "Aldric the old guide"
+    description: "A weathered old man with kind eyes and a cloak that has seen better days."
+    level: 10
+    health: 100
+    damage: 0
+    armor: 0
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "Greetings, adventurer! New to our little city, are you?"
+    locations:
+      - "town_square"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Temple NPCs
+  high_priestess:
+    name: "High Priestess Sera"
+    description: "A serene woman in flowing white robes."
+    level: 10
+    health: 100
+    damage: 15
+    armor: 5
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "May the light guide your path through the darkness above."
+    locations:
+      - "temple"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # General Store NPCs
+  shopkeeper:
+    name: "Shopkeeper Mira"
+    description: "A sharp-eyed woman who knows the value of every item in her store."
+    level: 4
+    health: 40
+    damage: 6
+    armor: 1
+    experience: 0
+    aggressive: false
+    attackable: false
+    shop_inventory:
+      - item: "treasure_key"
+        price: 50
+      - item: "healing_potion"
+        price: 50
+      - item: "mana_potion"
+        price: 50
+      - item: "bandage"
+        price: 5
+      - item: "bread"
+        price: 2
+      - item: "apple"
+        price: 3
+      - item: "water"
+        price: 2
+      - item: "iron_dagger"
+        price: 30
+      - item: "leather_armor"
+        price: 50
+      - item: "leather_cap"
+        price: 15
+    dialogue:
+      - "Welcome! Type 'shop' to see what's for sale."
+    locations:
+      - "general_store"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Training Hall NPCs
+  combat_instructor:
+    name: "Combat Instructor Vex"
+    description: "A lean, scarred warrior who has forgotten more about fighting than most will ever learn."
+    level: 12
+    health: 150
+    damage: 22
+    armor: 7
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "Pain is the best teacher. The dummy doesn't hit back, but the monsters will."
+    locations:
+      - "training_hall"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Tavern NPCs
+  bartender:
+    name: "Bartender Grum"
+    description: "A burly man with a bushy beard, polishing glasses with practiced ease."
+    level: 4
+    health: 50
+    damage: 8
+    armor: 2
+    experience: 0
+    aggressive: false
+    attackable: false
+    shop_inventory:
+      - item: "ale"
+        price: 3
+      - item: "bread"
+        price: 2
+      - item: "roasted_meat"
+        price: 10
+      - item: "herbal_tea"
+        price: 8
+    dialogue:
+      - "What'll it be? We've got ale, bread, and stories aplenty."
+    locations:
+      - "tavern"
+    respawn_median: 0
+    respawn_variation: 0
+
+  bard:
+    name: "wandering bard"
+    description: "A charismatic performer with a lute. Talk to him to save your progress!"
+    level: 3
+    health: 35
+    damage: 5
+    armor: 1
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "I write songs about heroes. Perhaps one day I'll write one about you!"
+    locations:
+      - "tavern"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Guard NPCs
+  city_guard:
+    name: "city guard"
+    description: "A disciplined soldier in the city's colors, ever watchful for threats."
+    level: 5
+    health: 75
+    damage: 12
+    armor: 5
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "Stay out of trouble, citizen."
+    locations:
+      - "barracks"
+      - "north_gate"
+      - "tower_entrance"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # ===================
+  # Tower mobs for floor generation tests (Tier 1)
+  # ===================
+  goblin:
+    name: "goblin"
+    description: "A small, green goblin with sharp teeth and beady eyes"
+    level: 1
+    health: 20
+    damage: 3
+    armor: 0
+    experience: 10
+    aggressive: true
+    attackable: true
+    tier: 1
+    gold_min: 1
+    gold_max: 3
+    loot_table:
+      - item: "bread"
+        chance: 25
+    respawn_median: 60
+    respawn_variation: 15
+
+  skeleton:
+    name: "skeleton"
+    description: "An animated skeleton wielding a rusty blade"
+    level: 2
+    health: 18
+    damage: 4
+    armor: 1
+    experience: 15
+    aggressive: true
+    attackable: true
+    tier: 1
+    gold_min: 2
+    gold_max: 4
+    loot_table:
+      - item: "bone"
+        chance: 50
+      - item: "rusty_sword"
+        chance: 15
+    respawn_median: 60
+    respawn_variation: 15

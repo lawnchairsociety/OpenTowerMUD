@@ -1,0 +1,6 @@
+# Chat Filter Test Configuration
+enabled: true
+mode: REPLACE
+banned_words:
+  - badword
+  - forbidden

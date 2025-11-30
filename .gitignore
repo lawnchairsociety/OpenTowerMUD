@@ -1,0 +1,75 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+/server/mud
+/server/opentowermud
+/server/testrunner
+/server/mapgen
+
+# Server generated files
+/server/data/tower.yaml
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Claude directories
+.claude/
+
+# Go workspace file
+go.work
+go.work.sum
+
+# Build artifacts
+/bin/
+/build/
+/dist/
+/server/releases/
+
+# IDE specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment and config files
+.env
+.env.local
+*.local
+
+# Log files
+*.log
+logs/
+
+# Database files (if you add SQLite or similar)
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# Player data files (if you implement persistence)
+/data/players/
+/data/saves/
+
+# Generated world file (regenerated on server start)
+/server/data/world.yaml
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Debug files
+debug
+__debug_bin
+
+# Air live reload (if you use it for development)
+tmp/

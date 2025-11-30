@@ -1,0 +1,457 @@
+# Mob (Enemy) Dictionary for OpenTowerMUD
+# These are hostile creatures that spawn in the tower
+#
+# Format:
+#   mob_id:
+#     name: Display name of the mob
+#     description: Detailed description shown when examining
+#     level: Mob level (1-10)
+#     health: Max health points
+#     damage: Base damage per attack
+#     armor: Damage reduction
+#     experience: XP awarded on death
+#     aggressive: true/false (auto-attack players?)
+#     attackable: true/false (can players attack this mob?)
+#     gold_min: Minimum gold dropped on death
+#     gold_max: Maximum gold dropped on death
+#     loot_table: List of items with drop chances (percentage 0-100)
+#       - item: item_id (from items.yaml)
+#         chance: percentage (e.g., 50 = 50% chance)
+#     tier: Mob tier (1=easy, 2=medium, 3=hard, 4=elite)
+#     boss: true/false (is this a boss mob? - bosses drop ALL loot at 100%)
+#     locations: List of room types where this mob spawns (legacy, for city spawns)
+#     respawn_median: Median respawn time in seconds
+#     respawn_variation: Variation in respawn time (+/- seconds)
+
+npcs:
+  # ===================
+  # Tier 1: Easy Mobs (Floors 1-5)
+  # ===================
+
+  goblin:
+    name: "goblin"
+    description: "A small, green goblin with sharp teeth and beady eyes"
+    level: 1
+    health: 20
+    damage: 3
+    armor: 0
+    experience: 10
+    aggressive: true
+    attackable: true
+    tier: 1
+    gold_min: 1
+    gold_max: 3
+    loot_table:
+      - item: "bread"
+        chance: 25
+    respawn_median: 120
+    respawn_variation: 30
+
+  giant_rat:
+    name: "giant rat"
+    description: "A massive rat with glowing red eyes and matted fur"
+    level: 1
+    health: 15
+    damage: 2
+    armor: 0
+    experience: 8
+    aggressive: true
+    attackable: true
+    tier: 1
+    gold_min: 0
+    gold_max: 2
+    loot_table:
+      - item: "mushroom"
+        chance: 40
+    respawn_median: 120
+    respawn_variation: 30
+
+  bat:
+    name: "bat"
+    description: "A large bat with leathery wings and sharp fangs"
+    level: 2
+    health: 12
+    damage: 4
+    armor: 0
+    experience: 12
+    aggressive: true
+    attackable: true
+    tier: 1
+    gold_min: 1
+    gold_max: 3
+    respawn_median: 120
+    respawn_variation: 30
+
+  skeleton:
+    name: "skeleton"
+    description: "An animated skeleton wielding a rusty blade"
+    level: 2
+    health: 18
+    damage: 4
+    armor: 1
+    experience: 15
+    aggressive: true
+    attackable: true
+    tier: 1
+    gold_min: 2
+    gold_max: 4
+    loot_table:
+      - item: "bone"
+        chance: 50
+      - item: "rusty_sword"
+        chance: 15
+    respawn_median: 120
+    respawn_variation: 30
+
+  # ===================
+  # Tier 2: Medium Mobs (Floors 6-10)
+  # ===================
+
+  orc_warrior:
+    name: "orc warrior"
+    description: "A brutish orc wielding a crude axe"
+    level: 3
+    health: 40
+    damage: 8
+    armor: 2
+    experience: 30
+    aggressive: true
+    attackable: true
+    tier: 2
+    gold_min: 3
+    gold_max: 7
+    loot_table:
+      - item: "rusty_sword"
+        chance: 20
+      - item: "roasted_meat"
+        chance: 35
+    respawn_median: 180
+    respawn_variation: 30
+
+  cave_spider:
+    name: "cave spider"
+    description: "A giant spider with eight hairy legs and venomous fangs"
+    level: 4
+    health: 35
+    damage: 10
+    armor: 1
+    experience: 40
+    aggressive: true
+    attackable: true
+    tier: 2
+    gold_min: 4
+    gold_max: 8
+    loot_table:
+      - item: "healing_potion"
+        chance: 25
+      - item: "rope"
+        chance: 30
+    respawn_median: 180
+    respawn_variation: 30
+
+  wraith:
+    name: "wraith"
+    description: "A ghostly apparition with hollow eyes and wispy form"
+    level: 4
+    health: 30
+    damage: 12
+    armor: 0
+    experience: 45
+    aggressive: true
+    attackable: true
+    tier: 2
+    gold_min: 4
+    gold_max: 9
+    loot_table:
+      - item: "mana_potion"
+        chance: 30
+      - item: "ectoplasm"
+        chance: 20
+    respawn_median: 180
+    respawn_variation: 30
+
+  lizardman:
+    name: "lizardman"
+    description: "A reptilian humanoid with sharp claws and a scaly hide"
+    level: 5
+    health: 50
+    damage: 11
+    armor: 3
+    experience: 55
+    aggressive: true
+    attackable: true
+    tier: 2
+    gold_min: 5
+    gold_max: 11
+    loot_table:
+      - item: "leather_armor"
+        chance: 10
+    respawn_median: 180
+    respawn_variation: 30
+
+  # ===================
+  # Tier 3: Hard Mobs (Floors 11-20)
+  # ===================
+
+  dark_knight:
+    name: "dark knight"
+    description: "A fearsome knight clad in black armor, wielding a dark blade"
+    level: 6
+    health: 80
+    damage: 15
+    armor: 5
+    experience: 100
+    aggressive: true
+    attackable: true
+    tier: 3
+    gold_min: 8
+    gold_max: 15
+    loot_table:
+      - item: "iron_dagger"
+        chance: 15
+      - item: "greater_healing_potion"
+        chance: 30
+      - item: "leather_armor"
+        chance: 8
+      - item: "ancient_key"
+        chance: 5
+    respawn_median: 300
+    respawn_variation: 60
+
+  forest_troll:
+    name: "forest troll"
+    description: "A massive troll with thick green skin and enormous fists"
+    level: 7
+    health: 100
+    damage: 18
+    armor: 4
+    experience: 120
+    aggressive: true
+    attackable: true
+    tier: 3
+    gold_min: 10
+    gold_max: 18
+    loot_table:
+      - item: "wooden_staff"
+        chance: 12
+      - item: "elixir"
+        chance: 10
+      - item: "roasted_meat"
+        chance: 40
+    respawn_median: 300
+    respawn_variation: 60
+
+  gargoyle:
+    name: "gargoyle"
+    description: "A stone creature brought to life by dark magic"
+    level: 7
+    health: 90
+    damage: 16
+    armor: 6
+    experience: 110
+    aggressive: true
+    attackable: true
+    tier: 3
+    gold_min: 10
+    gold_max: 17
+    loot_table:
+      - item: "stone_shard"
+        chance: 35
+      - item: "greater_healing_potion"
+        chance: 20
+    respawn_median: 300
+    respawn_variation: 60
+
+  demon_imp:
+    name: "demon imp"
+    description: "A small demonic creature with fiery eyes and clawed hands"
+    level: 8
+    health: 70
+    damage: 20
+    armor: 2
+    experience: 130
+    aggressive: true
+    attackable: true
+    tier: 3
+    gold_min: 12
+    gold_max: 20
+    loot_table:
+      - item: "mana_potion"
+        chance: 30
+      - item: "demonic_essence"
+        chance: 15
+    respawn_median: 300
+    respawn_variation: 60
+
+  # ===================
+  # Tier 4: Elite Mobs (Floors 21+)
+  # ===================
+
+  elder_vampire:
+    name: "elder vampire"
+    description: "An ancient vampire lord with pale skin and burning red eyes"
+    level: 10
+    health: 150
+    damage: 25
+    armor: 5
+    experience: 200
+    aggressive: true
+    attackable: true
+    tier: 4
+    gold_min: 20
+    gold_max: 35
+    loot_table:
+      - item: "elixir"
+        chance: 15
+      - item: "vampire_fang"
+        chance: 25
+      - item: "ancient_key"
+        chance: 8
+    respawn_median: 600
+    respawn_variation: 120
+
+  shadow_assassin:
+    name: "shadow assassin"
+    description: "A deadly killer who moves through shadows unseen"
+    level: 10
+    health: 100
+    damage: 35
+    armor: 3
+    experience: 220
+    aggressive: true
+    attackable: true
+    tier: 4
+    gold_min: 20
+    gold_max: 40
+    loot_table:
+      - item: "iron_dagger"
+        chance: 20
+      - item: "shadow_cloak"
+        chance: 10
+      - item: "greater_healing_potion"
+        chance: 25
+    respawn_median: 600
+    respawn_variation: 120
+
+  stone_golem:
+    name: "stone golem"
+    description: "A massive construct of living stone, animated by ancient runes"
+    level: 12
+    health: 200
+    damage: 22
+    armor: 10
+    experience: 250
+    aggressive: true
+    attackable: true
+    tier: 4
+    gold_min: 25
+    gold_max: 50
+    loot_table:
+      - item: "stone_shard"
+        chance: 40
+      - item: "golem_core"
+        chance: 12
+      - item: "elixir"
+        chance: 10
+    respawn_median: 600
+    respawn_variation: 120
+
+  # ===================
+  # Boss Mobs (Every 10th floor)
+  # ===================
+
+  goblin_king:
+    name: "Goblin King"
+    description: "The massive ruler of the goblin horde, wearing a crude crown and wielding a spiked club"
+    level: 5
+    health: 150
+    damage: 12
+    armor: 3
+    experience: 150
+    aggressive: true
+    attackable: true
+    tier: 1
+    boss: true
+    gold_min: 50
+    gold_max: 75
+    loot_table:  # Bosses drop ALL loot at 100% - chances ignored
+      - item: "crown_of_the_goblin_king"
+        chance: 100
+      - item: "greater_healing_potion"
+        chance: 100
+      - item: "ancient_key"
+        chance: 100
+    respawn_median: 900
+    respawn_variation: 180
+
+  spider_queen:
+    name: "Spider Queen"
+    description: "A colossal arachnid with countless offspring crawling across her abdomen"
+    level: 8
+    health: 200
+    damage: 18
+    armor: 4
+    experience: 250
+    aggressive: true
+    attackable: true
+    tier: 2
+    boss: true
+    gold_min: 75
+    gold_max: 125
+    loot_table:  # Bosses drop ALL loot at 100% - chances ignored
+      - item: "spider_queens_fang"
+        chance: 100
+      - item: "elixir"
+        chance: 100
+      - item: "ancient_key"
+        chance: 100
+    respawn_median: 900
+    respawn_variation: 180
+
+  shadow_lord:
+    name: "Shadow Lord"
+    description: "A towering figure of pure darkness, its form constantly shifting"
+    level: 12
+    health: 300
+    damage: 25
+    armor: 6
+    experience: 400
+    aggressive: true
+    attackable: true
+    tier: 3
+    boss: true
+    gold_min: 100
+    gold_max: 175
+    loot_table:  # Bosses drop ALL loot at 100% - chances ignored
+      - item: "shadow_orb"
+        chance: 100
+      - item: "elixir"
+        chance: 100
+      - item: "ancient_key"
+        chance: 100
+    respawn_median: 900
+    respawn_variation: 180
+
+  tower_guardian:
+    name: "Tower Guardian"
+    description: "An ancient construct created to protect the tower's deepest secrets"
+    level: 15
+    health: 500
+    damage: 35
+    armor: 12
+    experience: 750
+    aggressive: true
+    attackable: true
+    tier: 4
+    boss: true
+    gold_min: 150
+    gold_max: 250
+    loot_table:  # Bosses drop ALL loot at 100% - chances ignored
+      - item: "guardians_core"
+        chance: 100
+      - item: "legendary_key"
+        chance: 100
+      - item: "elixir"
+        chance: 100
+    respawn_median: 1800
+    respawn_variation: 300

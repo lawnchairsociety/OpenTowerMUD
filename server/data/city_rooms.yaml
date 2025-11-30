@@ -1,0 +1,213 @@
+# City Rooms for OpenTowerMUD
+# The walled city that serves as the ground floor (floor 0)
+#
+# Layout:
+#                                        [North Gate]
+#                                             |
+#  [Castle Gate]------------------------[Town Square]--[Temple]
+#        |                                    |
+#  [Guard Post]             [Tavern]--[Market Street]--[General Store]
+#        |                                    |
+#  [Castle Hall]         [Barracks]--[Training Hall]--[Armory]
+#     /      \                                |
+# [Throne] [Library]                   [Tower Entrance]
+#     |
+# [Courtyard]
+#
+# The city is walled - only exit is up into the tower
+
+rooms:
+  town_square:
+    name: "Town Square"
+    description: "The heart of the city, a bustling plaza with a grand fountain at its center. Cobblestone paths radiate outward to various districts. A shimmering portal stands near the fountain, offering quick travel to distant places. To the west, the imposing castle gate rises above the rooftops."
+    description_day: "Sunlight sparkles on the fountain's water as merchants hawk their wares and children play."
+    description_night: "Torches illuminate the quiet plaza. The fountain's water glimmers under the moonlight."
+    type: city
+    features:
+      - portal
+      - fountain
+    exits:
+      north: north_gate
+      south: market_street
+      east: temple
+      west: castle_gate
+
+  north_gate:
+    name: "North Gate"
+    description: "Massive iron-reinforced gates seal off the city from the outside. The walls here are thick and imposing, clearly meant to keep something out... or in."
+    description_day: "Guards patrol the walls above, their armor glinting in the sun."
+    description_night: "Torches line the walls, casting long shadows across the gate."
+    type: city
+    features:
+      - gate
+    exits:
+      south: town_square
+
+  temple:
+    name: "Temple of Light"
+    description: "A serene sanctuary filled with the soft glow of candles. A stone altar stands at the center, radiating a gentle warmth. Stained glass windows depict scenes of ancient heroes."
+    description_day: "Colored light streams through the windows, painting the floor in brilliant hues."
+    description_night: "The altar's glow provides the only light, creating an atmosphere of quiet reverence."
+    type: city
+    features:
+      - altar
+    exits:
+      west: town_square
+
+  barracks:
+    name: "City Barracks"
+    description: "The quarters of the city guard. Weapon racks line the walls, and training dummies show signs of heavy use. The smell of leather and steel fills the air."
+    description_day: "Guards drill in formation while officers bark commands."
+    description_night: "A skeleton crew remains on duty while others rest in the bunks."
+    type: city
+    features: []
+    exits:
+      east: training_hall
+
+  market_street:
+    name: "Market Street"
+    description: "A wide avenue lined with merchant stalls and shops. The air is filled with the sounds of haggling and the aroma of exotic goods."
+    description_day: "Merchants call out their wares as crowds browse the colorful displays."
+    description_night: "Most stalls are shuttered, though a few late-night vendors remain."
+    type: city
+    features: []
+    exits:
+      north: town_square
+      south: training_hall
+      east: general_store
+      west: tavern
+
+  armory:
+    name: "The Iron Forge Armory"
+    description: "Heat radiates from the back where smiths work the forge. Weapons and armor of all types hang on display. The ring of hammer on anvil echoes constantly."
+    description_day: "Apprentices stoke the fires while the master smith examines his latest creation."
+    description_night: "The forge burns low but never dies. A lone smith works through the night."
+    type: city
+    features:
+      - forge
+    exits:
+      west: training_hall
+
+  general_store:
+    name: "Ye Olde General Store"
+    description: "Shelves packed floor to ceiling with supplies of every kind. Ropes, rations, torches, and tools fill every corner. The shopkeeper watches customers with a keen eye. Type 'shop' to see what's for sale."
+    description_day: "Adventurers stock up on supplies before heading into the tower."
+    description_night: "The store is closed, but a light burns in the back room."
+    type: city
+    features:
+      - shop
+    exits:
+      west: market_street
+
+  training_hall:
+    name: "Combat Training Hall"
+    description: "A large open hall with padded floors and practice weapons. Veterans instruct newcomers in the art of combat. The walls display trophies from legendary battles."
+    description_day: "The sounds of wooden swords clashing fill the air as students spar."
+    description_night: "The hall is empty save for a few dedicated warriors practicing their forms."
+    type: city
+    features:
+      - training_dummy
+    exits:
+      north: market_street
+      south: tower_entrance
+      east: armory
+      west: barracks
+
+  tavern:
+    name: "The Weary Wanderer Tavern"
+    description: "A warm and welcoming establishment filled with the smell of roasting meat and fresh ale. Adventurers swap tales of glory and woe at well-worn tables."
+    description_day: "A few regulars nurse their drinks while the staff prepares for the evening rush."
+    description_night: "The tavern is packed with adventurers celebrating victories or drowning sorrows."
+    type: city
+    features:
+      - bar
+    exits:
+      east: market_street
+
+  tower_entrance:
+    name: "Tower Entrance"
+    description: "An ancient archway marks the entrance to the endless tower. Strange runes glow faintly on the stone frame. Beyond, a spiral staircase ascends into darkness. Only the brave... or foolish... venture within."
+    description_day: "The runes pulse with a soft blue light, beckoning adventurers upward."
+    description_night: "The runes glow brighter in the darkness, casting eerie shadows."
+    type: city
+    features:
+      - stairs_up
+    exits:
+      north: training_hall
+      up: ""
+
+  # =====================
+  # Castle District
+  # =====================
+
+  castle_gate:
+    name: "Castle Gate"
+    description: "An imposing gatehouse marks the entrance to the castle grounds. Twin towers flank heavy oaken doors reinforced with iron bands. The royal banner flies overhead, snapping in the wind."
+    description_day: "Royal guards in polished armor stand at attention, inspecting all who seek entry."
+    description_night: "Braziers illuminate the gate, and guards challenge anyone who approaches."
+    type: city
+    features:
+      - gate
+    exits:
+      east: town_square
+      south: guard_post
+
+  guard_post:
+    name: "Castle Guard Post"
+    description: "A fortified guardhouse where the castle's elite soldiers rest between shifts. Weapon racks hold well-maintained halberds and swords. A notice board displays wanted posters and duty rosters."
+    description_day: "Off-duty guards play dice while others sharpen their blades."
+    description_night: "A skeleton crew maintains watch while others sleep in the bunks above."
+    type: city
+    features:
+      - notice_board
+    exits:
+      north: castle_gate
+      south: castle_hall
+
+  castle_hall:
+    name: "Castle Great Hall"
+    description: "A magnificent hall with vaulted ceilings and grand stone pillars. Tapestries depicting the kingdom's history line the walls. A red carpet leads from the entrance toward the throne room. Suits of armor stand as silent sentinels along the walls."
+    description_day: "Sunlight streams through tall windows, illuminating dust motes dancing in the air. Servants bustle about their duties."
+    description_night: "Chandeliers cast warm light across the hall. The echoes of footsteps seem louder in the quiet."
+    type: city
+    features:
+      - tapestry
+    exits:
+      north: guard_post
+      east: royal_library
+      west: throne_room
+
+  throne_room:
+    name: "Throne Room"
+    description: "The seat of royal power. An ornate throne carved from a single massive stone sits atop a raised dais. The walls are adorned with portraits of past rulers, their stern gazes following all who enter. Ancient runes are carved into the floor, forming a protective circle around the throne."
+    description_day: "Light from high windows creates an almost divine glow around the throne. Petitioners wait along the sides."
+    description_night: "Candelabras provide soft illumination. The throne room feels more intimate, almost conspiratorial."
+    type: city
+    features:
+      - throne
+    exits:
+      east: castle_hall
+      south: castle_courtyard
+
+  royal_library:
+    name: "Royal Library"
+    description: "Towering bookshelves reach toward the ceiling, crammed with ancient tomes and scrolls. The smell of old parchment fills the air. Reading tables are scattered throughout, some piled high with research materials. A locked section contains forbidden knowledge about the tower."
+    description_day: "Scholars pore over dusty manuscripts, seeking forgotten wisdom."
+    description_night: "A few dedicated researchers work by candlelight, their quills scratching softly."
+    type: city
+    features:
+      - bookshelf
+    exits:
+      west: castle_hall
+
+  castle_courtyard:
+    name: "Castle Courtyard"
+    description: "An enclosed garden courtyard at the heart of the castle, surrounded by high walls. A marble fountain depicting a knight slaying a dragon stands at the center. Well-tended gardens provide splashes of color against the grey stone. This is where the royal family holds private ceremonies."
+    description_day: "Birds sing in the garden trees. Servants tend the flowerbeds while nobles take leisurely strolls."
+    description_night: "The fountain glimmers under starlight. The courtyard is peaceful, a refuge from the chaos beyond the walls."
+    type: city
+    features:
+      - fountain
+      - garden
+    exits:
+      north: throne_room

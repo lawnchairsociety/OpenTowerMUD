@@ -1,0 +1,16 @@
+# Chat Filter Configuration
+# This file configures word filtering for chat messages (say/tell commands)
+
+# Enable or disable the chat filter
+enabled: false
+
+# Filter mode:
+#   REPLACE - Replace banned words with asterisks (e.g., "badword" -> "*******")
+#   BLOCK   - Block the entire message from being sent
+mode: REPLACE
+
+# List of banned words (case-insensitive, matches whole words only)
+# Examples are commented out - add your own words as needed
+banned_words: []
+  # - example
+  # - badword

@@ -1,0 +1,506 @@
+# Item Dictionary for OpenTowerMUD
+# Format:
+#   item_id:
+#     name: Display name of the item
+#     description: Detailed description shown when examining
+#     weight: Weight (float)
+#     type: weapon|armor|food|drink|potion|misc|key|container
+#     value: Gold value (int)
+#     tier: Loot tier for treasure rooms (1=common, 2=uncommon, 3=rare, 4=epic, 5=legendary)
+#     locations: List of room IDs where this item should spawn (for city spawns)
+
+items:
+  # Special Keys
+  treasure_key:
+    name: "Treasure Key"
+    description: "A golden key that unlocks treasure room doors in the tower. Single use."
+    weight: 0.0
+    type: "key"
+    value: 50
+
+  # Town Square Items
+  copper_coin:
+    name: "copper coin"
+    description: "A shiny copper coin with the king's face on it"
+    weight: 0.01
+    type: "misc"
+    value: 1
+    locations:
+      - "town_square"
+
+  # Dark Forest Items
+  stick:
+    name: "stick"
+    description: "A sturdy wooden stick from a fallen branch"
+    weight: 2.0
+    type: "misc"
+    value: 1
+    locations:
+      - "forest"
+
+  mushroom:
+    name: "mushroom"
+    description: "A red-capped mushroom growing at the base of a tree"
+    weight: 0.1
+    type: "food"
+    value: 5
+    consumable: true
+    heal_amount: 5
+    locations:
+      - "forest"
+
+  rusty_sword:
+    name: "rusty sword"
+    description: "An old rusty sword, its edge dull from years of neglect"
+    weight: 8.0
+    type: "weapon"
+    value: 25
+    slot: "weapon"
+    damage: 5
+    damage_dice: "1d6"
+    two_handed: false
+    locations:
+      - "forest"
+
+  # General Store Items
+  torch:
+    name: "torch"
+    description: "A wooden torch wrapped in oil-soaked cloth"
+    weight: 1.5
+    type: "misc"
+    value: 10
+    locations:
+      - "shop"
+
+  rope:
+    name: "rope"
+    description: "A coil of sturdy hemp rope, about 50 feet long"
+    weight: 5.0
+    type: "misc"
+    value: 15
+    locations:
+      - "shop"
+
+  leather_armor:
+    name: "leather armor"
+    description: "A simple set of leather armor, well-worn but serviceable"
+    weight: 15.0
+    type: "armor"
+    value: 50
+    slot: "body"
+    armor: 3
+    locations:
+      - "shop"
+
+  # Mysterious Cave Items
+  crystal:
+    name: "crystal"
+    description: "A glowing blue crystal pulsing with mysterious energy"
+    weight: 0.5
+    type: "misc"
+    value: 100
+    locations:
+      - "cave"
+
+  ancient_key:
+    name: "ancient key"
+    description: "A tarnished brass key covered in strange runes"
+    weight: 0.2
+    type: "key"
+    value: 30
+    locations:
+      - "cave"
+
+  # Consumable drinks
+  ale:
+    name: "ale"
+    description: "A mug of frothy brown ale"
+    weight: 1.0
+    type: "drink"
+    value: 3
+    consumable: true
+    mana_amount: 5
+
+  bread:
+    name: "bread"
+    description: "A loaf of fresh-baked bread"
+    weight: 0.5
+    type: "food"
+    value: 2
+    consumable: true
+    heal_amount: 10
+
+  iron_dagger:
+    name: "iron dagger"
+    description: "A sharp iron dagger with a leather-wrapped hilt"
+    weight: 2.0
+    type: "weapon"
+    value: 30
+    slot: "weapon"
+    damage: 4
+    damage_dice: "1d4"
+    two_handed: false
+    locations:
+      - "shop"
+
+  wooden_staff:
+    name: "wooden staff"
+    description: "A long wooden staff carved with mysterious symbols"
+    weight: 6.0
+    type: "weapon"
+    value: 20
+    slot: "weapon"
+    damage: 3
+    damage_dice: "1d6"
+    two_handed: true
+    locations:
+      - "cave"
+
+  leather_cap:
+    name: "leather cap"
+    description: "A simple leather cap to protect your head"
+    weight: 1.0
+    type: "armor"
+    value: 15
+    slot: "head"
+    armor: 1
+    locations:
+      - "shop"
+
+  iron_boots:
+    name: "iron boots"
+    description: "Sturdy iron boots with reinforced soles"
+    weight: 5.0
+    type: "armor"
+    value: 25
+    slot: "feet"
+    armor: 2
+
+  # Consumable Items
+
+  healing_potion:
+    name: "healing potion"
+    description: "A small vial of red liquid that glows faintly"
+    weight: 0.3
+    type: "potion"
+    value: 50
+    consumable: true
+    heal_amount: 30
+    locations:
+      - "shop"
+
+  mana_potion:
+    name: "mana potion"
+    description: "A small vial of blue liquid that sparkles with energy"
+    weight: 0.3
+    type: "potion"
+    value: 50
+    consumable: true
+    mana_amount: 30
+    locations:
+      - "shop"
+
+  greater_healing_potion:
+    name: "greater healing potion"
+    description: "A large vial of glowing red liquid, much more potent than normal"
+    weight: 0.5
+    type: "potion"
+    value: 100
+    consumable: true
+    heal_amount: 50
+    locations:
+      - "cave"
+
+  elixir:
+    name: "elixir"
+    description: "A mysterious purple potion that seems to shimmer"
+    weight: 0.4
+    type: "potion"
+    value: 80
+    consumable: true
+    heal_amount: 20
+    mana_amount: 20
+    locations:
+      - "cave"
+
+  roasted_meat:
+    name: "roasted meat"
+    description: "A hearty portion of roasted meat, still warm"
+    weight: 1.5
+    type: "food"
+    value: 10
+    consumable: true
+    heal_amount: 20
+    locations:
+      - "tavern"
+
+  apple:
+    name: "apple"
+    description: "A crisp red apple"
+    weight: 0.2
+    type: "food"
+    value: 3
+    consumable: true
+    heal_amount: 8
+    locations:
+      - "shop"
+
+  water:
+    name: "water"
+    description: "A flask of clean, refreshing water"
+    weight: 0.5
+    type: "drink"
+    value: 2
+    consumable: true
+    mana_amount: 10
+    locations:
+      - "shop"
+
+  herbal_tea:
+    name: "herbal tea"
+    description: "A warm cup of herbal tea with a soothing aroma"
+    weight: 0.3
+    type: "drink"
+    value: 8
+    consumable: true
+    mana_amount: 15
+    locations:
+      - "tavern"
+
+  # =========================================
+  # Tier 1: Common Loot (Floors 1-5)
+  # =========================================
+
+  bandage:
+    name: "bandage"
+    description: "A roll of clean cloth bandages for treating wounds"
+    weight: 0.2
+    type: "misc"
+    value: 5
+    tier: 1
+    consumable: true
+    heal_amount: 10
+
+  small_gem:
+    name: "small gem"
+    description: "A tiny, uncut gemstone with a dull sparkle"
+    weight: 0.1
+    type: "misc"
+    value: 15
+    tier: 1
+
+  bone:
+    name: "bone"
+    description: "A cleaned bone, possibly useful for crafting"
+    weight: 0.5
+    type: "misc"
+    value: 3
+    tier: 1
+
+  torch_bundle:
+    name: "torch bundle"
+    description: "A bundle of three torches tied together"
+    weight: 4.0
+    type: "misc"
+    value: 25
+    tier: 1
+
+  # =========================================
+  # Tier 2: Uncommon Loot (Floors 6-10)
+  # =========================================
+
+  silver_ring:
+    name: "silver ring"
+    description: "A simple silver ring with no markings"
+    weight: 0.05
+    type: "misc"
+    value: 50
+    tier: 2
+
+  enchanted_scroll:
+    name: "enchanted scroll"
+    description: "A scroll with glowing runes that shimmer faintly"
+    weight: 0.1
+    type: "misc"
+    value: 40
+    tier: 2
+
+  steel_dagger:
+    name: "steel dagger"
+    description: "A well-crafted steel dagger with a keen edge"
+    weight: 1.5
+    type: "weapon"
+    value: 75
+    tier: 2
+    slot: "weapon"
+    damage: 6
+    damage_dice: "1d6"
+    two_handed: false
+
+  chainmail_vest:
+    name: "chainmail vest"
+    description: "A vest of interlocking metal rings"
+    weight: 20.0
+    type: "armor"
+    value: 100
+    tier: 2
+    slot: "body"
+    armor: 5
+
+  ectoplasm:
+    name: "ectoplasm"
+    description: "A jar of ghostly essence that glows in the dark"
+    weight: 0.3
+    type: "misc"
+    value: 35
+    tier: 2
+
+  # =========================================
+  # Tier 3: Rare Loot (Floors 11-20)
+  # =========================================
+
+  golden_amulet:
+    name: "golden amulet"
+    description: "An ornate golden amulet set with a red gemstone"
+    weight: 0.2
+    type: "misc"
+    value: 150
+    tier: 3
+
+  fine_longsword:
+    name: "fine longsword"
+    description: "A masterfully crafted longsword with a balanced feel"
+    weight: 6.0
+    type: "weapon"
+    value: 200
+    tier: 3
+    slot: "weapon"
+    damage: 10
+    damage_dice: "1d10"
+    two_handed: false
+
+  plate_armor:
+    name: "plate armor"
+    description: "Heavy plate armor offering excellent protection"
+    weight: 45.0
+    type: "armor"
+    value: 300
+    tier: 3
+    slot: "body"
+    armor: 8
+
+  demonic_essence:
+    name: "demonic essence"
+    description: "A vial of swirling red energy from a demon"
+    weight: 0.2
+    type: "misc"
+    value: 100
+    tier: 3
+
+  stone_shard:
+    name: "stone shard"
+    description: "A fragment of enchanted stone pulsing with power"
+    weight: 1.0
+    type: "misc"
+    value: 80
+    tier: 3
+
+  # =========================================
+  # Tier 4: Epic Loot (Floors 21-30)
+  # =========================================
+
+  vampire_fang:
+    name: "vampire fang"
+    description: "A long, curved fang from an elder vampire"
+    weight: 0.1
+    type: "misc"
+    value: 200
+    tier: 4
+
+  shadow_cloak:
+    name: "shadow cloak"
+    description: "A dark cloak that seems to absorb light"
+    weight: 2.0
+    type: "armor"
+    value: 350
+    tier: 4
+    slot: "body"
+    armor: 4
+
+  flaming_sword:
+    name: "flaming sword"
+    description: "A blade wreathed in magical flames"
+    weight: 7.0
+    type: "weapon"
+    value: 500
+    tier: 4
+    slot: "weapon"
+    damage: 14
+    damage_dice: "2d6+2"
+    two_handed: false
+
+  dragon_scale:
+    name: "dragon scale"
+    description: "A massive scale from a legendary dragon"
+    weight: 3.0
+    type: "misc"
+    value: 400
+    tier: 4
+
+  golem_core:
+    name: "golem core"
+    description: "The magical heart of a stone golem"
+    weight: 5.0
+    type: "misc"
+    value: 350
+    tier: 4
+
+  # =========================================
+  # Tier 5: Legendary Loot (Floors 31+)
+  # =========================================
+
+  crown_of_the_goblin_king:
+    name: "crown of the goblin king"
+    description: "A crude but powerful crown taken from the Goblin King"
+    weight: 1.5
+    type: "armor"
+    value: 500
+    tier: 5
+    slot: "head"
+    armor: 3
+
+  spider_queens_fang:
+    name: "spider queen's fang"
+    description: "A massive venomous fang from the Spider Queen"
+    weight: 2.0
+    type: "weapon"
+    value: 600
+    tier: 5
+    slot: "weapon"
+    damage: 12
+    damage_dice: "2d6"
+    two_handed: false
+
+  shadow_orb:
+    name: "shadow orb"
+    description: "A sphere of pure darkness taken from the Shadow Lord"
+    weight: 1.0
+    type: "misc"
+    value: 800
+    tier: 5
+
+  guardians_core:
+    name: "guardian's core"
+    description: "The ancient power source of the Tower Guardian"
+    weight: 10.0
+    type: "misc"
+    value: 1000
+    tier: 5
+
+  legendary_key:
+    name: "legendary key"
+    description: "A golden key that glows with immense power"
+    weight: 0.5
+    type: "key"
+    value: 500
+    tier: 5

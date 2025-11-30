@@ -1,0 +1,209 @@
+# Item Dictionary for Integration Testing
+# Contains items needed for shop, inventory, equipment, and consumable tests
+
+items:
+  # ===================
+  # Special Keys
+  # ===================
+  treasure_key:
+    name: "Treasure Key"
+    description: "A golden key that unlocks treasure room doors in the tower. Single use."
+    weight: 0.0
+    type: "key"
+    value: 50
+
+  ancient_key:
+    name: "ancient key"
+    description: "A tarnished brass key covered in strange runes"
+    weight: 0.2
+    type: "key"
+    value: 30
+
+  # ===================
+  # Consumables - Food
+  # ===================
+  bread:
+    name: "bread"
+    description: "A loaf of fresh-baked bread"
+    weight: 0.5
+    type: "food"
+    value: 2
+    consumable: true
+    heal_amount: 10
+
+  apple:
+    name: "apple"
+    description: "A crisp red apple"
+    weight: 0.3
+    type: "food"
+    value: 3
+    consumable: true
+    heal_amount: 8
+
+  roasted_meat:
+    name: "roasted meat"
+    description: "A hearty portion of roasted meat"
+    weight: 1.0
+    type: "food"
+    value: 10
+    consumable: true
+    heal_amount: 25
+
+  mushroom:
+    name: "mushroom"
+    description: "A red-capped mushroom"
+    weight: 0.1
+    type: "food"
+    value: 5
+    consumable: true
+    heal_amount: 5
+
+  # ===================
+  # Consumables - Drinks
+  # ===================
+  water:
+    name: "water"
+    description: "A flask of fresh water"
+    weight: 0.5
+    type: "drink"
+    value: 2
+    consumable: true
+    mana_amount: 5
+
+  ale:
+    name: "ale"
+    description: "A mug of frothy brown ale"
+    weight: 1.0
+    type: "drink"
+    value: 3
+    consumable: true
+    mana_amount: 5
+
+  herbal_tea:
+    name: "herbal tea"
+    description: "A warm cup of herbal tea that soothes the mind"
+    weight: 0.5
+    type: "drink"
+    value: 8
+    consumable: true
+    mana_amount: 15
+
+  # ===================
+  # Consumables - Potions
+  # ===================
+  healing_potion:
+    name: "healing potion"
+    description: "A red potion that restores health"
+    weight: 0.5
+    type: "potion"
+    value: 50
+    consumable: true
+    heal_amount: 50
+
+  mana_potion:
+    name: "mana potion"
+    description: "A blue potion that restores magical energy"
+    weight: 0.5
+    type: "potion"
+    value: 50
+    consumable: true
+    mana_amount: 50
+
+  bandage:
+    name: "bandage"
+    description: "A clean cloth bandage for treating wounds"
+    weight: 0.2
+    type: "misc"
+    value: 5
+    consumable: true
+    heal_amount: 15
+
+  # ===================
+  # Weapons
+  # ===================
+  iron_dagger:
+    name: "iron dagger"
+    description: "A sharp iron dagger with a leather-wrapped hilt"
+    weight: 2.0
+    type: "weapon"
+    value: 30
+    slot: "weapon"
+    damage: 4
+    damage_dice: "1d4"
+    two_handed: false
+
+  rusty_sword:
+    name: "rusty sword"
+    description: "An old rusty sword, its edge dull from years of neglect"
+    weight: 8.0
+    type: "weapon"
+    value: 25
+    slot: "weapon"
+    damage: 5
+    damage_dice: "1d6"
+    two_handed: false
+
+  wooden_staff:
+    name: "wooden staff"
+    description: "A long wooden staff carved with mysterious symbols"
+    weight: 6.0
+    type: "weapon"
+    value: 20
+    slot: "weapon"
+    damage: 3
+    damage_dice: "1d4"
+    two_handed: true
+
+  # ===================
+  # Armor
+  # ===================
+  leather_armor:
+    name: "leather armor"
+    description: "A simple set of leather armor, well-worn but serviceable"
+    weight: 15.0
+    type: "armor"
+    value: 50
+    slot: "body"
+    armor: 3
+
+  leather_cap:
+    name: "leather cap"
+    description: "A simple leather cap that provides basic head protection"
+    weight: 2.0
+    type: "armor"
+    value: 15
+    slot: "head"
+    armor: 1
+
+  # ===================
+  # Misc items
+  # ===================
+  copper_coin:
+    name: "copper coin"
+    description: "A shiny copper coin with the king's face on it"
+    weight: 0.01
+    type: "misc"
+    value: 1
+    locations:
+      - "town_square"
+
+  bone:
+    name: "bone"
+    description: "A bleached white bone"
+    weight: 0.5
+    type: "misc"
+    value: 2
+
+  torch:
+    name: "torch"
+    description: "A wooden torch wrapped in oil-soaked cloth"
+    weight: 1.5
+    type: "misc"
+    value: 10
+
+  rope:
+    name: "rope"
+    description: "A coil of sturdy hemp rope, about 50 feet long"
+    weight: 5.0
+    type: "misc"
+    value: 15
