@@ -119,104 +119,183 @@ The bard bows with a flourish. "Your legend is now preserved for all time!"
 }
 
 // handleGuideInteraction provides the new player tutorial from Aldric
+// Supports topic-based conversation: talk aldric, talk aldric tower, etc.
 func handleGuideInteraction(c *Command, p PlayerInterface, guide *npc.NPC) string {
-	return fmt.Sprintf(`%s smiles warmly and gestures for you to sit beside him on a weathered bench.
+	// Check if a topic was specified (args after "aldric" or "guide")
+	topic := ""
+	args := c.Args
+	for i, arg := range args {
+		lower := strings.ToLower(arg)
+		if lower == "aldric" || lower == "guide" || lower == "old" {
+			// Topic is everything after the NPC name
+			if i+1 < len(args) {
+				topic = strings.ToLower(strings.Join(args[i+1:], " "))
+			}
+			break
+		}
+	}
+	// If no NPC name found in args, check if there's a second word
+	if topic == "" && len(args) >= 2 {
+		topic = strings.ToLower(args[len(args)-1])
+	}
 
-"Ah, %s! Welcome to our fair city. I can see you're new here, so let me tell
-you everything you need to know to survive... and perhaps even thrive!"
+	switch topic {
+	case "tower", "dungeon", "floors":
+		return getGuideTowerTopic(guide)
+	case "combat", "fighting", "fight", "attack":
+		return getGuideCombatTopic(guide)
+	case "save", "saving", "bard":
+		return getGuideSaveTopic(guide)
+	case "shop", "gold", "equipment", "gear", "items":
+		return getGuideShopTopic(guide, p)
+	case "portal", "portals", "travel":
+		return getGuidePortalTopic(guide)
+	case "commands", "help":
+		return getGuideCommandsTopic(guide)
+	default:
+		return getGuideGreeting(guide, p)
+	}
+}
 
-He leans in conspiratorially and begins:
+// getGuideGreeting returns Aldric's initial greeting with topic list
+func getGuideGreeting(guide *npc.NPC, p PlayerInterface) string {
+	return fmt.Sprintf(`%s smiles warmly as you approach.
 
-===============================================================================
-                            THE ENDLESS TOWER
-===============================================================================
+"Ah, %s! Welcome to our fair city. I'm here to help newcomers survive
+the Endless Tower. What would you like to know about?"
 
-"You see that massive tower to the south? That's why we're all here. It stretches
-endlessly upward, filled with monsters, treasures, and mysteries. The higher you
-climb, the stronger the creatures... but the greater the rewards!"
+  talk %s tower    - The Endless Tower and what awaits you
+  talk %s combat   - How to fight and stay alive
+  talk %s save     - How to SAVE your progress (IMPORTANT!)
+  talk %s shop     - Buying, selling, and equipment
+  talk %s portal   - Fast travel between floors
+  talk %s commands - Quick reference of useful commands
 
-  - Go SOUTH from here, then SOUTH again, then SOUTH once more to reach the
-    TOWER ENTRANCE. Type 'up' to begin your ascent.
-  - Each floor is different - corridors, chambers, treasure rooms, and boss lairs.
-  - Every 10th floor (10, 20, 30...) has a powerful BOSS you must defeat!
+He leans on his walking stick. "Just ask about any topic, friend!"`,
+		guide.GetName(), p.GetName(),
+		strings.ToLower(strings.Split(guide.GetName(), " ")[0]),
+		strings.ToLower(strings.Split(guide.GetName(), " ")[0]),
+		strings.ToLower(strings.Split(guide.GetName(), " ")[0]),
+		strings.ToLower(strings.Split(guide.GetName(), " ")[0]),
+		strings.ToLower(strings.Split(guide.GetName(), " ")[0]),
+		strings.ToLower(strings.Split(guide.GetName(), " ")[0]))
+}
 
-===============================================================================
-                              STAYING ALIVE
-===============================================================================
+// getGuideTowerTopic explains the tower
+func getGuideTowerTopic(guide *npc.NPC) string {
+	return fmt.Sprintf(`%s points toward the massive tower looming to the south.
 
-"The tower is dangerous! Here's how to not die... too often:"
+"That's the Endless Tower - it's why we're all here. It stretches infinitely
+upward, filled with monsters, treasures, and mysteries."
 
-  - TEMPLE OF LIGHT (east from here): Visit High Priestess Sera and type 'pray'
-    at the altar to fully restore your health and mana. Do this before every
-    expedition!
+  - Go SOUTH three times from Town Square to reach the TOWER ENTRANCE
+  - Type 'up' to begin climbing
+  - Each floor has corridors, chambers, and treasure rooms
+  - Every 10th floor (10, 20, 30...) has a powerful BOSS!
+  - The higher you climb, the stronger the monsters... and better the loot!
 
-  - COMBAT: Type 'attack <monster>' to fight. Combat happens automatically
-    every few seconds. Type 'flee' if you're losing!
+"Start on floor 1, get some experience, then work your way up!"`, guide.GetName())
+}
 
-  - CONSIDER: Type 'consider <monster>' before fighting to see if you can
-    handle it. Type 'consider self' to see your own stats.
+// getGuideCombatTopic explains combat and survival
+func getGuideCombatTopic(guide *npc.NPC) string {
+	return fmt.Sprintf(`%s's expression grows serious.
 
-  - REST: Type 'sleep' to regenerate health faster. Type 'wake' to get up.
+"The tower is dangerous. Here's how to not die... too often:"
 
-===============================================================================
-                            GOLD & EQUIPMENT
-===============================================================================
+  BEFORE FIGHTING:
+  - Type 'consider <monster>' to assess if you can handle it
+  - Visit the TEMPLE (east from here) and type 'pray' to fully heal
 
-"Gold makes the world go round, friend!"
+  DURING COMBAT:
+  - Type 'attack <monster>' to start fighting
+  - Combat continues automatically every few seconds
+  - Type 'flee' to escape if you're losing!
 
-  - GENERAL STORE (south, then east): Type 'shop' to see items for sale.
-    Type 'buy <item>' to purchase. Type 'sell <item>' to sell your loot!
+  RECOVERY:
+  - Type 'sleep' to regenerate health faster (5 HP/tick)
+  - Type 'wake' to stand back up
+  - Or return to the temple and 'pray' for instant full heal
 
-  - EQUIPMENT: Type 'wield <weapon>' or 'wear <armor>' to equip items.
-    Type 'inventory' to see what you're carrying.
+"Always check your health before going deeper!"`, guide.GetName())
+}
 
-  - LOOT: Monsters drop items when defeated. Type 'get <item>' to pick them up!
+// getGuideSaveTopic explains the critical save mechanic
+func getGuideSaveTopic(guide *npc.NPC) string {
+	return fmt.Sprintf(`%s grabs your arm urgently.
 
-  - You start with %d gold. Spend it wisely!
+"Listen carefully - this is the MOST important thing I'll tell you!"
 
-===============================================================================
-                       *** SAVING YOUR PROGRESS ***
-===============================================================================
+  *** YOUR PROGRESS IS ONLY SAVED AT THE BARD! ***
 
-"This is VERY important, so listen carefully!"
+  - Go SOUTH, SOUTH, then EAST to find 'The Weary Wanderer Tavern'
+  - Type 'talk bard' - he'll write a song about you for 5 gold
+  - This SAVES your character!
 
-  - Your progress is ONLY saved when you visit THE BARD in the tavern!
-  - Go SOUTH, SOUTH, then EAST to find 'The Weary Wanderer Tavern'.
-  - Type 'talk bard' - he'll write a song about your adventures for 5 gold.
-  - If you disconnect WITHOUT visiting the bard, you LOSE all progress since
-    your last save!
+  WARNING: If you disconnect WITHOUT visiting the bard, you LOSE
+  everything since your last save - experience, items, gold, ALL OF IT!
 
-===============================================================================
-                              PORTAL TRAVEL
-===============================================================================
+"Always visit the bard before you log off. ALWAYS!"`, guide.GetName())
+}
 
-"Once you've explored a bit, travel becomes easier:"
+// getGuideShopTopic explains commerce and equipment
+func getGuideShopTopic(guide *npc.NPC, p PlayerInterface) string {
+	return fmt.Sprintf(`%s jingles a few coins in his pocket.
 
-  - Each floor's STAIRWAY has a magical PORTAL that you can use.
-  - Type 'portal' to see floors you've discovered.
+"Gold makes the world go round, friend! You've got %d gold to start."
+
+  SHOPPING (General Store - south then east from here):
+  - Type 'shop' to see items for sale
+  - Type 'buy <item>' to purchase
+  - Type 'sell <item>' to sell loot (50%% of value)
+
+  EQUIPMENT:
+  - Type 'wield <weapon>' to equip a weapon
+  - Type 'wear <armor>' to put on armor
+  - Type 'inventory' to see what you're carrying
+  - Type 'equipment' to see what you have equipped
+
+  LOOT:
+  - Monsters drop items when defeated
+  - Type 'get <item>' to pick them up
+
+"Buy a weapon before heading into the tower!"`, guide.GetName(), p.GetGold())
+}
+
+// getGuidePortalTopic explains the portal system
+func getGuidePortalTopic(guide *npc.NPC) string {
+	return fmt.Sprintf(`%s gestures to a shimmering spot nearby.
+
+"Once you've explored the tower, travel becomes much easier!"
+
+  - Each floor's STAIRWAY has a magical portal
+  - When you find a stairway, you 'discover' that floor's portal
+  - Type 'portal' to see floors you've discovered
   - Type 'portal <floor>' to instantly travel there!
-  - There's a portal right here in Town Square too (floor 0).
 
-===============================================================================
-                              QUICK REFERENCE
-===============================================================================
+  - Town Square (floor 0) is always available
+  - Great for quick trips back to heal, shop, and save!
 
-  look          - See your surroundings       help          - Full command list
-  north/s/e/w   - Move around                 inventory     - Your items
-  attack <npc>  - Start combat                flee          - Escape combat
-  pray          - Heal at altar               talk bard     - SAVE GAME!
-  shop/buy/sell - Trading                     portal        - Fast travel
+"Discover portals as you climb - they're lifesavers!"`, guide.GetName())
+}
 
-===============================================================================
+// getGuideCommandsTopic provides a quick reference
+func getGuideCommandsTopic(guide *npc.NPC) string {
+	return fmt.Sprintf(`%s counts off on his fingers.
 
-%s chuckles and pats you on the shoulder.
+"Here are the commands you'll use most:"
 
-"That's the basics! Now go forth, brave adventurer. Climb that tower, slay
-those monsters, and most importantly - DON'T FORGET TO VISIT THE BARD!"
+  MOVEMENT:     north, south, east, west, up, down (or n,s,e,w,u,d)
+  LOOKING:      look, exits, inventory, equipment
+  COMBAT:       attack <target>, flee, consider <target>
+  ITEMS:        get <item>, drop <item>, wield <weapon>, wear <armor>
+  RECOVERY:     pray (at altar), sleep, wake
+  SOCIAL:       say <msg>, tell <player> <msg>, who
+  TRAVEL:       portal, portal <floor>
+  COMMERCE:     shop, buy <item>, sell <item>, gold
+  OTHER:        help, talk <npc>, time
 
-"Oh, and one more thing... if you ever forget all this, just 'talk' to me again!"
-
-He winks and settles back onto his bench.`, guide.GetName(), p.GetName(), p.GetGold(), guide.GetName())
+"Type 'help' for the full list, or 'help <command>' for details!"`, guide.GetName())
 }
 
 // executeUnlock handles the unlock command for locked doors
