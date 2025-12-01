@@ -8,6 +8,7 @@
 /server/opentowermud
 /server/testrunner
 /server/mapgen
+/server/utilities/balance/balance
 
 # Server generated files
 /server/data/tower.yaml
