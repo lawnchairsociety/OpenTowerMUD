@@ -267,6 +267,7 @@ var commandRegistry = map[string]CommandHandler{
 	"gold":     executeGold,
 	"money":    executeGold,
 	"wallet":   executeGold,
+	"give":     executeGive,
 
 	// Interaction commands
 	"talk":   executeTalk,

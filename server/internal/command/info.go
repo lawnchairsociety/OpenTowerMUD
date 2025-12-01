@@ -550,6 +550,19 @@ Usage:
 
 Aliases: money, wallet`
 
+	case "give":
+		return `GIVE <item> <player> or GIVE <amount> gold <player>
+Give an item or gold to another player in the same room.
+
+Usage:
+  give sword Bob           - Give your sword to Bob
+  give rusty sword to Bob  - Give your rusty sword to Bob
+  give 50 gold Bob         - Give 50 gold to Bob
+  give 100 gold to Bob     - Give 100 gold to Bob
+
+Both players must be in the same room.
+Items require the recipient to have enough carrying capacity.`
+
 	case "talk", "speak", "chat":
 		return `TALK <npc name>
 Talk to an NPC to hear what they have to say.
@@ -676,6 +689,7 @@ Shop (at General Store):
   buy <item>        - Purchase an item
   sell <item>       - Sell an item (50% of item value)
   gold              - Check your gold balance
+  give <item/gold> <player> - Give item or gold to another player
 
 Saving Progress:
   Visit the bard in the tavern and talk to him to save your progress!

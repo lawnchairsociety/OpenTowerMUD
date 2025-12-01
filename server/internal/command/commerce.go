@@ -239,6 +239,184 @@ func executeGold(c *Command, p PlayerInterface) string {
 	return fmt.Sprintf("You have %d gold.", p.GetGold())
 }
 
+// executeGive transfers items or gold to another player
+func executeGive(c *Command, p PlayerInterface) string {
+	if err := c.RequireArgs(2, "Usage: give <item> <player> or give <amount> gold <player>"); err != nil {
+		return err.Error()
+	}
+
+	serverIface := p.GetServer()
+	server, ok := serverIface.(ServerInterface)
+	if !ok {
+		return "Internal error: invalid server type"
+	}
+
+	roomIface := p.GetCurrentRoom()
+	room, ok := roomIface.(RoomInterface)
+	if !ok {
+		return "Internal error: invalid room type"
+	}
+
+	args := c.Args
+
+	// Check if giving gold: "give <amount> gold <player>" or "give <amount> gold to <player>"
+	if len(args) >= 3 && strings.ToLower(args[1]) == "gold" {
+		return executeGiveGold(args, p, server, room)
+	}
+
+	// Otherwise giving an item: "give <item> <player>" or "give <item> to <player>"
+	return executeGiveItem(args, p, server, room)
+}
+
+// executeGiveGold handles giving gold to another player
+func executeGiveGold(args []string, p PlayerInterface, server ServerInterface, room RoomInterface) string {
+	// Parse amount
+	amount := 0
+	_, err := fmt.Sscanf(args[0], "%d", &amount)
+	if err != nil || amount <= 0 {
+		return "Invalid amount. Usage: give <amount> gold <player>"
+	}
+
+	// Check if player has enough gold
+	if p.GetGold() < amount {
+		return fmt.Sprintf("You only have %d gold.", p.GetGold())
+	}
+
+	// Find target player name (skip "to" if present)
+	targetArgs := args[2:] // Skip amount and "gold"
+	if len(targetArgs) > 0 && strings.ToLower(targetArgs[0]) == "to" {
+		targetArgs = targetArgs[1:]
+	}
+	if len(targetArgs) == 0 {
+		return "Give gold to whom? Usage: give <amount> gold <player>"
+	}
+
+	targetName := strings.Join(targetArgs, " ")
+	target := findPlayerInRoom(targetName, server, room, p)
+	if target == nil {
+		return fmt.Sprintf("%s is not here.", targetName)
+	}
+
+	// Transfer the gold
+	p.SpendGold(amount)
+	target.AddGold(amount)
+
+	// Notify target
+	target.SendMessage(fmt.Sprintf("%s gives you %d gold.\n", p.GetName(), amount))
+
+	logger.Debug("Gold given",
+		"giver", p.GetName(),
+		"receiver", target.GetName(),
+		"amount", amount)
+
+	return fmt.Sprintf("You give %s %d gold.", target.GetName(), amount)
+}
+
+// executeGiveItem handles giving an item to another player
+func executeGiveItem(args []string, p PlayerInterface, server ServerInterface, room RoomInterface) string {
+	// Find where "to" appears or try to find a player match
+	// Formats: "give sword bob" or "give rusty sword to bob"
+	var itemParts []string
+	var targetParts []string
+	foundTo := false
+
+	for i, arg := range args {
+		if strings.ToLower(arg) == "to" && i > 0 {
+			itemParts = args[:i]
+			targetParts = args[i+1:]
+			foundTo = true
+			break
+		}
+	}
+
+	// If no "to" found, assume last arg(s) is player name
+	// Try progressively shorter player names from the end
+	if !foundTo {
+		for i := len(args) - 1; i >= 1; i-- {
+			candidateTarget := strings.Join(args[i:], " ")
+			target := findPlayerInRoom(candidateTarget, server, room, p)
+			if target != nil {
+				itemParts = args[:i]
+				targetParts = args[i:]
+				break
+			}
+		}
+	}
+
+	if len(itemParts) == 0 || len(targetParts) == 0 {
+		return "Usage: give <item> <player> or give <item> to <player>"
+	}
+
+	itemName := strings.Join(itemParts, " ")
+	targetName := strings.Join(targetParts, " ")
+
+	// Find the item in player's inventory
+	item, found := p.FindItem(itemName)
+	if !found {
+		return fmt.Sprintf("You don't have '%s'.", itemName)
+	}
+
+	// Find target player in same room
+	target := findPlayerInRoom(targetName, server, room, p)
+	if target == nil {
+		return fmt.Sprintf("%s is not here.", targetName)
+	}
+
+	// Check if target can carry the item
+	if !target.CanCarry(item) {
+		return fmt.Sprintf("%s can't carry any more weight.", target.GetName())
+	}
+
+	// Transfer the item
+	removedItem, removed := p.RemoveItem(item.Name)
+	if !removed {
+		return "Something went wrong trying to give that item."
+	}
+
+	target.AddItem(removedItem)
+
+	// Notify target
+	target.SendMessage(fmt.Sprintf("%s gives you %s.\n", p.GetName(), removedItem.Name))
+
+	logger.Debug("Item given",
+		"giver", p.GetName(),
+		"receiver", target.GetName(),
+		"item", removedItem.Name)
+
+	return fmt.Sprintf("You give %s to %s.", removedItem.Name, target.GetName())
+}
+
+// findPlayerInRoom finds a player by name who is in the same room
+func findPlayerInRoom(name string, server ServerInterface, room RoomInterface, excludePlayer PlayerInterface) PlayerInterface {
+	targetIface := server.FindPlayer(name)
+	if targetIface == nil {
+		return nil
+	}
+
+	target, ok := targetIface.(PlayerInterface)
+	if !ok {
+		return nil
+	}
+
+	// Can't give to yourself
+	if target.GetName() == excludePlayer.GetName() {
+		return nil
+	}
+
+	// Check if target is in the same room
+	targetRoomIface := target.GetCurrentRoom()
+	targetRoom, ok := targetRoomIface.(RoomInterface)
+	if !ok {
+		return nil
+	}
+
+	if targetRoom.GetID() != room.GetID() {
+		return nil
+	}
+
+	return target
+}
+
 // findMerchantNPC finds an NPC with shop inventory in the given room
 func findMerchantNPC(room RoomInterface) *npc.NPC {
 	npcs := room.GetNPCs()
