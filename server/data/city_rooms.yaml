@@ -6,9 +6,13 @@
 #                                             |
 #  [Castle Gate]------------------------[Town Square]--[Temple]
 #        |                                    |
-#  [Guard Post]             [Tavern]--[Market Street]--[General Store]
+#  [Guard Post]              [Tavern]--[Market Street]--[General Store]
 #        |                                    |
-#  [Castle Hall]         [Barracks]--[Training Hall]--[Armory]
+#        |                          [Artisan's Market]        [Armory]
+#        |                                    |                   |
+#        |                 [Barracks]--[Military District]--[Military District East]
+#  [Castle Hall]                              |                   |
+#      /    \                                 |             [Training Hall]
 #     /      \                                |
 # [Throne] [Library]                   [Tower Entrance]
 #     |
@@ -54,16 +58,6 @@ rooms:
     exits:
       west: town_square
 
-  barracks:
-    name: "City Barracks"
-    description: "The quarters of the city guard. Weapon racks line the walls, and training dummies show signs of heavy use. The smell of leather and steel fills the air."
-    description_day: "Guards drill in formation while officers bark commands."
-    description_night: "A skeleton crew remains on duty while others rest in the bunks."
-    type: city
-    features: []
-    exits:
-      east: training_hall
-
   market_street:
     name: "Market Street"
     description: "A wide avenue lined with merchant stalls and shops. The air is filled with the sounds of haggling and the aroma of exotic goods."
@@ -73,20 +67,9 @@ rooms:
     features: []
     exits:
       north: town_square
-      south: training_hall
+      south: artisan_market
       east: general_store
       west: tavern
-
-  armory:
-    name: "The Iron Forge Armory"
-    description: "Heat radiates from the back where smiths work the forge. Weapons and armor of all types hang on display. The ring of hammer on anvil echoes constantly."
-    description_day: "Apprentices stoke the fires while the master smith examines his latest creation."
-    description_night: "The forge burns low but never dies. A lone smith works through the night."
-    type: city
-    features:
-      - forge
-    exits:
-      west: training_hall
 
   general_store:
     name: "Ye Olde General Store"
@@ -99,20 +82,6 @@ rooms:
     exits:
       west: market_street
 
-  training_hall:
-    name: "Combat Training Hall"
-    description: "A large open hall with padded floors and practice weapons. Veterans instruct newcomers in the art of combat. The walls display trophies from legendary battles."
-    description_day: "The sounds of wooden swords clashing fill the air as students spar."
-    description_night: "The hall is empty save for a few dedicated warriors practicing their forms."
-    type: city
-    features:
-      - training_dummy
-    exits:
-      north: market_street
-      south: tower_entrance
-      east: armory
-      west: barracks
-
   tavern:
     name: "The Weary Wanderer Tavern"
     description: "A warm and welcoming establishment filled with the smell of roasting meat and fresh ale. Adventurers swap tales of glory and woe at well-worn tables."
@@ -124,6 +93,79 @@ rooms:
     exits:
       east: market_street
 
+  artisan_market:
+    name: "Artisan's Market"
+    description: "A workshop district where skilled craftsmen ply their trades. The air is filled with the sounds of hammering, sawing, and the crackle of small forges. Sturdy workbenches line one side, while material racks hold leather, wood, and metal supplies."
+    description_day: "Apprentices bustle about, carrying materials while masters demonstrate their craft to eager onlookers."
+    description_night: "A few dedicated artisans work by lamplight, the glow of their tools visible through workshop windows."
+    type: city
+    features:
+      - workbench
+    exits:
+      north: market_street
+      south: military_district
+
+  # =====================
+  # Military District
+  # =====================
+
+  military_district:
+    name: "Military District"
+    description: "The heart of the city's defense forces. Soldiers march in formation down the wide central avenue. Barracks, training facilities, and armories surround the plaza. The clang of steel and shouts of drill sergeants echo off the stone buildings."
+    description_day: "Recruits run drills under the watchful eyes of veteran soldiers. Supply wagons rumble past."
+    description_night: "Patrols march through the district. Lanterns illuminate guard posts at every corner."
+    type: city
+    features: []
+    exits:
+      north: artisan_market
+      south: tower_entrance
+      east: military_district_east
+      west: barracks
+
+  military_district_east:
+    name: "Military District East"
+    description: "The eastern section of the military district, where the serious combat training takes place. The smell of sweat and iron hangs heavy in the air. Weapon racks and armor stands line the walls of nearby buildings."
+    description_day: "Soldiers spar with real weapons under the supervision of arms masters."
+    description_night: "A few dedicated warriors practice their forms by torchlight."
+    type: city
+    features: []
+    exits:
+      north: armory
+      south: training_hall
+      west: military_district
+
+  barracks:
+    name: "City Barracks"
+    description: "The quarters of the city guard. Weapon racks line the walls, and training dummies show signs of heavy use. The smell of leather and steel fills the air."
+    description_day: "Guards drill in formation while officers bark commands."
+    description_night: "A skeleton crew remains on duty while others rest in the bunks."
+    type: city
+    features: []
+    exits:
+      east: military_district
+
+  armory:
+    name: "The Iron Forge Armory"
+    description: "Heat radiates from the back where smiths work the forge. Weapons and armor of all types hang on display. The ring of hammer on anvil echoes constantly."
+    description_day: "Apprentices stoke the fires while the master smith examines his latest creation."
+    description_night: "The forge burns low but never dies. A lone smith works through the night."
+    type: city
+    features:
+      - forge
+    exits:
+      south: military_district_east
+
+  training_hall:
+    name: "Combat Training Hall"
+    description: "A large open hall with padded floors and practice weapons. Veterans instruct newcomers in the art of combat. The walls display trophies from legendary battles."
+    description_day: "The sounds of wooden swords clashing fill the air as students spar."
+    description_night: "The hall is empty save for a few dedicated warriors practicing their forms."
+    type: city
+    features:
+      - training_dummy
+    exits:
+      north: military_district_east
+
   tower_entrance:
     name: "Tower Entrance"
     description: "An ancient archway marks the entrance to the endless tower. Strange runes glow faintly on the stone frame. Beyond, a spiral staircase ascends into darkness. Only the brave... or foolish... venture within."
@@ -133,7 +175,7 @@ rooms:
     features:
       - stairs_up
     exits:
-      north: training_hall
+      north: military_district
       up: ""
 
   # =====================

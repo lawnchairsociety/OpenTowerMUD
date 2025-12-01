@@ -364,6 +364,44 @@ func (s *Server) BroadcastToRoom(roomID string, message string, exclude interfac
 	}
 }
 
+// BroadcastToFloor sends a message to all players on a specific tower floor
+func (s *Server) BroadcastToFloor(floor int, message string, exclude interface{}) {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+
+	// Type assert exclude to *player.Player if provided
+	var excludePlayer *player.Player
+	if exclude != nil {
+		excludePlayer, _ = exclude.(*player.Player)
+	}
+
+	for _, client := range s.clients {
+		// Skip excluded player
+		if excludePlayer != nil && client == excludePlayer {
+			continue
+		}
+
+		// Check if client is on the specified floor
+		currentRoomIface := client.GetCurrentRoom()
+		if currentRoomIface == nil {
+			continue
+		}
+
+		// Type assert to access the room's GetFloor method
+		type RoomWithFloor interface {
+			GetFloor() int
+		}
+		currentRoom, ok := currentRoomIface.(RoomWithFloor)
+		if !ok {
+			continue
+		}
+
+		if currentRoom.GetFloor() == floor {
+			client.SendMessage(message)
+		}
+	}
+}
+
 // startRegenerationTicker runs a background ticker that regenerates health/mana for all players
 func (s *Server) startRegenerationTicker() {
 	ticker := time.NewTicker(10 * time.Second)
