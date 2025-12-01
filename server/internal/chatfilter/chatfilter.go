@@ -16,11 +16,20 @@ const (
 	ModeBlock   FilterMode = "BLOCK"   // Block the entire message
 )
 
+// AntispamConfig holds the anti-spam configuration
+type AntispamConfig struct {
+	Enabled               bool `yaml:"enabled"`
+	MaxMessages           int  `yaml:"max_messages"`
+	TimeWindowSeconds     int  `yaml:"time_window_seconds"`
+	RepeatCooldownSeconds int  `yaml:"repeat_cooldown_seconds"`
+}
+
 // Config holds the chat filter configuration
 type Config struct {
-	Enabled     bool       `yaml:"enabled"`
-	Mode        FilterMode `yaml:"mode"`
-	BannedWords []string   `yaml:"banned_words"`
+	Enabled     bool            `yaml:"enabled"`
+	Mode        FilterMode      `yaml:"mode"`
+	BannedWords []string        `yaml:"banned_words"`
+	Antispam    *AntispamConfig `yaml:"antispam"`
 }
 
 // Result contains the outcome of filtering a message

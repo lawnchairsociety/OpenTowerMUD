@@ -4,3 +4,10 @@ mode: REPLACE
 banned_words:
   - badword
   - forbidden
+
+# Anti-spam Configuration
+antispam:
+  enabled: true
+  max_messages: 5
+  time_window_seconds: 10
+  repeat_cooldown_seconds: 30

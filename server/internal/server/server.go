@@ -8,6 +8,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/lawnchairsociety/opentowermud/server/internal/antispam"
 	"github.com/lawnchairsociety/opentowermud/server/internal/chatfilter"
 	"github.com/lawnchairsociety/opentowermud/server/internal/command"
 	"github.com/lawnchairsociety/opentowermud/server/internal/database"
@@ -31,9 +32,10 @@ type Server struct {
 	StartTime      time.Time
 	gameClock      *gametime.GameClock
 	respawnManager *RespawnManager
-	pilgrimMode    bool
-	chatFilter     *chatfilter.ChatFilter
-	db             *database.Database
+	pilgrimMode      bool
+	chatFilter       *chatfilter.ChatFilter
+	chatFilterConfig *chatfilter.Config
+	db               *database.Database
 	itemsConfig    *items.ItemsConfig
 	spellRegistry  *spells.SpellRegistry
 }
@@ -241,6 +243,18 @@ func (s *Server) BroadcastToAll(message string) {
 	s.BroadcastMessage(message, nil)
 }
 
+// BroadcastToAdmins sends a message to all online admin players
+func (s *Server) BroadcastToAdmins(message string) {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+
+	for _, p := range s.clients {
+		if p.IsAdmin() {
+			p.SendMessage(message)
+		}
+	}
+}
+
 // GetOnlinePlayers returns a list of all online player names
 func (s *Server) GetOnlinePlayers() []string {
 	s.mu.RLock()
@@ -316,6 +330,27 @@ func (s *Server) SetChatFilter(cf *chatfilter.ChatFilter) {
 	s.chatFilter = cf
 }
 
+// SetChatFilterConfig stores the chat filter config (for antispam settings)
+func (s *Server) SetChatFilterConfig(cfg *chatfilter.Config) {
+	s.chatFilterConfig = cfg
+}
+
+// GetChatFilterConfig returns the chat filter config
+func (s *Server) GetChatFilterConfig() *chatfilter.Config {
+	return s.chatFilterConfig
+}
+
+// GetAntispamConfig returns the antispam config from the chat filter config
+func (s *Server) GetAntispamConfig() *antispam.Config {
+	if s.chatFilterConfig == nil || s.chatFilterConfig.Antispam == nil {
+		cfg := antispam.DefaultConfig()
+		return &cfg
+	}
+	as := s.chatFilterConfig.Antispam
+	cfg := antispam.ConfigFromYAML(as.Enabled, as.MaxMessages, as.TimeWindowSeconds, as.RepeatCooldownSeconds)
+	return &cfg
+}
+
 // GetChatFilter returns the chat filter
 func (s *Server) GetChatFilter() *chatfilter.ChatFilter {
 	return s.chatFilter
@@ -328,6 +363,12 @@ func (s *Server) GetGameClock() interface{} {
 
 // BroadcastToRoom sends a message to all players in a specific room
 func (s *Server) BroadcastToRoom(roomID string, message string, exclude interface{}) {
+	s.BroadcastToRoomFromPlayer(roomID, message, exclude, "")
+}
+
+// BroadcastToRoomFromPlayer sends a message to all players in a specific room,
+// respecting ignore lists if senderName is provided
+func (s *Server) BroadcastToRoomFromPlayer(roomID string, message string, exclude interface{}, senderName string) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 
@@ -340,6 +381,11 @@ func (s *Server) BroadcastToRoom(roomID string, message string, exclude interfac
 	for _, client := range s.clients {
 		// Skip excluded player
 		if excludePlayer != nil && client == excludePlayer {
+			continue
+		}
+
+		// Check ignore list if sender is specified
+		if senderName != "" && client.IsIgnoring(senderName) {
 			continue
 		}
 
@@ -366,6 +412,12 @@ func (s *Server) BroadcastToRoom(roomID string, message string, exclude interfac
 
 // BroadcastToFloor sends a message to all players on a specific tower floor
 func (s *Server) BroadcastToFloor(floor int, message string, exclude interface{}) {
+	s.BroadcastToFloorFromPlayer(floor, message, exclude, "")
+}
+
+// BroadcastToFloorFromPlayer sends a message to all players on a specific tower floor,
+// respecting ignore lists if senderName is provided
+func (s *Server) BroadcastToFloorFromPlayer(floor int, message string, exclude interface{}, senderName string) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 
@@ -378,6 +430,11 @@ func (s *Server) BroadcastToFloor(floor int, message string, exclude interface{}
 	for _, client := range s.clients {
 		// Skip excluded player
 		if excludePlayer != nil && client == excludePlayer {
+			continue
+		}
+
+		// Check ignore list if sender is specified
+		if senderName != "" && client.IsIgnoring(senderName) {
 			continue
 		}
 

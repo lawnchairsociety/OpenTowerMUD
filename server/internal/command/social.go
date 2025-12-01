@@ -15,6 +15,11 @@ func executeSay(c *Command, p PlayerInterface) string {
 
 	message := c.GetItemName() // Reusing GetItemName to join all args
 
+	// Check for spam
+	if allowed, reason := p.CheckChatSpam(message); !allowed {
+		return reason
+	}
+
 	// Get the current room
 	roomIface := p.GetCurrentRoom()
 	room, ok := roomIface.(RoomInterface)
@@ -52,7 +57,7 @@ func executeSay(c *Command, p PlayerInterface) string {
 	}
 
 	broadcastMsg := fmt.Sprintf("%s says: \"%s\"\n", p.GetName(), filteredMessage)
-	server.BroadcastToRoom(room.GetID(), broadcastMsg, p)
+	server.BroadcastToRoomFromPlayer(room.GetID(), broadcastMsg, p, p.GetName())
 
 	// AUDIT LOG - Always logged regardless of log level (security/moderation)
 	logger.Always("CHAT_SAY",
@@ -94,6 +99,12 @@ func executeTell(c *Command, p PlayerInterface) string {
 	server, ok := serverIface.(ServerInterface)
 	if !ok {
 		return "Internal error: invalid server type"
+	}
+
+	// Check for spam (using full args as message approximation for rate limiting)
+	fullMessage := strings.Join(c.Args[1:], " ")
+	if allowed, reason := p.CheckChatSpam(fullMessage); !allowed {
+		return reason
 	}
 
 	// Try to find player by matching progressively longer portions of args
@@ -149,6 +160,17 @@ func executeTell(c *Command, p PlayerInterface) string {
 		}
 	}
 
+	// Check if target is ignoring the sender
+	if target.IsIgnoring(p.GetName()) {
+		// Still log it but don't tell the sender they're ignored
+		logger.Always("CHAT_TELL_IGNORED",
+			"sender", p.GetName(),
+			"recipient", target.GetName(),
+			"message", filteredMessage)
+		// Pretend message was sent (don't reveal ignore status)
+		return fmt.Sprintf("You tell %s: \"%s\"", target.GetName(), filteredMessage)
+	}
+
 	// Send message to target
 	target.SendMessage(fmt.Sprintf("%s tells you: \"%s\"\n", p.GetName(), filteredMessage))
 
@@ -168,6 +190,11 @@ func executeShout(c *Command, p PlayerInterface) string {
 	}
 
 	message := c.GetItemName()
+
+	// Check for spam
+	if allowed, reason := p.CheckChatSpam(message); !allowed {
+		return reason
+	}
 
 	// Get the current room to determine floor
 	roomIface := p.GetCurrentRoom()
@@ -207,7 +234,7 @@ func executeShout(c *Command, p PlayerInterface) string {
 
 	floor := room.GetFloor()
 	broadcastMsg := fmt.Sprintf("%s shouts: \"%s\"\n", p.GetName(), filteredMessage)
-	server.BroadcastToFloor(floor, broadcastMsg, p)
+	server.BroadcastToFloorFromPlayer(floor, broadcastMsg, p, p.GetName())
 
 	// AUDIT LOG - Always logged regardless of log level (security/moderation)
 	logger.Always("CHAT_SHOUT",
@@ -225,6 +252,11 @@ func executeEmote(c *Command, p PlayerInterface) string {
 	}
 
 	action := c.GetItemName()
+
+	// Check for spam
+	if allowed, reason := p.CheckChatSpam(action); !allowed {
+		return reason
+	}
 
 	// Get the current room
 	roomIface := p.GetCurrentRoom()
@@ -264,7 +296,7 @@ func executeEmote(c *Command, p PlayerInterface) string {
 
 	// Format: "PlayerName laughs" (no quotes around action)
 	broadcastMsg := fmt.Sprintf("%s %s\n", p.GetName(), filteredAction)
-	server.BroadcastToRoom(room.GetID(), broadcastMsg, p)
+	server.BroadcastToRoomFromPlayer(room.GetID(), broadcastMsg, p, p.GetName())
 
 	// AUDIT LOG - Always logged regardless of log level (security/moderation)
 	logger.Always("CHAT_EMOTE",

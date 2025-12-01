@@ -18,8 +18,11 @@ import (
 // To avoid circular dependencies, this is defined with interface{} parameters
 type ServerInterface interface {
 	BroadcastToRoom(roomID string, message string, exclude interface{})
+	BroadcastToRoomFromPlayer(roomID string, message string, exclude interface{}, senderName string)
 	BroadcastToFloor(floor int, message string, exclude interface{})
+	BroadcastToFloorFromPlayer(floor int, message string, exclude interface{}, senderName string)
 	BroadcastToAll(message string)
+	BroadcastToAdmins(message string)
 	FindPlayer(name string) interface{} // Returns a PlayerInterface
 	GetOnlinePlayers() []string
 	GetOnlinePlayersDetailed() []PlayerInfo // For admin players command
@@ -131,6 +134,13 @@ type PlayerInterface interface {
 	GetGold() int
 	AddGold(amount int)
 	SpendGold(amount int) bool
+	// Anti-spam methods
+	CheckChatSpam(message string) (allowed bool, reason string)
+	// Ignore list methods
+	IsIgnoring(playerName string) bool
+	AddIgnore(playerName string)
+	RemoveIgnore(playerName string)
+	GetIgnoreList() []string
 }
 
 // PlayerInfo contains detailed information about an online player (for admin commands)
@@ -231,12 +241,15 @@ var commandRegistry = map[string]CommandHandler{
 
 	// Social commands
 	"say":   executeSay,
-	"who":   executeWho,
-	"tell":  executeTell,
-	"shout": executeShout,
-	"yell":  executeShout,
-	"emote": executeEmote,
-	"me":    executeEmote,
+	"who":      executeWho,
+	"tell":     executeTell,
+	"shout":    executeShout,
+	"yell":     executeShout,
+	"emote":    executeEmote,
+	"me":       executeEmote,
+	"report":   executeReport,
+	"ignore":   executeIgnore,
+	"unignore": executeUnignore,
 	"quit":  executeQuit,
 	"exit":  executeQuit,
 

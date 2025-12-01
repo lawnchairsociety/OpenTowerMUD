@@ -129,8 +129,12 @@ func main() {
 	} else {
 		cf := chatfilter.New(filterCfg)
 		srv.SetChatFilter(cf)
+		srv.SetChatFilterConfig(filterCfg)
 		if filterCfg.Enabled {
 			logger.Info("Chat filter enabled", "mode", filterCfg.Mode, "words", len(filterCfg.BannedWords))
+		}
+		if filterCfg.Antispam != nil && filterCfg.Antispam.Enabled {
+			logger.Info("Anti-spam enabled", "max_messages", filterCfg.Antispam.MaxMessages, "time_window", filterCfg.Antispam.TimeWindowSeconds)
 		}
 	}
 

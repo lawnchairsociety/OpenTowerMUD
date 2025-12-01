@@ -14,3 +14,18 @@ mode: REPLACE
 banned_words: []
   # - example
   # - badword
+
+# Anti-spam Configuration
+# Prevents players from flooding chat with too many messages
+antispam:
+  # Enable or disable anti-spam protection
+  enabled: true
+
+  # Maximum number of messages allowed within the time window
+  max_messages: 5
+
+  # Time window in seconds for rate limiting
+  time_window_seconds: 10
+
+  # Cooldown in seconds before the same message can be repeated
+  repeat_cooldown_seconds: 30

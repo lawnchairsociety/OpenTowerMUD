@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/lawnchairsociety/opentowermud/server/internal/antispam"
 	"github.com/lawnchairsociety/opentowermud/server/internal/command"
 	"github.com/lawnchairsociety/opentowermud/server/internal/items"
 	"github.com/lawnchairsociety/opentowermud/server/internal/leveling"
@@ -20,6 +21,7 @@ type ServerInterface interface {
 	FindPlayer(name string) interface{} // Returns a PlayerInterface
 	BroadcastToRoom(roomID string, message string, exclude interface{})
 	IsPilgrimMode() bool
+	GetAntispamConfig() *antispam.Config // Returns antispam config from chat filter
 }
 
 // PlayerState represents the current state of a player
@@ -90,6 +92,10 @@ type Player struct {
 	Intelligence int
 	Wisdom       int
 	Charisma     int
+	// Anti-spam tracking
+	spamTracker *antispam.Tracker
+	// Ignore list - players whose messages we won't see
+	ignoreList map[string]bool
 }
 
 func NewPlayer(name string, conn net.Conn, world *world.World, server ServerInterface) *Player {
@@ -124,6 +130,16 @@ func NewPlayer(name string, conn net.Conn, world *world.World, server ServerInte
 		Intelligence: 10,
 		Wisdom:       10,
 		Charisma:     10,
+	}
+
+	// Initialize anti-spam tracker with config from server
+	if server != nil {
+		if cfg := server.GetAntispamConfig(); cfg != nil {
+			p.spamTracker = antispam.NewTracker(*cfg)
+		}
+	}
+	if p.spamTracker == nil {
+		p.spamTracker = antispam.NewTracker(antispam.DefaultConfig())
 	}
 
 	// Add player to starting room
@@ -1041,4 +1057,59 @@ func (p *Player) TakeMagicDamage(damage int) int {
 		p.Health = 0
 	}
 	return damage
+}
+
+// CheckChatSpam checks if a chat message should be allowed based on anti-spam rules.
+// Returns (allowed, reason) - if not allowed, reason explains why.
+func (p *Player) CheckChatSpam(message string) (bool, string) {
+	if p.spamTracker == nil {
+		// Initialize tracker with config from server if available
+		if p.server != nil {
+			if cfg := p.server.GetAntispamConfig(); cfg != nil {
+				p.spamTracker = antispam.NewTracker(*cfg)
+			}
+		}
+		if p.spamTracker == nil {
+			p.spamTracker = antispam.NewTracker(antispam.DefaultConfig())
+		}
+	}
+	result := p.spamTracker.Check(message)
+	return result.Allowed, result.Reason
+}
+
+// ==================== IGNORE LIST METHODS ====================
+
+// IsIgnoring returns true if this player is ignoring the given player name
+func (p *Player) IsIgnoring(playerName string) bool {
+	if p.ignoreList == nil {
+		return false
+	}
+	return p.ignoreList[strings.ToLower(playerName)]
+}
+
+// AddIgnore adds a player to the ignore list
+func (p *Player) AddIgnore(playerName string) {
+	if p.ignoreList == nil {
+		p.ignoreList = make(map[string]bool)
+	}
+	p.ignoreList[strings.ToLower(playerName)] = true
+}
+
+// RemoveIgnore removes a player from the ignore list
+func (p *Player) RemoveIgnore(playerName string) {
+	if p.ignoreList != nil {
+		delete(p.ignoreList, strings.ToLower(playerName))
+	}
+}
+
+// GetIgnoreList returns the list of ignored player names
+func (p *Player) GetIgnoreList() []string {
+	if p.ignoreList == nil {
+		return nil
+	}
+	list := make([]string, 0, len(p.ignoreList))
+	for name := range p.ignoreList {
+		list = append(list, name)
+	}
+	return list
 }

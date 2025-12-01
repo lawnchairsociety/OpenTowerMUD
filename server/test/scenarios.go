@@ -125,7 +125,17 @@ func RunAllTests(serverAddr string) []TestResult {
 	results = append(results, TestTellCommand(serverAddr))
 	results = append(results, TestShoutCommand(serverAddr))
 	results = append(results, TestEmoteCommand(serverAddr))
+	results = append(results, TestGiveItem(serverAddr))
+	results = append(results, TestGiveGold(serverAddr))
+	results = append(results, TestGiveRequiresSameRoom(serverAddr))
 	results = append(results, TestChatFilterReplace(serverAddr))
+	results = append(results, TestAntispamRateLimit(serverAddr))
+	results = append(results, TestAntispamRepeatMessage(serverAddr))
+	results = append(results, TestIgnoreCommand(serverAddr))
+	results = append(results, TestIgnoreTell(serverAddr))
+	results = append(results, TestUnignoreCommand(serverAddr))
+	results = append(results, TestReportCommand(serverAddr))
+	results = append(results, TestIgnoreList(serverAddr))
 
 	// Group 3: Inventory & Shopping
 	results = append(results, TestInventorySystem(serverAddr))
