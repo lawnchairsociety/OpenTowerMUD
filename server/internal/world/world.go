@@ -3,7 +3,6 @@ package world
 import (
 	"sync"
 
-	"github.com/lawnchairsociety/opentowermud/server/internal/items"
 	"github.com/lawnchairsociety/opentowermud/server/internal/logger"
 	"github.com/lawnchairsociety/opentowermud/server/internal/npc"
 )
@@ -35,36 +34,20 @@ func NewWorld() *World {
 
 // Initialize loads or generates a world using the default paths
 func (w *World) Initialize(seed int64) {
-	w.InitializeWithPaths(seed, "data/tower.yaml", "data/npcs.yaml", "data/mobs.yaml", "data/items.yaml")
+	w.InitializeWithPaths(seed, "data/tower.yaml", "data/npcs.yaml", "data/mobs.yaml")
 }
 
 // InitializeWithPath loads or generates a world using a specific world file path
 func (w *World) InitializeWithPath(seed int64, worldFilePath string) {
-	w.InitializeWithPaths(seed, worldFilePath, "data/npcs.yaml", "data/mobs.yaml", "data/items.yaml")
+	w.InitializeWithPaths(seed, worldFilePath, "data/npcs.yaml", "data/mobs.yaml")
 }
 
 // InitializeWithPaths loads or generates a world using specific file paths
-func (w *World) InitializeWithPaths(seed int64, worldFilePath, npcsFilePath, mobsFilePath, itemsFilePath string) {
+func (w *World) InitializeWithPaths(seed int64, worldFilePath, npcsFilePath, mobsFilePath string) {
 	w.worldFilePath = worldFilePath
 	w.seed = seed
 
 	logger.Info("Initializing world", "seed", seed)
-
-	// Load items from YAML
-	itemsConfig, err := items.LoadItemsFromYAML(itemsFilePath)
-	if err != nil {
-		logger.Warning("Failed to load items", "path", itemsFilePath, "error", err)
-	} else {
-		itemsByLocation := itemsConfig.GetItemsByLocation()
-		for location, locationItems := range itemsByLocation {
-			room := w.GetRoom(location)
-			if room != nil {
-				for _, item := range locationItems {
-					room.AddItem(item)
-				}
-			}
-		}
-	}
 
 	// Load NPCs from YAML
 	npcsConfig, err := npc.LoadMultipleNPCFiles(npcsFilePath, mobsFilePath)

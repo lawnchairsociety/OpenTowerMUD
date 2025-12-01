@@ -8,6 +8,10 @@
 # - Running integration tests
 # - Cleaning up server process on exit
 #
+# Logs are written to the scripts directory:
+# - server.log: Server output
+# - integration-tests.log: Test runner output
+#
 
 set -e
 
@@ -17,6 +21,10 @@ SERVER_PID=""
 SERVER_PORT="${SERVER_PORT:-4000}"
 SERVER_ADDR="localhost:${SERVER_PORT}"
 VERBOSE="${VERBOSE:-false}"
+
+# Log files
+SERVER_LOG="$SCRIPT_DIR/server.log"
+TEST_LOG="$SCRIPT_DIR/integration-tests.log"
 
 # Parse command line args
 while [[ $# -gt 0 ]]; do
@@ -81,6 +89,7 @@ rm -f "$TEST_DB" "$TEST_DB-wal" "$TEST_DB-shm"
 
 # Start server with test configuration
 echo -e "${YELLOW}Starting server on port $SERVER_PORT with test configuration...${NC}"
+echo "Server logs: $SERVER_LOG"
 ./opentowermud \
     --readonly \
     --port "$SERVER_PORT" \
@@ -89,7 +98,7 @@ echo -e "${YELLOW}Starting server on port $SERVER_PORT with test configuration..
     --mobs data/test/mobs_test.yaml \
     --items data/test/items_test.yaml \
     --chatfilter data/test/chat_filter_test.yaml \
-    > /dev/null 2>&1 &
+    > "$SERVER_LOG" 2>&1 &
 
 SERVER_PID=$!
 echo "Server PID: $SERVER_PID"
@@ -115,6 +124,7 @@ echo ""
 
 # Run integration tests
 echo -e "${YELLOW}Running integration tests...${NC}"
+echo "Test logs: $TEST_LOG"
 echo ""
 
 VERBOSE_FLAG=""
@@ -122,15 +132,20 @@ if [ "$VERBOSE" = "true" ]; then
     VERBOSE_FLAG="-v"
 fi
 
-if ./testrunner -addr "$SERVER_ADDR" $VERBOSE_FLAG; then
+# Run tests and tee output to both console and log file
+# Use pipefail to capture testrunner's exit code through the pipe
+set -o pipefail
+if ./testrunner -addr "$SERVER_ADDR" $VERBOSE_FLAG 2>&1 | tee "$TEST_LOG"; then
     echo ""
     echo -e "${GREEN}All integration tests passed!${NC}"
     EXIT_CODE=0
 else
     echo ""
     echo -e "${RED}Some integration tests failed${NC}"
+    echo "Check $TEST_LOG and $SERVER_LOG for details"
     EXIT_CODE=1
 fi
+set +o pipefail
 
 echo ""
 echo "============================================================"

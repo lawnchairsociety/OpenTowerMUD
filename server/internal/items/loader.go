@@ -15,8 +15,7 @@ type ItemDefinition struct {
 	Weight      float64  `yaml:"weight"`
 	Type        string   `yaml:"type"`
 	Value       int      `yaml:"value"`
-	Tier        int      `yaml:"tier,omitempty"`  // Loot tier (1=common, 2=uncommon, 3=rare, 4=epic, 5=legendary)
-	Locations   []string `yaml:"locations"`       // Legacy: room IDs for city spawns
+	Tier int `yaml:"tier,omitempty"` // Loot tier (1=common, 2=uncommon, 3=rare, 4=epic, 5=legendary)
 	// Equipment fields (optional)
 	Slot       string `yaml:"slot,omitempty"`
 	Armor      int    `yaml:"armor,omitempty"`
@@ -126,20 +125,6 @@ func CreateItemFromDefinition(id string, def ItemDefinition) *Item {
 	item.ManaAmount = def.ManaAmount
 
 	return item
-}
-
-// GetItemsByLocation returns a map of room IDs to items that should spawn there
-func (config *ItemsConfig) GetItemsByLocation() map[string][]*Item {
-	itemsByLocation := make(map[string][]*Item)
-
-	for id, def := range config.Items {
-		item := CreateItemFromDefinition(id, def)
-		for _, location := range def.Locations {
-			itemsByLocation[location] = append(itemsByLocation[location], item)
-		}
-	}
-
-	return itemsByLocation
 }
 
 // GetItemByID returns an item by its ID

@@ -434,6 +434,9 @@ func (s *Server) processPlayerAttack(p *player.Player) {
 	npc := room.FindNPC(p.GetCombatTarget())
 	if npc == nil {
 		// NPC is gone (dead or disappeared)
+		logger.Debug("Combat target vanished",
+			"player", p.GetName(),
+			"target", p.GetCombatTarget())
 		p.EndCombat()
 		p.SendMessage("\nYour opponent has vanished!\n")
 		return
@@ -442,6 +445,14 @@ func (s *Server) processPlayerAttack(p *player.Player) {
 	// Roll attack (d20 + STR mod vs AC)
 	attackRoll, attackBreakdown := p.RollAttack()
 	npcAC := npc.GetArmorClass()
+
+	logger.Debug("Player attack roll",
+		"player", p.GetName(),
+		"target", npc.GetName(),
+		"roll", attackRoll,
+		"breakdown", attackBreakdown,
+		"target_ac", npcAC,
+		"hit", attackRoll >= npcAC)
 
 	if attackRoll < npcAC {
 		// Miss!
@@ -465,6 +476,13 @@ func (s *Server) processPlayerAttack(p *player.Player) {
 	// Hit! Roll damage
 	playerDamage := p.GetAttackDamage()
 	npcDamageTaken := npc.TakeDamage(playerDamage)
+
+	logger.Debug("Player damage dealt",
+		"player", p.GetName(),
+		"target", npc.GetName(),
+		"damage_dealt", npcDamageTaken,
+		"target_hp", npc.GetHealth(),
+		"target_max_hp", npc.GetMaxHealth())
 
 	// Send message to attacker with dice details
 	p.SendMessage(fmt.Sprintf("\nYou swing at %s... (%s vs AC %d) Hit!\nYou deal %d damage! (%d/%d HP)\n",
@@ -533,6 +551,11 @@ func (s *Server) processNPCAttacks() {
 			targetRoom := targetPlayer.GetCurrentRoom().(*world.Room)
 			if targetRoom.GetID() != room.GetID() {
 				// Target has left the room, remove from combat
+				logger.Debug("Combat target left room",
+					"npc", npc.GetName(),
+					"target", targetName,
+					"npc_room", room.GetID(),
+					"target_room", targetRoom.GetID())
 				npc.EndCombat(targetName)
 				targetPlayer.EndCombat()
 				continue
@@ -541,6 +564,13 @@ func (s *Server) processNPCAttacks() {
 			// NPC attacks the random target
 			npcDamage := npc.GetAttackDamage()
 			playerDamageTaken := targetPlayer.TakeDamage(npcDamage)
+
+			logger.Debug("NPC attack",
+				"npc", npc.GetName(),
+				"target", targetName,
+				"damage_dealt", playerDamageTaken,
+				"target_hp", targetPlayer.GetHealth(),
+				"target_max_hp", targetPlayer.GetMaxHealth())
 
 			// Send message to all players fighting this NPC
 			targets := npc.GetTargets()

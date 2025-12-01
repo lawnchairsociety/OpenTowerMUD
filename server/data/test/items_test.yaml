@@ -184,8 +184,6 @@ items:
     weight: 0.01
     type: "misc"
     value: 1
-    locations:
-      - "town_square"
 
   bone:
     name: "bone"

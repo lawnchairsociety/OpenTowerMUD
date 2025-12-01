@@ -226,6 +226,12 @@ func (c *Command) Execute(playerIface interface{}, worldIface interface{}) strin
 		return "Internal error: invalid world type"
 	}
 
+	// Log command execution
+	logger.Debug("Command executed",
+		"player", p.GetName(),
+		"command", c.Name,
+		"args", strings.Join(c.Args, " "))
+
 	switch c.Name {
 	case "help":
 		return c.executeHelpWithPlayer(p)
@@ -1012,6 +1018,13 @@ func (c *Command) executeMoveDirection(p PlayerInterface, direction string) stri
 	// Move the player
 	p.MoveTo(nextRoomIface)
 
+	logger.Debug("Player moved",
+		"player", p.GetName(),
+		"direction", direction,
+		"from_room", currentRoom.GetID(),
+		"to_room", nextRoom.GetID(),
+		"to_floor", nextRoom.GetFloor())
+
 	// Broadcast enter message to new room
 	// Determine opposite direction for enter message
 	oppositeDir := getOppositeDirection(direction)
@@ -1023,6 +1036,9 @@ func (c *Command) executeMoveDirection(p PlayerInterface, direction string) stri
 		floorNum := nextRoom.GetFloor()
 		if !p.HasDiscoveredPortal(floorNum) {
 			p.DiscoverPortal(floorNum)
+			logger.Debug("Portal discovered",
+				"player", p.GetName(),
+				"floor", floorNum)
 			p.SendMessage(fmt.Sprintf("\n*** You have discovered a portal on %s! ***\n", getFloorDisplayName(floorNum)))
 		}
 	}
@@ -1074,6 +1090,10 @@ func (c *Command) executeTake(p PlayerInterface) string {
 		removedItem, removed := room.RemoveItem(foundItem.Name)
 		if removed {
 			p.AddKey(removedItem)
+			logger.Debug("Item taken (key)",
+				"player", p.GetName(),
+				"item", foundItem.Name,
+				"room", room.GetID())
 			return fmt.Sprintf("You take the %s and add it to your key ring.", foundItem.Name)
 		}
 		return fmt.Sprintf("You can't take the %s.", foundItem.Name)
@@ -1088,6 +1108,10 @@ func (c *Command) executeTake(p PlayerInterface) string {
 	removedItem, removed := room.RemoveItem(foundItem.Name)
 	if removed {
 		p.AddItem(removedItem)
+		logger.Debug("Item taken",
+			"player", p.GetName(),
+			"item", foundItem.Name,
+			"room", room.GetID())
 		return fmt.Sprintf("You take the %s.", foundItem.Name)
 	}
 
@@ -1116,6 +1140,10 @@ func (c *Command) executeDrop(p PlayerInterface) string {
 			return "Internal error: invalid room type"
 		}
 		room.AddItem(removedItem)
+		logger.Debug("Item dropped",
+			"player", p.GetName(),
+			"item", foundItem.Name,
+			"room", room.GetID())
 		return fmt.Sprintf("You drop the %s.", foundItem.Name)
 	}
 
@@ -2314,6 +2342,12 @@ func (c *Command) castSelfSpell(p PlayerInterface, spell *spells.Spell) string {
 		p.StartSpellCooldown(spell.ID, spell.Cooldown)
 	}
 
+	logger.Debug("Spell cast (self)",
+		"player", p.GetName(),
+		"spell", spell.Name,
+		"mana_cost", spell.ManaCost,
+		"cooldown", spell.Cooldown)
+
 	// Get WIS modifier for healing
 	wisMod := p.GetWisdomMod()
 
@@ -2373,6 +2407,13 @@ func (c *Command) castAllySpell(p PlayerInterface, spell *spells.Spell, target P
 	if spell.Cooldown > 0 {
 		p.StartSpellCooldown(spell.ID, spell.Cooldown)
 	}
+
+	logger.Debug("Spell cast (ally)",
+		"player", p.GetName(),
+		"spell", spell.Name,
+		"target", target.GetName(),
+		"mana_cost", spell.ManaCost,
+		"cooldown", spell.Cooldown)
 
 	// Get server for broadcasts
 	server, ok := p.GetServer().(ServerInterface)
@@ -2452,6 +2493,13 @@ func (c *Command) castEnemySpell(p PlayerInterface, spell *spells.Spell, targetN
 	if spell.Cooldown > 0 {
 		p.StartSpellCooldown(spell.ID, spell.Cooldown)
 	}
+
+	logger.Debug("Spell cast (enemy)",
+		"player", p.GetName(),
+		"spell", spell.Name,
+		"target", targetNPC.GetName(),
+		"mana_cost", spell.ManaCost,
+		"cooldown", spell.Cooldown)
 
 	// Get server for broadcasts
 	server, ok := p.GetServer().(ServerInterface)
@@ -2542,6 +2590,13 @@ func (c *Command) castRoomSpell(p PlayerInterface, spell *spells.Spell) string {
 	if spell.Cooldown > 0 {
 		p.StartSpellCooldown(spell.ID, spell.Cooldown)
 	}
+
+	logger.Debug("Spell cast (room)",
+		"player", p.GetName(),
+		"spell", spell.Name,
+		"target_count", len(targetNPCs),
+		"mana_cost", spell.ManaCost,
+		"cooldown", spell.Cooldown)
 
 	// Get server for broadcasts
 	server, ok := p.GetServer().(ServerInterface)
@@ -3468,10 +3523,22 @@ func (c *Command) executeBuy(p PlayerInterface) string {
 	// Keys go to key ring, other items to inventory
 	if foundItem.Type == items.Key {
 		p.AddKey(foundItem)
+		logger.Debug("Item purchased (key)",
+			"player", p.GetName(),
+			"item", foundItem.Name,
+			"price", price,
+			"seller", sellerName,
+			"gold_remaining", p.GetGold())
 		return fmt.Sprintf("You purchase a %s for %d gold and add it to your key ring.\nGold remaining: %d", foundItem.Name, price, p.GetGold())
 	}
 
 	p.AddItem(foundItem)
+	logger.Debug("Item purchased",
+		"player", p.GetName(),
+		"item", foundItem.Name,
+		"price", price,
+		"seller", sellerName,
+		"gold_remaining", p.GetGold())
 	return fmt.Sprintf("You purchase a %s for %d gold.\nGold remaining: %d", foundItem.Name, price, p.GetGold())
 }
 
@@ -3536,6 +3603,14 @@ func (c *Command) executeSell(p PlayerInterface) string {
 
 	// Add gold to player
 	p.AddGold(sellPrice)
+
+	logger.Debug("Item sold",
+		"player", p.GetName(),
+		"item", removedItem.Name,
+		"price", sellPrice,
+		"buyer", shopNPC.GetName(),
+		"is_merchant", isMerchant,
+		"gold_total", p.GetGold())
 
 	if isMerchant {
 		return fmt.Sprintf("The old merchant grumbles as he hands you %d gold for your %s.\n\"Don't expect charity from me, adventurer.\"\nGold: %d", sellPrice, removedItem.Name, p.GetGold())

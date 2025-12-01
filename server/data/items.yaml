@@ -7,7 +7,6 @@
 #     type: weapon|armor|food|drink|potion|misc|key|container
 #     value: Gold value (int)
 #     tier: Loot tier for treasure rooms (1=common, 2=uncommon, 3=rare, 4=epic, 5=legendary)
-#     locations: List of room IDs where this item should spawn (for city spawns)
 
 items:
   # Special Keys
@@ -25,8 +24,6 @@ items:
     weight: 0.01
     type: "misc"
     value: 1
-    locations:
-      - "town_square"
 
   # Dark Forest Items
   stick:
@@ -35,8 +32,6 @@ items:
     weight: 2.0
     type: "misc"
     value: 1
-    locations:
-      - "forest"
 
   mushroom:
     name: "mushroom"
@@ -46,8 +41,6 @@ items:
     value: 5
     consumable: true
     heal_amount: 5
-    locations:
-      - "forest"
 
   rusty_sword:
     name: "rusty sword"
@@ -59,8 +52,6 @@ items:
     damage: 5
     damage_dice: "1d6"
     two_handed: false
-    locations:
-      - "forest"
 
   # General Store Items
   torch:
@@ -69,8 +60,6 @@ items:
     weight: 1.5
     type: "misc"
     value: 10
-    locations:
-      - "shop"
 
   rope:
     name: "rope"
@@ -78,8 +67,6 @@ items:
     weight: 5.0
     type: "misc"
     value: 15
-    locations:
-      - "shop"
 
   leather_armor:
     name: "leather armor"
@@ -89,8 +76,6 @@ items:
     value: 50
     slot: "body"
     armor: 3
-    locations:
-      - "shop"
 
   # Mysterious Cave Items
   crystal:
@@ -99,8 +84,6 @@ items:
     weight: 0.5
     type: "misc"
     value: 100
-    locations:
-      - "cave"
 
   ancient_key:
     name: "ancient key"
@@ -108,8 +91,6 @@ items:
     weight: 0.2
     type: "key"
     value: 30
-    locations:
-      - "cave"
 
   # Consumable drinks
   ale:
@@ -140,8 +121,6 @@ items:
     damage: 4
     damage_dice: "1d4"
     two_handed: false
-    locations:
-      - "shop"
 
   wooden_staff:
     name: "wooden staff"
@@ -153,8 +132,6 @@ items:
     damage: 3
     damage_dice: "1d6"
     two_handed: true
-    locations:
-      - "cave"
 
   leather_cap:
     name: "leather cap"
@@ -164,8 +141,6 @@ items:
     value: 15
     slot: "head"
     armor: 1
-    locations:
-      - "shop"
 
   iron_boots:
     name: "iron boots"
@@ -186,8 +161,6 @@ items:
     value: 50
     consumable: true
     heal_amount: 30
-    locations:
-      - "shop"
 
   mana_potion:
     name: "mana potion"
@@ -197,8 +170,6 @@ items:
     value: 50
     consumable: true
     mana_amount: 30
-    locations:
-      - "shop"
 
   greater_healing_potion:
     name: "greater healing potion"
@@ -208,8 +179,6 @@ items:
     value: 100
     consumable: true
     heal_amount: 50
-    locations:
-      - "cave"
 
   elixir:
     name: "elixir"
@@ -220,8 +189,6 @@ items:
     consumable: true
     heal_amount: 20
     mana_amount: 20
-    locations:
-      - "cave"
 
   roasted_meat:
     name: "roasted meat"
@@ -231,8 +198,6 @@ items:
     value: 10
     consumable: true
     heal_amount: 20
-    locations:
-      - "tavern"
 
   apple:
     name: "apple"
@@ -242,8 +207,6 @@ items:
     value: 3
     consumable: true
     heal_amount: 8
-    locations:
-      - "shop"
 
   water:
     name: "water"
@@ -253,8 +216,6 @@ items:
     value: 2
     consumable: true
     mana_amount: 10
-    locations:
-      - "shop"
 
   herbal_tea:
     name: "herbal tea"
@@ -264,8 +225,6 @@ items:
     value: 8
     consumable: true
     mana_amount: 15
-    locations:
-      - "tavern"
 
   # =========================================
   # Tier 1: Common Loot (Floors 1-5)

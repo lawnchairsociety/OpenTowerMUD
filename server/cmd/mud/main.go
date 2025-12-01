@@ -90,7 +90,7 @@ func main() {
 		}
 	}
 
-	gameWorld.InitializeWithPaths(worldSeed, *towerFile, *npcsFile, *mobsFile, *itemsFile)
+	gameWorld.InitializeWithPaths(worldSeed, *towerFile, *npcsFile, *mobsFile)
 
 	// Load items config (needed for player inventory loading)
 	itemsConfig, err := items.LoadItemsFromYAML(*itemsFile)
