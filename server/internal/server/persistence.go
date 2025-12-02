@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/lawnchairsociety/opentowermud/server/internal/class"
 	"github.com/lawnchairsociety/opentowermud/server/internal/database"
 	"github.com/lawnchairsociety/opentowermud/server/internal/items"
 	"github.com/lawnchairsociety/opentowermud/server/internal/logger"
@@ -43,6 +44,25 @@ func (s *Server) loadPlayer(conn net.Conn, auth *AuthResult) (*player.Player, er
 	p.Intelligence = char.Intelligence
 	p.Wisdom = char.Wisdom
 	p.Charisma = char.Charisma
+
+	// Load class data
+	primaryClass, _ := class.ParseClass(char.PrimaryClass)
+	if !primaryClass.IsValid() {
+		primaryClass = class.Warrior // Default to warrior if invalid
+	}
+	classLevels, err := class.ParseClassLevels(char.ClassLevels, primaryClass)
+	if err != nil {
+		// If parsing fails, create default class levels
+		classLevels = class.NewClassLevels(primaryClass)
+	}
+	p.SetClassLevels(classLevels)
+
+	// Set active class
+	activeClass, _ := class.ParseClass(char.ActiveClass)
+	if !activeClass.IsValid() {
+		activeClass = primaryClass
+	}
+	p.SetActiveClass(activeClass)
 
 	// Set state
 	if err := p.SetState(char.State); err != nil {
@@ -106,10 +126,8 @@ func (s *Server) loadPlayer(conn net.Conn, auth *AuthResult) (*player.Player, er
 	if char.LearnedSpells != "" {
 		spellIDs := strings.Split(char.LearnedSpells, ",")
 		p.SetLearnedSpells(spellIDs)
-	} else {
-		// Fallback for characters created before magic system
-		p.SetLearnedSpells(strings.Split(database.DefaultStarterSpells, ","))
 	}
+	// Note: New characters learn spells based on class level, not default starter spells
 
 	// Load gold
 	p.SetGold(char.Gold)
@@ -117,16 +135,16 @@ func (s *Server) loadPlayer(conn net.Conn, auth *AuthResult) (*player.Player, er
 	// Load key ring
 	p.SetKeyRingFromString(char.KeyRing)
 
-	// Load visited portals
-	if char.VisitedPortals != "" {
-		portalStrs := strings.Split(char.VisitedPortals, ",")
+	// Load discovered portals
+	if char.DiscoveredPortals != "" {
+		portalStrs := strings.Split(char.DiscoveredPortals, ",")
 		portals := make([]int, 0, len(portalStrs))
 		for _, s := range portalStrs {
 			if floor, err := strconv.Atoi(strings.TrimSpace(s)); err == nil {
 				portals = append(portals, floor)
 			}
 		}
-		p.SetVisitedPortals(portals)
+		p.SetDiscoveredPortals(portals)
 	}
 
 	logger.Info("Player loaded",
@@ -175,7 +193,7 @@ func (s *Server) savePlayerImpl(p *player.Player) error {
 		State:          p.GetState(),
 		MaxCarryWeight: p.MaxCarryWeight,
 		LearnedSpells:  p.GetLearnedSpellsString(),
-		VisitedPortals: p.GetVisitedPortalsString(),
+		DiscoveredPortals: p.GetDiscoveredPortalsString(),
 		Strength:       p.GetStrength(),
 		Dexterity:      p.GetDexterity(),
 		Constitution:   p.GetConstitution(),
@@ -184,6 +202,9 @@ func (s *Server) savePlayerImpl(p *player.Player) error {
 		Charisma:       p.GetCharisma(),
 		Gold:           p.GetGold(),
 		KeyRing:        p.GetKeyRingString(),
+		PrimaryClass:   string(p.GetPrimaryClass()),
+		ClassLevels:    p.GetClassLevelsJSON(),
+		ActiveClass:    string(p.GetActiveClass()),
 	}
 
 	// Get inventory and equipment IDs
@@ -203,6 +224,80 @@ func (s *Server) savePlayerImpl(p *player.Player) error {
 		"equipment_count", len(equipmentIDs))
 
 	return nil
+}
+
+// giveStartingEquipment gives a new player their class-appropriate starting gear
+func (s *Server) giveStartingEquipment(p *player.Player) {
+	primaryClass := string(p.GetPrimaryClass())
+
+	// Get starting items based on class
+	startingItems := getClassStartingItems(primaryClass)
+
+	for _, itemID := range startingItems {
+		if s.itemsConfig != nil {
+			if item, exists := s.itemsConfig.GetItemByID(itemID); exists {
+				p.AddItem(item)
+				logger.Debug("Gave starting item",
+					"player", p.GetName(),
+					"class", primaryClass,
+					"item", item.Name)
+			}
+		}
+	}
+}
+
+// getClassStartingItems returns the item IDs for a class's starting equipment
+func getClassStartingItems(className string) []string {
+	switch className {
+	case "warrior":
+		return []string{
+			"rusty_sword",      // Starting weapon
+			"leather_armor",    // Basic armor
+			"bandage",          // 1 healing item
+			"bandage",          // 1 more healing item
+		}
+	case "mage":
+		return []string{
+			"wooden_staff",     // Starting weapon
+			"cloth_robe",       // Basic armor (mage-specific)
+			"mana_potion",      // Mana recovery
+			"bandage",          // 1 healing item
+		}
+	case "cleric":
+		return []string{
+			"wooden_club",      // Starting weapon (blunt)
+			"leather_armor",    // Basic armor
+			"bandage",          // Healing items (clerics can heal themselves)
+			"bandage",
+		}
+	case "rogue":
+		return []string{
+			"dagger",           // Starting weapon (finesse)
+			"leather_armor",    // Light armor
+			"bandage",          // 1 healing item
+			"bandage",          // 1 more healing item
+		}
+	case "ranger":
+		return []string{
+			"shortbow",         // Starting ranged weapon
+			"leather_armor",    // Medium armor
+			"bandage",          // 1 healing item
+			"bandage",          // 1 more healing item
+		}
+	case "paladin":
+		return []string{
+			"rusty_sword",      // Starting weapon
+			"leather_armor",    // Basic armor (would upgrade to chainmail soon)
+			"bandage",          // 1 healing item
+			"bandage",          // 1 more healing item
+		}
+	default:
+		return []string{
+			"rusty_sword",
+			"leather_armor",
+			"bandage",
+		}
+	}
 }
 
 // handleDisconnect handles player disconnect cleanup

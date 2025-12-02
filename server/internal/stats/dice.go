@@ -36,6 +36,11 @@ func D4() int {
 	return rand.Intn(4) + 1
 }
 
+// D100 rolls a 100-sided die (1-100), used for percentage checks
+func D100() int {
+	return rand.Intn(100) + 1
+}
+
 // Roll rolls n dice with the specified number of sides and returns the total
 func Roll(n, sides int) int {
 	total := 0

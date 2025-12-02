@@ -10,18 +10,22 @@ import (
 
 // ItemDefinition represents an item definition from the YAML file
 type ItemDefinition struct {
-	Name        string   `yaml:"name"`
-	Description string   `yaml:"description"`
-	Weight      float64  `yaml:"weight"`
-	Type        string   `yaml:"type"`
-	Value       int      `yaml:"value"`
-	Tier int `yaml:"tier,omitempty"` // Loot tier (1=common, 2=uncommon, 3=rare, 4=epic, 5=legendary)
+	Name        string  `yaml:"name"`
+	Description string  `yaml:"description"`
+	Weight      float64 `yaml:"weight"`
+	Type        string  `yaml:"type"`
+	Value       int     `yaml:"value"`
+	Tier        int     `yaml:"tier,omitempty"` // Loot tier (1=common, 2=uncommon, 3=rare, 4=epic, 5=legendary)
 	// Equipment fields (optional)
 	Slot       string `yaml:"slot,omitempty"`
 	Armor      int    `yaml:"armor,omitempty"`
 	Damage     int    `yaml:"damage,omitempty"`
 	DamageDice string `yaml:"damage_dice,omitempty"` // Dice notation e.g. "1d6", "2d4+1"
 	TwoHanded  bool   `yaml:"two_handed,omitempty"`
+	// Proficiency requirements (optional)
+	ArmorType     string `yaml:"armor_type,omitempty"`     // light, medium, heavy, shield, none
+	WeaponType    string `yaml:"weapon_type,omitempty"`    // simple, martial, finesse, ranged
+	RequiredClass string `yaml:"required_class,omitempty"` // Class restriction (e.g., "mage")
 	// Consumable fields (optional)
 	Consumable bool `yaml:"consumable,omitempty"`
 	HealAmount int  `yaml:"heal_amount,omitempty"`
@@ -77,14 +81,20 @@ func StringToEquipmentSlot(slotStr string) EquipmentSlot {
 	switch slotStr {
 	case "head":
 		return SlotHead
+	case "neck":
+		return SlotNeck
 	case "body":
 		return SlotBody
+	case "back":
+		return SlotBack
 	case "legs":
 		return SlotLegs
 	case "feet":
 		return SlotFeet
 	case "hands":
 		return SlotHands
+	case "ring":
+		return SlotRing
 	case "weapon":
 		return SlotWeapon
 	case "off-hand":
@@ -118,6 +128,11 @@ func CreateItemFromDefinition(id string, def ItemDefinition) *Item {
 	item.Damage = def.Damage
 	item.DamageDice = def.DamageDice
 	item.TwoHanded = def.TwoHanded
+
+	// Set proficiency requirements
+	item.ArmorType = def.ArmorType
+	item.WeaponType = def.WeaponType
+	item.RequiredClass = def.RequiredClass
 
 	// Set consumable fields if provided
 	item.Consumable = def.Consumable

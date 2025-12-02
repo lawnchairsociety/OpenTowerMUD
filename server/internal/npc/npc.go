@@ -19,6 +19,19 @@ type ShopItem struct {
 	Price    int    // Price in gold (0 = use item's base value)
 }
 
+// MobType represents the creature type for class bonuses (favored enemy, smite)
+type MobType string
+
+const (
+	MobTypeUnknown   MobType = ""
+	MobTypeBeast     MobType = "beast"
+	MobTypeHumanoid  MobType = "humanoid"
+	MobTypeUndead    MobType = "undead"
+	MobTypeDemon     MobType = "demon"
+	MobTypeConstruct MobType = "construct"
+	MobTypeGiant     MobType = "giant"
+)
+
 // NPC represents a non-player character or monster
 type NPC struct {
 	Name             string
@@ -39,6 +52,7 @@ type NPC struct {
 	RoomID           string          // Current location
 	InCombat         bool            // Is this NPC currently fighting?
 	Targets          map[string]bool // Names of players being fought
+	ThreatTable      map[string]int  // Threat per player (for target selection)
 	RespawnMedian    int             // Median respawn time in seconds (0 = no respawn)
 	RespawnVariation int             // Variation in respawn time (+/- seconds)
 	OriginalRoomID   string          // Room where NPC originally spawned
@@ -47,6 +61,8 @@ type NPC struct {
 	StunEndTime      time.Time       // When stun effect expires
 	IsBoss           bool            // Is this a boss mob?
 	Floor            int             // Tower floor this mob is on (for boss key drops)
+	MobType          MobType         // Creature type for class bonuses
+	TrainerClass     string          // Class this NPC trains (for multiclassing)
 	mu               sync.RWMutex
 }
 
@@ -67,6 +83,7 @@ func NewNPC(name, description string, level, health, damage, armor, experience i
 		OriginalRoomID:   roomID, // Track original spawn location
 		InCombat:         false,
 		Targets:          make(map[string]bool),
+		ThreatTable:      make(map[string]int),
 		RespawnMedian:    respawnMedian,
 		RespawnVariation: respawnVariation,
 	}
@@ -133,24 +150,6 @@ func (n *NPC) GetTargets() []string {
 	return targets
 }
 
-// GetRandomTarget returns a random player from those fighting this NPC
-func (n *NPC) GetRandomTarget() string {
-	n.mu.RLock()
-	defer n.mu.RUnlock()
-
-	if len(n.Targets) == 0 {
-		return ""
-	}
-
-	// Convert map to slice and pick random
-	targets := make([]string, 0, len(n.Targets))
-	for name := range n.Targets {
-		targets = append(targets, name)
-	}
-
-	return targets[rand.Intn(len(targets))]
-}
-
 // StartCombat adds a player to this NPC's combat targets
 func (n *NPC) StartCombat(targetName string) {
 	n.mu.Lock()
@@ -165,12 +164,14 @@ func (n *NPC) EndCombat(targetName string) {
 	defer n.mu.Unlock()
 
 	if targetName == "" {
-		// Clear all targets
+		// Clear all targets and threat
 		n.Targets = make(map[string]bool)
+		n.ThreatTable = make(map[string]int)
 		n.InCombat = false
 	} else {
-		// Remove specific target
+		// Remove specific target and their threat
 		delete(n.Targets, targetName)
+		delete(n.ThreatTable, targetName)
 		if len(n.Targets) == 0 {
 			n.InCombat = false
 		}
@@ -389,6 +390,7 @@ func (n *NPC) Reset() {
 	n.Health = n.MaxHealth
 	n.InCombat = false
 	n.Targets = make(map[string]bool)
+	n.ThreatTable = make(map[string]int)
 	n.DeathTime = time.Time{}
 	n.RespawnTime = time.Time{}
 	n.StunEndTime = time.Time{}
@@ -479,4 +481,128 @@ func (n *NPC) HasShopInventory() bool {
 	n.mu.RLock()
 	defer n.mu.RUnlock()
 	return len(n.ShopInventory) > 0
+}
+
+// GetMobType returns the NPC's mob type (beast, undead, humanoid, etc.)
+func (n *NPC) GetMobType() MobType {
+	n.mu.RLock()
+	defer n.mu.RUnlock()
+	return n.MobType
+}
+
+// SetMobType sets the NPC's mob type
+func (n *NPC) SetMobType(mobType MobType) {
+	n.mu.Lock()
+	defer n.mu.Unlock()
+	n.MobType = mobType
+}
+
+// IsBeast returns true if this NPC is of type beast (for ranger's favored enemy)
+func (n *NPC) IsBeast() bool {
+	n.mu.RLock()
+	defer n.mu.RUnlock()
+	return n.MobType == MobTypeBeast
+}
+
+// IsUndead returns true if this NPC is of type undead (for paladin's bonus)
+func (n *NPC) IsUndead() bool {
+	n.mu.RLock()
+	defer n.mu.RUnlock()
+	return n.MobType == MobTypeUndead
+}
+
+// IsDemon returns true if this NPC is of type demon (for paladin's bonus)
+func (n *NPC) IsDemon() bool {
+	n.mu.RLock()
+	defer n.mu.RUnlock()
+	return n.MobType == MobTypeDemon
+}
+
+// AddThreat adds threat from a player (damage dealt = threat)
+func (n *NPC) AddThreat(playerName string, amount int) {
+	n.mu.Lock()
+	defer n.mu.Unlock()
+	if n.ThreatTable == nil {
+		n.ThreatTable = make(map[string]int)
+	}
+	n.ThreatTable[playerName] += amount
+}
+
+// GetThreat returns the current threat value for a player
+func (n *NPC) GetThreat(playerName string) int {
+	n.mu.RLock()
+	defer n.mu.RUnlock()
+	return n.ThreatTable[playerName]
+}
+
+// GetHighestThreatTarget returns the player with the highest threat
+// Falls back to random target if threat table is empty
+func (n *NPC) GetHighestThreatTarget() string {
+	n.mu.RLock()
+	defer n.mu.RUnlock()
+
+	if len(n.Targets) == 0 {
+		return ""
+	}
+
+	// Find the target with highest threat
+	var highestTarget string
+	highestThreat := -1
+
+	for name := range n.Targets {
+		threat := n.ThreatTable[name]
+		if threat > highestThreat {
+			highestThreat = threat
+			highestTarget = name
+		}
+	}
+
+	// If we found a target with threat, return it
+	if highestTarget != "" {
+		return highestTarget
+	}
+
+	// Fall back to random target (for cases where threat table is empty)
+	targets := make([]string, 0, len(n.Targets))
+	for name := range n.Targets {
+		targets = append(targets, name)
+	}
+	return targets[rand.Intn(len(targets))]
+}
+
+// ClearThreat removes all threat for a specific player
+func (n *NPC) ClearThreat(playerName string) {
+	n.mu.Lock()
+	defer n.mu.Unlock()
+	delete(n.ThreatTable, playerName)
+}
+
+// ModifyThreat multiplies a player's threat by a factor (for threat reduction abilities)
+func (n *NPC) ModifyThreat(playerName string, factor float64) {
+	n.mu.Lock()
+	defer n.mu.Unlock()
+	if threat, exists := n.ThreatTable[playerName]; exists {
+		n.ThreatTable[playerName] = int(float64(threat) * factor)
+	}
+}
+
+// GetTrainerClass returns the class this NPC trains (empty string if not a trainer)
+func (n *NPC) GetTrainerClass() string {
+	n.mu.RLock()
+	defer n.mu.RUnlock()
+	return n.TrainerClass
+}
+
+// SetTrainerClass sets the class this NPC can train
+func (n *NPC) SetTrainerClass(className string) {
+	n.mu.Lock()
+	defer n.mu.Unlock()
+	n.TrainerClass = className
+}
+
+// IsTrainer returns true if this NPC can train players in a class
+func (n *NPC) IsTrainer() bool {
+	n.mu.RLock()
+	defer n.mu.RUnlock()
+	return n.TrainerClass != ""
 }

@@ -8,10 +8,13 @@ type EquipmentSlot int
 const (
 	SlotNone EquipmentSlot = iota
 	SlotHead
+	SlotNeck
 	SlotBody
+	SlotBack
 	SlotLegs
 	SlotFeet
 	SlotHands
+	SlotRing
 	SlotWeapon
 	SlotOffHand
 	SlotHeld
@@ -22,14 +25,20 @@ func (s EquipmentSlot) String() string {
 	switch s {
 	case SlotHead:
 		return "head"
+	case SlotNeck:
+		return "neck"
 	case SlotBody:
 		return "body"
+	case SlotBack:
+		return "back"
 	case SlotLegs:
 		return "legs"
 	case SlotFeet:
 		return "feet"
 	case SlotHands:
 		return "hands"
+	case SlotRing:
+		return "ring"
 	case SlotWeapon:
 		return "weapon"
 	case SlotOffHand:
@@ -55,6 +64,11 @@ type Item struct {
 	Damage     int    // Damage value for weapons (legacy, used as fallback)
 	DamageDice string // Dice notation for damage (e.g., "1d6", "2d4+1")
 	TwoHanded  bool   // Whether weapon requires both hands
+	// Proficiency requirements
+	ArmorType  string // light, medium, heavy, shield, none (for armor)
+	WeaponType string // simple, martial, finesse, ranged (for weapons)
+	// Class restrictions (optional - if empty, any class can use)
+	RequiredClass string // e.g., "mage", "cleric" - only this class can equip
 	// Consumable stats (optional, only for consumable items)
 	Consumable bool // Can this item be consumed?
 	HealAmount int  // HP restored when consumed
@@ -147,4 +161,21 @@ func NewTreasureKey() *Item {
 // String returns a formatted string representation of the item
 func (i *Item) String() string {
 	return fmt.Sprintf("%s (%s, %.1f, %d gold)", i.Name, i.Type.String(), i.Weight, i.Value)
+}
+
+// IsFinesse returns true if this weapon can use DEX instead of STR
+func (i *Item) IsFinesse() bool {
+	return i.WeaponType == "finesse"
+}
+
+// IsRanged returns true if this is a ranged weapon
+func (i *Item) IsRanged() bool {
+	return i.WeaponType == "ranged"
+}
+
+// UsesDexterity returns true if this weapon should use DEX for attack/damage
+// Finesse weapons can use either STR or DEX (player chooses higher)
+// Ranged weapons always use DEX
+func (i *Item) UsesDexterity() bool {
+	return i.IsRanged() || i.IsFinesse()
 }

@@ -32,31 +32,6 @@ func (t RoomType) String() string {
 	}
 }
 
-// IsSafe returns true if the room type is generally safe
-func (t RoomType) IsSafe() bool {
-	return t == RoomTypeCity
-}
-
-// GetDangerLevel returns a danger rating from 0 (safe) to 5 (very dangerous)
-func (t RoomType) GetDangerLevel() int {
-	switch t {
-	case RoomTypeCity:
-		return 0
-	case RoomTypeCorridor:
-		return 2
-	case RoomTypeRoom:
-		return 3
-	case RoomTypeTreasure:
-		return 3
-	case RoomTypeStairs:
-		return 1
-	case RoomTypeBoss:
-		return 5
-	default:
-		return 0
-	}
-}
-
 // ParseRoomType converts a string to a RoomType
 func ParseRoomType(s string) (RoomType, bool) {
 	switch s {

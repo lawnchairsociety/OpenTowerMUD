@@ -1,0 +1,286 @@
+# NPC Dictionary for Integration Testing
+# Contains city NPCs and class trainers for comprehensive tests
+
+npcs:
+  # ===================
+  # Town Square NPCs
+  # ===================
+  old_guide:
+    name: "Aldric the old guide"
+    description: "A weathered old man with kind eyes and a cloak that has seen better days."
+    level: 10
+    health: 100
+    damage: 0
+    armor: 0
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "Greetings, adventurer! New to our little city, are you?"
+    locations:
+      - "town_square"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # ===================
+  # Temple NPCs
+  # ===================
+  high_priestess:
+    name: "High Priestess Sera"
+    description: "A serene woman in flowing white robes."
+    level: 10
+    health: 100
+    damage: 15
+    armor: 5
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "May the light guide your path through the darkness above."
+    locations:
+      - "temple"
+    respawn_median: 0
+    respawn_variation: 0
+
+  cleric_trainer:
+    name: "Father Aldous"
+    description: "A kind-faced priest with calloused hands from years of healing the sick."
+    level: 20
+    health: 200
+    damage: 20
+    armor: 8
+    experience: 0
+    aggressive: false
+    attackable: false
+    trainer_class: "cleric"
+    dialogue:
+      - "The divine light flows through all who believe."
+    locations:
+      - "temple"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # ===================
+  # General Store NPCs
+  # ===================
+  shopkeeper:
+    name: "Shopkeeper Mira"
+    description: "A sharp-eyed woman who knows the value of every item in her store."
+    level: 4
+    health: 40
+    damage: 6
+    armor: 1
+    experience: 0
+    aggressive: false
+    attackable: false
+    shop_inventory:
+      - item: "treasure_key"
+        price: 50
+      - item: "healing_potion"
+        price: 50
+      - item: "mana_potion"
+        price: 50
+      - item: "bandage"
+        price: 5
+      - item: "bread"
+        price: 2
+      - item: "apple"
+        price: 3
+      - item: "water"
+        price: 2
+      - item: "iron_dagger"
+        price: 30
+      - item: "leather_armor"
+        price: 50
+      - item: "leather_cap"
+        price: 15
+    dialogue:
+      - "Welcome! Type 'shop' to see what's for sale."
+    locations:
+      - "general_store"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # ===================
+  # Training Hall NPCs
+  # ===================
+  combat_instructor:
+    name: "Combat Instructor Vex"
+    description: "A lean, scarred warrior who has forgotten more about fighting than most will ever learn."
+    level: 12
+    health: 150
+    damage: 22
+    armor: 7
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "Pain is the best teacher. The dummy doesn't hit back, but the monsters will."
+    locations:
+      - "training_hall"
+    respawn_median: 0
+    respawn_variation: 0
+
+  warrior_trainer:
+    name: "Battlemaster Korg"
+    description: "A massive, battle-scarred warrior whose very presence commands respect."
+    level: 20
+    health: 300
+    damage: 35
+    armor: 12
+    experience: 0
+    aggressive: false
+    attackable: false
+    trainer_class: "warrior"
+    dialogue:
+      - "Strength and steel - that's all you need to survive."
+    locations:
+      - "training_hall"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # ===================
+  # Tavern NPCs
+  # ===================
+  bartender:
+    name: "Bartender Grum"
+    description: "A burly man with a bushy beard, polishing glasses with practiced ease."
+    level: 4
+    health: 50
+    damage: 8
+    armor: 2
+    experience: 0
+    aggressive: false
+    attackable: false
+    shop_inventory:
+      - item: "ale"
+        price: 3
+      - item: "bread"
+        price: 2
+      - item: "roasted_meat"
+        price: 10
+      - item: "herbal_tea"
+        price: 8
+    dialogue:
+      - "What'll it be? We've got ale, bread, and stories aplenty."
+    locations:
+      - "tavern"
+    respawn_median: 0
+    respawn_variation: 0
+
+  bard:
+    name: "wandering bard"
+    description: "A charismatic performer with a lute. Talk to him to save your progress!"
+    level: 3
+    health: 35
+    damage: 5
+    armor: 1
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "I write songs about heroes. Perhaps one day I'll write one about you!"
+    locations:
+      - "tavern"
+    respawn_median: 0
+    respawn_variation: 0
+
+  rogue_trainer:
+    name: "Shadow"
+    description: "A hooded figure who seems to melt into the darkness. You're never quite sure where they're looking."
+    level: 20
+    health: 180
+    damage: 30
+    armor: 6
+    experience: 0
+    aggressive: false
+    attackable: false
+    trainer_class: "rogue"
+    dialogue:
+      - "The best fights are the ones your enemy never sees coming."
+    locations:
+      - "tavern"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # ===================
+  # Guard NPCs
+  # ===================
+  city_guard:
+    name: "city guard"
+    description: "A disciplined soldier in the city's colors, ever watchful for threats."
+    level: 5
+    health: 75
+    damage: 12
+    armor: 5
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "Stay out of trouble, citizen."
+    locations:
+      - "barracks"
+      - "north_gate"
+      - "tower_entrance"
+    respawn_median: 0
+    respawn_variation: 0
+
+  ranger_trainer:
+    name: "Warden Ashara"
+    description: "A lithe elf with a bow across her back and a hawk perched on her shoulder."
+    level: 20
+    health: 200
+    damage: 28
+    armor: 7
+    experience: 0
+    aggressive: false
+    attackable: false
+    trainer_class: "ranger"
+    dialogue:
+      - "The wilderness teaches patience. The tower demands it."
+    locations:
+      - "north_gate"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # ===================
+  # Royal Library NPCs
+  # ===================
+  mage_trainer:
+    name: "Archmage Thessaly"
+    description: "An elderly woman whose eyes crackle with barely contained arcane power."
+    level: 20
+    health: 150
+    damage: 40
+    armor: 5
+    experience: 0
+    aggressive: false
+    attackable: false
+    trainer_class: "mage"
+    dialogue:
+      - "Magic is not about power - it's about understanding."
+    locations:
+      - "royal_library"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # ===================
+  # Castle Hall NPCs
+  # ===================
+  paladin_trainer:
+    name: "Sir Gareth the Radiant"
+    description: "A noble knight in gleaming armor, radiating an aura of divine protection."
+    level: 20
+    health: 280
+    damage: 30
+    armor: 15
+    experience: 0
+    aggressive: false
+    attackable: false
+    trainer_class: "paladin"
+    dialogue:
+      - "Honor, duty, sacrifice - these are the pillars of the paladin's path."
+    locations:
+      - "castle_hall"
+    respawn_median: 0
+    respawn_variation: 0

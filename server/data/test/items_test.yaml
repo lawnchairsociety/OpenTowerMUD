@@ -154,6 +154,42 @@ items:
     damage_dice: "1d4"
     two_handed: true
 
+  dagger:
+    name: "dagger"
+    description: "A small but sharp dagger, perfect for quick strikes"
+    weight: 1.0
+    type: "weapon"
+    value: 15
+    slot: "weapon"
+    damage: 3
+    damage_dice: "1d4"
+    weapon_type: "finesse"
+    two_handed: false
+
+  wooden_club:
+    name: "wooden club"
+    description: "A simple wooden club, effective if unrefined"
+    weight: 4.0
+    type: "weapon"
+    value: 5
+    slot: "weapon"
+    damage: 3
+    damage_dice: "1d4"
+    weapon_type: "simple"
+    two_handed: false
+
+  shortbow:
+    name: "shortbow"
+    description: "A compact bow suited for hunting and skirmishing"
+    weight: 2.0
+    type: "weapon"
+    value: 25
+    slot: "weapon"
+    damage: 4
+    damage_dice: "1d6"
+    weapon_type: "ranged"
+    two_handed: true
+
   # ===================
   # Armor
   # ===================
@@ -174,6 +210,16 @@ items:
     value: 15
     slot: "head"
     armor: 1
+
+  cloth_robe:
+    name: "cloth robe"
+    description: "A simple cloth robe that offers minimal protection but allows free movement for spellcasting"
+    weight: 3.0
+    type: "armor"
+    value: 10
+    slot: "body"
+    armor: 1
+    armor_type: "none"
 
   # ===================
   # Misc items

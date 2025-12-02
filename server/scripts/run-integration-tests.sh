@@ -95,6 +95,7 @@ echo "Server logs: $SERVER_LOG"
     --port "$SERVER_PORT" \
     --db "$TEST_DB" \
     --seed 42 \
+    --npcs data/test/npcs_test.yaml \
     --mobs data/test/mobs_test.yaml \
     --items data/test/items_test.yaml \
     --chatfilter data/test/chat_filter_test.yaml \

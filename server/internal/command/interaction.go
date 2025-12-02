@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/lawnchairsociety/opentowermud/server/internal/class"
 	"github.com/lawnchairsociety/opentowermud/server/internal/logger"
 	"github.com/lawnchairsociety/opentowermud/server/internal/npc"
 	"github.com/lawnchairsociety/opentowermud/server/internal/world"
@@ -437,5 +438,191 @@ func executePray(c *Command, p PlayerInterface) string {
 		return fmt.Sprintf("You kneel before the altar and pray. A warm, golden light washes over you, healing your wounds. (+%d HP)", healAmount)
 	} else {
 		return fmt.Sprintf("You kneel before the altar and pray. A calm energy fills your mind, restoring your spirit. (+%d Mana)", manaAmount)
+	}
+}
+
+// TrainingCost is the base cost in gold to learn a new class
+const TrainingCost = 500
+
+// executeTrain handles learning a new class from a trainer NPC
+func executeTrain(c *Command, p PlayerInterface) string {
+	// Check player state
+	state := p.GetState()
+	if state == "Fighting" {
+		return "You can't train while fighting!"
+	}
+	if state == "Sleeping" {
+		return "You are asleep and can't train. Wake up first."
+	}
+
+	room := p.GetCurrentRoom()
+	if room == nil {
+		return "You are nowhere."
+	}
+
+	worldRoom, ok := room.(*world.Room)
+	if !ok {
+		return "Internal error: invalid room type"
+	}
+
+	// Find a trainer NPC in the room
+	var trainer *npc.NPC
+	for _, n := range worldRoom.GetNPCs() {
+		if n.IsTrainer() && n.IsAlive() {
+			trainer = n
+			break
+		}
+	}
+
+	if trainer == nil {
+		return "There is no class trainer here.\n\nClass trainers can be found throughout the city:\n  Warrior - Training Hall\n  Mage - Royal Library\n  Cleric - Temple\n  Rogue - Tavern\n  Ranger - North Gate\n  Paladin - Castle Hall"
+	}
+
+	trainerClassName := trainer.GetTrainerClass()
+
+	// Check if player can multiclass at all
+	if !p.CanMulticlass() {
+		return fmt.Sprintf("%s looks at you appraisingly.\n\n\"%s, you must reach level %d in your primary class before I can teach you a new path. Return when you have proven yourself.\"\n\n(Multiclassing unlocks at primary class level %d)",
+			trainer.GetName(), p.GetName(), class.MinLevelForMulticlass, class.MinLevelForMulticlass)
+	}
+
+	// Check if player already has this class
+	classLevels := p.GetAllClassLevelsMap()
+	if level, has := classLevels[trainerClassName]; has && level > 0 {
+		return fmt.Sprintf("%s nods approvingly.\n\n\"You already walk the path of the %s, %s. Use 'class switch %s' if you wish to focus your training on this discipline.\"",
+			trainer.GetName(), strings.Title(trainerClassName), p.GetName(), trainerClassName)
+	}
+
+	// Check if player meets requirements for this class
+	canMulti, reason := p.CanMulticlassInto(trainerClassName)
+	if !canMulti {
+		return fmt.Sprintf("%s examines you carefully.\n\n\"%s\"\n\n%s",
+			trainer.GetName(), getTrainerRejectionDialogue(trainerClassName), reason)
+	}
+
+	// Check gold
+	if p.GetGold() < TrainingCost {
+		return fmt.Sprintf("%s strokes their chin thoughtfully.\n\n\"Training in the ways of the %s requires dedication and... resources. %d gold, to be precise.\"\n\nYou have only %d gold.",
+			trainer.GetName(), strings.Title(trainerClassName), TrainingCost, p.GetGold())
+	}
+
+	// Deduct gold and add the class
+	p.SpendGold(TrainingCost)
+	err := p.AddNewClass(trainerClassName)
+	if err != nil {
+		// Refund on error
+		p.AddGold(TrainingCost)
+		return fmt.Sprintf("Something went wrong: %v", err)
+	}
+
+	// Save the player after learning a new class
+	server, ok := p.GetServer().(ServerInterface)
+	if ok {
+		if saveErr := server.SavePlayer(p); saveErr != nil {
+			logger.Warning("Failed to save player after learning class",
+				"player", p.GetName(),
+				"class", trainerClassName,
+				"error", saveErr)
+		}
+	}
+
+	return fmt.Sprintf(`%s
+
+%s
+
+You are now a %s!
+
+Your new class starts at level 1. XP is now being earned for %s.
+Use 'class' to view your classes, or 'class switch <class>' to change which class gains XP.
+
+(-%d gold, remaining: %d)`,
+		getTrainerAcceptanceDialogue(trainer.GetName(), trainerClassName, p.GetName()),
+		getClassWelcomeMessage(trainerClassName),
+		strings.Title(trainerClassName),
+		strings.Title(trainerClassName),
+		TrainingCost, p.GetGold())
+}
+
+// getTrainerRejectionDialogue returns flavor text when a trainer rejects a player
+func getTrainerRejectionDialogue(className string) string {
+	switch className {
+	case "warrior":
+		return "Your body lacks the strength required for a warrior's training. Build your muscles first."
+	case "mage":
+		return "I sense your mind is... underdeveloped for arcane study. Sharpen your intellect."
+	case "cleric":
+		return "The divine requires wisdom to channel. Your spirit is not yet ready."
+	case "rogue":
+		return "You move like a stone golem. Work on your agility before seeking my teachings."
+	case "ranger":
+		return "A ranger needs both quick reflexes and keen perception. You lack these qualities."
+	case "paladin":
+		return "A paladin requires both strength of arm and force of personality. You fall short."
+	default:
+		return "You do not meet the requirements to learn this class."
+	}
+}
+
+// getTrainerAcceptanceDialogue returns flavor text when a trainer accepts a player
+func getTrainerAcceptanceDialogue(trainerName, className, playerName string) string {
+	switch className {
+	case "warrior":
+		return fmt.Sprintf("%s grips your forearm firmly.\n\n\"Welcome to the path of iron and blood, %s. Your muscles will ache, your bones will bruise, but you will emerge unbreakable.\"", trainerName, playerName)
+	case "mage":
+		return fmt.Sprintf("%s's eyes glow with arcane power.\n\n\"The weave of magic opens to you now, %s. Feel the energy of the world flowing through your mind. Use it wisely... or not. I find destruction quite educational.\"", trainerName, playerName)
+	case "cleric":
+		return fmt.Sprintf("%s places a gentle hand on your head.\n\n\"The divine light shines upon you, %s. You are now a vessel for powers beyond mortal understanding. Go forth and heal the world... or smite the wicked.\"", trainerName, playerName)
+	case "rogue":
+		return fmt.Sprintf("%s seems to appear from nowhere.\n\n\"Clever choice, %s. The shadows welcome you. Remember: the best fight is the one your enemy never sees coming.\"", trainerName, playerName)
+	case "ranger":
+		return fmt.Sprintf("%s whistles, and the wolf at their feet howls approval.\n\n\"The wilds accept you, %s. Every beast, every track, every rustle in the undergrowth will speak to you now. Listen well.\"", trainerName, playerName)
+	case "paladin":
+		return fmt.Sprintf("%s draws their blade and touches it to your shoulder.\n\n\"Rise, %s, champion of light. The oath is sworn. Your blade shall be the bane of darkness, your shield the hope of the innocent.\"", trainerName, playerName)
+	default:
+		return fmt.Sprintf("%s nods approvingly.\n\n\"You have begun your training as a %s, %s.\"", trainerName, strings.Title(className), playerName)
+	}
+}
+
+// getClassWelcomeMessage returns information about what the new class provides
+func getClassWelcomeMessage(className string) string {
+	switch className {
+	case "warrior":
+		return `As a Warrior, you gain:
+  - Proficiency with all weapons and heavy armor
+  - High hit die (d10) for maximum HP
+  - Melee damage bonuses as you level
+  - Second Wind ability at higher levels`
+	case "mage":
+		return `As a Mage, you gain:
+  - Access to powerful damage spells (fireball, ice storm, meteor)
+  - Intelligence-based spellcasting
+  - High mana pool growth
+  - Arcane Shield at higher levels`
+	case "cleric":
+		return `As a Cleric, you gain:
+  - Access to healing spells (heal, cure wounds, resurrection)
+  - Wisdom-based spellcasting
+  - Medium armor proficiency
+  - Divine protection abilities at higher levels`
+	case "rogue":
+		return `As a Rogue, you gain:
+  - Sneak Attack bonus damage
+  - Finesse weapon proficiency (DEX for attack/damage)
+  - Light armor proficiency
+  - Evasion and assassination abilities at higher levels`
+	case "ranger":
+		return `As a Ranger, you gain:
+  - Ranged weapon proficiency and damage bonuses
+  - Favored Enemy bonus against beasts
+  - Nature spells (hunter's mark, spike growth)
+  - Medium armor proficiency`
+	case "paladin":
+		return `As a Paladin, you gain:
+  - Smite ability for extra radiant damage
+  - Bonus damage against undead and demons
+  - Access to healing spells
+  - Heavy armor and martial weapon proficiency`
+	default:
+		return fmt.Sprintf("You have learned the ways of the %s.", strings.Title(className))
 	}
 }

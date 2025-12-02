@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/lawnchairsociety/opentowermud/server/internal/class"
 	"github.com/lawnchairsociety/opentowermud/server/internal/database"
 	"github.com/lawnchairsociety/opentowermud/server/internal/stats"
 )
@@ -204,7 +205,13 @@ func (s *Server) handleCharacterSelection(conn net.Conn, scanner *bufio.Scanner,
 			conn.Write([]byte("You have no characters.\n"))
 		} else {
 			for i, c := range characters {
-				conn.Write([]byte(fmt.Sprintf("  [%d] %s (Level %d, %s)\n", i+1, c.Name, c.Level, c.RoomID)))
+				classDisplay := c.PrimaryClass
+				if classDisplay == "" {
+					classDisplay = "Warrior"
+				} else {
+					classDisplay = strings.Title(classDisplay)
+				}
+				conn.Write([]byte(fmt.Sprintf("  [%d] %s - Level %d %s\n", i+1, c.Name, c.Level, classDisplay)))
 			}
 		}
 
@@ -293,14 +300,20 @@ func (s *Server) handleCharacterCreation(conn net.Conn, scanner *bufio.Scanner, 
 		return nil, errors.New("name taken")
 	}
 
-	// Assign ability scores using the standard array
-	scores, err := s.handleAbilityScoreAssignment(conn, scanner)
+	// Select class
+	selectedClass, err := s.handleClassSelection(conn, scanner)
 	if err != nil {
 		return nil, err
 	}
 
-	// Create character with assigned ability scores
-	character, err := s.db.CreateCharacterWithStats(account.ID, name,
+	// Assign ability scores using the standard array
+	scores, err := s.handleAbilityScoreAssignment(conn, scanner, selectedClass)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create character with assigned ability scores and class
+	character, err := s.db.CreateCharacterWithClass(account.ID, name, selectedClass,
 		scores.Strength, scores.Dexterity, scores.Constitution,
 		scores.Intelligence, scores.Wisdom, scores.Charisma)
 	if err != nil {
@@ -312,15 +325,72 @@ func (s *Server) handleCharacterCreation(conn net.Conn, scanner *bufio.Scanner, 
 		return nil, err
 	}
 
-	conn.Write([]byte(fmt.Sprintf("\nCharacter '%s' created!\n", character.Name)))
+	conn.Write([]byte(fmt.Sprintf("\nCharacter '%s' the %s created!\n", character.Name, strings.Title(selectedClass))))
 	return character, nil
 }
 
+// handleClassSelection guides the player through choosing a class
+func (s *Server) handleClassSelection(conn net.Conn, scanner *bufio.Scanner) (string, error) {
+	conn.Write([]byte("\n--- Choose Your Class ---\n\n"))
+
+	// Display all classes with descriptions
+	allClasses := class.AllClasses()
+	for i, c := range allClasses {
+		def := class.GetDefinition(c)
+		if def == nil {
+			continue
+		}
+		conn.Write([]byte(fmt.Sprintf("  [%d] %s\n", i+1, c.String())))
+		conn.Write([]byte(fmt.Sprintf("      %s\n", def.Description)))
+		conn.Write([]byte(fmt.Sprintf("      Hit Die: d%d | Primary Stat: %s\n\n", def.HitDie, def.PrimaryStat)))
+	}
+
+	for {
+		conn.Write([]byte("Enter class number (1-6): "))
+
+		if !scanner.Scan() {
+			return "", errors.New("connection closed")
+		}
+		input := strings.TrimSpace(scanner.Text())
+
+		// Parse the input
+		choice, err := strconv.Atoi(input)
+		if err != nil || choice < 1 || choice > len(allClasses) {
+			conn.Write([]byte("Please enter a number from 1 to 6.\n"))
+			continue
+		}
+
+		selectedClass := allClasses[choice-1]
+		def := class.GetDefinition(selectedClass)
+
+		// Confirm selection
+		conn.Write([]byte(fmt.Sprintf("\nYou selected: %s\n", selectedClass.String())))
+		conn.Write([]byte(fmt.Sprintf("  %s\n", def.Description)))
+		conn.Write([]byte("\nIs this correct? (Y/N): "))
+
+		if !scanner.Scan() {
+			return "", errors.New("connection closed")
+		}
+		confirm := strings.ToLower(strings.TrimSpace(scanner.Text()))
+
+		if confirm == "y" || confirm == "yes" {
+			return string(selectedClass), nil
+		}
+
+		conn.Write([]byte("\n"))
+	}
+}
+
 // handleAbilityScoreAssignment guides the player through assigning ability scores
-func (s *Server) handleAbilityScoreAssignment(conn net.Conn, scanner *bufio.Scanner) (*stats.AbilityScores, error) {
+func (s *Server) handleAbilityScoreAssignment(conn net.Conn, scanner *bufio.Scanner, selectedClass string) (*stats.AbilityScores, error) {
 	conn.Write([]byte("\n--- Assign Ability Scores ---\n"))
 	conn.Write([]byte("You have these values to assign: 15, 14, 13, 12, 10, 8\n"))
 	conn.Write([]byte("Each value can only be used once.\n\n"))
+
+	// Show class-specific recommendations
+	conn.Write([]byte(fmt.Sprintf("Recommended stats for %s:\n", strings.Title(selectedClass))))
+	conn.Write([]byte(getStatRecommendation(selectedClass)))
+	conn.Write([]byte("\n"))
 
 	// Copy the standard array so we can track which values are still available
 	available := make([]int, len(stats.StandardArray))
@@ -447,4 +517,24 @@ func (s *Server) IsCharacterOnline(name string) bool {
 		}
 	}
 	return false
+}
+
+// getStatRecommendation returns stat recommendations for a given class
+func getStatRecommendation(className string) string {
+	switch className {
+	case "warrior":
+		return "  Primary: STR (attack/damage) | Secondary: CON (HP)\n  Suggested: STR 15, CON 14, DEX 13"
+	case "mage":
+		return "  Primary: INT (spellcasting) | Secondary: CON (HP)\n  Suggested: INT 15, CON 14, DEX 13"
+	case "cleric":
+		return "  Primary: WIS (spellcasting) | Secondary: CON (HP)\n  Suggested: WIS 15, CON 14, STR 13"
+	case "rogue":
+		return "  Primary: DEX (attack/damage) | Secondary: CON (HP)\n  Suggested: DEX 15, CON 14, INT 13"
+	case "ranger":
+		return "  Primary: DEX (attack) | Secondary: WIS (spells), CON (HP)\n  Suggested: DEX 15, WIS 14, CON 13"
+	case "paladin":
+		return "  Primary: STR (attack) | Secondary: CHA (spells), CON (HP)\n  Suggested: STR 15, CHA 14, CON 13"
+	default:
+		return "  No specific recommendations."
+	}
 }

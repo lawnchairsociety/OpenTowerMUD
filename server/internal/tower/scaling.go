@@ -59,24 +59,6 @@ func GetMobTier(floor int) int {
 	}
 }
 
-// GetMobTierName returns a human-readable name for the mob tier
-func GetMobTierName(tier int) string {
-	switch tier {
-	case 0:
-		return "Safe"
-	case 1:
-		return "Easy"
-	case 2:
-		return "Medium"
-	case 3:
-		return "Hard"
-	case 4:
-		return "Elite"
-	default:
-		return "Unknown"
-	}
-}
-
 // GetLootTier returns the loot tier for a given floor
 // Higher tiers have better loot drops
 func GetLootTier(floor int) int {
@@ -94,35 +76,6 @@ func GetLootTier(floor int) int {
 	default:
 		return 5 // Legendary loot
 	}
-}
-
-// GetLootTierName returns a human-readable name for the loot tier
-func GetLootTierName(tier int) string {
-	switch tier {
-	case 0:
-		return "None"
-	case 1:
-		return "Common"
-	case 2:
-		return "Uncommon"
-	case 3:
-		return "Rare"
-	case 4:
-		return "Epic"
-	case 5:
-		return "Legendary"
-	default:
-		return "Unknown"
-	}
-}
-
-// RecommendedLevel returns the recommended player level for a floor
-func RecommendedLevel(floor int) int {
-	if floor <= 0 {
-		return 1
-	}
-	// Roughly 1 level per 2 floors
-	return 1 + (floor / 2)
 }
 
 // IsBossFloor returns true if the floor number is a boss floor

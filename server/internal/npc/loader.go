@@ -39,6 +39,8 @@ type NPCDefinition struct {
 	Dialogue         []string        `yaml:"dialogue"`       // Lines the NPC can say when talked to
 	Tier             int             `yaml:"tier"`           // Mob tier (1=easy, 2=medium, 3=hard, 4=elite)
 	Boss             bool            `yaml:"boss"`           // Is this a boss mob?
+	MobType          string          `yaml:"mob_type"`       // Creature type: beast, undead, humanoid, demon, construct, giant
+	TrainerClass     string          `yaml:"trainer_class"`  // Class this NPC trains (warrior, mage, cleric, rogue, ranger, paladin)
 	Locations        []string        `yaml:"locations"`      // Room IDs where this NPC spawns
 	RespawnMedian    int             `yaml:"respawn_median"`    // Median respawn time in seconds
 	RespawnVariation int             `yaml:"respawn_variation"` // Variation in respawn time (+/- seconds)
@@ -100,6 +102,14 @@ func CreateNPCFromDefinition(def NPCDefinition, roomID string) *NPC {
 	if len(def.Dialogue) > 0 {
 		npc.SetDialogue(def.Dialogue)
 	}
+	// Set mob type for class bonuses (favored enemy, smite, etc.)
+	if def.MobType != "" {
+		npc.SetMobType(StringToMobType(def.MobType))
+	}
+	// Set trainer class for multiclassing NPCs
+	if def.TrainerClass != "" {
+		npc.SetTrainerClass(def.TrainerClass)
+	}
 	// Convert YAML loot table to NPC loot table
 	if len(def.LootTable) > 0 {
 		lootTable := make([]LootEntry, len(def.LootTable))
@@ -123,6 +133,26 @@ func CreateNPCFromDefinition(def NPCDefinition, roomID string) *NPC {
 		npc.SetShopInventory(shopInventory)
 	}
 	return npc
+}
+
+// StringToMobType converts a string to a MobType
+func StringToMobType(s string) MobType {
+	switch s {
+	case "beast":
+		return MobTypeBeast
+	case "humanoid":
+		return MobTypeHumanoid
+	case "undead":
+		return MobTypeUndead
+	case "demon":
+		return MobTypeDemon
+	case "construct":
+		return MobTypeConstruct
+	case "giant":
+		return MobTypeGiant
+	default:
+		return MobTypeUnknown
+	}
 }
 
 // GetNPCsByLocation returns a map of room IDs to NPCs that should spawn there

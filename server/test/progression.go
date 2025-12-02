@@ -155,3 +155,117 @@ func TestScoreCommand(serverAddr string) TestResult {
 
 	return TestResult{Name: testName, Passed: true, Message: "Score command displays player summary"}
 }
+
+// TestClassCommand tests viewing class information
+func TestClassCommand(serverAddr string) TestResult {
+	const testName = "Class Command"
+
+	name := uniqueName("ClassTest")
+	client, err := testclient.NewTestClient(name, serverAddr)
+	if err != nil {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Connection failed: %v", err)}
+	}
+	defer client.Close()
+
+	time.Sleep(300 * time.Millisecond)
+
+	logAction(testName, "Checking class...")
+	client.ClearMessages()
+	client.SendCommand("class")
+	time.Sleep(300 * time.Millisecond)
+
+	messages := client.GetMessages()
+	fullOutput := strings.Join(messages, " ")
+
+	// Test client creates clerics by default
+	hasClass := strings.Contains(fullOutput, "Cleric") || strings.Contains(fullOutput, "cleric")
+	hasLevel := strings.Contains(fullOutput, "Level") || strings.Contains(fullOutput, "level")
+	logResult(testName, hasClass, "Class name displayed")
+	logResult(testName, hasLevel, "Class level displayed")
+
+	if !hasClass {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Class command failed to show class. Got: %v", messages)}
+	}
+
+	return TestResult{Name: testName, Passed: true, Message: "Class command shows class information"}
+}
+
+// TestStartingEquipment tests that new players receive class-appropriate starting gear
+func TestStartingEquipment(serverAddr string) TestResult {
+	const testName = "Starting Equipment"
+
+	name := uniqueName("GearTest")
+	client, err := testclient.NewTestClient(name, serverAddr)
+	if err != nil {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Connection failed: %v", err)}
+	}
+	defer client.Close()
+
+	time.Sleep(300 * time.Millisecond)
+
+	logAction(testName, "Checking inventory for starting gear...")
+	client.ClearMessages()
+	client.SendCommand("inventory")
+	time.Sleep(300 * time.Millisecond)
+
+	messages := client.GetMessages()
+	fullOutput := strings.Join(messages, " ")
+
+	// Clerics should start with wooden club, leather armor, and bandages
+	hasWeapon := strings.Contains(fullOutput, "wooden club") || strings.Contains(fullOutput, "club")
+	hasArmor := strings.Contains(fullOutput, "leather armor") || strings.Contains(fullOutput, "armor")
+	logResult(testName, hasWeapon, "Has starting weapon")
+	logResult(testName, hasArmor, "Has starting armor")
+
+	if !hasWeapon && !hasArmor {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("No starting equipment found. Got: %v", messages)}
+	}
+
+	return TestResult{Name: testName, Passed: true, Message: "New players receive starting equipment"}
+}
+
+// TestLookAtPlayer tests looking at another player shows class info
+func TestLookAtPlayer(serverAddr string) TestResult {
+	const testName = "Look At Player"
+
+	name1 := uniqueName("Looker")
+	name2 := uniqueName("Target")
+
+	client1, err1 := testclient.NewTestClient(name1, serverAddr)
+	if err1 != nil {
+		return TestResult{Name: testName, Passed: false, Message: "Failed to connect looker"}
+	}
+	defer client1.Close()
+
+	client2, err2 := testclient.NewTestClient(name2, serverAddr)
+	if err2 != nil {
+		return TestResult{Name: testName, Passed: false, Message: "Failed to connect target"}
+	}
+	defer client2.Close()
+
+	time.Sleep(500 * time.Millisecond)
+
+	// Look at the other player
+	logAction(testName, fmt.Sprintf("Looking at %s...", name2))
+	client1.ClearMessages()
+	client1.SendCommand(fmt.Sprintf("look %s", name2))
+	time.Sleep(300 * time.Millisecond)
+
+	messages := client1.GetMessages()
+	fullOutput := strings.Join(messages, " ")
+
+	// Should show name, level, class, and health status
+	hasName := strings.Contains(fullOutput, name2)
+	hasClass := strings.Contains(fullOutput, "Cleric") || strings.Contains(fullOutput, "cleric")
+	logResult(testName, hasName, "Shows player name")
+	logResult(testName, hasClass, "Shows player class")
+
+	if !hasName {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Player name not shown. Got: %v", messages)}
+	}
+	if !hasClass {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Player class not shown. Got: %v", messages)}
+	}
+
+	return TestResult{Name: testName, Passed: true, Message: "Looking at player shows name, class, and health"}
+}

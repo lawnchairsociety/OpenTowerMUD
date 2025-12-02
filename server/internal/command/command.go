@@ -141,6 +141,19 @@ type PlayerInterface interface {
 	AddIgnore(playerName string)
 	RemoveIgnore(playerName string)
 	GetIgnoreList() []string
+	// Class/proficiency methods
+	CanEquipItem(item *items.Item) (bool, string) // Returns (canEquip, reason)
+	GetPrimaryClassName() string                  // Returns the primary class display name
+	// Class-based spell access
+	CanCastSpellForClass(allowedClasses []string, requiredLevel int) bool
+	GetAllClassLevelsMap() map[string]int
+	// Multiclass methods
+	GetActiveClassName() string     // Returns the active class display name
+	GetClassLevelsSummary() string  // Returns a formatted string of all class levels
+	CanMulticlass() bool            // Returns true if player can multiclass (primary >= 10)
+	CanMulticlassInto(className string) (bool, string) // Returns (canMulticlass, reason)
+	AddNewClass(className string) error               // Add a new class at level 1
+	SwitchActiveClass(className string) error         // Switch which class gains XP
 }
 
 // PlayerInfo contains detailed information about an online player (for admin commands)
@@ -288,6 +301,7 @@ var commandRegistry = map[string]CommandHandler{
 	"chat":   executeTalk,
 	"unlock": executeUnlock,
 	"pray":   executePray,
+	"train":  executeTrain,
 
 	// Character info commands
 	"level":      executeLevel,
@@ -298,6 +312,8 @@ var commandRegistry = map[string]CommandHandler{
 	"abilities":  executeScore, // Alias for score
 	"attributes": executeScore, // Alias for score
 	"password":   executePassword,
+	"class":      executeClass,
+	"classes":    executeClass, // Alias for class
 
 	// Admin commands
 	"admin": executeAdmin,

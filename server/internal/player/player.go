@@ -8,9 +8,11 @@ import (
 	"time"
 
 	"github.com/lawnchairsociety/opentowermud/server/internal/antispam"
+	"github.com/lawnchairsociety/opentowermud/server/internal/class"
 	"github.com/lawnchairsociety/opentowermud/server/internal/command"
 	"github.com/lawnchairsociety/opentowermud/server/internal/items"
 	"github.com/lawnchairsociety/opentowermud/server/internal/leveling"
+	"github.com/lawnchairsociety/opentowermud/server/internal/npc"
 	"github.com/lawnchairsociety/opentowermud/server/internal/stats"
 	"github.com/lawnchairsociety/opentowermud/server/internal/world"
 )
@@ -80,8 +82,8 @@ type Player struct {
 	CharacterID int64 // Database character ID
 	// Admin fields
 	isAdmin bool // Cached admin status (set on login)
-	// Tower portal system - floors visited
-	visitedPortals map[int]bool // Set of floor numbers with discovered portals
+	// Tower portal system - discovered floors
+	discoveredPortals map[int]bool // Set of floor numbers with discovered portals
 	// Magic system
 	learnedSpells  map[string]bool      // spell_id -> learned
 	spellCooldowns map[string]time.Time // spell_id -> cooldown expires at
@@ -92,6 +94,9 @@ type Player struct {
 	Intelligence int
 	Wisdom       int
 	Charisma     int
+	// Class system
+	classLevels *class.ClassLevels // Levels in each class
+	activeClass class.Class        // Which class currently gains XP
 	// Anti-spam tracking
 	spamTracker *antispam.Tracker
 	// Ignore list - players whose messages we won't see
@@ -99,6 +104,10 @@ type Player struct {
 }
 
 func NewPlayer(name string, conn net.Conn, world *world.World, server ServerInterface) *Player {
+	// Default to Warrior class
+	startingClass := class.Warrior
+	classLevels := class.NewClassLevels(startingClass)
+
 	p := &Player{
 		Name:           name,
 		conn:           conn,
@@ -112,15 +121,15 @@ func NewPlayer(name string, conn net.Conn, world *world.World, server ServerInte
 		MaxCarryWeight: 100.0, // Default carry capacity
 		Health:         100,
 		MaxHealth:      100,
-		Mana:           100,
-		MaxMana:        100,
+		Mana:           0,
+		MaxMana:        0,
 		Level:          1,
 		Experience:     0,
 		State:          StateStanding, // Default state
 		InCombat:       false,
 		CombatTarget:   "",
 		CurrentRoom:    world.GetStartingRoom(),
-		visitedPortals: map[int]bool{0: true}, // Ground floor always available
+		discoveredPortals: map[int]bool{0: true}, // Ground floor always available
 		learnedSpells:  make(map[string]bool),
 		spellCooldowns: make(map[string]time.Time),
 		// Default ability scores (all 10s)
@@ -130,6 +139,9 @@ func NewPlayer(name string, conn net.Conn, world *world.World, server ServerInte
 		Intelligence: 10,
 		Wisdom:       10,
 		Charisma:     10,
+		// Class system
+		classLevels: classLevels,
+		activeClass: startingClass,
 	}
 
 	// Initialize anti-spam tracker with config from server
@@ -616,9 +628,17 @@ func (p *Player) GetCombatTarget() string {
 	return p.CombatTarget
 }
 
-// TakeDamage applies damage to the player and returns actual damage taken
-func (p *Player) TakeDamage(damage int) int {
-	// Calculate total armor from equipped items
+// isWearingHeavyArmor returns true if the player has heavy armor equipped on body slot
+func (p *Player) isWearingHeavyArmor() bool {
+	if bodyArmor, hasBody := p.Equipment[items.SlotBody]; hasBody {
+		return bodyArmor.ArmorType == "heavy"
+	}
+	return false
+}
+
+// GetEffectiveArmor returns total armor including class bonuses
+func (p *Player) GetEffectiveArmor() int {
+	// Base armor from equipment
 	totalArmor := 0
 	for _, item := range p.Equipment {
 		if item != nil {
@@ -626,10 +646,53 @@ func (p *Player) TakeDamage(damage int) int {
 		}
 	}
 
+	// Warrior: +1 AC when wearing heavy armor (level 10+)
+	if p.HasClass(class.Warrior) && p.GetClassLevel(class.Warrior) >= 10 && p.isWearingHeavyArmor() {
+		totalArmor += 1
+	}
+
+	// Mage: Arcane Shield +2 AC (level 15+)
+	if p.HasClass(class.Mage) && p.GetClassLevel(class.Mage) >= 15 {
+		totalArmor += 2
+	}
+
+	// Cleric: Divine Protection +1 AC (level 10+)
+	if p.HasClass(class.Cleric) && p.GetClassLevel(class.Cleric) >= 10 {
+		totalArmor += 1
+	}
+
+	return totalArmor
+}
+
+// TakeDamage applies damage to the player and returns actual damage taken
+// Includes class passive effects (evasion, sanctuary, armor bonuses)
+func (p *Player) TakeDamage(damage int) int {
+	// Rogue: Evasion - 10% chance to completely avoid damage (level 15+)
+	if p.HasClass(class.Rogue) && p.GetClassLevel(class.Rogue) >= 15 {
+		if stats.D100() <= 10 {
+			// Evasion triggered - no damage taken
+			return 0
+		}
+	}
+
+	// Get effective armor including class bonuses
+	totalArmor := p.GetEffectiveArmor()
+
 	// Apply armor reduction
 	actualDamage := damage - totalArmor
 	if actualDamage < 1 {
 		actualDamage = 1 // Minimum 1 damage
+	}
+
+	// Cleric: Sanctuary - 25% damage reduction when below 25% HP (level 20+)
+	if p.HasClass(class.Cleric) && p.GetClassLevel(class.Cleric) >= 20 {
+		hpPercent := float64(p.Health) / float64(p.MaxHealth) * 100
+		if hpPercent < 25 {
+			actualDamage = actualDamage * 75 / 100 // 25% reduction
+			if actualDamage < 1 {
+				actualDamage = 1
+			}
+		}
 	}
 
 	p.Health -= actualDamage
@@ -662,57 +725,210 @@ func (p *Player) RestoreManaToFull() int {
 	return restored
 }
 
+// getWeaponAttackMod returns the appropriate attack modifier for the equipped weapon
+// Finesse weapons use the higher of STR or DEX
+// Ranged weapons always use DEX
+// Other weapons use STR
+func (p *Player) getWeaponAttackMod() (int, string) {
+	strMod := p.GetStrengthMod()
+	dexMod := p.GetDexterityMod()
+
+	// Check equipped weapon
+	if weapon, hasWeapon := p.Equipment[items.SlotWeapon]; hasWeapon {
+		if weapon.IsRanged() {
+			return dexMod, "DEX"
+		}
+		if weapon.IsFinesse() {
+			// Finesse: use the higher of STR or DEX
+			if dexMod > strMod {
+				return dexMod, "DEX"
+			}
+			return strMod, "STR"
+		}
+	}
+
+	// Default to STR for melee/unarmed
+	return strMod, "STR"
+}
+
 // GetAttackDamage returns the damage this player deals in combat
 // Uses dice rolling for weapons with damage_dice, falls back to static damage
 func (p *Player) GetAttackDamage() int {
-	strMod := p.GetStrengthMod()
+	// Get the appropriate modifier based on weapon type
+	attackMod, _ := p.getWeaponAttackMod()
 
 	// Check for equipped weapon with dice notation
 	if weapon, hasWeapon := p.Equipment[items.SlotWeapon]; hasWeapon {
 		if weapon.DamageDice != "" {
-			// Roll weapon dice + STR modifier
-			damage := stats.ParseDiceWithBonus(weapon.DamageDice, strMod)
+			// Roll weapon dice + attack modifier (STR or DEX)
+			damage := stats.ParseDiceWithBonus(weapon.DamageDice, attackMod)
 			if damage < 1 {
 				damage = 1
 			}
 			return damage
 		}
-		// Fallback to static damage + STR modifier
-		damage := weapon.Damage + strMod
+		// Fallback to static damage + attack modifier
+		damage := weapon.Damage + attackMod
 		if damage < 1 {
 			damage = 1
 		}
 		return damage
 	}
 
-	// Unarmed: 1d4 + STR modifier
-	damage := stats.ParseDiceWithBonus("1d4", strMod)
+	// Unarmed: 1d4 + STR modifier (always STR for unarmed)
+	damage := stats.ParseDiceWithBonus("1d4", p.GetStrengthMod())
 	if damage < 1 {
 		damage = 1
 	}
 	return damage
 }
 
-// RollAttack rolls a d20 + STR modifier for melee attack
+// RollAttack rolls a d20 + attack modifier for attack
+// Uses STR for melee, DEX for ranged, higher of STR/DEX for finesse
 // Returns the roll result and the breakdown string for display
 func (p *Player) RollAttack() (int, string) {
 	d20 := stats.D20()
-	strMod := p.GetStrengthMod()
-	total := d20 + strMod
+	attackMod, statName := p.getWeaponAttackMod()
+	total := d20 + attackMod
 
 	var breakdown string
-	if strMod >= 0 {
-		breakdown = fmt.Sprintf("d20+%d = %d", strMod, total)
+	if attackMod >= 0 {
+		breakdown = fmt.Sprintf("d20+%d(%s) = %d", attackMod, statName, total)
 	} else {
-		breakdown = fmt.Sprintf("d20%d = %d", strMod, total)
+		breakdown = fmt.Sprintf("d20%d(%s) = %d", attackMod, statName, total)
 	}
 
 	return total, breakdown
 }
 
+// GetAttackDamageAgainst calculates damage against a specific NPC target
+// This includes class-based damage bonuses:
+// - Warrior: +1 damage per 3 levels with melee weapons
+// - Rogue: Sneak attack (+1d6, +1d6 every 5 levels) - applied on first hit (caller handles this)
+// - Ranger: +2 damage with ranged weapons, +1 per 3 levels, +25% vs beasts (Favored Enemy)
+// - Paladin: +2 damage vs undead and demons
+func (p *Player) GetAttackDamageAgainst(target *npc.NPC, isSneakAttack bool) int {
+	baseDamage := p.GetAttackDamage()
+	bonusDamage := 0
+
+	// Get equipped weapon for weapon type checks
+	weapon, hasWeapon := p.Equipment[items.SlotWeapon]
+	isRanged := hasWeapon && weapon.IsRanged()
+	isMelee := !isRanged
+
+	// Warrior: +1 damage per 3 levels with melee weapons
+	if p.HasClass(class.Warrior) && isMelee {
+		warriorLevel := p.GetClassLevel(class.Warrior)
+		bonusDamage += warriorLevel / 3
+	}
+
+	// Ranger: +2 base damage with ranged, +1 per 3 levels
+	if p.HasClass(class.Ranger) && isRanged {
+		rangerLevel := p.GetClassLevel(class.Ranger)
+		bonusDamage += 2                // Base ranged bonus
+		bonusDamage += rangerLevel / 3  // Scaling bonus
+	}
+
+	// Ranger: Favored Enemy (+25% damage vs beasts)
+	if p.HasClass(class.Ranger) && target != nil && target.IsBeast() {
+		// Apply 25% bonus (round down)
+		favoredBonus := (baseDamage + bonusDamage) / 4
+		if favoredBonus < 1 {
+			favoredBonus = 1
+		}
+		bonusDamage += favoredBonus
+	}
+
+	// Paladin: +2 damage vs undead and demons
+	if p.HasClass(class.Paladin) && target != nil {
+		if target.IsUndead() || target.IsDemon() {
+			bonusDamage += 2
+		}
+	}
+
+	// Rogue: Sneak attack (+1d6, +1d6 every 5 levels)
+	if p.HasClass(class.Rogue) && isSneakAttack {
+		rogueLevel := p.GetClassLevel(class.Rogue)
+		sneakDice := 1 + (rogueLevel / 5) // 1d6 at level 1, 2d6 at level 5, etc.
+		for i := 0; i < sneakDice; i++ {
+			bonusDamage += stats.D6()
+		}
+	}
+
+	totalDamage := baseDamage + bonusDamage
+	if totalDamage < 1 {
+		totalDamage = 1
+	}
+
+	return totalDamage
+}
+
 // IsAlive returns true if the player has health remaining
 func (p *Player) IsAlive() bool {
 	return p.Health > 0
+}
+
+// GetPassiveCombatRegen returns HP regen per combat tick from class passives
+// Warrior: Second Wind - 1 HP per tick in combat (level 15+)
+func (p *Player) GetPassiveCombatRegen() int {
+	regen := 0
+
+	// Warrior: Second Wind - 1 HP per tick in combat (level 15+)
+	if p.HasClass(class.Warrior) && p.GetClassLevel(class.Warrior) >= 15 {
+		regen += 1
+	}
+
+	return regen
+}
+
+// GetPassiveOutOfCombatRegen returns HP regen per minute from class passives
+// Paladin: Lay on Hands - 5 HP per minute (level 15+)
+func (p *Player) GetPassiveOutOfCombatRegen() int {
+	regen := 0
+
+	// Paladin: Lay on Hands - 5 HP per minute out of combat (level 15+)
+	if p.HasClass(class.Paladin) && p.GetClassLevel(class.Paladin) >= 15 && !p.InCombat {
+		regen += 5
+	}
+
+	return regen
+}
+
+// ApplyPassiveRegen applies class-based passive regeneration
+// Returns the amount healed (0 if already at full health)
+func (p *Player) ApplyPassiveRegen(inCombat bool) int {
+	if p.Health >= p.MaxHealth {
+		return 0
+	}
+
+	var regen int
+	if inCombat {
+		regen = p.GetPassiveCombatRegen()
+	} else {
+		regen = p.GetPassiveOutOfCombatRegen()
+	}
+
+	if regen > 0 {
+		return p.Heal(regen)
+	}
+	return 0
+}
+
+// CanMultishot returns true if the player can trigger multishot (20% chance)
+// Ranger: Multishot - 20% chance to hit twice with ranged weapons (level 20+)
+func (p *Player) CanMultishot() bool {
+	if !p.HasClass(class.Ranger) || p.GetClassLevel(class.Ranger) < 20 {
+		return false
+	}
+
+	// Check if using ranged weapon
+	if weapon, hasWeapon := p.Equipment[items.SlotWeapon]; hasWeapon {
+		if weapon.IsRanged() {
+			return stats.D100() <= 20 // 20% chance
+		}
+	}
+
+	return false
 }
 
 // GainExperience adds experience points to the player and returns level-up info if leveled
@@ -734,9 +950,59 @@ func (p *Player) GainExperience(xp int) []leveling.LevelUpInfo {
 func (p *Player) levelUp() leveling.LevelUpInfo {
 	p.Level++
 
+	// Calculate HP gain based on active class hit die + CON modifier
+	def := p.GetActiveClassDefinition()
+	conMod := p.GetConstitutionMod()
+
+	// Roll hit die for HP (average for simplicity: (hitDie/2)+1)
+	// e.g., d10 = 6, d8 = 5, d6 = 4
+	var hpGain int
+	if def != nil {
+		hpGain = (def.HitDie / 2) + 1 + conMod
+	} else {
+		hpGain = leveling.HPPerLevel + conMod
+	}
+	if hpGain < 1 {
+		hpGain = 1 // Minimum 1 HP per level
+	}
+
+	// Calculate mana gain based on active class + casting stat modifier
+	var manaGain int
+	if def != nil {
+		manaGain = def.ManaPerLevel
+		switch p.activeClass {
+		case class.Mage:
+			manaGain += p.GetIntelligenceMod()
+		case class.Cleric, class.Ranger:
+			manaGain += p.GetWisdomMod()
+		case class.Paladin:
+			manaGain += p.GetCharismaMod()
+		case class.Rogue:
+			manaGain += p.GetIntelligenceMod()
+		}
+	} else {
+		manaGain = leveling.ManaPerLevel
+	}
+	if manaGain < 0 {
+		manaGain = 0
+	}
+
 	// Increase stats
-	p.MaxHealth += leveling.HPPerLevel
-	p.MaxMana += leveling.ManaPerLevel
+	p.MaxHealth += hpGain
+	p.MaxMana += manaGain
+
+	// Also gain a level in the active class
+	if p.classLevels != nil {
+		p.classLevels.GainLevel(p.activeClass)
+	}
+
+	// Warrior: +10% HP bonus at level 20 (one-time bonus)
+	// Check if we just hit level 20 as warrior
+	if p.activeClass == class.Warrior && p.GetClassLevel(class.Warrior) == 20 {
+		hpBonus := p.MaxHealth / 10 // 10% bonus
+		p.MaxHealth += hpBonus
+		hpGain += hpBonus // Include in level-up report
+	}
 
 	// Fully restore on level up
 	p.Health = p.MaxHealth
@@ -744,8 +1010,8 @@ func (p *Player) levelUp() leveling.LevelUpInfo {
 
 	return leveling.LevelUpInfo{
 		NewLevel: p.Level,
-		HPGain:   leveling.HPPerLevel,
-		ManaGain: leveling.ManaPerLevel,
+		HPGain:   hpGain,
+		ManaGain: manaGain,
 	}
 }
 
@@ -912,28 +1178,28 @@ func (p *Player) GetConnection() net.Conn {
 
 // DiscoverPortal marks a floor's portal as discovered
 func (p *Player) DiscoverPortal(floorNum int) {
-	if p.visitedPortals == nil {
-		p.visitedPortals = make(map[int]bool)
-		p.visitedPortals[0] = true // Ground floor always available
+	if p.discoveredPortals == nil {
+		p.discoveredPortals = make(map[int]bool)
+		p.discoveredPortals[0] = true // Ground floor always available
 	}
-	p.visitedPortals[floorNum] = true
+	p.discoveredPortals[floorNum] = true
 }
 
 // HasDiscoveredPortal returns true if the player has discovered the portal on a floor
 func (p *Player) HasDiscoveredPortal(floorNum int) bool {
-	if p.visitedPortals == nil {
+	if p.discoveredPortals == nil {
 		return floorNum == 0 // Ground floor always available
 	}
-	return p.visitedPortals[floorNum]
+	return p.discoveredPortals[floorNum]
 }
 
 // GetDiscoveredPortals returns a sorted list of floor numbers with discovered portals
 func (p *Player) GetDiscoveredPortals() []int {
-	if p.visitedPortals == nil {
+	if p.discoveredPortals == nil {
 		return []int{0}
 	}
-	floors := make([]int, 0, len(p.visitedPortals))
-	for floor := range p.visitedPortals {
+	floors := make([]int, 0, len(p.discoveredPortals))
+	for floor := range p.discoveredPortals {
 		floors = append(floors, floor)
 	}
 	// Sort floors
@@ -947,8 +1213,8 @@ func (p *Player) GetDiscoveredPortals() []int {
 	return floors
 }
 
-// GetVisitedPortalsString returns discovered portals as a comma-separated string (for persistence)
-func (p *Player) GetVisitedPortalsString() string {
+// GetDiscoveredPortalsString returns discovered portals as a comma-separated string (for persistence)
+func (p *Player) GetDiscoveredPortalsString() string {
 	floors := p.GetDiscoveredPortals()
 	strs := make([]string, len(floors))
 	for i, f := range floors {
@@ -957,12 +1223,12 @@ func (p *Player) GetVisitedPortalsString() string {
 	return strings.Join(strs, ",")
 }
 
-// SetVisitedPortals sets the discovered portals from a list (used when loading from database)
-func (p *Player) SetVisitedPortals(floors []int) {
-	p.visitedPortals = make(map[int]bool)
-	p.visitedPortals[0] = true // Ground floor always available
+// SetDiscoveredPortals sets the discovered portals from a list (used when loading from database)
+func (p *Player) SetDiscoveredPortals(floors []int) {
+	p.discoveredPortals = make(map[int]bool)
+	p.discoveredPortals[0] = true // Ground floor always available
 	for _, floor := range floors {
-		p.visitedPortals[floor] = true
+		p.discoveredPortals[floor] = true
 	}
 }
 
@@ -1047,6 +1313,41 @@ func (p *Player) UseMana(amount int) bool {
 	return true
 }
 
+// GetAllClassLevelsMap returns a map of class name -> level for spell access checking
+func (p *Player) GetAllClassLevelsMap() map[string]int {
+	result := make(map[string]int)
+	if p.classLevels == nil {
+		return result
+	}
+	for _, c := range p.classLevels.GetClasses() {
+		result[c.String()] = p.classLevels.GetLevel(c)
+	}
+	return result
+}
+
+// CanCastSpellForClass checks if this player can cast a spell based on their class levels.
+// The spell must be allowed for one of the player's classes at their current level.
+// allowedClasses: list of class names that can use this spell (empty = all)
+// requiredLevel: the level required in that class to use the spell
+func (p *Player) CanCastSpellForClass(allowedClasses []string, requiredLevel int) bool {
+	// If no class restrictions, check overall player level
+	if len(allowedClasses) == 0 {
+		return p.Level >= requiredLevel
+	}
+
+	// Check if any of the player's classes can use this spell
+	for _, allowedClass := range allowedClasses {
+		c, err := class.ParseClass(allowedClass)
+		if err != nil {
+			continue
+		}
+		if p.HasClass(c) && p.GetClassLevel(c) >= requiredLevel {
+			return true
+		}
+	}
+	return false
+}
+
 // TakeMagicDamage applies damage to the player without armor reduction (for spell damage).
 func (p *Player) TakeMagicDamage(damage int) int {
 	if damage < 1 {
@@ -1112,4 +1413,320 @@ func (p *Player) GetIgnoreList() []string {
 		list = append(list, name)
 	}
 	return list
+}
+
+// ==================== CLASS METHODS ====================
+
+// GetPrimaryClass returns the player's primary class
+func (p *Player) GetPrimaryClass() class.Class {
+	if p.classLevels == nil {
+		return class.Warrior
+	}
+	return p.classLevels.GetPrimaryClass()
+}
+
+// GetActiveClass returns the class currently gaining XP
+func (p *Player) GetActiveClass() class.Class {
+	return p.activeClass
+}
+
+// SetActiveClass changes which class gains XP
+func (p *Player) SetActiveClass(c class.Class) {
+	p.activeClass = c
+}
+
+// GetClassLevel returns the level in a specific class
+func (p *Player) GetClassLevel(c class.Class) int {
+	if p.classLevels == nil {
+		return 0
+	}
+	return p.classLevels.GetLevel(c)
+}
+
+// GetClassLevels returns the ClassLevels struct
+func (p *Player) GetClassLevels() *class.ClassLevels {
+	return p.classLevels
+}
+
+// SetClassLevels sets the ClassLevels struct (used when loading from DB)
+func (p *Player) SetClassLevels(cl *class.ClassLevels) {
+	p.classLevels = cl
+	if cl != nil {
+		p.activeClass = cl.GetPrimaryClass()
+	}
+}
+
+// HasClass returns true if the player has at least 1 level in a class
+func (p *Player) HasClass(c class.Class) bool {
+	if p.classLevels == nil {
+		return false
+	}
+	return p.classLevels.HasClass(c)
+}
+
+// GetEffectiveLevel returns the highest class level (used for scaling)
+func (p *Player) GetEffectiveLevel() int {
+	if p.classLevels == nil {
+		return p.Level
+	}
+	return p.classLevels.GetEffectiveLevel()
+}
+
+// GetClassDefinition returns the definition for the player's primary class
+func (p *Player) GetClassDefinition() *class.Definition {
+	return class.GetDefinition(p.GetPrimaryClass())
+}
+
+// GetActiveClassDefinition returns the definition for the player's active class
+func (p *Player) GetActiveClassDefinition() *class.Definition {
+	return class.GetDefinition(p.activeClass)
+}
+
+// HasArmorProficiency checks if the player can wear a specific armor type
+// Returns true if any of the player's classes has the proficiency
+func (p *Player) HasArmorProficiency(armorType class.ArmorType) bool {
+	if p.classLevels == nil {
+		return false
+	}
+	for _, c := range p.classLevels.GetClasses() {
+		def := class.GetDefinition(c)
+		if def != nil && def.HasArmorProficiency(armorType) {
+			return true
+		}
+	}
+	return false
+}
+
+// HasWeaponProficiency checks if the player can use a specific weapon type
+// Returns true if any of the player's classes has the proficiency
+func (p *Player) HasWeaponProficiency(weaponType class.WeaponType) bool {
+	if p.classLevels == nil {
+		return false
+	}
+	for _, c := range p.classLevels.GetClasses() {
+		def := class.GetDefinition(c)
+		if def != nil && def.HasWeaponProficiency(weaponType) {
+			return true
+		}
+	}
+	return false
+}
+
+// InitializeClassStats sets up HP and Mana based on class and stats
+// Should be called when creating a new character with a chosen class
+func (p *Player) InitializeClassStats(c class.Class) {
+	def := class.GetDefinition(c)
+	if def == nil {
+		return
+	}
+
+	// Set up class levels
+	p.classLevels = class.NewClassLevels(c)
+	p.activeClass = c
+
+	// Calculate starting HP: class base + CON modifier (min 1)
+	conMod := p.GetConstitutionMod()
+	startHP := def.StartingHP + conMod
+	if startHP < 1 {
+		startHP = 1
+	}
+	p.MaxHealth = startHP
+	p.Health = startHP
+
+	// Calculate starting Mana based on class
+	var startMana int
+	switch c {
+	case class.Mage:
+		startMana = def.StartingMana + p.GetIntelligenceMod()
+	case class.Cleric, class.Ranger:
+		startMana = def.StartingMana + p.GetWisdomMod()
+	case class.Paladin:
+		startMana = def.StartingMana + p.GetCharismaMod()
+	case class.Rogue:
+		startMana = def.StartingMana + p.GetIntelligenceMod()
+	default:
+		startMana = def.StartingMana
+	}
+	if startMana < 0 {
+		startMana = 0
+	}
+	p.MaxMana = startMana
+	p.Mana = startMana
+}
+
+// GetClassLevelsJSON returns the class levels as a JSON string for persistence
+func (p *Player) GetClassLevelsJSON() string {
+	if p.classLevels == nil {
+		return "{}"
+	}
+	return p.classLevels.ToJSON()
+}
+
+// GetPrimaryClassName returns the display name of the primary class
+func (p *Player) GetPrimaryClassName() string {
+	return p.GetPrimaryClass().String()
+}
+
+// CanEquipItem checks if the player can equip an item based on class proficiencies
+// Returns (canEquip, reason) where reason explains why if canEquip is false
+func (p *Player) CanEquipItem(item *items.Item) (bool, string) {
+	// Check class restriction first
+	if item.RequiredClass != "" {
+		requiredClass, err := class.ParseClass(item.RequiredClass)
+		if err == nil && !p.HasClass(requiredClass) {
+			return false, fmt.Sprintf("Only %ss can equip %s.", requiredClass.String(), item.Name)
+		}
+	}
+
+	// Check armor proficiency
+	if item.Type == items.Armor && item.ArmorType != "" {
+		armorType := class.ArmorType(item.ArmorType)
+		if !p.HasArmorProficiency(armorType) {
+			return false, fmt.Sprintf("You are not proficient with %s armor.", item.ArmorType)
+		}
+	}
+
+	// Check weapon proficiency
+	if item.Type == items.Weapon && item.WeaponType != "" {
+		weaponType := class.WeaponType(item.WeaponType)
+		if !p.HasWeaponProficiency(weaponType) {
+			return false, fmt.Sprintf("You are not proficient with %s weapons.", item.WeaponType)
+		}
+	}
+
+	return true, ""
+}
+
+// ==================== MULTICLASS METHODS ====================
+
+// GetActiveClassName returns the display name of the active class (the one gaining XP)
+func (p *Player) GetActiveClassName() string {
+	return p.activeClass.String()
+}
+
+// GetClassLevelsSummary returns a formatted string of all class levels
+func (p *Player) GetClassLevelsSummary() string {
+	if p.classLevels == nil {
+		return p.activeClass.String() + " 1"
+	}
+
+	classes := p.classLevels.GetClasses()
+	if len(classes) == 0 {
+		return p.activeClass.String() + " 1"
+	}
+
+	parts := make([]string, len(classes))
+	for i, c := range classes {
+		level := p.classLevels.GetLevel(c)
+		parts[i] = fmt.Sprintf("%s %d", c.String(), level)
+	}
+	return strings.Join(parts, " / ")
+}
+
+// CanMulticlass returns true if the player meets the level requirement for multiclassing
+func (p *Player) CanMulticlass() bool {
+	if p.classLevels == nil {
+		return false
+	}
+	return p.classLevels.CanMulticlass()
+}
+
+// CanMulticlassInto checks if the player can multiclass into a specific class
+// Returns (canMulticlass, reason) where reason explains why if false
+func (p *Player) CanMulticlassInto(className string) (bool, string) {
+	// Parse the class name
+	targetClass, err := class.ParseClass(className)
+	if err != nil {
+		return false, fmt.Sprintf("Unknown class: %s", className)
+	}
+
+	// Check if already has this class
+	if p.HasClass(targetClass) {
+		return false, fmt.Sprintf("You already have levels in %s.", targetClass.String())
+	}
+
+	// Check if meets level requirement
+	if !p.CanMulticlass() {
+		primaryLevel := 0
+		if p.classLevels != nil {
+			primaryLevel = p.classLevels.GetLevel(p.classLevels.GetPrimaryClass())
+		}
+		return false, fmt.Sprintf("You must reach level %d in your primary class before multiclassing. (Currently level %d)", class.MinLevelForMulticlass, primaryLevel)
+	}
+
+	// Check stat requirements
+	def := class.GetDefinition(targetClass)
+	if def == nil {
+		return false, fmt.Sprintf("Class definition not found for %s.", targetClass.String())
+	}
+
+	stats := map[string]int{
+		"STR": p.Strength,
+		"DEX": p.Dexterity,
+		"CON": p.Constitution,
+		"INT": p.Intelligence,
+		"WIS": p.Wisdom,
+		"CHA": p.Charisma,
+	}
+
+	if !def.CanMulticlassInto(stats) {
+		return false, fmt.Sprintf("You don't meet the requirements to become a %s. (Requires: %s)", targetClass.String(), def.GetMulticlassRequirementsString())
+	}
+
+	return true, ""
+}
+
+// AddNewClass adds a new class at level 1 (for multiclassing)
+func (p *Player) AddNewClass(className string) error {
+	targetClass, err := class.ParseClass(className)
+	if err != nil {
+		return fmt.Errorf("unknown class: %s", className)
+	}
+
+	// Check if can multiclass into this class
+	canMulti, reason := p.CanMulticlassInto(className)
+	if !canMulti {
+		return fmt.Errorf("%s", reason)
+	}
+
+	// Add the class
+	if p.classLevels == nil {
+		p.classLevels = class.NewClassLevels(p.activeClass)
+	}
+	p.classLevels.AddClass(targetClass)
+
+	// Switch active class to the new class
+	p.activeClass = targetClass
+
+	return nil
+}
+
+// SwitchActiveClass switches which class gains XP
+func (p *Player) SwitchActiveClass(className string) error {
+	targetClass, err := class.ParseClass(className)
+	if err != nil {
+		return fmt.Errorf("unknown class: %s", className)
+	}
+
+	// Check if player has this class
+	if !p.HasClass(targetClass) {
+		return fmt.Errorf("you don't have any levels in %s", targetClass.String())
+	}
+
+	// Check if already active
+	if p.activeClass == targetClass {
+		return fmt.Errorf("%s is already your active class", targetClass.String())
+	}
+
+	// Check if at max level for this class
+	if p.classLevels != nil && !p.classLevels.CanGainLevel(targetClass) {
+		maxLevel := class.MaxPrimaryLevel
+		if targetClass != p.classLevels.GetPrimaryClass() {
+			maxLevel = class.MaxSecondaryLevel
+		}
+		return fmt.Errorf("%s is already at maximum level (%d)", targetClass.String(), maxLevel)
+	}
+
+	p.activeClass = targetClass
+	return nil
 }

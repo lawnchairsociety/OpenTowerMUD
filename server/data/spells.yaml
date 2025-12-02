@@ -5,56 +5,619 @@
 #     description: Description shown when examining
 #     mana_cost: Mana required to cast
 #     cooldown: Cooldown in seconds (0 = no cooldown)
-#     level: Minimum player level to learn
+#     level: Minimum class level to learn
+#     allowed_classes: List of classes that can learn this spell (empty = all classes)
 #     effects:
-#       - type: heal|damage|heal_percent|stun
-#         target: self|enemy|ally|room_enemy
+#       - type: heal|damage|heal_percent|stun|buff|debuff|poison|stealth|root|execute|smite|resurrect|cleanse|multi_attack
+#         target: self|enemy|ally|room_enemy|room_ally|dead_ally
 #         amount: Effect value (flat, percentage, or duration in seconds)
 #         dice: Dice notation for variable effects (e.g., "1d6", "2d4+2")
-#               - damage uses dice + INT modifier
-#               - heal uses dice + WIS modifier
+#               - damage uses dice + INT modifier (mage) or WIS modifier (cleric/ranger)
+#               - heal uses dice + WIS modifier (cleric) or CHA modifier (paladin)
+#         duration: Duration in seconds for timed effects (buffs, debuffs, poison, root)
+#         buff_type: Type of buff/debuff (ac, hit, damage, taken)
 
-# Spell IDs that new characters start with
-starter_spells:
-  - heal
-  - flare
-  - dazzle
+# Spell IDs that new characters start with (based on their class)
+# Note: This is now deprecated - spells are learned based on class and level
+starter_spells: []
 
 spells:
-  # Starter Spells (all new players begin with these)
+  # ====================
+  # MAGE SPELLS
+  # ====================
 
-  heal:
-    name: "heal"
-    description: "Restore 5% of your maximum health (can target self or other players)"
-    mana_cost: 10
-    cooldown: 10
+  magic_missile:
+    name: "magic missile"
+    description: "A bolt of magical force that never misses (1d4+1 damage)"
+    mana_cost: 5
+    cooldown: 3
     level: 1
+    allowed_classes: [mage]
     effects:
-      - type: "heal_percent"
-        target: "self"
-        amount: 5
-      - type: "heal_percent"
-        target: "ally"
-        amount: 5
+      - type: "damage"
+        target: "enemy"
+        dice: "1d4+1"
 
   flare:
     name: "flare"
-    description: "A burst of magical energy that damages an enemy (1d6 + INT mod)"
+    description: "A burst of magical fire that damages an enemy (1d6 + INT mod)"
     mana_cost: 8
     cooldown: 5
     level: 1
+    allowed_classes: [mage]
     effects:
       - type: "damage"
         target: "enemy"
         dice: "1d6"
 
-  dazzle:
-    name: "dazzle"
-    description: "A blinding flash of light that stuns all hostile creatures in the room"
+  shield:
+    name: "shield"
+    description: "Create a magical barrier that grants +2 AC for 60 seconds"
+    mana_cost: 10
+    cooldown: 60
+    level: 2
+    allowed_classes: [mage]
+    effects:
+      - type: "buff"
+        target: "self"
+        amount: 2
+        duration: 60
+        buff_type: "ac"
+
+  frost_bolt:
+    name: "frost bolt"
+    description: "A shard of ice that damages an enemy (1d8 + INT mod)"
+    mana_cost: 12
+    cooldown: 8
+    level: 3
+    allowed_classes: [mage]
+    effects:
+      - type: "damage"
+        target: "enemy"
+        dice: "1d8"
+
+  burning_hands:
+    name: "burning hands"
+    description: "A cone of flames that burns all enemies in the room (2d6 + INT mod)"
     mana_cost: 15
+    cooldown: 10
+    level: 4
+    allowed_classes: [mage]
+    effects:
+      - type: "damage"
+        target: "room_enemy"
+        dice: "2d6"
+
+  fireball:
+    name: "fireball"
+    description: "A massive explosion of fire that damages all enemies (2d6 + INT mod)"
+    mana_cost: 25
+    cooldown: 15
+    level: 5
+    allowed_classes: [mage]
+    effects:
+      - type: "damage"
+        target: "room_enemy"
+        dice: "2d6"
+
+  ice_storm:
+    name: "ice storm"
+    description: "A devastating storm of ice that damages all enemies (3d6 + INT mod)"
+    mana_cost: 35
+    cooldown: 20
+    level: 8
+    allowed_classes: [mage]
+    effects:
+      - type: "damage"
+        target: "room_enemy"
+        dice: "3d6"
+
+  lightning_bolt:
+    name: "lightning bolt"
+    description: "A powerful bolt of lightning strikes an enemy (3d6 + INT mod)"
+    mana_cost: 30
+    cooldown: 12
+    level: 10
+    allowed_classes: [mage]
+    effects:
+      - type: "damage"
+        target: "enemy"
+        dice: "3d6"
+
+  disintegrate:
+    name: "disintegrate"
+    description: "A beam of pure force that disintegrates an enemy (4d6 + INT mod)"
+    mana_cost: 50
     cooldown: 30
+    level: 15
+    allowed_classes: [mage]
+    effects:
+      - type: "damage"
+        target: "enemy"
+        dice: "4d6"
+
+  meteor:
+    name: "meteor"
+    description: "Call down a meteor from the sky, devastating all enemies (4d6 + INT mod)"
+    mana_cost: 60
+    cooldown: 45
+    level: 18
+    allowed_classes: [mage]
+    effects:
+      - type: "damage"
+        target: "room_enemy"
+        dice: "4d6"
+
+  arcane_blast:
+    name: "arcane blast"
+    description: "Unleash raw arcane power against an enemy (5d6 + INT mod)"
+    mana_cost: 40
+    cooldown: 20
+    level: 20
+    allowed_classes: [mage]
+    effects:
+      - type: "damage"
+        target: "enemy"
+        dice: "5d6"
+
+  # ====================
+  # CLERIC SPELLS
+  # ====================
+
+  heal:
+    name: "heal"
+    description: "Channel divine energy to restore health (1d8 + WIS mod)"
+    mana_cost: 10
+    cooldown: 8
     level: 1
+    allowed_classes: [cleric]
+    effects:
+      - type: "heal"
+        target: "self"
+        dice: "1d8"
+      - type: "heal"
+        target: "ally"
+        dice: "1d8"
+
+  bless:
+    name: "bless"
+    description: "Grant divine favor, giving +1 to hit for 60 seconds"
+    mana_cost: 8
+    cooldown: 60
+    level: 1
+    allowed_classes: [cleric]
+    effects:
+      - type: "buff"
+        target: "self"
+        amount: 1
+        duration: 60
+        buff_type: "hit"
+      - type: "buff"
+        target: "ally"
+        amount: 1
+        duration: 60
+        buff_type: "hit"
+
+  sacred_flame:
+    name: "sacred flame"
+    description: "Call down divine fire upon an enemy (1d6 + WIS mod radiant damage)"
+    mana_cost: 8
+    cooldown: 5
+    level: 2
+    allowed_classes: [cleric]
+    effects:
+      - type: "damage"
+        target: "enemy"
+        dice: "1d6"
+
+  cure_wounds:
+    name: "cure wounds"
+    description: "A powerful healing spell that mends wounds (2d8 + WIS mod)"
+    mana_cost: 18
+    cooldown: 12
+    level: 3
+    allowed_classes: [cleric]
+    effects:
+      - type: "heal"
+        target: "self"
+        dice: "2d8"
+      - type: "heal"
+        target: "ally"
+        dice: "2d8"
+
+  protection:
+    name: "protection"
+    description: "Grant divine protection, giving target +2 AC for 60 seconds"
+    mana_cost: 15
+    cooldown: 90
+    level: 5
+    allowed_classes: [cleric]
+    effects:
+      - type: "buff"
+        target: "self"
+        amount: 2
+        duration: 60
+        buff_type: "ac"
+      - type: "buff"
+        target: "ally"
+        amount: 2
+        duration: 60
+        buff_type: "ac"
+
+  spiritual_weapon:
+    name: "spiritual weapon"
+    description: "Conjure a spectral weapon that strikes an enemy (1d8 + WIS mod force damage)"
+    mana_cost: 20
+    cooldown: 15
+    level: 6
+    allowed_classes: [cleric]
+    effects:
+      - type: "damage"
+        target: "enemy"
+        dice: "1d8"
+
+  prayer_of_healing:
+    name: "prayer of healing"
+    description: "Heal all allies in the room (1d6 + WIS mod)"
+    mana_cost: 30
+    cooldown: 30
+    level: 8
+    allowed_classes: [cleric]
+    effects:
+      - type: "heal"
+        target: "room_ally"
+        dice: "1d6"
+
+  heal_all:
+    name: "heal all"
+    description: "A powerful prayer that heals all allies in the room (2d6 + WIS mod)"
+    mana_cost: 40
+    cooldown: 45
+    level: 10
+    allowed_classes: [cleric]
+    effects:
+      - type: "heal"
+        target: "room_ally"
+        dice: "2d6"
+
+  flame_strike:
+    name: "flame strike"
+    description: "Call down a column of divine fire upon an enemy (3d6 + WIS mod)"
+    mana_cost: 35
+    cooldown: 20
+    level: 12
+    allowed_classes: [cleric]
+    effects:
+      - type: "damage"
+        target: "enemy"
+        dice: "3d6"
+
+  resurrection:
+    name: "resurrection"
+    description: "Bring a fallen ally back from death at 25% HP"
+    mana_cost: 80
+    cooldown: 300
+    level: 15
+    allowed_classes: [cleric]
+    effects:
+      - type: "resurrect"
+        target: "dead_ally"
+        amount: 25
+
+  divine_intervention:
+    name: "divine intervention"
+    description: "Call upon your deity to fully heal and cleanse all debuffs"
+    mana_cost: 100
+    cooldown: 600
+    level: 20
+    allowed_classes: [cleric]
+    effects:
+      - type: "heal_percent"
+        target: "self"
+        amount: 100
+      - type: "cleanse"
+        target: "self"
+
+  # ====================
+  # ROGUE SPELLS (TRICKS)
+  # ====================
+
+  cheap_shot:
+    name: "cheap shot"
+    description: "A dirty trick that stuns an enemy for 3 seconds"
+    mana_cost: 10
+    cooldown: 30
+    level: 3
+    allowed_classes: [rogue]
     effects:
       - type: "stun"
+        target: "enemy"
+        amount: 3
+
+  vanish:
+    name: "vanish"
+    description: "Disappear into the shadows - your next attack is a sneak attack"
+    mana_cost: 15
+    cooldown: 60
+    level: 5
+    allowed_classes: [rogue]
+    effects:
+      - type: "stealth"
+        target: "self"
+
+  poison_blade:
+    name: "poison blade"
+    description: "Coat your weapon with poison - next 3 attacks deal +1d4 poison damage"
+    mana_cost: 20
+    cooldown: 45
+    level: 8
+    allowed_classes: [rogue]
+    effects:
+      - type: "poison"
+        target: "self"
+        dice: "1d4"
+        amount: 3
+
+  smoke_bomb:
+    name: "smoke bomb"
+    description: "Throw a smoke bomb that causes all enemies to lose their target"
+    mana_cost: 25
+    cooldown: 90
+    level: 10
+    allowed_classes: [rogue]
+    effects:
+      - type: "debuff"
         target: "room_enemy"
-        amount: 6
+        buff_type: "hit"
+        amount: -100
+        duration: 3
+
+  marked_for_death:
+    name: "marked for death"
+    description: "Mark an enemy to take +50% damage for 30 seconds"
+    mana_cost: 30
+    cooldown: 120
+    level: 15
+    allowed_classes: [rogue]
+    effects:
+      - type: "debuff"
+        target: "enemy"
+        buff_type: "taken"
+        amount: 50
+        duration: 30
+
+  assassinate:
+    name: "assassinate"
+    description: "If target is below 20% HP, instantly kill it (does not work on bosses)"
+    mana_cost: 50
+    cooldown: 180
+    level: 20
+    allowed_classes: [rogue]
+    effects:
+      - type: "execute"
+        target: "enemy"
+        amount: 20
+
+  # ====================
+  # RANGER SPELLS
+  # ====================
+
+  hunters_mark:
+    name: "hunter's mark"
+    description: "Mark your quarry - target takes +1d4 damage from all sources for 60 seconds"
+    mana_cost: 8
+    cooldown: 60
+    level: 1
+    allowed_classes: [ranger]
+    effects:
+      - type: "debuff"
+        target: "enemy"
+        buff_type: "taken"
+        dice: "1d4"
+        duration: 60
+
+  ensnaring_strike:
+    name: "ensnaring strike"
+    description: "Entangle your target, preventing it from fleeing for 30 seconds"
+    mana_cost: 12
+    cooldown: 30
+    level: 3
+    allowed_classes: [ranger]
+    effects:
+      - type: "root"
+        target: "enemy"
+        duration: 30
+
+  cure_wounds_ranger:
+    name: "cure wounds"
+    description: "Use natural remedies to heal yourself (1d8 + WIS mod)"
+    mana_cost: 15
+    cooldown: 45
+    level: 5
+    allowed_classes: [ranger]
+    effects:
+      - type: "heal"
+        target: "self"
+        dice: "1d8"
+
+  spike_growth:
+    name: "spike growth"
+    description: "Cover the ground in spikes that damage all enemies each round (1d4) for 30 seconds"
+    mana_cost: 20
+    cooldown: 60
+    level: 7
+    allowed_classes: [ranger]
+    effects:
+      - type: "poison"
+        target: "room_enemy"
+        dice: "1d4"
+        duration: 30
+
+  volley:
+    name: "volley"
+    description: "Fire a volley of arrows at all enemies in the room"
+    mana_cost: 30
+    cooldown: 90
+    level: 10
+    allowed_classes: [ranger]
+    effects:
+      - type: "multi_attack"
+        target: "room_enemy"
+
+  conjure_barrage:
+    name: "conjure barrage"
+    description: "Conjure a barrage of spectral arrows that hit all enemies (3d8 piercing)"
+    mana_cost: 40
+    cooldown: 120
+    level: 15
+    allowed_classes: [ranger]
+    effects:
+      - type: "damage"
+        target: "room_enemy"
+        dice: "3d8"
+
+  swift_quiver:
+    name: "swift quiver"
+    description: "Your quiver magically refills - double ranged attacks for 60 seconds"
+    mana_cost: 35
+    cooldown: 180
+    level: 18
+    allowed_classes: [ranger]
+    effects:
+      - type: "buff"
+        target: "self"
+        buff_type: "damage"
+        amount: 100
+        duration: 60
+
+  # ====================
+  # PALADIN SPELLS
+  # ====================
+
+  lay_on_hands:
+    name: "lay on hands"
+    description: "Touch a creature and heal it with divine power (1d6 + CHA mod)"
+    mana_cost: 5
+    cooldown: 30
+    level: 1
+    allowed_classes: [paladin]
+    effects:
+      - type: "heal"
+        target: "self"
+        dice: "1d6"
+      - type: "heal"
+        target: "ally"
+        dice: "1d6"
+
+  divine_sense:
+    name: "divine sense"
+    description: "Detect the presence of undead and demons in the room"
+    mana_cost: 5
+    cooldown: 60
+    level: 2
+    allowed_classes: [paladin]
+    effects:
+      - type: "buff"
+        target: "self"
+        buff_type: "hit"
+        amount: 0
+        duration: 1
+
+  smite:
+    name: "smite"
+    description: "Channel divine wrath into your next melee attack (+2d8 radiant damage)"
+    mana_cost: 15
+    cooldown: 10
+    level: 3
+    allowed_classes: [paladin]
+    effects:
+      - type: "smite"
+        target: "self"
+        dice: "2d8"
+
+  shield_of_faith:
+    name: "shield of faith"
+    description: "A shimmering field of divine protection grants +2 AC for 60 seconds"
+    mana_cost: 12
+    cooldown: 90
+    level: 5
+    allowed_classes: [paladin]
+    effects:
+      - type: "buff"
+        target: "self"
+        amount: 2
+        duration: 60
+        buff_type: "ac"
+      - type: "buff"
+        target: "ally"
+        amount: 2
+        duration: 60
+        buff_type: "ac"
+
+  cure_wounds_paladin:
+    name: "cure wounds"
+    description: "Heal wounds with divine power (2d8 + CHA mod)"
+    mana_cost: 18
+    cooldown: 45
+    level: 7
+    allowed_classes: [paladin]
+    effects:
+      - type: "heal"
+        target: "self"
+        dice: "2d8"
+      - type: "heal"
+        target: "ally"
+        dice: "2d8"
+
+  aura_of_protection:
+    name: "aura of protection"
+    description: "Your divine aura grants all party members in the room +1 to saves for 60 seconds"
+    mana_cost: 25
+    cooldown: 120
+    level: 10
+    allowed_classes: [paladin]
+    effects:
+      - type: "buff"
+        target: "room_ally"
+        buff_type: "ac"
+        amount: 1
+        duration: 60
+
+  holy_aura:
+    name: "holy aura"
+    description: "Radiant light surrounds your party, granting +2 AC for 30 seconds"
+    mana_cost: 40
+    cooldown: 180
+    level: 15
+    allowed_classes: [paladin]
+    effects:
+      - type: "buff"
+        target: "room_ally"
+        buff_type: "ac"
+        amount: 2
+        duration: 30
+
+  banishing_smite:
+    name: "banishing smite"
+    description: "A devastating holy strike (+4d8 radiant damage)"
+    mana_cost: 50
+    cooldown: 60
+    level: 18
+    allowed_classes: [paladin]
+    effects:
+      - type: "smite"
+        target: "self"
+        dice: "4d8"
+
+  divine_strike:
+    name: "divine strike"
+    description: "Call down the wrath of the divine (5d8 radiant, double vs undead)"
+    mana_cost: 60
+    cooldown: 120
+    level: 20
+    allowed_classes: [paladin]
+    effects:
+      - type: "damage"
+        target: "enemy"
+        dice: "5d8"
+

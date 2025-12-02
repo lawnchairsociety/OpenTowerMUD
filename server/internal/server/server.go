@@ -177,8 +177,9 @@ func (s *Server) handleConnection(conn net.Conn) {
 		s.mu.Unlock()
 	}()
 
-	// Send special welcome message for new players
+	// Send special welcome message and starting equipment for new players
 	if isNewPlayer {
+		s.giveStartingEquipment(p)
 		s.sendNewPlayerWelcome(p)
 	}
 
@@ -568,14 +569,22 @@ func (s *Server) processPlayerAttack(p *player.Player) {
 		return
 	}
 
-	// Hit! Roll damage
-	playerDamage := p.GetAttackDamage()
+	// Hit! Roll damage with class bonuses
+	// Check if this is the player's first successful hit (for rogue sneak attack)
+	// Sneak attack applies when the target hasn't been hit by this player yet
+	isSneakAttack := npc.GetThreat(p.GetName()) == 0
+
+	playerDamage := p.GetAttackDamageAgainst(npc, isSneakAttack)
 	npcDamageTaken := npc.TakeDamage(playerDamage)
+
+	// Add threat based on damage dealt
+	npc.AddThreat(p.GetName(), playerDamage)
 
 	logger.Debug("Player damage dealt",
 		"player", p.GetName(),
 		"target", npc.GetName(),
 		"damage_dealt", npcDamageTaken,
+		"sneak_attack", isSneakAttack,
 		"target_hp", npc.GetHealth(),
 		"target_max_hp", npc.GetMaxHealth())
 
@@ -620,8 +629,8 @@ func (s *Server) processNPCAttacks() {
 				continue
 			}
 
-			// Pick a random target
-			targetName := npc.GetRandomTarget()
+			// Pick the highest threat target (falls back to random if no threat data)
+			targetName := npc.GetHighestThreatTarget()
 			if targetName == "" {
 				// No valid targets
 				npc.EndCombat("")

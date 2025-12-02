@@ -96,27 +96,6 @@ func TestGetMobTier(t *testing.T) {
 	}
 }
 
-func TestGetMobTierName(t *testing.T) {
-	tests := []struct {
-		tier int
-		want string
-	}{
-		{0, "Safe"},
-		{1, "Easy"},
-		{2, "Medium"},
-		{3, "Hard"},
-		{4, "Elite"},
-		{99, "Unknown"},
-	}
-
-	for _, tc := range tests {
-		got := GetMobTierName(tc.tier)
-		if got != tc.want {
-			t.Errorf("GetMobTierName(%d) = %q, want %q", tc.tier, got, tc.want)
-		}
-	}
-}
-
 func TestGetLootTier(t *testing.T) {
 	tests := []struct {
 		floor, want int
@@ -138,47 +117,6 @@ func TestGetLootTier(t *testing.T) {
 		got := GetLootTier(tc.floor)
 		if got != tc.want {
 			t.Errorf("GetLootTier(%d) = %d, want %d", tc.floor, got, tc.want)
-		}
-	}
-}
-
-func TestGetLootTierName(t *testing.T) {
-	tests := []struct {
-		tier int
-		want string
-	}{
-		{0, "None"},
-		{1, "Common"},
-		{2, "Uncommon"},
-		{3, "Rare"},
-		{4, "Epic"},
-		{5, "Legendary"},
-		{99, "Unknown"},
-	}
-
-	for _, tc := range tests {
-		got := GetLootTierName(tc.tier)
-		if got != tc.want {
-			t.Errorf("GetLootTierName(%d) = %q, want %q", tc.tier, got, tc.want)
-		}
-	}
-}
-
-func TestRecommendedLevel(t *testing.T) {
-	tests := []struct {
-		floor, want int
-	}{
-		{0, 1},   // City
-		{1, 1},   // Floor 1
-		{2, 2},   // Floor 2
-		{10, 6},  // Floor 10
-		{20, 11}, // Floor 20
-	}
-
-	for _, tc := range tests {
-		got := RecommendedLevel(tc.floor)
-		if got != tc.want {
-			t.Errorf("RecommendedLevel(%d) = %d, want %d", tc.floor, got, tc.want)
 		}
 	}
 }

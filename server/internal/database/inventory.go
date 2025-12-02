@@ -167,7 +167,7 @@ func (d *Database) SaveCharacterFull(c *Character, inventoryIDs []string, equipm
 			state = ?,
 			max_carry_weight = ?,
 			learned_spells = ?,
-			visited_portals = ?,
+			discovered_portals = ?,
 			strength = ?,
 			dexterity = ?,
 			constitution = ?,
@@ -180,7 +180,7 @@ func (d *Database) SaveCharacterFull(c *Character, inventoryIDs []string, equipm
 		 WHERE id = ?`,
 		c.RoomID, c.Health, c.MaxHealth, c.Mana, c.MaxMana,
 		c.Level, c.Experience, c.State, c.MaxCarryWeight, c.LearnedSpells,
-		c.VisitedPortals, c.Strength, c.Dexterity, c.Constitution, c.Intelligence, c.Wisdom, c.Charisma,
+		c.DiscoveredPortals, c.Strength, c.Dexterity, c.Constitution, c.Intelligence, c.Wisdom, c.Charisma,
 		c.Gold, c.KeyRing, c.ID,
 	)
 	if err != nil {

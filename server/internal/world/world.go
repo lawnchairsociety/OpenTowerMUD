@@ -108,20 +108,6 @@ func (w *World) GetAllRooms() []*Room {
 	return rooms
 }
 
-// GetRoomsByType returns all rooms of a specific type
-func (w *World) GetRoomsByType(roomType RoomType) []*Room {
-	w.mu.RLock()
-	defer w.mu.RUnlock()
-
-	rooms := make([]*Room, 0)
-	for _, room := range w.Rooms {
-		if room.Type == roomType {
-			rooms = append(rooms, room)
-		}
-	}
-	return rooms
-}
-
 // SetReadOnly sets whether the world is in read-only mode
 func (w *World) SetReadOnly(readOnly bool) {
 	w.readOnly = readOnly

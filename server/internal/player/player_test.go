@@ -3,8 +3,30 @@ package player
 import (
 	"testing"
 
+	"github.com/lawnchairsociety/opentowermud/server/internal/class"
 	"github.com/lawnchairsociety/opentowermud/server/internal/leveling"
 )
+
+// createTestPlayer creates a player with proper class initialization for testing
+func createTestPlayer() *Player {
+	p := &Player{
+		Level:        1,
+		Experience:   0,
+		Health:       10,
+		MaxHealth:    10,
+		Mana:         0,
+		MaxMana:      0,
+		Strength:     10,
+		Dexterity:    10,
+		Constitution: 10,
+		Intelligence: 10,
+		Wisdom:       10,
+		Charisma:     10,
+		classLevels:  class.NewClassLevels(class.Warrior),
+		activeClass:  class.Warrior,
+	}
+	return p
+}
 
 func TestXPForLevel(t *testing.T) {
 	tests := []struct {
@@ -69,14 +91,8 @@ func TestXPToNextLevel_AtMaxLevel(t *testing.T) {
 }
 
 func TestGainExperience_SingleLevelUp(t *testing.T) {
-	p := &Player{
-		Level:      1,
-		Experience: 0,
-		Health:     50,
-		MaxHealth:  100,
-		Mana:       30,
-		MaxMana:    100,
-	}
+	p := createTestPlayer()
+	p.Health = 5 // Damaged
 
 	// Give enough XP to reach level 2 (283 XP needed)
 	levelUps := p.GainExperience(300)
@@ -90,31 +106,23 @@ func TestGainExperience_SingleLevelUp(t *testing.T) {
 	if p.Experience != 300 {
 		t.Errorf("Expected 300 XP, got %d", p.Experience)
 	}
-	// Should have gained HP and Mana
-	if p.MaxHealth != 110 {
-		t.Errorf("Expected MaxHealth 110, got %d", p.MaxHealth)
+	// Warrior: d10 hit die, average = 6, CON 10 = +0 mod
+	// So HP gain = 6 per level, starting at 10, now 16
+	if p.MaxHealth != 16 {
+		t.Errorf("Expected MaxHealth 16 (10 base + 6 from level), got %d", p.MaxHealth)
 	}
-	if p.MaxMana != 105 {
-		t.Errorf("Expected MaxMana 105, got %d", p.MaxMana)
+	// Warrior has 0 mana
+	if p.MaxMana != 0 {
+		t.Errorf("Expected MaxMana 0 (warrior), got %d", p.MaxMana)
 	}
 	// Should be fully restored
 	if p.Health != p.MaxHealth {
 		t.Errorf("Expected full health %d, got %d", p.MaxHealth, p.Health)
 	}
-	if p.Mana != p.MaxMana {
-		t.Errorf("Expected full mana %d, got %d", p.MaxMana, p.Mana)
-	}
 }
 
 func TestGainExperience_MultipleLevelUps(t *testing.T) {
-	p := &Player{
-		Level:      1,
-		Experience: 0,
-		Health:     100,
-		MaxHealth:  100,
-		Mana:       100,
-		MaxMana:    100,
-	}
+	p := createTestPlayer()
 
 	// Give enough XP to reach level 5 (1118 XP needed)
 	levelUps := p.GainExperience(1200)
@@ -125,25 +133,18 @@ func TestGainExperience_MultipleLevelUps(t *testing.T) {
 	if p.Level != 5 {
 		t.Errorf("Expected level 5, got %d", p.Level)
 	}
-	// 4 levels * 10 HP = 40 HP gain
-	if p.MaxHealth != 140 {
-		t.Errorf("Expected MaxHealth 140, got %d", p.MaxHealth)
+	// Warrior: 4 levels * 6 HP = 24 HP gain, starting at 10
+	if p.MaxHealth != 34 {
+		t.Errorf("Expected MaxHealth 34 (10 base + 4*6), got %d", p.MaxHealth)
 	}
-	// 4 levels * 5 Mana = 20 Mana gain
-	if p.MaxMana != 120 {
-		t.Errorf("Expected MaxMana 120, got %d", p.MaxMana)
+	// Warrior has 0 mana
+	if p.MaxMana != 0 {
+		t.Errorf("Expected MaxMana 0 (warrior), got %d", p.MaxMana)
 	}
 }
 
 func TestGainExperience_NoLevelUp(t *testing.T) {
-	p := &Player{
-		Level:      1,
-		Experience: 0,
-		Health:     100,
-		MaxHealth:  100,
-		Mana:       100,
-		MaxMana:    100,
-	}
+	p := createTestPlayer()
 
 	// Give XP that's not enough to level up (need 283 for level 2)
 	levelUps := p.GainExperience(100)
@@ -158,20 +159,15 @@ func TestGainExperience_NoLevelUp(t *testing.T) {
 		t.Errorf("Expected 100 XP, got %d", p.Experience)
 	}
 	// Stats should not change
-	if p.MaxHealth != 100 {
-		t.Errorf("Expected MaxHealth 100, got %d", p.MaxHealth)
+	if p.MaxHealth != 10 {
+		t.Errorf("Expected MaxHealth 10, got %d", p.MaxHealth)
 	}
 }
 
 func TestGainExperience_MaxLevelCap(t *testing.T) {
-	p := &Player{
-		Level:      leveling.MaxPlayerLevel,
-		Experience: leveling.XPForLevel(leveling.MaxPlayerLevel),
-		Health:     100,
-		MaxHealth:  100,
-		Mana:       100,
-		MaxMana:    100,
-	}
+	p := createTestPlayer()
+	p.Level = leveling.MaxPlayerLevel
+	p.Experience = leveling.XPForLevel(leveling.MaxPlayerLevel)
 
 	// Try to gain more XP at max level
 	levelUps := p.GainExperience(10000)
@@ -190,50 +186,37 @@ func TestGainExperience_MaxLevelCap(t *testing.T) {
 }
 
 func TestStatGrowth(t *testing.T) {
-	// Verify HP and Mana growth constants are correct
-	if leveling.HPPerLevel != 10 {
-		t.Errorf("Expected HPPerLevel = 10, got %d", leveling.HPPerLevel)
-	}
-	if leveling.ManaPerLevel != 5 {
-		t.Errorf("Expected ManaPerLevel = 5, got %d", leveling.ManaPerLevel)
-	}
+	// With class system, a warrior gets d10 hit die (avg 6) per level
+	// and 0 mana per level
 
-	// Verify a level 50 character has expected stats
-	// Base: 100 HP, 100 Mana
-	// Level 50: 49 level-ups * 10 HP = 490 HP, 49 * 5 Mana = 245 Mana
-	p := &Player{
-		Level:     1,
-		MaxHealth: 100,
-		MaxMana:   100,
-		Health:    100,
-		Mana:      100,
-	}
+	p := createTestPlayer()
 
 	// Simulate leveling to 50
 	for i := 1; i < leveling.MaxPlayerLevel; i++ {
 		p.levelUp()
 	}
 
-	expectedHP := 100 + (leveling.MaxPlayerLevel-1)*leveling.HPPerLevel     // 100 + 49*10 = 590
-	expectedMana := 100 + (leveling.MaxPlayerLevel-1)*leveling.ManaPerLevel // 100 + 49*5 = 345
+	// Warrior: 10 base HP + 49 levels * 6 HP = 10 + 294 = 304
+	// Plus +10% HP bonus at level 20:
+	// At level 20: 10 + 19*6 = 124 HP, 10% bonus = 12 HP
+	// Total: 304 + 12 = 316 HP
+	baseHP := 10 + (leveling.MaxPlayerLevel-1)*6 // 304
+	hpAt20 := 10 + 19*6                          // 124 HP at level 20
+	level20Bonus := hpAt20 / 10                  // 10% bonus = 12
+	expectedHP := baseHP + level20Bonus          // 316
 
 	if p.MaxHealth != expectedHP {
 		t.Errorf("Expected MaxHealth at level 50 = %d, got %d", expectedHP, p.MaxHealth)
 	}
-	if p.MaxMana != expectedMana {
-		t.Errorf("Expected MaxMana at level 50 = %d, got %d", expectedMana, p.MaxMana)
+	// Warrior has 0 mana
+	if p.MaxMana != 0 {
+		t.Errorf("Expected MaxMana at level 50 = 0 (warrior), got %d", p.MaxMana)
 	}
 }
 
 func TestLevelUpInfo(t *testing.T) {
-	p := &Player{
-		Level:      1,
-		Experience: 0,
-		Health:     50,
-		MaxHealth:  100,
-		Mana:       30,
-		MaxMana:    100,
-	}
+	p := createTestPlayer()
+	p.Health = 5 // Damaged
 
 	levelUps := p.GainExperience(300)
 
@@ -245,11 +228,13 @@ func TestLevelUpInfo(t *testing.T) {
 	if lu.NewLevel != 2 {
 		t.Errorf("Expected NewLevel 2, got %d", lu.NewLevel)
 	}
-	if lu.HPGain != leveling.HPPerLevel {
-		t.Errorf("Expected HPGain %d, got %d", leveling.HPPerLevel, lu.HPGain)
+	// Warrior: d10 avg = 6, CON 10 = +0 mod
+	if lu.HPGain != 6 {
+		t.Errorf("Expected HPGain 6 (warrior d10 avg), got %d", lu.HPGain)
 	}
-	if lu.ManaGain != leveling.ManaPerLevel {
-		t.Errorf("Expected ManaGain %d, got %d", leveling.ManaPerLevel, lu.ManaGain)
+	// Warrior has 0 mana gain
+	if lu.ManaGain != 0 {
+		t.Errorf("Expected ManaGain 0 (warrior), got %d", lu.ManaGain)
 	}
 }
 
@@ -325,11 +310,11 @@ func TestGetDiscoveredPortals_Sorted(t *testing.T) {
 	}
 }
 
-func TestGetVisitedPortalsString(t *testing.T) {
+func TestGetDiscoveredPortalsString(t *testing.T) {
 	p := &Player{}
 
 	// Initial state: only ground floor
-	str := p.GetVisitedPortalsString()
+	str := p.GetDiscoveredPortalsString()
 	if str != "0" {
 		t.Errorf("Expected '0', got '%s'", str)
 	}
@@ -338,22 +323,22 @@ func TestGetVisitedPortalsString(t *testing.T) {
 	p.DiscoverPortal(5)
 	p.DiscoverPortal(3)
 
-	str = p.GetVisitedPortalsString()
+	str = p.GetDiscoveredPortalsString()
 	if str != "0,3,5" {
 		t.Errorf("Expected '0,3,5', got '%s'", str)
 	}
 }
 
-func TestSetVisitedPortals(t *testing.T) {
+func TestSetDiscoveredPortals(t *testing.T) {
 	p := &Player{}
 
-	// Set visited portals from a list (simulating database load)
-	p.SetVisitedPortals([]int{0, 2, 5, 10})
+	// Set discovered portals from a list (simulating database load)
+	p.SetDiscoveredPortals([]int{0, 2, 5, 10})
 
 	// All should be discovered
 	for _, floor := range []int{0, 2, 5, 10} {
 		if !p.HasDiscoveredPortal(floor) {
-			t.Errorf("Floor %d should be discovered after SetVisitedPortals", floor)
+			t.Errorf("Floor %d should be discovered after SetDiscoveredPortals", floor)
 		}
 	}
 
@@ -363,11 +348,11 @@ func TestSetVisitedPortals(t *testing.T) {
 	}
 }
 
-func TestSetVisitedPortals_AlwaysIncludesGroundFloor(t *testing.T) {
+func TestSetDiscoveredPortals_AlwaysIncludesGroundFloor(t *testing.T) {
 	p := &Player{}
 
-	// Set visited portals without ground floor
-	p.SetVisitedPortals([]int{5, 10})
+	// Set discovered portals without ground floor
+	p.SetDiscoveredPortals([]int{5, 10})
 
 	// Ground floor should still be available
 	if !p.HasDiscoveredPortal(0) {

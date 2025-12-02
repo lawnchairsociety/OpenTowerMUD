@@ -9,6 +9,16 @@ const (
 	EffectDamage      EffectType = "damage"
 	EffectHealPercent EffectType = "heal_percent"
 	EffectStun        EffectType = "stun"
+	EffectBuff        EffectType = "buff"         // Temporary stat boost (+AC, +hit, etc.)
+	EffectDebuff      EffectType = "debuff"       // Temporary stat reduction
+	EffectPoison      EffectType = "poison"       // Damage over time
+	EffectStealth     EffectType = "stealth"      // Enter stealth (next attack is sneak attack)
+	EffectRoot        EffectType = "root"         // Target cannot flee
+	EffectExecute     EffectType = "execute"      // Instant kill if below threshold
+	EffectSmite       EffectType = "smite"        // Extra damage added to melee attack
+	EffectResurrect   EffectType = "resurrect"    // Revive dead player
+	EffectCleanse     EffectType = "cleanse"      // Remove debuffs
+	EffectMultiAttack EffectType = "multi_attack" // Attack multiple times
 )
 
 // TargetType represents what a spell can target.
@@ -18,26 +28,57 @@ const (
 	TargetSelf       TargetType = "self"
 	TargetEnemy      TargetType = "enemy"
 	TargetAlly       TargetType = "ally"
-	TargetRoomEnemy  TargetType = "room_enemy" // All attackable NPCs in the room
+	TargetRoomEnemy  TargetType = "room_enemy"  // All attackable NPCs in the room
+	TargetRoomAlly   TargetType = "room_ally"   // All party members in the room
+	TargetDeadAlly   TargetType = "dead_ally"   // Dead player (for resurrection)
+)
+
+// BuffType represents the type of buff/debuff effect
+type BuffType string
+
+const (
+	BuffAC      BuffType = "ac"       // +/- AC
+	BuffHit     BuffType = "hit"      // +/- to hit rolls
+	BuffDamage  BuffType = "damage"   // +/- damage dealt
+	BuffTaken   BuffType = "taken"    // +/- damage taken (negative = reduction)
+	BuffMana    BuffType = "mana"     // +/- max mana
+	BuffRegen   BuffType = "regen"    // HP regen per tick
 )
 
 // SpellEffect represents a single effect that a spell applies.
 type SpellEffect struct {
-	Type   EffectType
-	Target TargetType
-	Amount int    // Flat amount or percentage depending on EffectType (legacy, used as fallback)
-	Dice   string // Dice notation for effect (e.g., "1d6", "2d4+2") - used with ability modifier
+	Type     EffectType
+	Target   TargetType
+	Amount   int      // Flat amount or percentage depending on EffectType (legacy, used as fallback)
+	Dice     string   // Dice notation for effect (e.g., "1d6", "2d4+2") - used with ability modifier
+	Duration int      // Duration in seconds for timed effects (buffs, debuffs, poison, root)
+	BuffType BuffType // Type of buff/debuff (ac, hit, damage, taken)
 }
 
 // Spell represents a castable spell with its properties.
 type Spell struct {
-	ID          string
-	Name        string
-	Description string
-	ManaCost    int
-	Cooldown    int // Seconds (0 = no cooldown)
-	Effects     []SpellEffect
-	Level       int // Minimum level to learn
+	ID             string
+	Name           string
+	Description    string
+	ManaCost       int
+	Cooldown       int // Seconds (0 = no cooldown)
+	Effects        []SpellEffect
+	Level          int      // Minimum class level to learn
+	AllowedClasses []string // Classes that can learn this spell (empty = all classes)
+}
+
+// IsAllowedForClass returns true if the specified class can learn this spell.
+// If AllowedClasses is empty, the spell is available to all classes.
+func (s *Spell) IsAllowedForClass(className string) bool {
+	if len(s.AllowedClasses) == 0 {
+		return true // No restrictions, available to all
+	}
+	for _, c := range s.AllowedClasses {
+		if c == className {
+			return true
+		}
+	}
+	return false
 }
 
 // RequiresTarget returns true if the spell can ONLY target enemies/allies (no self effects).

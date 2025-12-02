@@ -31,8 +31,10 @@ func executeHelp(c *Command, p PlayerInterface) string {
 func executeScore(c *Command, p PlayerInterface) string {
 	var result strings.Builder
 
-	// Header with name
+	// Header with name and class
 	result.WriteString(fmt.Sprintf("=== %s ===\n", p.GetName()))
+	result.WriteString(fmt.Sprintf("Class: %s\n", p.GetClassLevelsSummary()))
+	result.WriteString(fmt.Sprintf("Active: %s (gaining XP)\n", p.GetActiveClassName()))
 
 	// Level and XP section
 	level := p.GetLevel()
@@ -470,15 +472,74 @@ Use 'spells' to see your available spells and their status.`
 
 	case "spells":
 		return `SPELLS
-Display your known spells and their status.
+Display your available spells based on your class and level.
 
 Shows:
   - Spell name and description
   - Mana cost
+  - Class restriction (if any)
   - Cooldown status (ready or seconds remaining)
   - Your current mana
 
-New characters start with 'heal' and 'flare' spells.`
+Different classes have access to different spells:
+  - Mage: Damage spells (fireball, ice storm, etc.)
+  - Cleric: Healing and support spells
+  - Rogue: Tricks (vanish, poison, assassinate)
+  - Ranger: Nature spells and buffs
+  - Paladin: Holy spells and smites
+  - Warrior: No spells (pure martial class)`
+
+	case "class", "classes":
+		return `CLASS [subcommand]
+View and manage your character classes.
+
+Usage:
+  class              - Show your current class information
+  class list         - View all available classes and requirements
+  class info <class> - View detailed information about a class
+  class switch <class> - Change which class gains XP
+
+Multiclassing:
+  Once you reach level 10 in your primary class, you can learn
+  additional classes from class trainers found in the city.
+
+  Each class has stat requirements for multiclassing:
+  - Warrior: STR 13+
+  - Mage: INT 13+
+  - Cleric: WIS 13+
+  - Rogue: DEX 13+
+  - Ranger: DEX 13+, WIS 13+
+  - Paladin: STR 13+, CHA 13+
+
+  Primary class can reach level 50, secondary classes cap at 25.
+
+See also: help train, help multiclass`
+
+	case "multiclass", "multiclassing":
+		return `MULTICLASSING
+Learn additional classes to expand your abilities.
+
+Requirements:
+  - Reach level 10 in your primary class
+  - Meet the stat requirements for the new class
+  - Have 500 gold for training
+
+How to Multiclass:
+  1. Check your stats with 'score' and class requirements with 'class list'
+  2. Visit a class trainer in the city (see 'help train' for locations)
+  3. Type 'train' to learn the new class
+
+Benefits:
+  - Access to spells and abilities from multiple classes
+  - Combine class strengths (e.g., Warrior/Cleric for a tanky healer)
+  - Equipment proficiencies are cumulative
+
+Limitations:
+  - Primary class can reach level 50
+  - Secondary classes cap at level 25
+  - XP only goes to your active class (use 'class switch' to change)
+
+See also: help class, help train`
 
 	case "level", "lvl":
 		return `LEVEL
@@ -581,6 +642,34 @@ He will compose a song about your adventures for 5 gold.
 
 Aliases: speak, chat`
 
+	case "train":
+		return `TRAIN
+Learn a new class from a class trainer NPC.
+
+Requirements:
+  - You must be level 10+ in your primary class to multiclass
+  - You must meet the stat requirements for the new class
+  - Training costs 500 gold
+
+Usage:
+  train             - Learn the class from the trainer in your room
+
+Class Trainers:
+  Warrior  - Battlemaster Korg (Training Hall)
+  Mage     - Archmage Thessaly (Royal Library)
+  Cleric   - Father Aldous (Temple)
+  Rogue    - Shadow (Tavern)
+  Ranger   - Warden Ashara (North Gate)
+  Paladin  - Sir Gareth the Radiant (Castle Hall)
+
+After learning a new class:
+  - Your new class starts at level 1
+  - XP earned goes to your new (active) class
+  - Use 'class switch <class>' to change which class gains XP
+  - Use 'class' to view all your classes
+
+See also: class, help class`
+
 	case "save":
 		return `SAVE
 Your progress is saved by visiting the wandering bard in the tavern.
@@ -632,6 +721,7 @@ Available Commands:
   equipment (eq)    - Show equipped items
   score (sc)        - Show your full character sheet
   level (lvl)       - Show level progression and XP
+  class             - View and manage your classes
 
 Movement:
   go <direction>    - Move in a direction
@@ -683,6 +773,7 @@ Special Locations:
   pray              - Pray at an altar to restore full health
   portal [floor]    - Fast travel between discovered tower floors
   unlock <dir>      - Unlock a locked door with a key from your key ring
+  train             - Learn a new class from a class trainer (multiclass)
 
 Shop (at General Store):
   shop              - View items for sale

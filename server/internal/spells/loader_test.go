@@ -135,34 +135,72 @@ func TestSpellRegistry(t *testing.T) {
 }
 
 func TestDefaultStarterSpells(t *testing.T) {
+	// With the class system, DefaultStarterSpells now returns empty
+	// Spells are automatically available based on class levels
 	starters := DefaultStarterSpells()
-	if len(starters) != 3 {
-		t.Errorf("Expected 3 starter spells, got %d", len(starters))
+	if len(starters) != 0 {
+		t.Errorf("Expected 0 starter spells (class-based system), got %d", len(starters))
+	}
+}
+
+func TestGetSpellsForClass(t *testing.T) {
+	registry := NewSpellRegistry()
+
+	// Add some class-restricted spells
+	registry.spells["mage_spell"] = &Spell{ID: "mage_spell", Level: 1, AllowedClasses: []string{"mage"}}
+	registry.spells["cleric_spell"] = &Spell{ID: "cleric_spell", Level: 1, AllowedClasses: []string{"cleric"}}
+	registry.spells["universal"] = &Spell{ID: "universal", Level: 1, AllowedClasses: []string{}} // Empty = all classes
+	registry.spells["high_level_mage"] = &Spell{ID: "high_level_mage", Level: 10, AllowedClasses: []string{"mage"}}
+
+	// Test mage at level 5 - should get mage_spell and universal
+	mageSpells := registry.GetSpellsForClass("mage", 5)
+	if len(mageSpells) != 2 {
+		t.Errorf("Expected 2 spells for mage at level 5, got %d", len(mageSpells))
 	}
 
-	// Check that heal, flare, and dazzle are included
-	hasHeal := false
-	hasFlare := false
-	hasDazzle := false
-	for _, s := range starters {
-		if s == "heal" {
-			hasHeal = true
-		}
-		if s == "flare" {
-			hasFlare = true
-		}
-		if s == "dazzle" {
-			hasDazzle = true
-		}
+	// Test cleric at level 5 - should get cleric_spell and universal
+	clericSpells := registry.GetSpellsForClass("cleric", 5)
+	if len(clericSpells) != 2 {
+		t.Errorf("Expected 2 spells for cleric at level 5, got %d", len(clericSpells))
 	}
-	if !hasHeal {
-		t.Error("Expected 'heal' in starter spells")
+
+	// Test mage at level 10 - should get 3 spells including high_level_mage
+	mageLevel10 := registry.GetSpellsForClass("mage", 10)
+	if len(mageLevel10) != 3 {
+		t.Errorf("Expected 3 spells for mage at level 10, got %d", len(mageLevel10))
 	}
-	if !hasFlare {
-		t.Error("Expected 'flare' in starter spells")
+
+	// Test warrior - should only get universal spell
+	warriorSpells := registry.GetSpellsForClass("warrior", 10)
+	if len(warriorSpells) != 1 {
+		t.Errorf("Expected 1 spell for warrior, got %d", len(warriorSpells))
 	}
-	if !hasDazzle {
-		t.Error("Expected 'dazzle' in starter spells")
+}
+
+func TestGetSpellsForClasses(t *testing.T) {
+	registry := NewSpellRegistry()
+
+	// Add some class-restricted spells
+	registry.spells["mage_spell"] = &Spell{ID: "mage_spell", Level: 1, AllowedClasses: []string{"mage"}}
+	registry.spells["cleric_spell"] = &Spell{ID: "cleric_spell", Level: 5, AllowedClasses: []string{"cleric"}}
+	registry.spells["universal"] = &Spell{ID: "universal", Level: 1, AllowedClasses: []string{}}
+
+	// Multiclass character: mage 10, cleric 3
+	classLevels := map[string]int{"mage": 10, "cleric": 3}
+	spells := registry.GetSpellsForClasses(classLevels)
+
+	// Should get mage_spell (mage 1), universal (any 1), but NOT cleric_spell (requires cleric 5)
+	if len(spells) != 2 {
+		t.Errorf("Expected 2 spells for multiclass mage 10/cleric 3, got %d", len(spells))
+	}
+
+	// Multiclass character: mage 10, cleric 5
+	classLevels2 := map[string]int{"mage": 10, "cleric": 5}
+	spells2 := registry.GetSpellsForClasses(classLevels2)
+
+	// Should get all 3 spells
+	if len(spells2) != 3 {
+		t.Errorf("Expected 3 spells for multiclass mage 10/cleric 5, got %d", len(spells2))
 	}
 }
 

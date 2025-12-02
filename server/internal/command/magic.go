@@ -34,12 +34,17 @@ func executeCast(c *Command, p PlayerInterface) string {
 	// Look up the spell
 	spell, exists := registry.GetSpell(spellName)
 	if !exists {
-		return fmt.Sprintf("Unknown spell: '%s'. Type 'spells' to see your known spells.", spellName)
+		return fmt.Sprintf("Unknown spell: '%s'. Type 'spells' to see your available spells.", spellName)
 	}
 
-	// Check if player knows the spell
-	if !p.HasSpell(spell.ID) {
-		return fmt.Sprintf("You don't know the spell '%s'.", spell.Name)
+	// Check if player can cast this spell based on class and level
+	// With the new class system, spells are automatically available based on class levels
+	if !p.CanCastSpellForClass(spell.AllowedClasses, spell.Level) {
+		// Check if it's a class restriction or level restriction
+		if len(spell.AllowedClasses) > 0 {
+			return fmt.Sprintf("You cannot cast '%s'. This spell requires being a %s.", spell.Name, strings.Join(spell.AllowedClasses, " or "))
+		}
+		return fmt.Sprintf("You cannot cast '%s' yet. (Requires level %d)", spell.Name, spell.Level)
 	}
 
 	// Check if player has enough mana
@@ -435,7 +440,7 @@ func castRoomSpell(c *Command, p PlayerInterface, spell *spells.Spell) string {
 	return result.String()
 }
 
-// executeSpells shows the player's known spells
+// executeSpells shows the player's available spells based on class levels
 func executeSpells(c *Command, p PlayerInterface) string {
 	// Get the spell registry from server
 	server, ok := p.GetServer().(ServerInterface)
@@ -448,29 +453,43 @@ func executeSpells(c *Command, p PlayerInterface) string {
 		return "Magic is not available."
 	}
 
-	learnedSpellIDs := p.GetLearnedSpells()
-	if len(learnedSpellIDs) == 0 {
-		return "You don't know any spells."
+	// Get spells available based on class levels
+	classLevels := p.GetAllClassLevelsMap()
+	availableSpells := registry.GetSpellsForClasses(classLevels)
+
+	if len(availableSpells) == 0 {
+		return "You don't have access to any spells yet."
+	}
+
+	// Sort spells by level, then by name
+	for i := 0; i < len(availableSpells)-1; i++ {
+		for j := i + 1; j < len(availableSpells); j++ {
+			if availableSpells[i].Level > availableSpells[j].Level ||
+				(availableSpells[i].Level == availableSpells[j].Level && availableSpells[i].Name > availableSpells[j].Name) {
+				availableSpells[i], availableSpells[j] = availableSpells[j], availableSpells[i]
+			}
+		}
 	}
 
 	var sb strings.Builder
 	sb.WriteString("=== Your Spells ===\n")
 
-	for _, spellID := range learnedSpellIDs {
-		spell, exists := registry.GetSpell(spellID)
-		if !exists {
-			continue
-		}
-
+	for _, spell := range availableSpells {
 		// Check cooldown status
-		onCooldown, remaining := p.IsSpellOnCooldown(spellID)
+		onCooldown, remaining := p.IsSpellOnCooldown(spell.ID)
 		status := "[Ready]"
 		if onCooldown {
 			status = fmt.Sprintf("[Cooldown: %ds]", remaining)
 		}
 
-		sb.WriteString(fmt.Sprintf("  %-10s - %s (%d mana) %s\n",
-			spell.Name, spell.Description, spell.ManaCost, status))
+		// Show class restriction if applicable
+		classReq := ""
+		if len(spell.AllowedClasses) > 0 {
+			classReq = fmt.Sprintf(" (%s)", spell.AllowedClasses[0])
+		}
+
+		sb.WriteString(fmt.Sprintf("  %-15s - %s (%d mana)%s %s\n",
+			spell.Name, spell.Description, spell.ManaCost, classReq, status))
 	}
 
 	sb.WriteString(fmt.Sprintf("\nMana: %d/%d", p.GetMana(), p.GetMaxMana()))

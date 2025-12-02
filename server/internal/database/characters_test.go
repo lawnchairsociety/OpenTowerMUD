@@ -35,8 +35,9 @@ func TestCreateCharacter(t *testing.T) {
 	if char.Level != 1 {
 		t.Errorf("Expected level 1, got %d", char.Level)
 	}
-	if char.Health != 100 || char.MaxHealth != 100 {
-		t.Errorf("Expected health 100/100, got %d/%d", char.Health, char.MaxHealth)
+	// With class system, warrior starts with 10 HP base (with 10 CON = +0 mod)
+	if char.Health != 10 || char.MaxHealth != 10 {
+		t.Errorf("Expected health 10/10 (warrior base with CON 10), got %d/%d", char.Health, char.MaxHealth)
 	}
 }
 

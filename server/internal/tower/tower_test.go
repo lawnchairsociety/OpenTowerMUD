@@ -446,22 +446,21 @@ func TestTowerFloorConnectivity(t *testing.T) {
 // TestTowerScalingFormulas tests the scaling formulas at various floor levels
 func TestTowerScalingFormulas(t *testing.T) {
 	tests := []struct {
-		floor         int
-		expectedTier  int
-		expectedLoot  int
-		expectedLevel int
-		isBossFloor   bool
+		floor        int
+		expectedTier int
+		expectedLoot int
+		isBossFloor  bool
 	}{
-		{1, 1, 1, 1, false},
-		{5, 1, 1, 3, false},
-		{6, 2, 2, 4, false},
-		{10, 2, 2, 6, true},
-		{11, 3, 3, 6, false},
-		{20, 3, 3, 11, true},
-		{21, 4, 4, 11, false},
-		{30, 4, 4, 16, true},
-		{31, 4, 5, 16, false},
-		{50, 4, 5, 26, true},
+		{1, 1, 1, false},
+		{5, 1, 1, false},
+		{6, 2, 2, false},
+		{10, 2, 2, true},
+		{11, 3, 3, false},
+		{20, 3, 3, true},
+		{21, 4, 4, false},
+		{30, 4, 4, true},
+		{31, 4, 5, false},
+		{50, 4, 5, true},
 	}
 
 	for _, tc := range tests {
@@ -471,10 +470,6 @@ func TestTowerScalingFormulas(t *testing.T) {
 
 		if got := GetLootTier(tc.floor); got != tc.expectedLoot {
 			t.Errorf("GetLootTier(%d) = %d, want %d", tc.floor, got, tc.expectedLoot)
-		}
-
-		if got := RecommendedLevel(tc.floor); got != tc.expectedLevel {
-			t.Errorf("RecommendedLevel(%d) = %d, want %d", tc.floor, got, tc.expectedLevel)
 		}
 
 		if got := IsBossFloor(tc.floor); got != tc.isBossFloor {

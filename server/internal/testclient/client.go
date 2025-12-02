@@ -96,6 +96,20 @@ func NewTestClient(name string, address string) (*TestClient, error) {
 	}
 	time.Sleep(100 * time.Millisecond)
 
+	// Select class (3 = Cleric for tests - has heal spell for magic tests)
+	if err := client.SendCommand("3"); err != nil {
+		client.Close()
+		return nil, fmt.Errorf("failed to select class: %w", err)
+	}
+	time.Sleep(100 * time.Millisecond)
+
+	// Confirm class selection (Y/N prompt)
+	if err := client.SendCommand("Y"); err != nil {
+		client.Close()
+		return nil, fmt.Errorf("failed to confirm class: %w", err)
+	}
+	time.Sleep(100 * time.Millisecond)
+
 	// Send ability scores (standard array: 15, 14, 13, 12, 10, 8)
 	// Assign in order: Strength, Dexterity, Constitution, Intelligence, Wisdom, Charisma
 	abilityScores := []string{"15", "14", "13", "12", "10", "8"}

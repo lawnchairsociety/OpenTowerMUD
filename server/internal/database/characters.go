@@ -29,7 +29,7 @@ type Character struct {
 	State           string
 	MaxCarryWeight  float64
 	LearnedSpells   string // Comma-separated list of spell IDs
-	VisitedPortals  string // Comma-separated list of floor numbers for portal travel
+	DiscoveredPortals string // Comma-separated list of floor numbers for portal travel
 	// Ability scores (Phase 25)
 	Strength     int
 	Dexterity    int
@@ -40,30 +40,52 @@ type Character struct {
 	// Economy (Phase 27)
 	Gold    int
 	KeyRing string // Comma-separated list of key item IDs
+	// Class system
+	PrimaryClass string // Primary class (e.g., "warrior")
+	ClassLevels  string // JSON map of class -> level (e.g., '{"warrior":5}')
+	ActiveClass  string // Which class currently gains XP
 	CreatedAt    time.Time
 	LastPlayed   *time.Time
 }
 
-// DefaultStarterSpells is the list of spells new characters start with.
-const DefaultStarterSpells = "heal,flare,dazzle"
-
-// CreateCharacter creates a new character for an account with default ability scores.
+// CreateCharacter creates a new character for an account with default ability scores and warrior class.
 func (d *Database) CreateCharacter(accountID int64, name string) (*Character, error) {
-	// Create with default ability scores (all 10s)
-	return d.CreateCharacterWithStats(accountID, name, 10, 10, 10, 10, 10, 10)
+	// Create with default ability scores (all 10s) and warrior class
+	return d.CreateCharacterWithClass(accountID, name, "warrior", 10, 10, 10, 10, 10, 10)
 }
 
 // CreateCharacterWithStats creates a new character for an account with specified ability scores.
+// Deprecated: Use CreateCharacterWithClass instead.
 func (d *Database) CreateCharacterWithStats(accountID int64, name string, str, dex, con, int_, wis, cha int) (*Character, error) {
+	return d.CreateCharacterWithClass(accountID, name, "warrior", str, dex, con, int_, wis, cha)
+}
+
+// CreateCharacterWithClass creates a new character with specified class and ability scores.
+func (d *Database) CreateCharacterWithClass(accountID int64, name string, primaryClass string, str, dex, con, int_, wis, cha int) (*Character, error) {
 	name = strings.TrimSpace(name)
 	if name == "" {
 		return nil, errors.New("character name cannot be empty")
 	}
 
+	// Validate class
+	if primaryClass == "" {
+		primaryClass = "warrior"
+	}
+
+	// Build initial class levels JSON
+	classLevels := fmt.Sprintf(`{"%s":1}`, primaryClass)
+
+	// Calculate starting HP/Mana based on class
+	startingHP, startingMana := calculateStartingStats(primaryClass, str, dex, con, int_, wis, cha)
+
 	result, err := d.db.Exec(
-		`INSERT INTO characters (account_id, name, learned_spells, strength, dexterity, constitution, intelligence, wisdom, charisma)
-		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-		accountID, name, DefaultStarterSpells, str, dex, con, int_, wis, cha,
+		`INSERT INTO characters (account_id, name, health, max_health, mana, max_mana,
+		                         strength, dexterity, constitution, intelligence, wisdom, charisma,
+		                         primary_class, class_levels, active_class, learned_spells)
+		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+		accountID, name, startingHP, startingHP, startingMana, startingMana,
+		str, dex, con, int_, wis, cha,
+		primaryClass, classLevels, primaryClass, "",
 	)
 	if err != nil {
 		if strings.Contains(err.Error(), "UNIQUE constraint failed") {
@@ -82,15 +104,15 @@ func (d *Database) CreateCharacterWithStats(accountID int64, name string, str, d
 		AccountID:      accountID,
 		Name:           name,
 		RoomID:         "town_square",
-		Health:         100,
-		MaxHealth:      100,
-		Mana:           100,
-		MaxMana:        100,
+		Health:         startingHP,
+		MaxHealth:      startingHP,
+		Mana:           startingMana,
+		MaxMana:        startingMana,
 		Level:          1,
 		Experience:     0,
 		State:          "standing",
 		MaxCarryWeight: 100.0,
-		LearnedSpells:  DefaultStarterSpells,
+		LearnedSpells:  "",
 		Strength:       str,
 		Dexterity:      dex,
 		Constitution:   con,
@@ -98,8 +120,65 @@ func (d *Database) CreateCharacterWithStats(accountID int64, name string, str, d
 		Wisdom:         wis,
 		Charisma:       cha,
 		Gold:           20, // Starting gold (matches DB default)
+		PrimaryClass:   primaryClass,
+		ClassLevels:    classLevels,
+		ActiveClass:    primaryClass,
 		CreatedAt:      time.Now(),
 	}, nil
+}
+
+// calculateStartingStats calculates starting HP and Mana based on class and ability scores.
+func calculateStartingStats(primaryClass string, str, dex, con, int_, wis, cha int) (int, int) {
+	// Calculate CON modifier
+	conMod := (con - 10) / 2
+
+	// Class-specific starting values
+	var baseHP, baseMana int
+	var castingStatMod int
+
+	switch primaryClass {
+	case "warrior":
+		baseHP = 10 // d10
+		baseMana = 0
+		castingStatMod = 0
+	case "mage":
+		baseHP = 6 // d6
+		baseMana = 20
+		castingStatMod = (int_ - 10) / 2 // INT modifier
+	case "cleric":
+		baseHP = 8 // d8
+		baseMana = 15
+		castingStatMod = (wis - 10) / 2 // WIS modifier
+	case "rogue":
+		baseHP = 8 // d8
+		baseMana = 10
+		castingStatMod = (int_ - 10) / 2 // INT modifier
+	case "ranger":
+		baseHP = 10 // d10
+		baseMana = 10
+		castingStatMod = (wis - 10) / 2 // WIS modifier
+	case "paladin":
+		baseHP = 10 // d10
+		baseMana = 10
+		castingStatMod = (cha - 10) / 2 // CHA modifier
+	default:
+		baseHP = 10
+		baseMana = 0
+		castingStatMod = 0
+	}
+
+	// Calculate final values
+	startingHP := baseHP + conMod
+	if startingHP < 1 {
+		startingHP = 1
+	}
+
+	startingMana := baseMana + castingStatMod
+	if startingMana < 0 {
+		startingMana = 0
+	}
+
+	return startingHP, startingMana
 }
 
 // GetCharactersByAccount returns all characters for an account.
@@ -107,8 +186,8 @@ func (d *Database) GetCharactersByAccount(accountID int64) ([]*Character, error)
 	rows, err := d.db.Query(
 		`SELECT id, account_id, name, room_id, health, max_health, mana, max_mana,
 		        level, experience, state, max_carry_weight, learned_spells,
-		        visited_portals, strength, dexterity, constitution, intelligence, wisdom, charisma,
-		        gold, key_ring, created_at, last_played
+		        discovered_portals, strength, dexterity, constitution, intelligence, wisdom, charisma,
+		        gold, key_ring, primary_class, class_levels, active_class, created_at, last_played
 		 FROM characters WHERE account_id = ? ORDER BY last_played DESC NULLS LAST, name`,
 		accountID,
 	)
@@ -138,8 +217,8 @@ func (d *Database) GetCharacterByName(name string) (*Character, error) {
 	row := d.db.QueryRow(
 		`SELECT id, account_id, name, room_id, health, max_health, mana, max_mana,
 		        level, experience, state, max_carry_weight, learned_spells,
-		        visited_portals, strength, dexterity, constitution, intelligence, wisdom, charisma,
-		        gold, key_ring, created_at, last_played
+		        discovered_portals, strength, dexterity, constitution, intelligence, wisdom, charisma,
+		        gold, key_ring, primary_class, class_levels, active_class, created_at, last_played
 		 FROM characters WHERE name = ?`,
 		name,
 	)
@@ -160,8 +239,8 @@ func (d *Database) GetCharacterByID(id int64) (*Character, error) {
 	row := d.db.QueryRow(
 		`SELECT id, account_id, name, room_id, health, max_health, mana, max_mana,
 		        level, experience, state, max_carry_weight, learned_spells,
-		        visited_portals, strength, dexterity, constitution, intelligence, wisdom, charisma,
-		        gold, key_ring, created_at, last_played
+		        discovered_portals, strength, dexterity, constitution, intelligence, wisdom, charisma,
+		        gold, key_ring, primary_class, class_levels, active_class, created_at, last_played
 		 FROM characters WHERE id = ?`,
 		id,
 	)
@@ -191,7 +270,7 @@ func (d *Database) SaveCharacter(c *Character) error {
 			state = ?,
 			max_carry_weight = ?,
 			learned_spells = ?,
-			visited_portals = ?,
+			discovered_portals = ?,
 			strength = ?,
 			dexterity = ?,
 			constitution = ?,
@@ -200,12 +279,15 @@ func (d *Database) SaveCharacter(c *Character) error {
 			charisma = ?,
 			gold = ?,
 			key_ring = ?,
+			primary_class = ?,
+			class_levels = ?,
+			active_class = ?,
 			last_played = CURRENT_TIMESTAMP
 		 WHERE id = ?`,
 		c.RoomID, c.Health, c.MaxHealth, c.Mana, c.MaxMana,
 		c.Level, c.Experience, c.State, c.MaxCarryWeight, c.LearnedSpells,
-		c.VisitedPortals, c.Strength, c.Dexterity, c.Constitution, c.Intelligence, c.Wisdom, c.Charisma,
-		c.Gold, c.KeyRing, c.ID,
+		c.DiscoveredPortals, c.Strength, c.Dexterity, c.Constitution, c.Intelligence, c.Wisdom, c.Charisma,
+		c.Gold, c.KeyRing, c.PrimaryClass, c.ClassLevels, c.ActiveClass, c.ID,
 	)
 	if err != nil {
 		return fmt.Errorf("failed to save character: %w", err)
@@ -274,8 +356,8 @@ func scanCharacter(rows *sql.Rows) (*Character, error) {
 		&c.Health, &c.MaxHealth, &c.Mana, &c.MaxMana,
 		&c.Level, &c.Experience, &c.State, &c.MaxCarryWeight,
 		&c.LearnedSpells,
-		&c.VisitedPortals, &c.Strength, &c.Dexterity, &c.Constitution, &c.Intelligence, &c.Wisdom, &c.Charisma,
-		&c.Gold, &c.KeyRing, &c.CreatedAt, &lastPlayed,
+		&c.DiscoveredPortals, &c.Strength, &c.Dexterity, &c.Constitution, &c.Intelligence, &c.Wisdom, &c.Charisma,
+		&c.Gold, &c.KeyRing, &c.PrimaryClass, &c.ClassLevels, &c.ActiveClass, &c.CreatedAt, &lastPlayed,
 	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to scan character: %w", err)
@@ -298,8 +380,8 @@ func scanCharacterRow(row *sql.Row) (*Character, error) {
 		&c.Health, &c.MaxHealth, &c.Mana, &c.MaxMana,
 		&c.Level, &c.Experience, &c.State, &c.MaxCarryWeight,
 		&c.LearnedSpells,
-		&c.VisitedPortals, &c.Strength, &c.Dexterity, &c.Constitution, &c.Intelligence, &c.Wisdom, &c.Charisma,
-		&c.Gold, &c.KeyRing, &c.CreatedAt, &lastPlayed,
+		&c.DiscoveredPortals, &c.Strength, &c.Dexterity, &c.Constitution, &c.Intelligence, &c.Wisdom, &c.Charisma,
+		&c.Gold, &c.KeyRing, &c.PrimaryClass, &c.ClassLevels, &c.ActiveClass, &c.CreatedAt, &lastPlayed,
 	)
 	if err != nil {
 		return nil, err

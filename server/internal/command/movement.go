@@ -89,13 +89,52 @@ func executeLook(c *Command, p PlayerInterface) string {
 				targetRoomIface := targetPlayer.GetCurrentRoom()
 				targetRoom, ok := targetRoomIface.(RoomInterface)
 				if ok && targetRoom.GetID() == room.GetID() {
-					return fmt.Sprintf("%s is standing here.", targetPlayer.GetName())
+					return formatPlayerDescription(targetPlayer)
 				}
 			}
 		}
 	}
 
 	return fmt.Sprintf("You don't see '%s' here.", targetName)
+}
+
+// formatPlayerDescription returns a description of another player
+func formatPlayerDescription(target PlayerInterface) string {
+	name := target.GetName()
+	level := target.GetLevel()
+	className := target.GetPrimaryClassName()
+
+	// Build basic description
+	var sb strings.Builder
+	sb.WriteString(fmt.Sprintf("%s, a level %d %s.\n", name, level, className))
+
+	// Show equipment summary
+	equipment := target.GetEquipment()
+	if len(equipment) > 0 {
+		sb.WriteString("\nEquipped:\n")
+		for slot, item := range equipment {
+			sb.WriteString(fmt.Sprintf("  %s: %s\n", slot.String(), item.Name))
+		}
+	}
+
+	// Show health status (approximate)
+	healthPercent := float64(target.GetHealth()) / float64(target.GetMaxHealth()) * 100
+	var healthStatus string
+	switch {
+	case healthPercent >= 100:
+		healthStatus = "in perfect health"
+	case healthPercent >= 75:
+		healthStatus = "slightly wounded"
+	case healthPercent >= 50:
+		healthStatus = "moderately wounded"
+	case healthPercent >= 25:
+		healthStatus = "heavily wounded"
+	default:
+		healthStatus = "near death"
+	}
+	sb.WriteString(fmt.Sprintf("\nThey appear to be %s.", healthStatus))
+
+	return sb.String()
 }
 
 // executeMove handles the generic "go <direction>" command

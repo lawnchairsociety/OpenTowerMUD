@@ -52,6 +52,7 @@ items:
     damage: 5
     damage_dice: "1d6"
     two_handed: false
+    weapon_type: "martial"
 
   # General Store Items
   torch:
@@ -76,6 +77,17 @@ items:
     value: 50
     slot: "body"
     armor: 3
+    armor_type: "light"
+
+  cloth_robe:
+    name: "cloth robe"
+    description: "A simple robe woven with minor protective enchantments, favored by spellcasters"
+    weight: 5.0
+    type: "armor"
+    value: 25
+    slot: "body"
+    armor: 1
+    armor_type: "none"
 
   # Mysterious Cave Items
   crystal:
@@ -111,6 +123,18 @@ items:
     consumable: true
     heal_amount: 10
 
+  dagger:
+    name: "dagger"
+    description: "A simple but sharp dagger, perfect for quick strikes"
+    weight: 1.0
+    type: "weapon"
+    value: 10
+    slot: "weapon"
+    damage: 3
+    damage_dice: "1d4"
+    two_handed: false
+    weapon_type: "finesse"
+
   iron_dagger:
     name: "iron dagger"
     description: "A sharp iron dagger with a leather-wrapped hilt"
@@ -121,6 +145,7 @@ items:
     damage: 4
     damage_dice: "1d4"
     two_handed: false
+    weapon_type: "finesse"
 
   wooden_staff:
     name: "wooden staff"
@@ -132,6 +157,19 @@ items:
     damage: 3
     damage_dice: "1d6"
     two_handed: true
+    weapon_type: "simple"
+
+  wooden_club:
+    name: "wooden club"
+    description: "A sturdy wooden club, simple but effective"
+    weight: 4.0
+    type: "weapon"
+    value: 5
+    slot: "weapon"
+    damage: 3
+    damage_dice: "1d4"
+    two_handed: false
+    weapon_type: "simple"
 
   leather_cap:
     name: "leather cap"
@@ -141,6 +179,7 @@ items:
     value: 15
     slot: "head"
     armor: 1
+    armor_type: "light"
 
   iron_boots:
     name: "iron boots"
@@ -150,6 +189,7 @@ items:
     value: 25
     slot: "feet"
     armor: 2
+    armor_type: "medium"
 
   # Consumable Items
 
@@ -295,6 +335,7 @@ items:
     damage: 6
     damage_dice: "1d6"
     two_handed: false
+    weapon_type: "finesse"
 
   chainmail_vest:
     name: "chainmail vest"
@@ -305,6 +346,7 @@ items:
     tier: 2
     slot: "body"
     armor: 5
+    armor_type: "medium"
 
   ectoplasm:
     name: "ectoplasm"
@@ -337,6 +379,7 @@ items:
     damage: 10
     damage_dice: "1d10"
     two_handed: false
+    weapon_type: "martial"
 
   plate_armor:
     name: "plate armor"
@@ -347,6 +390,7 @@ items:
     tier: 3
     slot: "body"
     armor: 8
+    armor_type: "heavy"
 
   demonic_essence:
     name: "demonic essence"
@@ -383,8 +427,9 @@ items:
     type: "armor"
     value: 350
     tier: 4
-    slot: "body"
+    slot: "back"
     armor: 4
+    armor_type: "light"
 
   flaming_sword:
     name: "flaming sword"
@@ -397,6 +442,7 @@ items:
     damage: 14
     damage_dice: "2d6+2"
     two_handed: false
+    weapon_type: "martial"
 
   dragon_scale:
     name: "dragon scale"
@@ -427,6 +473,7 @@ items:
     tier: 5
     slot: "head"
     armor: 3
+    armor_type: "light"
 
   spider_queens_fang:
     name: "spider queen's fang"
@@ -439,6 +486,7 @@ items:
     damage: 12
     damage_dice: "2d6"
     two_handed: false
+    weapon_type: "finesse"
 
   shadow_orb:
     name: "shadow orb"
@@ -463,3 +511,502 @@ items:
     type: "key"
     value: 500
     tier: 5
+
+  # =========================================
+  # Class-Specific Weapons
+  # =========================================
+
+  # Warrior Weapons
+  battleaxe:
+    name: "battleaxe"
+    description: "A heavy two-handed axe designed for cleaving through armor"
+    weight: 12.0
+    type: "weapon"
+    value: 150
+    tier: 2
+    slot: "weapon"
+    damage: 10
+    damage_dice: "1d12"
+    two_handed: true
+    weapon_type: "martial"
+
+  greatsword:
+    name: "greatsword"
+    description: "A massive two-handed sword requiring great strength to wield"
+    weight: 14.0
+    type: "weapon"
+    value: 250
+    tier: 3
+    slot: "weapon"
+    damage: 12
+    damage_dice: "2d6"
+    two_handed: true
+    weapon_type: "martial"
+
+  warhammer:
+    name: "warhammer"
+    description: "A heavy hammer designed to crush armor and bone"
+    weight: 10.0
+    type: "weapon"
+    value: 120
+    tier: 2
+    slot: "weapon"
+    damage: 8
+    damage_dice: "1d8"
+    two_handed: false
+    weapon_type: "martial"
+
+  # Mage Weapons
+  apprentice_staff:
+    name: "apprentice staff"
+    description: "A simple staff used by novice mages"
+    weight: 4.0
+    type: "weapon"
+    value: 30
+    tier: 1
+    slot: "weapon"
+    damage: 3
+    damage_dice: "1d4"
+    two_handed: true
+    weapon_type: "simple"
+    required_class: "mage"
+
+  arcane_staff:
+    name: "arcane staff"
+    description: "A staff imbued with arcane energies that enhance spell power"
+    weight: 5.0
+    type: "weapon"
+    value: 200
+    tier: 3
+    slot: "weapon"
+    damage: 5
+    damage_dice: "1d6"
+    two_handed: true
+    weapon_type: "simple"
+    required_class: "mage"
+
+  crystal_wand:
+    name: "crystal wand"
+    description: "A delicate wand topped with a glowing crystal"
+    weight: 0.5
+    type: "weapon"
+    value: 150
+    tier: 2
+    slot: "weapon"
+    damage: 2
+    damage_dice: "1d4"
+    two_handed: false
+    weapon_type: "simple"
+    required_class: "mage"
+
+  # Cleric Weapons
+  mace:
+    name: "mace"
+    description: "A heavy flanged mace favored by clerics"
+    weight: 8.0
+    type: "weapon"
+    value: 80
+    tier: 1
+    slot: "weapon"
+    damage: 6
+    damage_dice: "1d6"
+    two_handed: false
+    weapon_type: "simple"
+
+  holy_mace:
+    name: "holy mace"
+    description: "A blessed mace that glows with divine light"
+    weight: 8.0
+    type: "weapon"
+    value: 250
+    tier: 3
+    slot: "weapon"
+    damage: 8
+    damage_dice: "1d8"
+    two_handed: false
+    weapon_type: "simple"
+    required_class: "cleric"
+
+  morningstar:
+    name: "morningstar"
+    description: "A spiked ball on a chain, devastating against evil"
+    weight: 10.0
+    type: "weapon"
+    value: 150
+    tier: 2
+    slot: "weapon"
+    damage: 8
+    damage_dice: "1d8"
+    two_handed: false
+    weapon_type: "simple"
+
+  # Rogue Weapons
+  short_sword:
+    name: "short sword"
+    description: "A light, quick blade perfect for swift strikes"
+    weight: 3.0
+    type: "weapon"
+    value: 60
+    tier: 1
+    slot: "weapon"
+    damage: 6
+    damage_dice: "1d6"
+    two_handed: false
+    weapon_type: "finesse"
+
+  rapier:
+    name: "rapier"
+    description: "A thin, precise blade favored by duelists"
+    weight: 2.5
+    type: "weapon"
+    value: 150
+    tier: 2
+    slot: "weapon"
+    damage: 8
+    damage_dice: "1d8"
+    two_handed: false
+    weapon_type: "finesse"
+
+  shadowblade:
+    name: "shadowblade"
+    description: "A dark dagger that seems to drink in light"
+    weight: 1.5
+    type: "weapon"
+    value: 350
+    tier: 4
+    slot: "weapon"
+    damage: 10
+    damage_dice: "1d6+3"
+    two_handed: false
+    weapon_type: "finesse"
+    required_class: "rogue"
+
+  # Ranger Weapons
+  shortbow:
+    name: "shortbow"
+    description: "A compact bow for quick shots"
+    weight: 2.0
+    type: "weapon"
+    value: 50
+    tier: 1
+    slot: "weapon"
+    damage: 6
+    damage_dice: "1d6"
+    two_handed: true
+    weapon_type: "ranged"
+
+  longbow:
+    name: "longbow"
+    description: "A powerful bow with excellent range"
+    weight: 3.0
+    type: "weapon"
+    value: 150
+    tier: 2
+    slot: "weapon"
+    damage: 8
+    damage_dice: "1d8"
+    two_handed: true
+    weapon_type: "ranged"
+
+  hunters_bow:
+    name: "hunter's bow"
+    description: "A precision bow crafted for tracking prey"
+    weight: 2.5
+    type: "weapon"
+    value: 300
+    tier: 3
+    slot: "weapon"
+    damage: 10
+    damage_dice: "1d10"
+    two_handed: true
+    weapon_type: "ranged"
+    required_class: "ranger"
+
+  # Paladin Weapons
+  longsword:
+    name: "longsword"
+    description: "A versatile blade balanced for power and speed"
+    weight: 6.0
+    type: "weapon"
+    value: 100
+    tier: 1
+    slot: "weapon"
+    damage: 8
+    damage_dice: "1d8"
+    two_handed: false
+    weapon_type: "martial"
+
+  holy_avenger:
+    name: "holy avenger"
+    description: "A blessed sword that burns undead with holy fire"
+    weight: 7.0
+    type: "weapon"
+    value: 500
+    tier: 4
+    slot: "weapon"
+    damage: 12
+    damage_dice: "2d6"
+    two_handed: false
+    weapon_type: "martial"
+    required_class: "paladin"
+
+  # =========================================
+  # Class-Specific Armor
+  # =========================================
+
+  # Light Armor (All classes with light proficiency)
+  padded_armor:
+    name: "padded armor"
+    description: "Quilted layers of cloth and batting"
+    weight: 8.0
+    type: "armor"
+    value: 25
+    tier: 1
+    slot: "body"
+    armor: 1
+    armor_type: "light"
+
+  studded_leather:
+    name: "studded leather"
+    description: "Leather armor reinforced with metal studs"
+    weight: 13.0
+    type: "armor"
+    value: 75
+    tier: 2
+    slot: "body"
+    armor: 4
+    armor_type: "light"
+
+  # Medium Armor
+  hide_armor:
+    name: "hide armor"
+    description: "Crude armor made from thick animal hides"
+    weight: 12.0
+    type: "armor"
+    value: 40
+    tier: 1
+    slot: "body"
+    armor: 3
+    armor_type: "medium"
+
+  scale_mail:
+    name: "scale mail"
+    description: "Armor made of overlapping metal scales"
+    weight: 25.0
+    type: "armor"
+    value: 100
+    tier: 2
+    slot: "body"
+    armor: 5
+    armor_type: "medium"
+
+  breastplate:
+    name: "breastplate"
+    description: "A fitted metal chest piece offering good protection"
+    weight: 20.0
+    type: "armor"
+    value: 200
+    tier: 3
+    slot: "body"
+    armor: 6
+    armor_type: "medium"
+
+  half_plate:
+    name: "half plate"
+    description: "Plate armor covering vital areas with mail underneath"
+    weight: 30.0
+    type: "armor"
+    value: 350
+    tier: 3
+    slot: "body"
+    armor: 7
+    armor_type: "medium"
+
+  # Heavy Armor (Warriors and Paladins only)
+  ring_mail:
+    name: "ring mail"
+    description: "Leather armor with heavy metal rings sewn in"
+    weight: 40.0
+    type: "armor"
+    value: 60
+    tier: 1
+    slot: "body"
+    armor: 4
+    armor_type: "heavy"
+
+  chain_mail:
+    name: "chain mail"
+    description: "A full suit of interlocking metal rings"
+    weight: 55.0
+    type: "armor"
+    value: 150
+    tier: 2
+    slot: "body"
+    armor: 6
+    armor_type: "heavy"
+
+  splint_armor:
+    name: "splint armor"
+    description: "Metal strips riveted to a backing of leather"
+    weight: 60.0
+    type: "armor"
+    value: 400
+    tier: 3
+    slot: "body"
+    armor: 8
+    armor_type: "heavy"
+
+  full_plate:
+    name: "full plate"
+    description: "Complete plate armor covering the entire body"
+    weight: 65.0
+    type: "armor"
+    value: 750
+    tier: 4
+    slot: "body"
+    armor: 10
+    armor_type: "heavy"
+
+  # Shields
+  wooden_shield:
+    name: "wooden shield"
+    description: "A simple round shield made of hardwood"
+    weight: 6.0
+    type: "armor"
+    value: 25
+    tier: 1
+    slot: "off-hand"
+    armor: 2
+    armor_type: "shield"
+
+  steel_shield:
+    name: "steel shield"
+    description: "A sturdy metal shield with a reinforced boss"
+    weight: 8.0
+    type: "armor"
+    value: 75
+    tier: 2
+    slot: "off-hand"
+    armor: 3
+    armor_type: "shield"
+
+  tower_shield:
+    name: "tower shield"
+    description: "A massive shield that can cover your entire body"
+    weight: 15.0
+    type: "armor"
+    value: 150
+    tier: 3
+    slot: "off-hand"
+    armor: 4
+    armor_type: "shield"
+
+  # Mage Robes (No armor type - anyone can wear)
+  apprentice_robe:
+    name: "apprentice robe"
+    description: "Simple robes worn by novice spellcasters"
+    weight: 3.0
+    type: "armor"
+    value: 30
+    tier: 1
+    slot: "body"
+    armor: 0
+    required_class: "mage"
+
+  arcane_robe:
+    name: "arcane robe"
+    description: "Enchanted robes that enhance magical abilities"
+    weight: 3.0
+    type: "armor"
+    value: 250
+    tier: 3
+    slot: "body"
+    armor: 1
+    required_class: "mage"
+
+  # =========================================
+  # Accessory Items (neck, ring, back)
+  # =========================================
+
+  silver_amulet:
+    name: "silver amulet"
+    description: "A simple silver amulet on a chain"
+    weight: 0.1
+    type: "armor"
+    value: 50
+    tier: 1
+    slot: "neck"
+    armor: 0
+
+  protective_amulet:
+    name: "protective amulet"
+    description: "An amulet enchanted to ward off harm"
+    weight: 0.1
+    type: "armor"
+    value: 150
+    tier: 2
+    slot: "neck"
+    armor: 1
+
+  holy_symbol:
+    name: "holy symbol"
+    description: "A blessed symbol of divine protection"
+    weight: 0.2
+    type: "armor"
+    value: 200
+    tier: 2
+    slot: "neck"
+    armor: 1
+    required_class: "cleric"
+
+  copper_ring:
+    name: "copper ring"
+    description: "A simple copper band"
+    weight: 0.05
+    type: "armor"
+    value: 15
+    tier: 1
+    slot: "ring"
+    armor: 0
+
+  ring_of_protection:
+    name: "ring of protection"
+    description: "An enchanted ring that deflects blows"
+    weight: 0.05
+    type: "armor"
+    value: 200
+    tier: 3
+    slot: "ring"
+    armor: 1
+
+  travelers_cloak:
+    name: "traveler's cloak"
+    description: "A warm cloak for long journeys"
+    weight: 2.0
+    type: "armor"
+    value: 25
+    tier: 1
+    slot: "back"
+    armor: 0
+
+  cloak_of_stealth:
+    name: "cloak of stealth"
+    description: "A dark cloak that helps you blend into shadows"
+    weight: 1.5
+    type: "armor"
+    value: 300
+    tier: 3
+    slot: "back"
+    armor: 1
+    required_class: "rogue"
+
+  rangers_cloak:
+    name: "ranger's cloak"
+    description: "A camouflaged cloak for wilderness tracking"
+    weight: 2.0
+    type: "armor"
+    value: 250
+    tier: 3
+    slot: "back"
+    armor: 1
+    required_class: "ranger"

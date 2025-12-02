@@ -153,7 +153,7 @@ func RunAllTests(serverAddr string) []TestResult {
 	// Group 5: Magic System
 	results = append(results, TestSpellCasting(serverAddr))
 	results = append(results, TestHealOtherPlayer(serverAddr))
-	results = append(results, TestDazzleSpell(serverAddr))
+	results = append(results, TestBlessSpell(serverAddr))
 	results = append(results, TestSpellDamageWithModifiers(serverAddr))
 
 	// Group 6: Room Features
@@ -161,12 +161,17 @@ func RunAllTests(serverAddr string) []TestResult {
 	results = append(results, TestPortalCommand(serverAddr))
 	results = append(results, TestConsiderSelf(serverAddr))
 	results = append(results, TestLookAtFeature(serverAddr))
+	results = append(results, TestTrainCommand(serverAddr))
+	results = append(results, TestTrainerLocations(serverAddr))
 
 	// Group 7: Tower & Progression
 	results = append(results, TestTowerClimb(serverAddr))
 	results = append(results, TestPlayerLevelUp(serverAddr))
 	results = append(results, TestAbilityScores(serverAddr))
 	results = append(results, TestScoreCommand(serverAddr))
+	results = append(results, TestClassCommand(serverAddr))
+	results = append(results, TestStartingEquipment(serverAddr))
+	results = append(results, TestLookAtPlayer(serverAddr))
 
 	// Group 8: Account System
 	results = append(results, TestAccountSystem(serverAddr))

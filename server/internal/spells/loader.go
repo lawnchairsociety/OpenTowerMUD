@@ -9,20 +9,23 @@ import (
 
 // SpellEffectDefinition represents a spell effect in the YAML file.
 type SpellEffectDefinition struct {
-	Type   string `yaml:"type"`
-	Target string `yaml:"target"`
-	Amount int    `yaml:"amount"`            // Flat amount (legacy, used as fallback)
-	Dice   string `yaml:"dice,omitempty"`    // Dice notation e.g. "1d6", "2d4+2"
+	Type     string `yaml:"type"`
+	Target   string `yaml:"target"`
+	Amount   int    `yaml:"amount"`              // Flat amount (legacy, used as fallback)
+	Dice     string `yaml:"dice,omitempty"`      // Dice notation e.g. "1d6", "2d4+2"
+	Duration int    `yaml:"duration,omitempty"`  // Duration in seconds for timed effects
+	BuffType string `yaml:"buff_type,omitempty"` // Type of buff/debuff (ac, hit, damage, taken)
 }
 
 // SpellDefinition represents a spell definition from the YAML file.
 type SpellDefinition struct {
-	Name        string                  `yaml:"name"`
-	Description string                  `yaml:"description"`
-	ManaCost    int                     `yaml:"mana_cost"`
-	Cooldown    int                     `yaml:"cooldown"`
-	Level       int                     `yaml:"level"`
-	Effects     []SpellEffectDefinition `yaml:"effects"`
+	Name           string                  `yaml:"name"`
+	Description    string                  `yaml:"description"`
+	ManaCost       int                     `yaml:"mana_cost"`
+	Cooldown       int                     `yaml:"cooldown"`
+	Level          int                     `yaml:"level"`
+	Effects        []SpellEffectDefinition `yaml:"effects"`
+	AllowedClasses []string                `yaml:"allowed_classes,omitempty"` // Classes that can learn this spell
 }
 
 // SpellsConfig represents the structure of the spells.yaml file.
@@ -71,6 +74,26 @@ func StringToEffectType(s string) EffectType {
 		return EffectHealPercent
 	case "stun":
 		return EffectStun
+	case "buff":
+		return EffectBuff
+	case "debuff":
+		return EffectDebuff
+	case "poison":
+		return EffectPoison
+	case "stealth":
+		return EffectStealth
+	case "root":
+		return EffectRoot
+	case "execute":
+		return EffectExecute
+	case "smite":
+		return EffectSmite
+	case "resurrect":
+		return EffectResurrect
+	case "cleanse":
+		return EffectCleanse
+	case "multi_attack":
+		return EffectMultiAttack
 	default:
 		return EffectHeal
 	}
@@ -87,8 +110,32 @@ func StringToTargetType(s string) TargetType {
 		return TargetAlly
 	case "room_enemy":
 		return TargetRoomEnemy
+	case "room_ally":
+		return TargetRoomAlly
+	case "dead_ally":
+		return TargetDeadAlly
 	default:
 		return TargetSelf
+	}
+}
+
+// StringToBuffType converts a string to a BuffType.
+func StringToBuffType(s string) BuffType {
+	switch s {
+	case "ac":
+		return BuffAC
+	case "hit":
+		return BuffHit
+	case "damage":
+		return BuffDamage
+	case "taken":
+		return BuffTaken
+	case "mana":
+		return BuffMana
+	case "regen":
+		return BuffRegen
+	default:
+		return BuffAC
 	}
 }
 
@@ -97,21 +144,24 @@ func CreateSpellFromDefinition(id string, def SpellDefinition) *Spell {
 	effects := make([]SpellEffect, len(def.Effects))
 	for i, e := range def.Effects {
 		effects[i] = SpellEffect{
-			Type:   StringToEffectType(e.Type),
-			Target: StringToTargetType(e.Target),
-			Amount: e.Amount,
-			Dice:   e.Dice,
+			Type:     StringToEffectType(e.Type),
+			Target:   StringToTargetType(e.Target),
+			Amount:   e.Amount,
+			Dice:     e.Dice,
+			Duration: e.Duration,
+			BuffType: StringToBuffType(e.BuffType),
 		}
 	}
 
 	return &Spell{
-		ID:          id,
-		Name:        def.Name,
-		Description: def.Description,
-		ManaCost:    def.ManaCost,
-		Cooldown:    def.Cooldown,
-		Level:       def.Level,
-		Effects:     effects,
+		ID:             id,
+		Name:           def.Name,
+		Description:    def.Description,
+		ManaCost:       def.ManaCost,
+		Cooldown:       def.Cooldown,
+		Level:          def.Level,
+		Effects:        effects,
+		AllowedClasses: def.AllowedClasses,
 	}
 }
 
@@ -154,17 +204,48 @@ func (r *SpellRegistry) GetSpellsByLevel(maxLevel int) []*Spell {
 	return result
 }
 
-// GetStarterSpells returns the IDs of spells new characters should start with.
-func (r *SpellRegistry) GetStarterSpells() []string {
-	if len(r.starterSpells) == 0 {
-		// Fallback to defaults if not loaded from YAML
-		return []string{"heal", "flare", "dazzle"}
+// GetSpellsForClass returns all spells available to a specific class at or below a given level.
+func (r *SpellRegistry) GetSpellsForClass(className string, maxLevel int) []*Spell {
+	var result []*Spell
+	for _, spell := range r.spells {
+		if spell.Level <= maxLevel && spell.IsAllowedForClass(className) {
+			result = append(result, spell)
+		}
 	}
+	return result
+}
+
+// GetSpellsForClasses returns all spells available to any of the given classes and levels.
+// classLevels is a map of class name to class level.
+func (r *SpellRegistry) GetSpellsForClasses(classLevels map[string]int) []*Spell {
+	var result []*Spell
+	seen := make(map[string]bool)
+	for _, spell := range r.spells {
+		if seen[spell.ID] {
+			continue
+		}
+		// Check if any class can use this spell at their level
+		for className, level := range classLevels {
+			if spell.Level <= level && spell.IsAllowedForClass(className) {
+				result = append(result, spell)
+				seen[spell.ID] = true
+				break
+			}
+		}
+	}
+	return result
+}
+
+// GetStarterSpells returns the IDs of starter spells from config.
+// Deprecated: With the class system, spells are now automatically available based on class levels.
+// This method is kept for backwards compatibility but returns an empty slice by default.
+func (r *SpellRegistry) GetStarterSpells() []string {
 	return r.starterSpells
 }
 
-// DefaultStarterSpells returns the IDs of spells new characters should start with.
-// Deprecated: Use SpellRegistry.GetStarterSpells() instead.
+// DefaultStarterSpells returns the IDs of spells new characters used to start with.
+// Deprecated: With the class system, spells are now automatically available based on class levels.
+// Use SpellRegistry.GetSpellsForClasses() instead.
 func DefaultStarterSpells() []string {
-	return []string{"heal", "flare", "dazzle"}
+	return []string{} // Empty - spells are now class-based
 }

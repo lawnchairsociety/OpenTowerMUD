@@ -146,10 +146,13 @@ func executeEquipment(c *Command, p PlayerInterface) string {
 	// Display equipment in a logical order
 	slots := []items.EquipmentSlot{
 		items.SlotHead,
+		items.SlotNeck,
 		items.SlotBody,
+		items.SlotBack,
 		items.SlotLegs,
 		items.SlotFeet,
 		items.SlotHands,
+		items.SlotRing,
 		items.SlotWeapon,
 		items.SlotOffHand,
 		items.SlotHeld,
@@ -195,6 +198,12 @@ func executeWield(c *Command, p PlayerInterface) string {
 		return fmt.Sprintf("You can't wield %s - it's not a weapon!", item.Name)
 	}
 
+	// Check proficiency
+	canEquip, reason := p.CanEquipItem(item)
+	if !canEquip {
+		return reason
+	}
+
 	// Try to equip it
 	if err := p.EquipItem(item); err != nil {
 		return err.Error()
@@ -227,6 +236,12 @@ func executeWear(c *Command, p PlayerInterface) string {
 	// Check if it's armor
 	if item.Type != items.Armor {
 		return fmt.Sprintf("You can't wear %s - it's not armor!", item.Name)
+	}
+
+	// Check proficiency
+	canEquip, reason := p.CanEquipItem(item)
+	if !canEquip {
+		return reason
 	}
 
 	// Try to equip it

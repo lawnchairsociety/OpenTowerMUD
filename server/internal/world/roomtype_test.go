@@ -22,15 +22,6 @@ func TestRoomTypeString(t *testing.T) {
 	}
 }
 
-func TestRoomTypeIsSafe(t *testing.T) {
-	if !RoomTypeCity.IsSafe() {
-		t.Error("City should be safe")
-	}
-	if RoomTypeBoss.IsSafe() {
-		t.Error("Boss should not be safe")
-	}
-}
-
 func TestParseRoomType(t *testing.T) {
 	tests := []struct {
 		input string
@@ -51,14 +42,5 @@ func TestParseRoomType(t *testing.T) {
 		if got != tt.want || ok != tt.ok {
 			t.Errorf("ParseRoomType(%q) = (%v, %v), want (%v, %v)", tt.input, got, ok, tt.want, tt.ok)
 		}
-	}
-}
-
-func TestRoomTypeDangerLevel(t *testing.T) {
-	if RoomTypeCity.GetDangerLevel() != 0 {
-		t.Error("City danger level should be 0")
-	}
-	if RoomTypeBoss.GetDangerLevel() != 5 {
-		t.Error("Boss danger level should be 5")
 	}
 }

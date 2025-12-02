@@ -406,8 +406,8 @@ npcs:
     respawn_variation: 0
 
   # Throne Room NPCs
-  king_aldric:
-    name: "King Aldric the Wise"
+  king_galdren:
+    name: "King Galdren the Wise"
     description: "An aging but dignified monarch seated upon the stone throne. His crown sits heavy on his silver hair, and his eyes hold the weight of countless difficult decisions. Despite his years, his voice still carries the authority of absolute rule."
     level: 20
     health: 300
@@ -551,5 +551,143 @@ npcs:
       - "I've seen kings come and go. The garden remains."
     locations:
       - "castle_courtyard"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # =====================
+  # Class Trainers
+  # =====================
+  # These NPCs can teach players new classes (multiclassing)
+  # Use 'train' to learn a new class from them
+
+  warrior_trainer:
+    name: "Battlemaster Korg"
+    description: "A grizzled veteran covered in scars, his massive frame speaks of countless battles survived. Despite his fearsome appearance, his eyes hold patience for those willing to learn the way of the sword."
+    level: 20
+    health: 300
+    damage: 30
+    armor: 12
+    experience: 0
+    aggressive: false
+    attackable: false
+    trainer_class: "warrior"
+    dialogue:
+      - "Strength wins battles. Discipline wins wars. I teach both."
+      - "You want to learn the warrior's way? It's written in blood and iron."
+      - "Every scar on my body is a lesson learned. How many lessons do you want?"
+      - "The sword doesn't care about your fancy spells or prayers. It only cares about the arm that swings it."
+      - "Type 'train' if you wish to learn the ways of the Warrior."
+    locations:
+      - "training_hall"
+    respawn_median: 0
+    respawn_variation: 0
+
+  mage_trainer:
+    name: "Archmage Thessaly"
+    description: "An elegant woman in shimmering robes, arcane symbols slowly orbit around her. Her eyes crackle with barely contained magical energy, and ancient tomes float within arm's reach."
+    level: 20
+    health: 150
+    damage: 0
+    armor: 5
+    experience: 0
+    aggressive: false
+    attackable: false
+    trainer_class: "mage"
+    dialogue:
+      - "Magic is not a tool - it is a fundamental force of reality. Respect it, or be consumed."
+      - "The tower itself was created by magic older than the kingdom. I've spent decades studying its secrets."
+      - "Intelligence is the key to arcane power. A sharp mind shapes the weave of magic."
+      - "Fireballs and lightning are flashy, but true mastery lies in understanding the underlying theory."
+      - "Type 'train' if you wish to learn the ways of the Mage."
+    locations:
+      - "royal_library"
+    respawn_median: 0
+    respawn_variation: 0
+
+  cleric_trainer:
+    name: "Father Aldous"
+    description: "A serene man in simple white robes, his presence radiates an aura of calm and healing. A holy symbol hangs from his neck, glowing faintly with divine light."
+    level: 20
+    health: 200
+    damage: 15
+    armor: 8
+    experience: 0
+    aggressive: false
+    attackable: false
+    trainer_class: "cleric"
+    dialogue:
+      - "Faith is not belief without evidence - it is trust in something greater than yourself."
+      - "The divine grants healing to those who serve, and wrath to those who profane."
+      - "Wisdom guides the hand of the healer. Know when to mend, and when to smite."
+      - "The undead are an abomination. Clerics have a sacred duty to return them to rest."
+      - "Type 'train' if you wish to learn the ways of the Cleric."
+    locations:
+      - "temple"
+    respawn_median: 0
+    respawn_variation: 0
+
+  rogue_trainer:
+    name: "Shadow"
+    description: "You almost didn't notice them sitting in the dark corner. A hooded figure with quick eyes that miss nothing. Their hands are never quite still, always toying with a coin or a dagger."
+    level: 20
+    health: 120
+    damage: 25
+    armor: 4
+    experience: 0
+    aggressive: false
+    attackable: false
+    trainer_class: "rogue"
+    dialogue:
+      - "The shadows are a rogue's best friend. Learn to use them, or become prey."
+      - "A quick blade is worth more than a strong arm. Strike fast, strike first, strike unseen."
+      - "Dexterity, my friend. Nimble fingers open locks and slit throats equally well."
+      - "Why fight fair when you can fight smart? Leave honor to the paladins."
+      - "Type 'train' if you wish to learn the ways of the Rogue."
+    locations:
+      - "tavern"
+    respawn_median: 0
+    respawn_variation: 0
+
+  ranger_trainer:
+    name: "Warden Ashara"
+    description: "A weathered woman in woodland garb, her keen eyes constantly scanning the surroundings. A magnificent bow rests across her back, and a wolf companion lies at her feet."
+    level: 20
+    health: 180
+    damage: 22
+    armor: 6
+    experience: 0
+    aggressive: false
+    attackable: false
+    trainer_class: "ranger"
+    dialogue:
+      - "The wilds beyond these walls are unforgiving. You must learn to be more so."
+      - "Every beast has a weakness. A true ranger learns them all."
+      - "Dexterity and Wisdom - a ranger's bow needs both to find its mark."
+      - "I've hunted creatures most wouldn't believe existed. The tower breeds horrors."
+      - "Type 'train' if you wish to learn the ways of the Ranger."
+    locations:
+      - "north_gate"
+    respawn_median: 0
+    respawn_variation: 0
+
+  paladin_trainer:
+    name: "Sir Gareth the Radiant"
+    description: "A knight in gleaming silver armor, radiating an aura of righteous conviction. His sword bears holy runes, and a shield emblazoned with a sunburst rests at his side."
+    level: 20
+    health: 250
+    damage: 25
+    armor: 10
+    experience: 0
+    aggressive: false
+    attackable: false
+    trainer_class: "paladin"
+    dialogue:
+      - "A paladin's strength comes from conviction. Doubt is the enemy of the righteous."
+      - "We are the shield against darkness, the sword against evil. Both strength and faith are required."
+      - "The undead and demons flee before holy might. It is our sacred duty to pursue them."
+      - "Strength and Charisma form the pillars of a paladin's power. Lead by example."
+      - "Type 'train' if you wish to learn the ways of the Paladin."
+    locations:
+      - "castle_hall"
     respawn_median: 0
     respawn_variation: 0
