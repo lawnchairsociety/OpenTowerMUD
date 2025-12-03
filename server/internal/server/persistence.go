@@ -300,8 +300,7 @@ func getClassStartingItems(className string) []string {
 	}
 }
 
-// handleDisconnect handles player disconnect cleanup
-// Note: Progress is NOT saved on disconnect - players must visit the bard to save!
+// handleDisconnect handles player disconnect cleanup and auto-saves progress
 func (s *Server) handleDisconnect(p *player.Player) {
 	room := p.GetCurrentRoom().(*world.Room)
 
@@ -316,11 +315,21 @@ func (s *Server) handleDisconnect(p *player.Player) {
 		p.EndCombat()
 	}
 
+	// Auto-save player progress on disconnect
+	if err := s.SavePlayer(p); err != nil {
+		logger.Error("Failed to auto-save player on disconnect",
+			"player", p.GetName(),
+			"error", err)
+	} else {
+		logger.Info("Auto-saved player on disconnect",
+			"player", p.GetName())
+	}
+
 	// Remove from current room
 	if p.CurrentRoom != nil {
 		p.CurrentRoom.RemovePlayer(p.GetName())
 	}
 
-	logger.Info("Player disconnected (progress not saved - must visit bard)",
+	logger.Info("Player disconnected",
 		"player", p.GetName())
 }

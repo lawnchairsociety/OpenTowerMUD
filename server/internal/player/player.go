@@ -554,6 +554,17 @@ func (p *Player) GetEquipment() map[items.EquipmentSlot]*items.Item {
 	return p.Equipment
 }
 
+// GetEquippedWeapon returns the player's equipped weapon, or nil if unarmed
+func (p *Player) GetEquippedWeapon() *items.Item {
+	return p.Equipment[items.SlotWeapon]
+}
+
+// HasRangedWeapon returns true if the player has a ranged weapon equipped
+func (p *Player) HasRangedWeapon() bool {
+	weapon := p.GetEquippedWeapon()
+	return weapon != nil && weapon.IsRanged()
+}
+
 // ConsumeItem consumes an item and applies its effects
 // Returns a message describing what happened
 func (p *Player) ConsumeItem(item *items.Item) string {

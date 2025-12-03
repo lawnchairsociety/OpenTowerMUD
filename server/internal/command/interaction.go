@@ -10,8 +10,6 @@ import (
 	"github.com/lawnchairsociety/opentowermud/server/internal/world"
 )
 
-// BardSaveCost is the cost in gold to save progress at the bard
-const BardSaveCost = 5
 
 // executeTalk initiates conversation with an NPC
 func executeTalk(c *Command, p PlayerInterface) string {
@@ -29,9 +27,23 @@ func executeTalk(c *Command, p PlayerInterface) string {
 		return "Internal error: invalid room type"
 	}
 
-	// Find the NPC
-	npcName := c.GetItemName()
-	foundNPC := worldRoom.FindNPC(npcName)
+	// Find the NPC - try first arg, then full name for multi-word NPCs
+	// This allows "talk aldric tower" to find "aldric" with topic "tower"
+	var foundNPC *npc.NPC
+	var npcName string
+
+	// First try just the first argument (e.g., "aldric" from "talk aldric tower")
+	if len(c.Args) >= 1 {
+		npcName = c.Args[0]
+		foundNPC = worldRoom.FindNPC(npcName)
+	}
+
+	// If not found, try full name for multi-word NPCs (e.g., "old guide")
+	if foundNPC == nil {
+		npcName = c.GetItemName()
+		foundNPC = worldRoom.FindNPC(npcName)
+	}
+
 	if foundNPC == nil {
 		return fmt.Sprintf("You don't see '%s' here.", npcName)
 	}
@@ -41,9 +53,9 @@ func executeTalk(c *Command, p PlayerInterface) string {
 		return fmt.Sprintf("The %s is dead and cannot respond.", foundNPC.GetName())
 	}
 
-	// Special handling for the bard - save game functionality
+	// Special handling for the bard - flavor interaction
 	if strings.Contains(strings.ToLower(foundNPC.GetName()), "bard") {
-		return handleBardInteraction(c, p, foundNPC)
+		return handleBardInteraction(p, foundNPC)
 	}
 
 	// Special handling for Aldric the old guide - tutorial
@@ -61,37 +73,8 @@ func executeTalk(c *Command, p PlayerInterface) string {
 	return fmt.Sprintf("The %s says, \"%s\"", foundNPC.GetName(), dialogue)
 }
 
-// handleBardInteraction handles the special save-game interaction with the bard
-func handleBardInteraction(c *Command, p PlayerInterface, bard *npc.NPC) string {
-	// Check if player has enough gold
-	if p.GetGold() < BardSaveCost {
-		return fmt.Sprintf(`The %s strums his lute and looks at you expectantly.
-
-"%s says, "Ah, you wish me to immortalize your deeds in song? A mere %d gold for a ballad that will echo through the ages!"
-
-He notices your empty coin purse and sighs. "Alas, it seems you cannot afford my services. Return when you have %d gold, and I shall compose a masterpiece!"
-
-(You need %d gold to save your progress. You have %d gold.)`,
-			bard.GetName(), bard.GetName(), BardSaveCost, BardSaveCost, BardSaveCost, p.GetGold())
-	}
-
-	// Deduct the gold
-	p.SpendGold(BardSaveCost)
-
-	// Save the player
-	server, ok := p.GetServer().(ServerInterface)
-	if !ok {
-		// Refund on error
-		p.AddGold(BardSaveCost)
-		return "Internal error: unable to save."
-	}
-
-	if err := server.SavePlayer(p); err != nil {
-		// Refund on error
-		p.AddGold(BardSaveCost)
-		return fmt.Sprintf("The bard tries to compose, but something goes wrong: %v", err)
-	}
-
+// handleBardInteraction provides flavor dialogue with the bard
+func handleBardInteraction(p PlayerInterface, bard *npc.NPC) string {
 	// Generate a fun song snippet based on player stats
 	songLines := []string{
 		fmt.Sprintf("~ Of %s the brave, level %d and bold ~", p.GetName(), p.GetLevel()),
@@ -100,23 +83,20 @@ He notices your empty coin purse and sighs. "Alas, it seems you cannot afford my
 		fmt.Sprintf("~ A hero's tale that will never die! ~"),
 	}
 
-	return fmt.Sprintf(`The %s's eyes light up as you hand over %d gold.
+	return fmt.Sprintf(`The %s strums his lute and smiles warmly at you.
 
-"Ah, a patron of the arts! Let me compose a verse worthy of your adventures..."
+"Ah, %s! Let me sing of your adventures..."
 
-He clears his throat and begins to sing:
+He clears his throat and begins to play:
 
 %s
 %s
 %s
 %s
 
-The bard bows with a flourish. "Your legend is now preserved for all time!"
-
-(Progress saved! Gold remaining: %d)`,
-		bard.GetName(), BardSaveCost,
-		songLines[0], songLines[1], songLines[2], songLines[3],
-		p.GetGold())
+The bard bows with a flourish. "May your legend grow ever greater, friend!"`,
+		bard.GetName(), p.GetName(),
+		songLines[0], songLines[1], songLines[2], songLines[3])
 }
 
 // handleGuideInteraction provides the new player tutorial from Aldric
@@ -167,7 +147,7 @@ the Endless Tower. What would you like to know about?"
 
   talk %s tower    - The Endless Tower and what awaits you
   talk %s combat   - How to fight and stay alive
-  talk %s save     - How to SAVE your progress (IMPORTANT!)
+  talk %s save     - How your progress is saved
   talk %s shop     - Buying, selling, and equipment
   talk %s portal   - Fast travel between floors
   talk %s commands - Quick reference of useful commands
@@ -186,13 +166,14 @@ He leans on his walking stick. "Just ask about any topic, friend!"`,
 func getGuideTowerTopic(guide *npc.NPC) string {
 	return fmt.Sprintf(`%s points toward the massive tower looming to the south.
 
-"That's the Endless Tower - it's why we're all here. It stretches infinitely
-upward, filled with monsters, treasures, and mysteries."
+"That's the Endless Tower - it's why we're all here." He squints upward,
+shielding his eyes. "The tower shimmers and shifts... some say it rearranges
+itself when no one is watching. No one knows how tall it truly is."
 
-  - Go SOUTH three times from Town Square to reach the TOWER ENTRANCE
+  - Go SOUTH four times from Town Square to reach the TOWER ENTRANCE
   - Type 'up' to begin climbing
   - Each floor has corridors, chambers, and treasure rooms
-  - Every 10th floor (10, 20, 30...) has a powerful BOSS!
+  - Every 10th floor has a powerful BOSS guarding the way forward!
   - The higher you climb, the stronger the monsters... and better the loot!
 
 "Start on floor 1, get some experience, then work your way up!"`, guide.GetName())
@@ -221,22 +202,20 @@ func getGuideCombatTopic(guide *npc.NPC) string {
 "Always check your health before going deeper!"`, guide.GetName())
 }
 
-// getGuideSaveTopic explains the critical save mechanic
+// getGuideSaveTopic explains the auto-save mechanic
 func getGuideSaveTopic(guide *npc.NPC) string {
-	return fmt.Sprintf(`%s grabs your arm urgently.
+	return fmt.Sprintf(`%s nods reassuringly.
 
-"Listen carefully - this is the MOST important thing I'll tell you!"
+"Ah, worried about losing your progress? Fear not!"
 
-  *** YOUR PROGRESS IS ONLY SAVED AT THE BARD! ***
+  Your progress is saved automatically:
+  - When you disconnect or quit the game
+  - When the server shuts down for maintenance
+  - After important events like learning a new class
 
-  - Go SOUTH, SOUTH, then EAST to find 'The Weary Wanderer Tavern'
-  - Type 'talk bard' - he'll write a song about you for 5 gold
-  - This SAVES your character!
+  You don't need to do anything special - just play and enjoy!
 
-  WARNING: If you disconnect WITHOUT visiting the bard, you LOSE
-  everything since your last save - experience, items, gold, ALL OF IT!
-
-"Always visit the bard before you log off. ALWAYS!"`, guide.GetName())
+"The magic of this realm remembers all your deeds, friend."`, guide.GetName())
 }
 
 // getGuideShopTopic explains commerce and equipment

@@ -307,8 +307,8 @@ func executeEmote(c *Command, p PlayerInterface) string {
 	return fmt.Sprintf("%s %s", p.GetName(), filteredAction)
 }
 
-// executeQuit disconnects the player
+// executeQuit disconnects the player (progress is auto-saved on disconnect)
 func executeQuit(c *Command, p PlayerInterface) string {
 	p.Disconnect()
-	return "Goodbye!"
+	return "Your progress has been saved. Goodbye!"
 }

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/lawnchairsociety/opentowermud/server/internal/leveling"
 	"github.com/lawnchairsociety/opentowermud/server/internal/world"
 )
 
@@ -168,40 +167,7 @@ Armor: %d | Damage: %d | XP Reward: %d`,
 	)
 }
 
-// executeConsiderSelf shows the player their own stats
+// executeConsiderSelf shows the player their own stats (delegates to score command)
 func executeConsiderSelf(c *Command, p PlayerInterface) string {
-	level := p.GetLevel()
-	xp := p.GetExperience()
-
-	// Calculate XP progress
-	var xpLine string
-	if level >= leveling.MaxPlayerLevel {
-		xpLine = fmt.Sprintf("Experience: %d (MAX LEVEL)", xp)
-	} else {
-		xpNeeded := leveling.XPForLevel(level + 1)
-		xpCurrent := leveling.XPForLevel(level)
-		xpProgress := xp - xpCurrent
-		xpRequired := xpNeeded - xpCurrent
-		percent := 0
-		if xpRequired > 0 {
-			percent = (xpProgress * 100) / xpRequired
-		}
-		xpLine = fmt.Sprintf("Experience: %d / %d (%d%% to level %d)", xp, xpNeeded, percent, level+1)
-	}
-
-	return fmt.Sprintf(`=== %s ===
-Level:      %d
-%s
-Health:     %d/%d
-Mana:       %d/%d
-State:      %s`,
-		p.GetName(),
-		level,
-		xpLine,
-		p.GetHealth(),
-		p.GetMaxHealth(),
-		p.GetMana(),
-		p.GetMaxMana(),
-		p.GetState(),
-	)
+	return executeScore(c, p)
 }

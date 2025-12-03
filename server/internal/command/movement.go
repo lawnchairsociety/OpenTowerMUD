@@ -62,6 +62,14 @@ func executeLook(c *Command, p PlayerInterface) string {
 
 	// Check if it's a room feature
 	targetLower := strings.ToLower(targetName)
+
+	// Handle stairs/stairway lookups - match either stairs_up or stairs_down
+	if targetLower == "stairs" || targetLower == "stairway" {
+		if room.HasFeature("stairs_up") || room.HasFeature("stairs_down") {
+			return "A spiral staircase winds through the tower, its ancient stones worn smooth by countless adventurers. Who knows what awaits beyond?"
+		}
+	}
+
 	if room.HasFeature(targetLower) {
 		switch targetLower {
 		case "altar":

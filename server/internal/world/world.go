@@ -15,6 +15,7 @@ type TowerInterface interface {
 	GetOrGenerateFloorPortalRoom(floorNum int) (*Room, error)
 	HasFloor(floorNum int) bool
 	FindRoom(roomID string) *Room
+	GetAllRooms() map[string]*Room
 }
 
 type World struct {
@@ -105,6 +106,15 @@ func (w *World) GetAllRooms() []*Room {
 	for _, room := range w.Rooms {
 		rooms = append(rooms, room)
 	}
+
+	// Include tower rooms
+	if w.tower != nil {
+		towerRooms := w.tower.GetAllRooms()
+		for _, room := range towerRooms {
+			rooms = append(rooms, room)
+		}
+	}
+
 	return rooms
 }
 

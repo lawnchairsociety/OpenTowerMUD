@@ -196,11 +196,22 @@ func (s *Server) Shutdown() {
 	// Stop the respawn manager
 	s.respawnManager.Stop()
 
+	// Auto-save all connected players before shutdown
 	s.mu.Lock()
 	for _, client := range s.clients {
+		if err := s.SavePlayer(client); err != nil {
+			logger.Error("Failed to auto-save player on shutdown",
+				"player", client.GetName(),
+				"error", err)
+		} else {
+			logger.Info("Auto-saved player on shutdown",
+				"player", client.GetName())
+		}
 		client.Disconnect()
 	}
 	s.mu.Unlock()
+
+	logger.Info("Server shutdown complete, all players saved")
 }
 
 func (s *Server) BroadcastMessage(message string, exclude *player.Player) {
@@ -550,10 +561,18 @@ func (s *Server) processPlayerAttack(p *player.Player) {
 		"target_ac", npcAC,
 		"hit", attackRoll >= npcAC)
 
+	// Determine attack verb based on weapon type
+	attackVerb := "swing at"
+	attackVerbThirdPerson := "swings at"
+	if p.HasRangedWeapon() {
+		attackVerb = "shoot at"
+		attackVerbThirdPerson = "shoots at"
+	}
+
 	if attackRoll < npcAC {
 		// Miss!
-		p.SendMessage(fmt.Sprintf("\nYou swing at %s... (%s vs AC %d) Miss!\n",
-			npc.GetName(), attackBreakdown, npcAC))
+		p.SendMessage(fmt.Sprintf("\nYou %s %s... (%s vs AC %d) Miss!\n",
+			attackVerb, npc.GetName(), attackBreakdown, npcAC))
 
 		// Notify other fighters
 		targets := npc.GetTargets()
@@ -561,8 +580,8 @@ func (s *Server) processPlayerAttack(p *player.Player) {
 			if targetName != p.GetName() {
 				if targetPlayerInterface := s.FindPlayer(targetName); targetPlayerInterface != nil {
 					targetPlayer := targetPlayerInterface.(*player.Player)
-					targetPlayer.SendMessage(fmt.Sprintf("\n%s swings at %s and misses!\n",
-						p.GetName(), npc.GetName()))
+					targetPlayer.SendMessage(fmt.Sprintf("\n%s %s %s and misses!\n",
+						p.GetName(), attackVerbThirdPerson, npc.GetName()))
 				}
 			}
 		}
@@ -589,8 +608,8 @@ func (s *Server) processPlayerAttack(p *player.Player) {
 		"target_max_hp", npc.GetMaxHealth())
 
 	// Send message to attacker with dice details
-	p.SendMessage(fmt.Sprintf("\nYou swing at %s... (%s vs AC %d) Hit!\nYou deal %d damage! (%d/%d HP)\n",
-		npc.GetName(), attackBreakdown, npcAC, npcDamageTaken, npc.GetHealth(), npc.GetMaxHealth()))
+	p.SendMessage(fmt.Sprintf("\nYou %s %s... (%s vs AC %d) Hit!\nYou deal %d damage! (%d/%d HP)\n",
+		attackVerb, npc.GetName(), attackBreakdown, npcAC, npcDamageTaken, npc.GetHealth(), npc.GetMaxHealth()))
 
 	// Send message to all other players fighting this NPC
 	targets := npc.GetTargets()
