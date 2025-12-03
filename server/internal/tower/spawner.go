@@ -52,16 +52,16 @@ func (s *MobSpawner) SpawnMobsOnFloor(floor *Floor, floorNum int, rng *rand.Rand
 			spawned = append(spawned, npcs...)
 
 		case world.RoomTypeRoom:
-			// Regular rooms have a chance to spawn 1-2 mobs
-			if rng.Float32() < 0.6 { // 60% chance of mobs
-				npcs := s.spawnMobsInRoom(room, floorNum, tier, rng, 1, 2)
+			// Regular rooms have a high chance to spawn 1-3 mobs
+			if rng.Float32() < 0.8 { // 80% chance of mobs
+				npcs := s.spawnMobsInRoom(room, floorNum, tier, rng, 1, 3)
 				spawned = append(spawned, npcs...)
 			}
 
 		case world.RoomTypeCorridor:
-			// Corridors have a moderate chance to spawn 1 mob
-			if rng.Float32() < 0.4 { // 40% chance of mobs
-				npcs := s.spawnMobsInRoom(room, floorNum, tier, rng, 1, 1)
+			// Corridors have a moderate chance to spawn 1-2 mobs
+			if rng.Float32() < 0.6 { // 60% chance of mobs
+				npcs := s.spawnMobsInRoom(room, floorNum, tier, rng, 1, 2)
 				spawned = append(spawned, npcs...)
 			}
 
