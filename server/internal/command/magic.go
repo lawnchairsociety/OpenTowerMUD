@@ -316,6 +316,14 @@ func castEnemySpell(c *Command, p PlayerInterface, spell *spells.Spell, targetNP
 			actualDamage := targetNPC.TakeMagicDamage(damage)
 			totalDamage += actualDamage
 			results = append(results, fmt.Sprintf("%d damage", actualDamage))
+		case spells.EffectRoot:
+			// Root prevents fleeing for duration seconds
+			duration := effect.Duration
+			if duration <= 0 {
+				duration = 30 // Default 30 seconds if not specified
+			}
+			targetNPC.Root(duration)
+			results = append(results, fmt.Sprintf("rooted for %d seconds", duration))
 		}
 	}
 
@@ -325,17 +333,23 @@ func castEnemySpell(c *Command, p PlayerInterface, spell *spells.Spell, targetNP
 
 	if len(results) > 0 {
 		effectStr := strings.Join(results, ", ")
-		result.WriteString(fmt.Sprintf("A burst of magical energy strikes %s for %s!", targetNPC.GetName(), effectStr))
+		if totalDamage > 0 {
+			result.WriteString(fmt.Sprintf("A burst of magical energy strikes %s for %s!", targetNPC.GetName(), effectStr))
+		} else {
+			result.WriteString(fmt.Sprintf("%s is %s!", targetNPC.GetName(), effectStr))
+		}
 	}
 
 	// Broadcast to room
 	server.BroadcastToRoom(room.GetID(), fmt.Sprintf("%s casts %s at %s!\n", p.GetName(), spell.Name, targetNPC.GetName()), p)
 
-	// If we dealt damage, initiate combat (combat ticker will handle NPC death if needed)
-	if spell.HasDamageEffect() && totalDamage > 0 && !p.IsInCombat() {
-		p.StartCombat(targetNPC.GetName())
-		targetNPC.StartCombat(p.GetName())
-		result.WriteString("\n\nCombat initiated! Type 'flee' to escape.")
+	// If we dealt damage or applied a hostile effect, initiate combat
+	if (spell.HasDamageEffect() && totalDamage > 0) || spell.HasRootEffect() {
+		if !p.IsInCombat() {
+			p.StartCombat(targetNPC.GetName())
+			targetNPC.StartCombat(p.GetName())
+			result.WriteString("\n\nCombat initiated! Type 'flee' to escape.")
+		}
 	}
 
 	return result.String()

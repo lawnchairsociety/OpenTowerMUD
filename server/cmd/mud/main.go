@@ -122,6 +122,9 @@ func main() {
 	srv.SetItemsConfig(itemsConfig)
 	srv.SetSpellRegistry(spellRegistry)
 
+	// Set up dynamic spawn scaling based on player count
+	srv.SetupDynamicSpawns(gameTower)
+
 	// Load and set chat filter
 	filterCfg, err := chatfilter.LoadConfig(*chatFilterConfig)
 	if err != nil {

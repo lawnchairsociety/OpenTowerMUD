@@ -339,6 +339,13 @@ func (t *Tower) SetMobSpawner(spawner *MobSpawner) {
 	t.mobSpawner = spawner
 }
 
+// GetMobSpawner returns the mob spawner (for dynamic spawn manager)
+func (t *Tower) GetMobSpawner() *MobSpawner {
+	t.mu.RLock()
+	defer t.mu.RUnlock()
+	return t.mobSpawner
+}
+
 // SetMobConfig is a convenience method to create and set a mob spawner from config
 func (t *Tower) SetMobConfig(config *npc.NPCsConfig) {
 	t.SetMobSpawner(NewMobSpawner(config))

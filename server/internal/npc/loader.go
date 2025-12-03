@@ -103,9 +103,13 @@ func CreateNPCFromDefinition(def NPCDefinition, roomID string) *NPC {
 		npc.SetDialogue(def.Dialogue)
 	}
 	// Set mob type for class bonuses (favored enemy, smite, etc.)
+	// and set flee threshold based on mob type
+	mobType := StringToMobType(def.MobType)
 	if def.MobType != "" {
-		npc.SetMobType(StringToMobType(def.MobType))
+		npc.SetMobType(mobType)
 	}
+	// Set flee threshold based on mob type (bosses handled in ShouldFlee)
+	npc.SetFleeThreshold(GetDefaultFleeThreshold(mobType))
 	// Set trainer class for multiclassing NPCs
 	if def.TrainerClass != "" {
 		npc.SetTrainerClass(def.TrainerClass)

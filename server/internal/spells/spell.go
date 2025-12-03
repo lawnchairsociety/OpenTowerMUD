@@ -187,3 +187,13 @@ func (s *Spell) HasStunEffect() bool {
 	}
 	return false
 }
+
+// HasRootEffect returns true if the spell has a root effect.
+func (s *Spell) HasRootEffect() bool {
+	for _, effect := range s.Effects {
+		if effect.Type == EffectRoot {
+			return true
+		}
+	}
+	return false
+}

@@ -3,6 +3,7 @@ package server
 import (
 	"bufio"
 	"fmt"
+	"math/rand"
 	"net"
 	"strings"
 	"sync"
@@ -23,21 +24,22 @@ import (
 )
 
 type Server struct {
-	address        string
-	listener       net.Listener
-	world          *world.World
-	clients        map[string]*player.Player
-	mu             sync.RWMutex
-	shutdown       chan struct{}
-	StartTime      time.Time
-	gameClock      *gametime.GameClock
-	respawnManager *RespawnManager
-	pilgrimMode      bool
-	chatFilter       *chatfilter.ChatFilter
-	chatFilterConfig *chatfilter.Config
-	db               *database.Database
-	itemsConfig    *items.ItemsConfig
-	spellRegistry  *spells.SpellRegistry
+	address             string
+	listener            net.Listener
+	world               *world.World
+	clients             map[string]*player.Player
+	mu                  sync.RWMutex
+	shutdown            chan struct{}
+	StartTime           time.Time
+	gameClock           *gametime.GameClock
+	respawnManager      *RespawnManager
+	dynamicSpawnManager *DynamicSpawnManager
+	pilgrimMode         bool
+	chatFilter          *chatfilter.ChatFilter
+	chatFilterConfig    *chatfilter.Config
+	db                  *database.Database
+	itemsConfig         *items.ItemsConfig
+	spellRegistry       *spells.SpellRegistry
 }
 
 func NewServer(address string, world *world.World, pilgrimMode bool) *Server {
@@ -71,6 +73,15 @@ func (s *Server) SetSpellRegistry(registry *spells.SpellRegistry) {
 // GetSpellRegistry returns the spell registry
 func (s *Server) GetSpellRegistry() *spells.SpellRegistry {
 	return s.spellRegistry
+}
+
+// SetupDynamicSpawns initializes and starts the dynamic spawn manager
+func (s *Server) SetupDynamicSpawns(t *tower.Tower) {
+	if t == nil {
+		return
+	}
+	s.dynamicSpawnManager = NewDynamicSpawnManager(t, s.GetOnlinePlayerCount)
+	s.dynamicSpawnManager.Start()
 }
 
 // GetDatabase returns the database connection
@@ -196,6 +207,11 @@ func (s *Server) Shutdown() {
 	// Stop the respawn manager
 	s.respawnManager.Stop()
 
+	// Stop the dynamic spawn manager
+	if s.dynamicSpawnManager != nil {
+		s.dynamicSpawnManager.Stop()
+	}
+
 	// Auto-save all connected players before shutdown
 	s.mu.Lock()
 	for _, client := range s.clients {
@@ -277,6 +293,13 @@ func (s *Server) GetOnlinePlayers() []string {
 		players = append(players, name)
 	}
 	return players
+}
+
+// GetOnlinePlayerCount returns the number of online players
+func (s *Server) GetOnlinePlayerCount() int {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	return len(s.clients)
 }
 
 // FindPlayer finds a player by name (case-insensitive partial matching)
@@ -648,6 +671,12 @@ func (s *Server) processNPCAttacks() {
 				continue
 			}
 
+			// Check if NPC should flee
+			if npc.ShouldFlee() {
+				s.handleNPCFlee(npc, room)
+				continue
+			}
+
 			// Pick the highest threat target (falls back to random if no threat data)
 			targetName := npc.GetHighestThreatTarget()
 			if targetName == "" {
@@ -920,6 +949,59 @@ func (s *Server) handlePlayerDeath(p *player.Player, npc *npc.NPC, room *world.R
 	p.MoveTo(respawnRoom)
 
 	p.SendMessage(respawnRoom.GetDescriptionForPlayer(p.GetName()) + "\n")
+}
+
+// handleNPCFlee handles an NPC fleeing from combat
+func (s *Server) handleNPCFlee(n *npc.NPC, room *world.Room) {
+	// Get available exits (excluding up/down to avoid floor changes)
+	exits := room.GetExits()
+	availableDirections := make([]string, 0, len(exits))
+	for direction := range exits {
+		// Skip vertical exits - mobs shouldn't flee between floors
+		if direction != "up" && direction != "down" {
+			availableDirections = append(availableDirections, direction)
+		}
+	}
+
+	// If no exits available, NPC is cornered and can't flee
+	if len(availableDirections) == 0 {
+		return
+	}
+
+	// Pick a random direction
+	fleeDirection := availableDirections[rand.Intn(len(availableDirections))]
+	destRoom := room.GetExit(fleeDirection).(*world.Room)
+
+	// Get all players fighting this NPC before ending combat
+	targets := n.GetTargets()
+
+	// Notify all players in the room that the mob fled
+	fleeMessage := fmt.Sprintf("\n%s panics and flees %s!\n", n.GetName(), fleeDirection)
+	for _, targetName := range targets {
+		if targetPlayerInterface := s.FindPlayer(targetName); targetPlayerInterface != nil {
+			targetPlayer := targetPlayerInterface.(*player.Player)
+			targetPlayer.SendMessage(fleeMessage)
+			targetPlayer.EndCombat()
+		}
+	}
+
+	// Also broadcast to any non-combatant players in the room
+	s.BroadcastToRoom(room.GetID(), fmt.Sprintf("%s panics and flees %s!", n.GetName(), fleeDirection), nil)
+
+	// End combat for the NPC
+	n.EndCombat("")
+
+	// Move the NPC to the new room
+	room.RemoveNPC(n)
+	destRoom.AddNPC(n)
+	n.RoomID = destRoom.GetID()
+
+	logger.Debug("NPC fled",
+		"npc", n.GetName(),
+		"from_room", room.GetID(),
+		"to_room", destRoom.GetID(),
+		"direction", fleeDirection,
+		"hp_percent", float64(n.GetHealth())/float64(n.GetMaxHealth()))
 }
 
 // checkAggressiveNPCs checks if any aggressive NPCs should attack a player

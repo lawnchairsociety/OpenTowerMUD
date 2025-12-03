@@ -76,6 +76,18 @@ spells:
         target: "enemy"
         dice: "1d8"
 
+  hold_person:
+    name: "hold person"
+    description: "Paralyze your target with arcane power, preventing it from fleeing for 30 seconds"
+    mana_cost: 15
+    cooldown: 45
+    level: 3
+    allowed_classes: [mage]
+    effects:
+      - type: "root"
+        target: "enemy"
+        duration: 30
+
   burning_hands:
     name: "burning hands"
     description: "A cone of flames that burns all enemies in the room (2d6 + INT mod)"
@@ -225,6 +237,18 @@ spells:
         target: "ally"
         dice: "2d8"
 
+  command:
+    name: "command"
+    description: "Speak a divine command that holds your target in place for 20 seconds"
+    mana_cost: 12
+    cooldown: 30
+    level: 3
+    allowed_classes: [cleric]
+    effects:
+      - type: "root"
+        target: "enemy"
+        duration: 20
+
   protection:
     name: "protection"
     description: "Grant divine protection, giving target +2 AC for 60 seconds"
@@ -333,6 +357,18 @@ spells:
       - type: "stun"
         target: "enemy"
         amount: 3
+
+  hamstring:
+    name: "hamstring"
+    description: "Slash at your enemy's legs, preventing them from fleeing for 20 seconds"
+    mana_cost: 12
+    cooldown: 45
+    level: 4
+    allowed_classes: [rogue]
+    effects:
+      - type: "root"
+        target: "enemy"
+        duration: 20
 
   vanish:
     name: "vanish"
@@ -620,4 +656,56 @@ spells:
       - type: "damage"
         target: "enemy"
         dice: "5d8"
+
+  rebuke:
+    name: "rebuke"
+    description: "A thunderous divine rebuke that stuns your enemy for 3 seconds"
+    mana_cost: 12
+    cooldown: 30
+    level: 4
+    allowed_classes: [paladin]
+    effects:
+      - type: "stun"
+        target: "enemy"
+        amount: 3
+
+  commanding_presence:
+    name: "commanding presence"
+    description: "Your divine authority roots your enemy in place for 20 seconds"
+    mana_cost: 15
+    cooldown: 45
+    level: 6
+    allowed_classes: [paladin]
+    effects:
+      - type: "root"
+        target: "enemy"
+        duration: 20
+
+  # ====================
+  # WARRIOR ABILITIES
+  # ====================
+
+  shield_bash:
+    name: "shield bash"
+    description: "Slam your shield into an enemy, stunning them for 4 seconds"
+    mana_cost: 10
+    cooldown: 30
+    level: 3
+    allowed_classes: [warrior]
+    effects:
+      - type: "stun"
+        target: "enemy"
+        amount: 4
+
+  hamstring_warrior:
+    name: "hamstring"
+    description: "Cripple your enemy's legs, preventing them from fleeing for 25 seconds"
+    mana_cost: 12
+    cooldown: 45
+    level: 5
+    allowed_classes: [warrior]
+    effects:
+      - type: "root"
+        target: "enemy"
+        duration: 25
 

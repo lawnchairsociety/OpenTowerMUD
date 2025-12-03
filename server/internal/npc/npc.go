@@ -59,6 +59,8 @@ type NPC struct {
 	DeathTime        time.Time       // When this NPC died
 	RespawnTime      time.Time       // When this NPC should respawn
 	StunEndTime      time.Time       // When stun effect expires
+	RootEndTime      time.Time       // When root effect expires (prevents fleeing)
+	FleeThreshold    float64         // HP percentage at which mob will flee (0.0-1.0, 0 = never)
 	IsBoss           bool            // Is this a boss mob?
 	Floor            int             // Tower floor this mob is on (for boss key drops)
 	MobType          MobType         // Creature type for class bonuses
@@ -394,6 +396,7 @@ func (n *NPC) Reset() {
 	n.DeathTime = time.Time{}
 	n.RespawnTime = time.Time{}
 	n.StunEndTime = time.Time{}
+	n.RootEndTime = time.Time{}
 }
 
 // Stun applies a stun effect to the NPC for the given duration in seconds
@@ -419,6 +422,101 @@ func (n *NPC) GetStunRemaining() int {
 		return 0
 	}
 	return int(remaining.Seconds())
+}
+
+// Root applies a root effect to the NPC for the given duration in seconds
+func (n *NPC) Root(durationSeconds int) {
+	n.mu.Lock()
+	defer n.mu.Unlock()
+	n.RootEndTime = time.Now().Add(time.Duration(durationSeconds) * time.Second)
+}
+
+// IsRooted returns true if the NPC is currently rooted (cannot flee)
+func (n *NPC) IsRooted() bool {
+	n.mu.RLock()
+	defer n.mu.RUnlock()
+	return time.Now().Before(n.RootEndTime)
+}
+
+// GetRootRemaining returns the seconds remaining on the root, or 0 if not rooted
+func (n *NPC) GetRootRemaining() int {
+	n.mu.RLock()
+	defer n.mu.RUnlock()
+	remaining := time.Until(n.RootEndTime)
+	if remaining <= 0 {
+		return 0
+	}
+	return int(remaining.Seconds())
+}
+
+// GetFleeThreshold returns the HP percentage at which this mob will flee
+func (n *NPC) GetFleeThreshold() float64 {
+	n.mu.RLock()
+	defer n.mu.RUnlock()
+	return n.FleeThreshold
+}
+
+// SetFleeThreshold sets the HP percentage at which this mob will flee
+func (n *NPC) SetFleeThreshold(threshold float64) {
+	n.mu.Lock()
+	defer n.mu.Unlock()
+	n.FleeThreshold = threshold
+}
+
+// FleeChance is the probability (0.0-1.0) that a mob will flee each round when below threshold
+const FleeChance = 0.35
+
+// ShouldFlee returns true if the mob should attempt to flee (below threshold, not rooted, and passes chance roll)
+func (n *NPC) ShouldFlee() bool {
+	n.mu.RLock()
+	defer n.mu.RUnlock()
+
+	// Bosses never flee
+	if n.IsBoss {
+		return false
+	}
+
+	// No flee threshold set
+	if n.FleeThreshold <= 0 {
+		return false
+	}
+
+	// Check if rooted
+	if time.Now().Before(n.RootEndTime) {
+		return false
+	}
+
+	// Check HP percentage
+	if n.MaxHealth <= 0 {
+		return false
+	}
+	hpPercent := float64(n.Health) / float64(n.MaxHealth)
+	if hpPercent > n.FleeThreshold {
+		return false
+	}
+
+	// Roll flee chance - mobs don't always flee when they could
+	return rand.Float64() < FleeChance
+}
+
+// GetDefaultFleeThreshold returns the default flee threshold for a mob type
+func GetDefaultFleeThreshold(mobType MobType) float64 {
+	switch mobType {
+	case MobTypeUndead:
+		return 0 // Undead never flee
+	case MobTypeConstruct:
+		return 0 // Constructs never flee
+	case MobTypeDemon:
+		return 0.05 // Demons are brave, flee at 5%
+	case MobTypeGiant:
+		return 0.10 // Giants are stubborn, flee at 10%
+	case MobTypeBeast:
+		return 0.15 // Beasts have survival instincts, flee at 15%
+	case MobTypeHumanoid:
+		return 0.12 // Humanoids flee at 12%
+	default:
+		return 0.12 // Default to 12%
+	}
 }
 
 // SetBoss marks this NPC as a boss for the given floor
