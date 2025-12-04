@@ -284,3 +284,153 @@ npcs:
       - "castle_hall"
     respawn_median: 0
     respawn_variation: 0
+
+  # ===================
+  # Crafting Trainers
+  # ===================
+  blacksmithing_trainer:
+    name: "Forge Master Tormund"
+    description: "A barrel-chested dwarf with a magnificent braided beard singed at the ends."
+    level: 15
+    health: 180
+    damage: 25
+    armor: 8
+    experience: 0
+    aggressive: false
+    attackable: false
+    shop_inventory:
+      - item: "iron_ore"
+        price: 10
+      - item: "steel_ingot"
+        price: 50
+      - item: "leather_strip"
+        price: 3
+      - item: "wooden_shaft"
+        price: 5
+    crafting_trainer: "blacksmithing"
+    teaches_recipes:
+      - "iron_dagger"
+      - "iron_mace"
+      - "iron_shield"
+      - "iron_sword"
+      - "chainmail_armor"
+      - "steel_dagger"
+      - "steel_sword"
+      - "plate_armor"
+    dialogue:
+      - "The forge is where raw metal becomes legend. I can teach you its secrets."
+      - "Type 'learn' to see what recipes I can teach you."
+    locations:
+      - "armory"
+    respawn_median: 0
+    respawn_variation: 0
+
+  leatherworking_trainer:
+    name: "Tanner Helga"
+    description: "A practical woman with calloused hands and sharp eyes that assess hide quality at a glance."
+    level: 10
+    health: 80
+    damage: 10
+    armor: 4
+    experience: 0
+    aggressive: false
+    attackable: false
+    shop_inventory:
+      - item: "leather"
+        price: 8
+      - item: "leather_strip"
+        price: 3
+      - item: "thread"
+        price: 2
+      - item: "beast_fang"
+        price: 12
+    crafting_trainer: "leatherworking"
+    teaches_recipes:
+      - "leather_strips"
+      - "leather_cap"
+      - "leather_gloves"
+      - "leather_armor"
+      - "leather_boots"
+      - "adventurer_pack"
+      - "studded_leather"
+    dialogue:
+      - "Good leather armor can mean the difference between life and death, friend."
+      - "Type 'learn' to see what recipes I can teach you."
+    locations:
+      - "artisan_market"
+    respawn_median: 0
+    respawn_variation: 0
+
+  alchemy_trainer:
+    name: "Alchemist Zara"
+    description: "A woman of indeterminate age with wild silver-streaked hair and stained fingertips."
+    level: 12
+    health: 60
+    damage: 5
+    armor: 2
+    experience: 0
+    aggressive: false
+    attackable: false
+    shop_inventory:
+      - item: "red_herb"
+        price: 5
+      - item: "blue_herb"
+        price: 8
+      - item: "green_herb"
+        price: 6
+      - item: "empty_vial"
+        price: 3
+      - item: "monster_blood"
+        price: 15
+    crafting_trainer: "alchemy"
+    teaches_recipes:
+      - "minor_healing_potion"
+      - "minor_mana_potion"
+      - "antidote"
+      - "healing_potion"
+      - "mana_potion"
+      - "strength_elixir"
+      - "greater_healing_potion"
+      - "invisibility_potion"
+    dialogue:
+      - "Potions! Elixirs! The power to cheat death itself! I can teach you, yes yes!"
+      - "Type 'learn' to see the recipes I can teach."
+    locations:
+      - "alchemist_shop"
+    respawn_median: 0
+    respawn_variation: 0
+
+  enchanting_trainer:
+    name: "Enchantress Lyrel"
+    description: "An ethereal woman whose form seems to shimmer slightly, as if not quite fully present in this reality."
+    level: 18
+    health: 100
+    damage: 0
+    armor: 5
+    experience: 0
+    aggressive: false
+    attackable: false
+    shop_inventory:
+      - item: "blank_scroll"
+        price: 10
+      - item: "arcane_dust"
+        price: 20
+      - item: "rough_gem"
+        price: 25
+      - item: "silver_chain"
+        price: 30
+    crafting_trainer: "enchanting"
+    teaches_recipes:
+      - "minor_fire_scroll"
+      - "glow_stone"
+      - "protection_amulet"
+      - "ring_of_strength"
+      - "enchanted_blade"
+      - "mana_crystal"
+    dialogue:
+      - "The arcane arts require patience and precision. I can guide you."
+      - "Type 'learn' to see what enchantments I can teach."
+    locations:
+      - "mage_tower"
+    respawn_median: 0
+    respawn_variation: 0

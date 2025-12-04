@@ -40,8 +40,10 @@ type NPCDefinition struct {
 	Tier             int             `yaml:"tier"`           // Mob tier (1=easy, 2=medium, 3=hard, 4=elite)
 	Boss             bool            `yaml:"boss"`           // Is this a boss mob?
 	MobType          string          `yaml:"mob_type"`       // Creature type: beast, undead, humanoid, demon, construct, giant
-	TrainerClass     string          `yaml:"trainer_class"`  // Class this NPC trains (warrior, mage, cleric, rogue, ranger, paladin)
-	Locations        []string        `yaml:"locations"`      // Room IDs where this NPC spawns
+	TrainerClass     string          `yaml:"trainer_class"`     // Class this NPC trains (warrior, mage, cleric, rogue, ranger, paladin)
+	CraftingTrainer  string          `yaml:"crafting_trainer"`  // Crafting skill this NPC teaches (blacksmithing, leatherworking, alchemy, enchanting)
+	TeachesRecipes   []string        `yaml:"teaches_recipes"`   // Recipe IDs this NPC can teach
+	Locations        []string        `yaml:"locations"`         // Room IDs where this NPC spawns
 	RespawnMedian    int             `yaml:"respawn_median"`    // Median respawn time in seconds
 	RespawnVariation int             `yaml:"respawn_variation"` // Variation in respawn time (+/- seconds)
 }
@@ -113,6 +115,13 @@ func CreateNPCFromDefinition(def NPCDefinition, roomID string) *NPC {
 	// Set trainer class for multiclassing NPCs
 	if def.TrainerClass != "" {
 		npc.SetTrainerClass(def.TrainerClass)
+	}
+	// Set crafting trainer info
+	if def.CraftingTrainer != "" {
+		npc.SetCraftingTrainer(def.CraftingTrainer)
+	}
+	if len(def.TeachesRecipes) > 0 {
+		npc.SetTeachesRecipes(def.TeachesRecipes)
 	}
 	// Convert YAML loot table to NPC loot table
 	if len(def.LootTable) > 0 {

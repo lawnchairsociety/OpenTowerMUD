@@ -46,8 +46,11 @@ type Character struct {
 	ActiveClass  string // Which class currently gains XP
 	// Race system
 	Race string // Player's race (e.g., "human", "dwarf")
-	CreatedAt    time.Time
-	LastPlayed   *time.Time
+	// Crafting system
+	CraftingSkills string // Comma-separated list of skill:level pairs (e.g., "blacksmithing:10,alchemy:25")
+	KnownRecipes   string // Comma-separated list of recipe IDs
+	CreatedAt      time.Time
+	LastPlayed     *time.Time
 }
 
 // CreateCharacter creates a new character for an account with default ability scores and warrior class.
@@ -201,7 +204,9 @@ func (d *Database) GetCharactersByAccount(accountID int64) ([]*Character, error)
 		`SELECT id, account_id, name, room_id, health, max_health, mana, max_mana,
 		        level, experience, state, max_carry_weight, learned_spells,
 		        discovered_portals, strength, dexterity, constitution, intelligence, wisdom, charisma,
-		        gold, key_ring, primary_class, class_levels, active_class, race, created_at, last_played
+		        gold, key_ring, primary_class, class_levels, active_class, race,
+		        COALESCE(crafting_skills, ''), COALESCE(known_recipes, ''),
+		        created_at, last_played
 		 FROM characters WHERE account_id = ? ORDER BY last_played DESC NULLS LAST, name`,
 		accountID,
 	)
@@ -232,7 +237,9 @@ func (d *Database) GetCharacterByName(name string) (*Character, error) {
 		`SELECT id, account_id, name, room_id, health, max_health, mana, max_mana,
 		        level, experience, state, max_carry_weight, learned_spells,
 		        discovered_portals, strength, dexterity, constitution, intelligence, wisdom, charisma,
-		        gold, key_ring, primary_class, class_levels, active_class, race, created_at, last_played
+		        gold, key_ring, primary_class, class_levels, active_class, race,
+		        COALESCE(crafting_skills, ''), COALESCE(known_recipes, ''),
+		        created_at, last_played
 		 FROM characters WHERE name = ?`,
 		name,
 	)
@@ -254,7 +261,9 @@ func (d *Database) GetCharacterByID(id int64) (*Character, error) {
 		`SELECT id, account_id, name, room_id, health, max_health, mana, max_mana,
 		        level, experience, state, max_carry_weight, learned_spells,
 		        discovered_portals, strength, dexterity, constitution, intelligence, wisdom, charisma,
-		        gold, key_ring, primary_class, class_levels, active_class, race, created_at, last_played
+		        gold, key_ring, primary_class, class_levels, active_class, race,
+		        COALESCE(crafting_skills, ''), COALESCE(known_recipes, ''),
+		        created_at, last_played
 		 FROM characters WHERE id = ?`,
 		id,
 	)
@@ -297,12 +306,15 @@ func (d *Database) SaveCharacter(c *Character) error {
 			class_levels = ?,
 			active_class = ?,
 			race = ?,
+			crafting_skills = ?,
+			known_recipes = ?,
 			last_played = CURRENT_TIMESTAMP
 		 WHERE id = ?`,
 		c.RoomID, c.Health, c.MaxHealth, c.Mana, c.MaxMana,
 		c.Level, c.Experience, c.State, c.MaxCarryWeight, c.LearnedSpells,
 		c.DiscoveredPortals, c.Strength, c.Dexterity, c.Constitution, c.Intelligence, c.Wisdom, c.Charisma,
-		c.Gold, c.KeyRing, c.PrimaryClass, c.ClassLevels, c.ActiveClass, c.Race, c.ID,
+		c.Gold, c.KeyRing, c.PrimaryClass, c.ClassLevels, c.ActiveClass, c.Race,
+		c.CraftingSkills, c.KnownRecipes, c.ID,
 	)
 	if err != nil {
 		return fmt.Errorf("failed to save character: %w", err)
@@ -372,7 +384,9 @@ func scanCharacter(rows *sql.Rows) (*Character, error) {
 		&c.Level, &c.Experience, &c.State, &c.MaxCarryWeight,
 		&c.LearnedSpells,
 		&c.DiscoveredPortals, &c.Strength, &c.Dexterity, &c.Constitution, &c.Intelligence, &c.Wisdom, &c.Charisma,
-		&c.Gold, &c.KeyRing, &c.PrimaryClass, &c.ClassLevels, &c.ActiveClass, &c.Race, &c.CreatedAt, &lastPlayed,
+		&c.Gold, &c.KeyRing, &c.PrimaryClass, &c.ClassLevels, &c.ActiveClass, &c.Race,
+		&c.CraftingSkills, &c.KnownRecipes,
+		&c.CreatedAt, &lastPlayed,
 	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to scan character: %w", err)
@@ -396,7 +410,9 @@ func scanCharacterRow(row *sql.Row) (*Character, error) {
 		&c.Level, &c.Experience, &c.State, &c.MaxCarryWeight,
 		&c.LearnedSpells,
 		&c.DiscoveredPortals, &c.Strength, &c.Dexterity, &c.Constitution, &c.Intelligence, &c.Wisdom, &c.Charisma,
-		&c.Gold, &c.KeyRing, &c.PrimaryClass, &c.ClassLevels, &c.ActiveClass, &c.Race, &c.CreatedAt, &lastPlayed,
+		&c.Gold, &c.KeyRing, &c.PrimaryClass, &c.ClassLevels, &c.ActiveClass, &c.Race,
+		&c.CraftingSkills, &c.KnownRecipes,
+		&c.CreatedAt, &lastPlayed,
 	)
 	if err != nil {
 		return nil, err

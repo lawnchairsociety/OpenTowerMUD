@@ -1,0 +1,506 @@
+# OpenTowerMUD Crafting Recipes for Integration Testing
+# Subset of recipes for testing the crafting system
+
+recipes:
+  # =============================================================================
+  # BLACKSMITHING - Forge
+  # =============================================================================
+
+  iron_dagger:
+    name: "Iron Dagger"
+    description: "A simple iron blade for close combat"
+    skill: blacksmithing
+    difficulty: 10
+    skill_gain: 2
+    station: forge
+    level_required: 1
+    skill_required: 0
+    ingredients:
+      - item: iron_ore
+        quantity: 1
+      - item: leather_strip
+        quantity: 1
+    output: iron_dagger
+
+  iron_mace:
+    name: "Iron Mace"
+    description: "A sturdy iron mace"
+    skill: blacksmithing
+    difficulty: 12
+    skill_gain: 2
+    station: forge
+    level_required: 2
+    skill_required: 5
+    ingredients:
+      - item: iron_ore
+        quantity: 2
+      - item: wooden_shaft
+        quantity: 1
+    output: iron_mace
+
+  iron_shield:
+    name: "Iron Shield"
+    description: "A basic iron shield"
+    skill: blacksmithing
+    difficulty: 14
+    skill_gain: 3
+    station: forge
+    level_required: 3
+    skill_required: 10
+    ingredients:
+      - item: iron_ore
+        quantity: 3
+      - item: leather_strip
+        quantity: 2
+    output: iron_shield
+
+  iron_sword:
+    name: "Iron Sword"
+    description: "A well-balanced iron blade"
+    skill: blacksmithing
+    difficulty: 16
+    skill_gain: 3
+    station: forge
+    level_required: 5
+    skill_required: 20
+    ingredients:
+      - item: iron_ore
+        quantity: 3
+      - item: leather_strip
+        quantity: 1
+    output: iron_sword
+
+  chainmail_armor:
+    name: "Chainmail Armor"
+    description: "Interlocking metal rings for protection"
+    skill: blacksmithing
+    difficulty: 18
+    skill_gain: 4
+    station: forge
+    level_required: 7
+    skill_required: 30
+    ingredients:
+      - item: iron_ore
+        quantity: 5
+      - item: leather
+        quantity: 2
+    output: chainmail_armor
+
+  steel_dagger:
+    name: "Steel Dagger"
+    description: "A refined steel blade"
+    skill: blacksmithing
+    difficulty: 20
+    skill_gain: 4
+    station: forge
+    level_required: 10
+    skill_required: 40
+    ingredients:
+      - item: steel_ingot
+        quantity: 1
+      - item: leather_strip
+        quantity: 1
+    output: steel_dagger
+
+  steel_sword:
+    name: "Steel Sword"
+    description: "A superior steel blade"
+    skill: blacksmithing
+    difficulty: 22
+    skill_gain: 5
+    station: forge
+    level_required: 15
+    skill_required: 50
+    ingredients:
+      - item: steel_ingot
+        quantity: 3
+      - item: leather_strip
+        quantity: 2
+    output: steel_sword
+
+  plate_armor:
+    name: "Plate Armor"
+    description: "Heavy plate armor for maximum protection"
+    skill: blacksmithing
+    difficulty: 25
+    skill_gain: 6
+    station: forge
+    level_required: 20
+    skill_required: 60
+    ingredients:
+      - item: steel_ingot
+        quantity: 6
+      - item: leather
+        quantity: 3
+    output: plate_armor
+
+  # =============================================================================
+  # LEATHERWORKING - Workbench
+  # =============================================================================
+
+  leather_strips:
+    name: "Leather Strips"
+    description: "Cut leather into useful strips"
+    skill: leatherworking
+    difficulty: 8
+    skill_gain: 1
+    station: workbench
+    level_required: 1
+    skill_required: 0
+    ingredients:
+      - item: leather
+        quantity: 1
+    output: leather_strip
+    output_count: 3
+
+  leather_cap:
+    name: "Leather Cap"
+    description: "A simple leather head covering"
+    skill: leatherworking
+    difficulty: 10
+    skill_gain: 2
+    station: workbench
+    level_required: 1
+    skill_required: 0
+    ingredients:
+      - item: leather
+        quantity: 1
+      - item: thread
+        quantity: 1
+    output: leather_cap
+
+  leather_gloves:
+    name: "Leather Gloves"
+    description: "Protective hand coverings"
+    skill: leatherworking
+    difficulty: 12
+    skill_gain: 2
+    station: workbench
+    level_required: 2
+    skill_required: 10
+    ingredients:
+      - item: leather
+        quantity: 1
+      - item: thread
+        quantity: 1
+    output: leather_gloves
+
+  leather_armor:
+    name: "Leather Armor"
+    description: "Light but protective body armor"
+    skill: leatherworking
+    difficulty: 15
+    skill_gain: 3
+    station: workbench
+    level_required: 3
+    skill_required: 20
+    ingredients:
+      - item: leather
+        quantity: 4
+      - item: thread
+        quantity: 2
+    output: leather_armor
+
+  leather_boots:
+    name: "Leather Boots"
+    description: "Sturdy footwear for dungeon exploration"
+    skill: leatherworking
+    difficulty: 14
+    skill_gain: 3
+    station: workbench
+    level_required: 4
+    skill_required: 25
+    ingredients:
+      - item: leather
+        quantity: 2
+      - item: thread
+        quantity: 2
+    output: leather_boots
+
+  adventurer_pack:
+    name: "Adventurer's Pack"
+    description: "A spacious backpack for carrying loot"
+    skill: leatherworking
+    difficulty: 18
+    skill_gain: 4
+    station: workbench
+    level_required: 8
+    skill_required: 40
+    ingredients:
+      - item: leather
+        quantity: 4
+      - item: thread
+        quantity: 3
+      - item: iron_ore
+        quantity: 1
+    output: adventurer_pack
+
+  studded_leather:
+    name: "Studded Leather Armor"
+    description: "Leather reinforced with metal studs"
+    skill: leatherworking
+    difficulty: 20
+    skill_gain: 5
+    station: workbench
+    level_required: 12
+    skill_required: 50
+    ingredients:
+      - item: leather
+        quantity: 5
+      - item: iron_ore
+        quantity: 2
+      - item: thread
+        quantity: 2
+    output: studded_leather
+
+  # =============================================================================
+  # ALCHEMY - Alchemy Lab
+  # =============================================================================
+
+  minor_healing_potion:
+    name: "Minor Healing Potion"
+    description: "Restores a small amount of health"
+    skill: alchemy
+    difficulty: 10
+    skill_gain: 2
+    station: alchemy_lab
+    level_required: 1
+    skill_required: 0
+    ingredients:
+      - item: red_herb
+        quantity: 2
+      - item: empty_vial
+        quantity: 1
+    output: minor_healing_potion
+
+  minor_mana_potion:
+    name: "Minor Mana Potion"
+    description: "Restores a small amount of mana"
+    skill: alchemy
+    difficulty: 10
+    skill_gain: 2
+    station: alchemy_lab
+    level_required: 1
+    skill_required: 0
+    ingredients:
+      - item: blue_herb
+        quantity: 2
+      - item: empty_vial
+        quantity: 1
+    output: minor_mana_potion
+
+  antidote:
+    name: "Antidote"
+    description: "Cures poison effects"
+    skill: alchemy
+    difficulty: 12
+    skill_gain: 2
+    station: alchemy_lab
+    level_required: 2
+    skill_required: 10
+    ingredients:
+      - item: green_herb
+        quantity: 2
+      - item: empty_vial
+        quantity: 1
+    output: antidote
+
+  healing_potion:
+    name: "Healing Potion"
+    description: "Restores a moderate amount of health"
+    skill: alchemy
+    difficulty: 16
+    skill_gain: 3
+    station: alchemy_lab
+    level_required: 5
+    skill_required: 25
+    ingredients:
+      - item: red_herb
+        quantity: 3
+      - item: monster_blood
+        quantity: 1
+      - item: empty_vial
+        quantity: 1
+    output: healing_potion
+
+  mana_potion:
+    name: "Mana Potion"
+    description: "Restores a moderate amount of mana"
+    skill: alchemy
+    difficulty: 16
+    skill_gain: 3
+    station: alchemy_lab
+    level_required: 5
+    skill_required: 25
+    ingredients:
+      - item: blue_herb
+        quantity: 3
+      - item: arcane_dust
+        quantity: 1
+      - item: empty_vial
+        quantity: 1
+    output: mana_potion
+
+  strength_elixir:
+    name: "Elixir of Strength"
+    description: "Temporarily increases strength"
+    skill: alchemy
+    difficulty: 18
+    skill_gain: 4
+    station: alchemy_lab
+    level_required: 8
+    skill_required: 35
+    ingredients:
+      - item: red_herb
+        quantity: 2
+      - item: beast_fang
+        quantity: 1
+      - item: empty_vial
+        quantity: 1
+    output: strength_elixir
+
+  greater_healing_potion:
+    name: "Greater Healing Potion"
+    description: "Restores a large amount of health"
+    skill: alchemy
+    difficulty: 22
+    skill_gain: 5
+    station: alchemy_lab
+    level_required: 12
+    skill_required: 50
+    ingredients:
+      - item: red_herb
+        quantity: 4
+      - item: monster_blood
+        quantity: 2
+      - item: arcane_dust
+        quantity: 1
+      - item: empty_vial
+        quantity: 1
+    output: greater_healing_potion
+
+  invisibility_potion:
+    name: "Invisibility Potion"
+    description: "Grants temporary invisibility"
+    skill: alchemy
+    difficulty: 25
+    skill_gain: 6
+    station: alchemy_lab
+    level_required: 15
+    skill_required: 60
+    ingredients:
+      - item: ghost_essence
+        quantity: 2
+      - item: arcane_dust
+        quantity: 2
+      - item: empty_vial
+        quantity: 1
+    output: invisibility_potion
+
+  # =============================================================================
+  # ENCHANTING - Enchanting Table
+  # =============================================================================
+
+  minor_fire_scroll:
+    name: "Scroll of Minor Flames"
+    description: "A scroll containing a minor fire spell"
+    skill: enchanting
+    difficulty: 12
+    skill_gain: 2
+    station: enchanting_table
+    level_required: 1
+    skill_required: 0
+    ingredients:
+      - item: blank_scroll
+        quantity: 1
+      - item: arcane_dust
+        quantity: 1
+    output: minor_fire_scroll
+
+  glow_stone:
+    name: "Glow Stone"
+    description: "A stone that emits soft light"
+    skill: enchanting
+    difficulty: 10
+    skill_gain: 2
+    station: enchanting_table
+    level_required: 1
+    skill_required: 0
+    ingredients:
+      - item: rough_gem
+        quantity: 1
+      - item: arcane_dust
+        quantity: 1
+    output: glow_stone
+
+  protection_amulet:
+    name: "Amulet of Protection"
+    description: "Provides minor magical protection"
+    skill: enchanting
+    difficulty: 18
+    skill_gain: 4
+    station: enchanting_table
+    level_required: 7
+    skill_required: 30
+    ingredients:
+      - item: silver_chain
+        quantity: 1
+      - item: rough_gem
+        quantity: 1
+      - item: arcane_dust
+        quantity: 2
+    output: protection_amulet
+
+  ring_of_strength:
+    name: "Ring of Strength"
+    description: "Enhances the wearer's physical power"
+    skill: enchanting
+    difficulty: 20
+    skill_gain: 5
+    station: enchanting_table
+    level_required: 10
+    skill_required: 40
+    ingredients:
+      - item: iron_ore
+        quantity: 1
+      - item: beast_fang
+        quantity: 1
+      - item: arcane_dust
+        quantity: 3
+    output: ring_of_strength
+
+  enchanted_blade:
+    name: "Enchanted Blade Scroll"
+    description: "A scroll to enchant a weapon with magic damage"
+    skill: enchanting
+    difficulty: 24
+    skill_gain: 6
+    station: enchanting_table
+    level_required: 15
+    skill_required: 55
+    ingredients:
+      - item: blank_scroll
+        quantity: 1
+      - item: arcane_dust
+        quantity: 4
+      - item: ghost_essence
+        quantity: 1
+    output: enchanted_blade_scroll
+
+  mana_crystal:
+    name: "Mana Crystal"
+    description: "A crystal that slowly restores mana over time"
+    skill: enchanting
+    difficulty: 26
+    skill_gain: 6
+    station: enchanting_table
+    level_required: 18
+    skill_required: 65
+    ingredients:
+      - item: rough_gem
+        quantity: 2
+      - item: arcane_dust
+        quantity: 5
+      - item: ghost_essence
+        quantity: 2
+    output: mana_crystal

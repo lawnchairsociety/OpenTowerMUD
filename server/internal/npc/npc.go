@@ -65,6 +65,8 @@ type NPC struct {
 	Floor            int             // Tower floor this mob is on (for boss key drops)
 	MobType          MobType         // Creature type for class bonuses
 	TrainerClass     string          // Class this NPC trains (for multiclassing)
+	CraftingTrainer  string          // Crafting skill this NPC teaches (blacksmithing, alchemy, etc.)
+	TeachesRecipes   []string        // Recipe IDs this NPC can teach
 	mu               sync.RWMutex
 }
 
@@ -703,4 +705,41 @@ func (n *NPC) IsTrainer() bool {
 	n.mu.RLock()
 	defer n.mu.RUnlock()
 	return n.TrainerClass != ""
+}
+
+// GetCraftingTrainer returns the crafting skill this NPC teaches (empty string if not a crafting trainer)
+func (n *NPC) GetCraftingTrainer() string {
+	n.mu.RLock()
+	defer n.mu.RUnlock()
+	return n.CraftingTrainer
+}
+
+// SetCraftingTrainer sets the crafting skill this NPC teaches
+func (n *NPC) SetCraftingTrainer(skill string) {
+	n.mu.Lock()
+	defer n.mu.Unlock()
+	n.CraftingTrainer = skill
+}
+
+// GetTeachesRecipes returns the recipe IDs this NPC can teach
+func (n *NPC) GetTeachesRecipes() []string {
+	n.mu.RLock()
+	defer n.mu.RUnlock()
+	recipes := make([]string, len(n.TeachesRecipes))
+	copy(recipes, n.TeachesRecipes)
+	return recipes
+}
+
+// SetTeachesRecipes sets the recipes this NPC can teach
+func (n *NPC) SetTeachesRecipes(recipes []string) {
+	n.mu.Lock()
+	defer n.mu.Unlock()
+	n.TeachesRecipes = recipes
+}
+
+// IsCraftingTrainer returns true if this NPC teaches crafting recipes
+func (n *NPC) IsCraftingTrainer() bool {
+	n.mu.RLock()
+	defer n.mu.RUnlock()
+	return n.CraftingTrainer != "" && len(n.TeachesRecipes) > 0
 }

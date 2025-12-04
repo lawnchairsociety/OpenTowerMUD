@@ -12,6 +12,7 @@ import (
 	"github.com/lawnchairsociety/opentowermud/server/internal/antispam"
 	"github.com/lawnchairsociety/opentowermud/server/internal/chatfilter"
 	"github.com/lawnchairsociety/opentowermud/server/internal/command"
+	"github.com/lawnchairsociety/opentowermud/server/internal/crafting"
 	"github.com/lawnchairsociety/opentowermud/server/internal/database"
 	"github.com/lawnchairsociety/opentowermud/server/internal/gametime"
 	"github.com/lawnchairsociety/opentowermud/server/internal/items"
@@ -40,6 +41,7 @@ type Server struct {
 	db                  *database.Database
 	itemsConfig         *items.ItemsConfig
 	spellRegistry       *spells.SpellRegistry
+	recipeRegistry      *crafting.RecipeRegistry
 }
 
 func NewServer(address string, world *world.World, pilgrimMode bool) *Server {
@@ -73,6 +75,29 @@ func (s *Server) SetSpellRegistry(registry *spells.SpellRegistry) {
 // GetSpellRegistry returns the spell registry
 func (s *Server) GetSpellRegistry() *spells.SpellRegistry {
 	return s.spellRegistry
+}
+
+// SetRecipeRegistry sets the recipe registry
+func (s *Server) SetRecipeRegistry(registry *crafting.RecipeRegistry) {
+	s.recipeRegistry = registry
+}
+
+// GetRecipeRegistry returns the recipe registry
+func (s *Server) GetRecipeRegistry() *crafting.RecipeRegistry {
+	return s.recipeRegistry
+}
+
+// CreateItem creates a new instance of an item by its ID
+func (s *Server) CreateItem(id string) *items.Item {
+	if s.itemsConfig == nil {
+		return nil
+	}
+	// GetItemByID creates a new item instance via CreateItemFromDefinition
+	item, found := s.itemsConfig.GetItemByID(id)
+	if !found {
+		return nil
+	}
+	return item
 }
 
 // SetupDynamicSpawns initializes and starts the dynamic spawn manager

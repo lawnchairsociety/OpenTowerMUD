@@ -98,6 +98,7 @@ echo "Server logs: $SERVER_LOG"
     --npcs data/test/npcs_test.yaml \
     --mobs data/test/mobs_test.yaml \
     --items data/test/items_test.yaml \
+    --recipes data/test/recipes_test.yaml \
     --chatfilter data/test/chat_filter_test.yaml \
     > "$SERVER_LOG" 2>&1 &
 

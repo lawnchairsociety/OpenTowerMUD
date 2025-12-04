@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/lawnchairsociety/opentowermud/server/internal/chatfilter"
+	"github.com/lawnchairsociety/opentowermud/server/internal/crafting"
 	"github.com/lawnchairsociety/opentowermud/server/internal/database"
 	"github.com/lawnchairsociety/opentowermud/server/internal/items"
 	"github.com/lawnchairsociety/opentowermud/server/internal/logger"
@@ -32,6 +33,7 @@ func main() {
 	itemsFile := flag.String("items", "data/items.yaml", "Path to items YAML file")
 	racesFile := flag.String("races", "data/races.yaml", "Path to races YAML file")
 	spellsFile := flag.String("spells", "data/spells.yaml", "Path to spells YAML file")
+	recipesFile := flag.String("recipes", "data/recipes.yaml", "Path to crafting recipes YAML file")
 	loggingConfig := flag.String("logging", "data/logging.yaml", "Path to logging config YAML file")
 	chatFilterConfig := flag.String("chatfilter", "data/chat_filter.yaml", "Path to chat filter config YAML file")
 	pilgrimMode := flag.Bool("pilgrim", false, "Enable pilgrim mode (peaceful exploration, no combat)")
@@ -115,6 +117,14 @@ func main() {
 	}
 	logger.Info("Spells loaded", "count", len(spellRegistry.GetAllSpells()))
 
+	// Load recipes config
+	recipeRegistry := crafting.NewRecipeRegistry()
+	if err := recipeRegistry.LoadFromYAML(*recipesFile); err != nil {
+		logger.Warning("Failed to load recipes config, crafting disabled", "path", *recipesFile, "error", err)
+	} else {
+		logger.Info("Recipes loaded", "count", recipeRegistry.Count())
+	}
+
 	// Initialize player database
 	db, err := database.Open(*dbFile)
 	if err != nil {
@@ -127,10 +137,11 @@ func main() {
 	addr := fmt.Sprintf(":%d", *port)
 	srv := server.NewServer(addr, gameWorld, *pilgrimMode)
 
-	// Set database, items config, and spell registry on server
+	// Set database, items config, spell registry, and recipe registry on server
 	srv.SetDatabase(db)
 	srv.SetItemsConfig(itemsConfig)
 	srv.SetSpellRegistry(spellRegistry)
+	srv.SetRecipeRegistry(recipeRegistry)
 
 	// Set up dynamic spawn scaling based on player count
 	srv.SetupDynamicSpawns(gameTower)

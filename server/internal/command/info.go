@@ -557,6 +557,72 @@ Different classes have access to different spells:
   - Paladin: Holy spells and smites
   - Warrior: No spells (pure martial class)`
 
+	case "craft", "crafting", "make":
+		return `CRAFT [recipe | info <recipe>]
+Create items at crafting stations using materials and skill.
+
+Usage:
+  craft              - Show recipes available at current station
+  craft <recipe>     - Attempt to craft a recipe
+  craft info <recipe> - Show detailed recipe information
+
+Crafting Stations (found in the city):
+  Forge (Armory)         - Blacksmithing: weapons, metal armor
+  Workbench (Artisan's)  - Leatherworking: leather gear, bags
+  Alchemy Lab (Alchemist's) - Alchemy: potions, salves
+  Enchanting Table (Mage Tower) - Enchanting: magical items
+
+Crafting requires:
+  - The correct crafting station
+  - Knowing the recipe (learn from trainers)
+  - Required materials in your inventory
+  - Meeting skill and level requirements
+
+Success is based on: d20 + (Skill/5) + (INT mod/2) vs Difficulty
+On failure, materials are returned to you.
+
+See also: help learn, help skills`
+
+	case "learn":
+		return `LEARN [recipe]
+Learn crafting recipes from crafting trainer NPCs.
+
+Usage:
+  learn              - Show recipes available from the trainer
+  learn <recipe>     - Learn a specific recipe
+
+Crafting Trainers (found in the city):
+  Forge Master Tormund (Armory)       - Blacksmithing recipes
+  Tanner Helga (Artisan's Market)     - Leatherworking recipes
+  Alchemist Zara (Alchemist's Shop)   - Alchemy recipes
+  Enchantress Lyrel (Mage Tower)      - Enchanting recipes
+
+To learn a recipe you need:
+  - To be in the same room as the trainer
+  - Meet the recipe's player level requirement
+  - Meet the recipe's skill level requirement
+
+Skill requirements: Higher-tier recipes need more skill.
+Build skill by crafting easier recipes first!
+
+See also: help craft, help skills`
+
+	case "skills":
+		return `SKILLS
+Display your crafting skill levels and progress.
+
+Shows all four crafting skills:
+  Blacksmithing (0-100)  - Forge weapons and metal armor
+  Leatherworking (0-100) - Craft leather gear and bags
+  Alchemy (0-100)        - Brew potions and salves
+  Enchanting (0-100)     - Create magical items
+
+Skills increase by successfully crafting items.
+Higher difficulty recipes give more skill points.
+Higher skill = better success chance + access to advanced recipes.
+
+See also: help craft, help learn`
+
 	case "class", "classes":
 		return `CLASS [subcommand]
 View and manage your character classes.
@@ -849,6 +915,13 @@ Shop (at General Store):
   sell <item>       - Sell an item (50% of item value)
   gold              - Check your gold balance
   give <item/gold> <player> - Give item or gold to another player
+
+Crafting (at crafting stations):
+  craft             - Show recipes available at current station
+  craft <recipe>    - Attempt to craft a recipe
+  craft info <recipe> - Show recipe details
+  learn [recipe]    - Learn recipes from a crafting trainer
+  skills            - Show your crafting skill levels
 
 Saving Progress:
   Visit the bard in the tavern and talk to him to save your progress!

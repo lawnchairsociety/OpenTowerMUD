@@ -251,3 +251,364 @@ items:
     weight: 5.0
     type: "misc"
     value: 15
+
+  # ===================
+  # Crafting Materials - Metals
+  # ===================
+  iron_ore:
+    name: "Iron Ore"
+    description: "Raw iron ore, ready for smelting"
+    weight: 2.0
+    type: "misc"
+    value: 5
+    tier: 1
+
+  steel_ingot:
+    name: "Steel Ingot"
+    description: "A refined bar of steel"
+    weight: 3.0
+    type: "misc"
+    value: 25
+    tier: 2
+
+  wooden_shaft:
+    name: "Wooden Shaft"
+    description: "A sturdy wooden shaft for weapon handles"
+    weight: 1.0
+    type: "misc"
+    value: 3
+    tier: 1
+
+  # ===================
+  # Crafting Materials - Leather
+  # ===================
+  leather:
+    name: "Leather"
+    description: "Tanned animal hide"
+    weight: 1.0
+    type: "misc"
+    value: 5
+    tier: 1
+
+  leather_strip:
+    name: "Leather Strip"
+    description: "A thin strip of leather for binding"
+    weight: 0.2
+    type: "misc"
+    value: 2
+    tier: 1
+
+  thread:
+    name: "Thread"
+    description: "Strong thread for sewing"
+    weight: 0.1
+    type: "misc"
+    value: 1
+    tier: 1
+
+  beast_fang:
+    name: "Beast Fang"
+    description: "A sharp fang from a dangerous creature"
+    weight: 0.2
+    type: "misc"
+    value: 8
+    tier: 1
+
+  # ===================
+  # Crafting Materials - Alchemy
+  # ===================
+  red_herb:
+    name: "Red Herb"
+    description: "A medicinal herb with healing properties"
+    weight: 0.1
+    type: "misc"
+    value: 3
+    tier: 1
+
+  blue_herb:
+    name: "Blue Herb"
+    description: "A mystical herb that restores magical energy"
+    weight: 0.1
+    type: "misc"
+    value: 5
+    tier: 1
+
+  green_herb:
+    name: "Green Herb"
+    description: "A herb with detoxifying properties"
+    weight: 0.1
+    type: "misc"
+    value: 4
+    tier: 1
+
+  empty_vial:
+    name: "Empty Vial"
+    description: "A glass vial for holding potions"
+    weight: 0.1
+    type: "misc"
+    value: 2
+    tier: 1
+
+  monster_blood:
+    name: "Monster Blood"
+    description: "Dark blood collected from slain monsters"
+    weight: 0.3
+    type: "misc"
+    value: 10
+    tier: 2
+
+  ghost_essence:
+    name: "Ghost Essence"
+    description: "Ethereal essence captured from spectral beings"
+    weight: 0.1
+    type: "misc"
+    value: 30
+    tier: 3
+
+  # ===================
+  # Crafting Materials - Enchanting
+  # ===================
+  arcane_dust:
+    name: "Arcane Dust"
+    description: "Magical dust used in enchanting"
+    weight: 0.1
+    type: "misc"
+    value: 15
+    tier: 2
+
+  blank_scroll:
+    name: "Blank Scroll"
+    description: "A parchment scroll ready for magical inscription"
+    weight: 0.2
+    type: "misc"
+    value: 8
+    tier: 1
+
+  rough_gem:
+    name: "Rough Gem"
+    description: "An uncut gemstone with magical potential"
+    weight: 0.3
+    type: "misc"
+    value: 20
+    tier: 2
+
+  silver_chain:
+    name: "Silver Chain"
+    description: "A delicate silver chain for jewelry"
+    weight: 0.2
+    type: "misc"
+    value: 25
+    tier: 2
+
+  # ===================
+  # Crafted Items - Blacksmithing
+  # ===================
+  iron_mace:
+    name: "Iron Mace"
+    description: "A sturdy iron mace"
+    weight: 8.0
+    type: "weapon"
+    value: 40
+    slot: "weapon"
+    damage: 6
+    damage_dice: "1d6"
+    two_handed: false
+
+  iron_shield:
+    name: "Iron Shield"
+    description: "A basic iron shield"
+    weight: 10.0
+    type: "armor"
+    value: 60
+    slot: "shield"
+    armor: 2
+
+  iron_sword:
+    name: "Iron Sword"
+    description: "A well-balanced iron blade"
+    weight: 6.0
+    type: "weapon"
+    value: 75
+    slot: "weapon"
+    damage: 8
+    damage_dice: "1d8"
+    two_handed: false
+
+  chainmail_armor:
+    name: "Chainmail Armor"
+    description: "Interlocking metal rings for protection"
+    weight: 40.0
+    type: "armor"
+    value: 150
+    slot: "body"
+    armor: 5
+
+  steel_dagger:
+    name: "Steel Dagger"
+    description: "A refined steel blade"
+    weight: 2.0
+    type: "weapon"
+    value: 60
+    slot: "weapon"
+    damage: 5
+    damage_dice: "1d4+1"
+    two_handed: false
+
+  steel_sword:
+    name: "Steel Sword"
+    description: "A superior steel blade"
+    weight: 5.0
+    type: "weapon"
+    value: 200
+    slot: "weapon"
+    damage: 10
+    damage_dice: "1d10"
+    two_handed: false
+
+  plate_armor:
+    name: "Plate Armor"
+    description: "Heavy plate armor for maximum protection"
+    weight: 65.0
+    type: "armor"
+    value: 500
+    slot: "body"
+    armor: 8
+
+  # ===================
+  # Crafted Items - Leatherworking
+  # ===================
+  leather_gloves:
+    name: "Leather Gloves"
+    description: "Protective hand coverings"
+    weight: 1.0
+    type: "armor"
+    value: 20
+    slot: "hands"
+    armor: 1
+
+  leather_boots:
+    name: "Leather Boots"
+    description: "Sturdy footwear for dungeon exploration"
+    weight: 3.0
+    type: "armor"
+    value: 30
+    slot: "feet"
+    armor: 1
+
+  adventurer_pack:
+    name: "Adventurer's Pack"
+    description: "A spacious backpack for carrying loot"
+    weight: 2.0
+    type: "misc"
+    value: 75
+
+  studded_leather:
+    name: "Studded Leather Armor"
+    description: "Leather reinforced with metal studs"
+    weight: 20.0
+    type: "armor"
+    value: 100
+    slot: "body"
+    armor: 4
+
+  # ===================
+  # Crafted Items - Alchemy
+  # ===================
+  minor_healing_potion:
+    name: "Minor Healing Potion"
+    description: "Restores a small amount of health"
+    weight: 0.5
+    type: "potion"
+    value: 25
+    consumable: true
+    heal_amount: 25
+
+  minor_mana_potion:
+    name: "Minor Mana Potion"
+    description: "Restores a small amount of mana"
+    weight: 0.5
+    type: "potion"
+    value: 25
+    consumable: true
+    mana_amount: 25
+
+  antidote:
+    name: "Antidote"
+    description: "Cures poison effects"
+    weight: 0.5
+    type: "potion"
+    value: 30
+    consumable: true
+
+  strength_elixir:
+    name: "Elixir of Strength"
+    description: "Temporarily increases strength"
+    weight: 0.5
+    type: "potion"
+    value: 60
+    consumable: true
+
+  greater_healing_potion:
+    name: "Greater Healing Potion"
+    description: "Restores a large amount of health"
+    weight: 0.5
+    type: "potion"
+    value: 100
+    consumable: true
+    heal_amount: 100
+
+  invisibility_potion:
+    name: "Invisibility Potion"
+    description: "Grants temporary invisibility"
+    weight: 0.5
+    type: "potion"
+    value: 150
+    consumable: true
+
+  # ===================
+  # Crafted Items - Enchanting
+  # ===================
+  minor_fire_scroll:
+    name: "Scroll of Minor Flames"
+    description: "A scroll containing a minor fire spell"
+    weight: 0.2
+    type: "scroll"
+    value: 40
+
+  glow_stone:
+    name: "Glow Stone"
+    description: "A stone that emits soft light"
+    weight: 0.5
+    type: "misc"
+    value: 35
+
+  protection_amulet:
+    name: "Amulet of Protection"
+    description: "Provides minor magical protection"
+    weight: 0.3
+    type: "accessory"
+    value: 100
+    slot: "neck"
+    armor: 1
+
+  ring_of_strength:
+    name: "Ring of Strength"
+    description: "Enhances the wearer's physical power"
+    weight: 0.1
+    type: "accessory"
+    value: 150
+    slot: "finger"
+
+  enchanted_blade_scroll:
+    name: "Enchanted Blade Scroll"
+    description: "A scroll to enchant a weapon with magic damage"
+    weight: 0.2
+    type: "scroll"
+    value: 200
+
+  mana_crystal:
+    name: "Mana Crystal"
+    description: "A crystal that slowly restores mana over time"
+    weight: 0.5
+    type: "misc"
+    value: 250

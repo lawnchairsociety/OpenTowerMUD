@@ -46,6 +46,10 @@ npcs:
     loot_table:
       - item: "bread"
         chance: 25
+      - item: "leather_strip"
+        chance: 30
+      - item: "thread"
+        chance: 20
     respawn_median: 120
     respawn_variation: 30
 
@@ -66,6 +70,10 @@ npcs:
     loot_table:
       - item: "mushroom"
         chance: 40
+      - item: "leather"
+        chance: 25
+      - item: "beast_fang"
+        chance: 15
     respawn_median: 120
     respawn_variation: 30
 
@@ -83,6 +91,11 @@ npcs:
     mob_type: "beast"
     gold_min: 1
     gold_max: 3
+    loot_table:
+      - item: "leather"
+        chance: 30
+      - item: "beast_fang"
+        chance: 20
     respawn_median: 120
     respawn_variation: 30
 
@@ -105,6 +118,8 @@ npcs:
         chance: 50
       - item: "rusty_sword"
         chance: 15
+      - item: "arcane_dust"
+        chance: 15
     respawn_median: 120
     respawn_variation: 30
 
@@ -125,6 +140,10 @@ npcs:
     loot_table:
       - item: "bandage"
         chance: 30
+      - item: "wooden_shaft"
+        chance: 35
+      - item: "iron_ore"
+        chance: 15
     respawn_median: 120
     respawn_variation: 30
 
@@ -145,6 +164,10 @@ npcs:
     loot_table:
       - item: "roasted_meat"
         chance: 40
+      - item: "leather"
+        chance: 35
+      - item: "beast_fang"
+        chance: 25
     respawn_median: 120
     respawn_variation: 30
 
@@ -171,6 +194,10 @@ npcs:
         chance: 20
       - item: "roasted_meat"
         chance: 35
+      - item: "iron_ore"
+        chance: 25
+      - item: "leather_strip"
+        chance: 20
     respawn_median: 180
     respawn_variation: 30
 
@@ -193,6 +220,10 @@ npcs:
         chance: 25
       - item: "rope"
         chance: 30
+      - item: "thread"
+        chance: 35
+      - item: "monster_blood"
+        chance: 20
     respawn_median: 180
     respawn_variation: 30
 
@@ -215,6 +246,10 @@ npcs:
         chance: 30
       - item: "ectoplasm"
         chance: 20
+      - item: "ghost_essence"
+        chance: 25
+      - item: "arcane_dust"
+        chance: 20
     respawn_median: 180
     respawn_variation: 30
 
@@ -235,6 +270,10 @@ npcs:
     loot_table:
       - item: "leather_armor"
         chance: 10
+      - item: "leather"
+        chance: 30
+      - item: "beast_fang"
+        chance: 25
     respawn_median: 180
     respawn_variation: 30
 
@@ -255,6 +294,10 @@ npcs:
     loot_table:
       - item: "roasted_meat"
         chance: 50
+      - item: "leather"
+        chance: 35
+      - item: "beast_fang"
+        chance: 30
     respawn_median: 180
     respawn_variation: 30
 
@@ -276,6 +319,10 @@ npcs:
       - item: "bone"
         chance: 40
       - item: "healing_potion"
+        chance: 15
+      - item: "ghost_essence"
+        chance: 20
+      - item: "monster_blood"
         chance: 15
     respawn_median: 180
     respawn_variation: 30
@@ -299,6 +346,10 @@ npcs:
         chance: 8
       - item: "stone_shard"
         chance: 15
+      - item: "iron_ore"
+        chance: 30
+      - item: "arcane_dust"
+        chance: 25
     respawn_median: 180
     respawn_variation: 30
 
@@ -329,6 +380,10 @@ npcs:
         chance: 8
       - item: "ancient_key"
         chance: 5
+      - item: "steel_ingot"
+        chance: 20
+      - item: "leather"
+        chance: 25
     respawn_median: 300
     respawn_variation: 60
 
@@ -353,6 +408,10 @@ npcs:
         chance: 10
       - item: "roasted_meat"
         chance: 40
+      - item: "leather"
+        chance: 30
+      - item: "wooden_shaft"
+        chance: 25
     respawn_median: 300
     respawn_variation: 60
 
@@ -375,6 +434,14 @@ npcs:
         chance: 35
       - item: "greater_healing_potion"
         chance: 20
+      - item: "arcane_dust"
+        chance: 30
+      - item: "rough_gem"
+        chance: 15
+      - item: "mithril_ore"
+        chance: 10
+      - item: "enchanted_gem"
+        chance: 8
     respawn_median: 300
     respawn_variation: 60
 
@@ -397,6 +464,14 @@ npcs:
         chance: 30
       - item: "demonic_essence"
         chance: 15
+      - item: "monster_blood"
+        chance: 30
+      - item: "arcane_dust"
+        chance: 25
+      - item: "demon_heart"
+        chance: 10
+      - item: "moonpetal"
+        chance: 8
     respawn_median: 300
     respawn_variation: 60
 
@@ -419,6 +494,12 @@ npcs:
         chance: 45
       - item: "greater_healing_potion"
         chance: 15
+      - item: "leather"
+        chance: 40
+      - item: "beast_fang"
+        chance: 35
+      - item: "monster_blood"
+        chance: 20
     respawn_median: 300
     respawn_variation: 60
 
@@ -443,6 +524,12 @@ npcs:
         chance: 8
       - item: "ancient_key"
         chance: 5
+      - item: "ghost_essence"
+        chance: 25
+      - item: "arcane_dust"
+        chance: 30
+      - item: "mithril_ore"
+        chance: 10
     respawn_median: 300
     respawn_variation: 60
 
@@ -465,6 +552,10 @@ npcs:
         chance: 35
       - item: "roasted_meat"
         chance: 50
+      - item: "leather"
+        chance: 35
+      - item: "wooden_shaft"
+        chance: 30
     respawn_median: 300
     respawn_variation: 60
 
@@ -493,6 +584,16 @@ npcs:
         chance: 25
       - item: "ancient_key"
         chance: 8
+      - item: "ghost_essence"
+        chance: 35
+      - item: "monster_blood"
+        chance: 30
+      - item: "arcane_dust"
+        chance: 25
+      - item: "ancient_essence"
+        chance: 12
+      - item: "phoenix_feather"
+        chance: 5
     respawn_median: 600
     respawn_variation: 120
 
@@ -517,6 +618,12 @@ npcs:
         chance: 10
       - item: "greater_healing_potion"
         chance: 25
+      - item: "steel_ingot"
+        chance: 30
+      - item: "leather"
+        chance: 35
+      - item: "silver_chain"
+        chance: 15
     respawn_median: 600
     respawn_variation: 120
 
@@ -541,6 +648,16 @@ npcs:
         chance: 12
       - item: "elixir"
         chance: 10
+      - item: "steel_ingot"
+        chance: 25
+      - item: "arcane_dust"
+        chance: 40
+      - item: "rough_gem"
+        chance: 20
+      - item: "adamantine_shard"
+        chance: 8
+      - item: "void_crystal"
+        chance: 6
     respawn_median: 600
     respawn_variation: 120
 
@@ -565,6 +682,16 @@ npcs:
         chance: 5
       - item: "elixir"
         chance: 15
+      - item: "monster_blood"
+        chance: 40
+      - item: "arcane_dust"
+        chance: 35
+      - item: "rough_gem"
+        chance: 15
+      - item: "demon_heart"
+        chance: 20
+      - item: "phoenix_feather"
+        chance: 8
     respawn_median: 600
     respawn_variation: 120
 
@@ -589,6 +716,12 @@ npcs:
         chance: 5
       - item: "ancient_key"
         chance: 10
+      - item: "ghost_essence"
+        chance: 35
+      - item: "steel_ingot"
+        chance: 30
+      - item: "arcane_dust"
+        chance: 25
     respawn_median: 600
     respawn_variation: 120
 
@@ -611,6 +744,12 @@ npcs:
         chance: 20
       - item: "greater_healing_potion"
         chance: 35
+      - item: "leather"
+        chance: 40
+      - item: "wooden_shaft"
+        chance: 35
+      - item: "rough_gem"
+        chance: 20
     respawn_median: 600
     respawn_variation: 120
 
@@ -633,6 +772,16 @@ npcs:
         chance: 8
       - item: "greater_healing_potion"
         chance: 25
+      - item: "leather"
+        chance: 45
+      - item: "beast_fang"
+        chance: 40
+      - item: "monster_blood"
+        chance: 30
+      - item: "dragonhide_scrap"
+        chance: 12
+      - item: "phoenix_feather"
+        chance: 5
     respawn_median: 600
     respawn_variation: 120
 
@@ -662,6 +811,12 @@ npcs:
         chance: 100
       - item: "ancient_key"
         chance: 100
+      - item: "iron_ore"
+        chance: 100
+      - item: "leather"
+        chance: 100
+      - item: "thread"
+        chance: 100
     respawn_median: 900
     respawn_variation: 180
 
@@ -686,6 +841,14 @@ npcs:
       - item: "elixir"
         chance: 100
       - item: "ancient_key"
+        chance: 100
+      - item: "leather"
+        chance: 100
+      - item: "beast_fang"
+        chance: 100
+      - item: "monster_blood"
+        chance: 100
+      - item: "thread"
         chance: 100
     respawn_median: 900
     respawn_variation: 180
@@ -712,6 +875,18 @@ npcs:
         chance: 100
       - item: "ancient_key"
         chance: 100
+      - item: "ghost_essence"
+        chance: 100
+      - item: "arcane_dust"
+        chance: 100
+      - item: "blank_scroll"
+        chance: 100
+      - item: "mithril_ore"
+        chance: 100
+      - item: "enchanted_gem"
+        chance: 100
+      - item: "moonpetal"
+        chance: 100
     respawn_median: 900
     respawn_variation: 180
 
@@ -736,6 +911,22 @@ npcs:
       - item: "legendary_key"
         chance: 100
       - item: "elixir"
+        chance: 100
+      - item: "steel_ingot"
+        chance: 100
+      - item: "arcane_dust"
+        chance: 100
+      - item: "rough_gem"
+        chance: 100
+      - item: "silver_chain"
+        chance: 100
+      - item: "adamantine_shard"
+        chance: 100
+      - item: "void_crystal"
+        chance: 100
+      - item: "ancient_essence"
+        chance: 100
+      - item: "dragonhide_scrap"
         chance: 100
     respawn_median: 1800
     respawn_variation: 300

@@ -77,9 +77,13 @@ func executeLook(c *Command, p PlayerInterface) string {
 		case "portal":
 			return "A shimmering portal of swirling blue and silver energy. It offers travel to tower floors you have discovered. Type 'portal' to see available destinations."
 		case "workbench":
-			return "A sturdy wooden workbench with various tools hanging nearby. You could use it to craft basic items."
+			return "A sturdy wooden workbench with various tools hanging nearby. Perfect for leatherworking and other crafts. Type 'craft' to see available recipes."
 		case "forge":
-			return "A blazing forge, hot enough to work metal. Type 'use forge' to begin smithing."
+			return "A blazing forge, hot enough to work metal into weapons and armor. Type 'craft' to see available blacksmithing recipes."
+		case "alchemy_lab":
+			return "An elaborate alchemy laboratory with bubbling cauldrons, glass vials, and brass tubes. The air smells of exotic herbs and strange chemicals. Type 'craft' to see available alchemy recipes."
+		case "enchanting_table":
+			return "A mystical table covered in glowing runes and arcane symbols. Magical energy crackles around its surface, ready to imbue objects with power. Type 'craft' to see available enchanting recipes."
 		default:
 			return fmt.Sprintf("You see a %s here.", targetName)
 		}

@@ -4,15 +4,15 @@
 # Layout:
 #                                        [North Gate]
 #                                             |
-#  [Castle Gate]------------------------[Town Square]--[Temple]
+#  [Castle Gate]------------------------[Town Square]--[Temple]--[Mage Tower]
 #        |                                    |
 #  [Guard Post]              [Tavern]--[Market Street]--[General Store]
 #        |                                    |
-#        |                          [Artisan's Market]        [Armory]
-#        |                                    |                   |
-#        |                 [Barracks]--[Military District]--[Military District East]
-#  [Castle Hall]                              |                   |
-#      /    \                                 |             [Training Hall]
+#        |              [Alchemist]--[Artisan's Market]--[Armory]
+#        |                                    |                |
+#        |                 [Barracks]--[Military District]--[Mil. District E]
+#  [Castle Hall]                              |                |
+#      /    \                                 |          [Training Hall]
 #     /      \                                |
 # [Throne] [Library]                   [Tower Entrance]
 #     |
@@ -57,6 +57,7 @@ rooms:
       - altar
     exits:
       west: town_square
+      east: mage_tower
 
   market_street:
     name: "Market Street"
@@ -104,6 +105,8 @@ rooms:
     exits:
       north: market_street
       south: military_district
+      east: armory
+      west: alchemist_shop
 
   # =====================
   # Military District
@@ -154,6 +157,7 @@ rooms:
       - forge
     exits:
       south: military_district_east
+      west: artisan_market
 
   training_hall:
     name: "Combat Training Hall"
@@ -253,3 +257,31 @@ rooms:
       - garden
     exits:
       north: throne_room
+
+  # =====================
+  # Crafting District
+  # =====================
+
+  alchemist_shop:
+    name: "Zara's Alchemy Emporium"
+    description: "A cluttered shop filled with bubbling cauldrons, strange specimens in jars, and the pungent smell of various concoctions. Shelves overflow with herbs, crystals, and mysterious powders. An elaborate alchemy lab dominates the back of the room, its brass tubes and glass vessels gleaming."
+    description_day: "Colorful fumes rise from various experiments, catching the light streaming through dusty windows."
+    description_night: "Glowing potions illuminate the shop in an eerie rainbow of colors. Strange sounds bubble from the darkness."
+    type: city
+    features:
+      - alchemy_lab
+      - shop
+    exits:
+      east: artisan_market
+
+  mage_tower:
+    name: "The Arcane Spire"
+    description: "A tower dedicated to the study and practice of the magical arts. Arcane symbols are etched into every surface, some glowing faintly with residual power. An enchanting table sits at the center of the main floor, its surface covered in mystical runes. Ancient tomes line the walls."
+    description_day: "Motes of magical energy drift through the air, catching sunlight and creating prismatic displays."
+    description_night: "The enchanting table pulses with soft magical light, and the runes on the walls glow in the darkness."
+    type: city
+    features:
+      - enchanting_table
+      - bookshelf
+    exits:
+      west: temple

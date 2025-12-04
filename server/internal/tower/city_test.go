@@ -23,9 +23,9 @@ func TestLoadCityFromYAML(t *testing.T) {
 		t.Fatal("Config is nil")
 	}
 
-	// Should have 19 rooms (10 original + 6 castle rooms + 1 artisan's market + 2 military district)
-	if len(config.Rooms) != 19 {
-		t.Errorf("Expected 19 rooms, got %d", len(config.Rooms))
+	// Should have 21 rooms (10 original + 6 castle rooms + 1 artisan's market + 2 military district + 2 crafting shops)
+	if len(config.Rooms) != 21 {
+		t.Errorf("Expected 21 rooms, got %d", len(config.Rooms))
 	}
 
 	// Check for required rooms
@@ -49,6 +49,8 @@ func TestLoadCityFromYAML(t *testing.T) {
 		"artisan_market",
 		"military_district",
 		"military_district_east",
+		"alchemist_shop",
+		"mage_tower",
 	}
 
 	for _, roomID := range requiredRooms {
@@ -80,9 +82,9 @@ func TestCreateCityFloor(t *testing.T) {
 		t.Errorf("Floor number = %d, want 0", floor.Number)
 	}
 
-	// Should have 19 rooms (10 original + 6 castle rooms + 1 artisan's market + 2 military district)
-	if floor.RoomCount() != 19 {
-		t.Errorf("Room count = %d, want 19", floor.RoomCount())
+	// Should have 21 rooms (10 original + 6 castle rooms + 1 artisan's market + 2 military district + 2 crafting shops)
+	if floor.RoomCount() != 21 {
+		t.Errorf("Room count = %d, want 21", floor.RoomCount())
 	}
 
 	// Should be marked as city

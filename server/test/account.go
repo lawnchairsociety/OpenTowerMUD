@@ -97,15 +97,8 @@ func TestInventoryPersistence(serverAddr string) TestResult {
 	client.SendCommand("buy bread")
 	time.Sleep(300 * time.Millisecond)
 
-	// Navigate to tavern to save via bard
-	client.SendCommand("west")
-	time.Sleep(200 * time.Millisecond)
-	client.SendCommand("west")
-	time.Sleep(200 * time.Millisecond)
-
-	// Talk to bard to save
-	logAction(testName, "Saving via bard...")
-	client.SendCommand("talk bard")
+	// Auto-save is enabled, so just wait a moment for save to occur
+	logAction(testName, "Waiting for auto-save...")
 	time.Sleep(500 * time.Millisecond)
 
 	client.Close()

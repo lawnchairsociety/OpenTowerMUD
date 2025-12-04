@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/lawnchairsociety/opentowermud/server/internal/chatfilter"
+	"github.com/lawnchairsociety/opentowermud/server/internal/crafting"
 	"github.com/lawnchairsociety/opentowermud/server/internal/items"
 	"github.com/lawnchairsociety/opentowermud/server/internal/leveling"
 	"github.com/lawnchairsociety/opentowermud/server/internal/logger"
@@ -51,6 +52,9 @@ type ServerInterface interface {
 	GenerateNextFloor(currentFloor int) (nextFloorStairsRoom interface{}, err error)
 	// Item methods
 	GetItemByID(id string) *items.Item
+	CreateItem(id string) *items.Item
+	// Crafting methods
+	GetRecipeRegistry() *crafting.RecipeRegistry
 }
 
 // PlayerInterface defines the methods we need from a player object
@@ -156,6 +160,16 @@ type PlayerInterface interface {
 	SwitchActiveClass(className string) error         // Switch which class gains XP
 	// Race methods
 	GetRaceName() string // Returns the display name of the player's race
+	// Crafting methods
+	GetCraftingSkill(skill crafting.CraftingSkill) int
+	AddCraftingSkillPoints(skill crafting.CraftingSkill, points int) int
+	GetAllCraftingSkills() map[crafting.CraftingSkill]int
+	KnowsRecipe(recipeID string) bool
+	LearnRecipe(recipeID string)
+	GetKnownRecipes() []string
+	// Item management for crafting
+	CountItemsByID(itemID string) int
+	RemoveItemByID(itemID string) bool
 }
 
 // PlayerInfo contains detailed information about an online player (for admin commands)
@@ -186,6 +200,7 @@ type RoomInterface interface {
 	AddItem(item *items.Item)
 	FindItem(partial string) (*items.Item, bool)
 	HasFeature(feature string) bool
+	GetFeatures() []string
 	RemoveFeature(feature string)
 	IsExitLocked(direction string) bool
 	GetExitKeyRequired(direction string) string
@@ -318,6 +333,12 @@ var commandRegistry = map[string]CommandHandler{
 	"classes":    executeClass, // Alias for class
 	"race":       executeRace,
 	"races":      executeRaces,
+
+	// Crafting commands
+	"craft":  executeCraft,
+	"make":   executeCraft, // Alias
+	"learn":  executeLearn,
+	"skills": executeSkills,
 
 	// Admin commands
 	"admin": executeAdmin,

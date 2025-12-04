@@ -178,11 +178,26 @@ func RunAllTests(serverAddr string) []TestResult {
 	// Group 8: Account System
 	results = append(results, TestAccountSystem(serverAddr))
 	results = append(results, TestInventoryPersistence(serverAddr))
+	results = append(results, TestRoomPersistence(serverAddr))
 	results = append(results, TestLastVisitedCityRespawn(serverAddr))
 
 	// Group 9: Admin Commands
 	results = append(results, TestAdminCommandsHidden(serverAddr))
 	results = append(results, TestAdminAnnounce(serverAddr))
+
+	// Group 10: Crafting System
+	results = append(results, TestSkillsCommand(serverAddr))
+	results = append(results, TestCraftingStationForge(serverAddr))
+	results = append(results, TestCraftingStationWorkbench(serverAddr))
+	results = append(results, TestCraftingStationAlchemyLab(serverAddr))
+	results = append(results, TestCraftingStationEnchantingTable(serverAddr))
+	results = append(results, TestLearnFromTrainer(serverAddr))
+	results = append(results, TestCraftWithoutStation(serverAddr))
+	results = append(results, TestCraftWithoutMaterials(serverAddr))
+	results = append(results, TestBuyCraftingMaterials(serverAddr))
+	results = append(results, TestCraftRecipeInfo(serverAddr))
+	results = append(results, TestCraftingTrainerLocations(serverAddr))
+	results = append(results, TestCraftingSkillPersistence(serverAddr))
 
 	return results
 }

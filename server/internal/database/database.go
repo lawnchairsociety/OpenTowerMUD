@@ -128,6 +128,8 @@ func (d *Database) migrate() error {
 		`ALTER TABLE characters ADD COLUMN gold INTEGER NOT NULL DEFAULT 100`,
 		`ALTER TABLE characters ADD COLUMN key_ring TEXT NOT NULL DEFAULT ''`,
 		`ALTER TABLE characters ADD COLUMN race TEXT NOT NULL DEFAULT 'human'`,
+		`ALTER TABLE characters ADD COLUMN crafting_skills TEXT NOT NULL DEFAULT ''`,
+		`ALTER TABLE characters ADD COLUMN known_recipes TEXT NOT NULL DEFAULT ''`,
 	}
 
 	for _, m := range migrations {

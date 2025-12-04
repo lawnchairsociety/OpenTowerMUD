@@ -10,6 +10,7 @@ import (
 	"github.com/lawnchairsociety/opentowermud/server/internal/antispam"
 	"github.com/lawnchairsociety/opentowermud/server/internal/class"
 	"github.com/lawnchairsociety/opentowermud/server/internal/command"
+	"github.com/lawnchairsociety/opentowermud/server/internal/crafting"
 	"github.com/lawnchairsociety/opentowermud/server/internal/items"
 	"github.com/lawnchairsociety/opentowermud/server/internal/leveling"
 	"github.com/lawnchairsociety/opentowermud/server/internal/npc"
@@ -104,6 +105,9 @@ type Player struct {
 	spamTracker *antispam.Tracker
 	// Ignore list - players whose messages we won't see
 	ignoreList map[string]bool
+	// Crafting system
+	craftingSkills map[crafting.CraftingSkill]int // skill -> level (0-100)
+	knownRecipes   map[string]bool                // recipe ID -> learned
 }
 
 func NewPlayer(name string, conn net.Conn, world *world.World, server ServerInterface) *Player {
@@ -147,6 +151,9 @@ func NewPlayer(name string, conn net.Conn, world *world.World, server ServerInte
 		activeClass: startingClass,
 		// Race system
 		race: race.Human, // Default to Human
+		// Crafting system
+		craftingSkills: make(map[crafting.CraftingSkill]int),
+		knownRecipes:   make(map[string]bool),
 	}
 
 	// Initialize anti-spam tracker with config from server
@@ -240,6 +247,28 @@ func (p *Player) RemoveItem(itemName string) (*items.Item, bool) {
 
 func (p *Player) HasItem(itemName string) bool {
 	return items.HasItem(p.Inventory, itemName)
+}
+
+// CountItemsByID counts how many items with the given ID are in the inventory
+func (p *Player) CountItemsByID(itemID string) int {
+	count := 0
+	for _, item := range p.Inventory {
+		if item.ID == itemID {
+			count++
+		}
+	}
+	return count
+}
+
+// RemoveItemByID removes one item with the given ID from the inventory
+func (p *Player) RemoveItemByID(itemID string) bool {
+	for i, item := range p.Inventory {
+		if item.ID == itemID {
+			p.Inventory = append(p.Inventory[:i], p.Inventory[i+1:]...)
+			return true
+		}
+	}
+	return false
 }
 
 func (p *Player) FindItem(partial string) (*items.Item, bool) {
@@ -1760,4 +1789,136 @@ func (p *Player) SwitchActiveClass(className string) error {
 
 	p.activeClass = targetClass
 	return nil
+}
+
+// ==================== CRAFTING METHODS ====================
+
+// GetCraftingSkill returns the player's level in a crafting skill (0-100)
+func (p *Player) GetCraftingSkill(skill crafting.CraftingSkill) int {
+	if p.craftingSkills == nil {
+		return 0
+	}
+	return p.craftingSkills[skill]
+}
+
+// SetCraftingSkill sets the player's level in a crafting skill
+func (p *Player) SetCraftingSkill(skill crafting.CraftingSkill, level int) {
+	if p.craftingSkills == nil {
+		p.craftingSkills = make(map[crafting.CraftingSkill]int)
+	}
+	if level < 0 {
+		level = 0
+	}
+	if level > crafting.MaxSkillLevel {
+		level = crafting.MaxSkillLevel
+	}
+	p.craftingSkills[skill] = level
+}
+
+// AddCraftingSkillPoints adds points to a crafting skill and returns the new level
+func (p *Player) AddCraftingSkillPoints(skill crafting.CraftingSkill, points int) int {
+	if p.craftingSkills == nil {
+		p.craftingSkills = make(map[crafting.CraftingSkill]int)
+	}
+	newLevel := p.craftingSkills[skill] + points
+	if newLevel > crafting.MaxSkillLevel {
+		newLevel = crafting.MaxSkillLevel
+	}
+	p.craftingSkills[skill] = newLevel
+	return newLevel
+}
+
+// GetAllCraftingSkills returns a map of all crafting skills and their levels
+func (p *Player) GetAllCraftingSkills() map[crafting.CraftingSkill]int {
+	if p.craftingSkills == nil {
+		return make(map[crafting.CraftingSkill]int)
+	}
+	// Return a copy
+	result := make(map[crafting.CraftingSkill]int)
+	for skill, level := range p.craftingSkills {
+		result[skill] = level
+	}
+	return result
+}
+
+// KnowsRecipe returns true if the player has learned the specified recipe
+func (p *Player) KnowsRecipe(recipeID string) bool {
+	if p.knownRecipes == nil {
+		return false
+	}
+	return p.knownRecipes[recipeID]
+}
+
+// LearnRecipe adds a recipe to the player's known recipes
+func (p *Player) LearnRecipe(recipeID string) {
+	if p.knownRecipes == nil {
+		p.knownRecipes = make(map[string]bool)
+	}
+	p.knownRecipes[recipeID] = true
+}
+
+// GetKnownRecipes returns a list of known recipe IDs
+func (p *Player) GetKnownRecipes() []string {
+	if p.knownRecipes == nil {
+		return nil
+	}
+	recipes := make([]string, 0, len(p.knownRecipes))
+	for recipeID := range p.knownRecipes {
+		recipes = append(recipes, recipeID)
+	}
+	return recipes
+}
+
+// GetKnownRecipesString returns known recipes as a comma-separated string (for persistence)
+func (p *Player) GetKnownRecipesString() string {
+	recipes := p.GetKnownRecipes()
+	return strings.Join(recipes, ",")
+}
+
+// SetKnownRecipes sets the known recipes from a list (used when loading from database)
+func (p *Player) SetKnownRecipes(recipeIDs []string) {
+	p.knownRecipes = make(map[string]bool)
+	for _, recipeID := range recipeIDs {
+		if recipeID != "" {
+			p.knownRecipes[recipeID] = true
+		}
+	}
+}
+
+// GetCraftingSkillsString returns crafting skills as a comma-separated string (for persistence)
+// Format: "blacksmithing:10,alchemy:25"
+func (p *Player) GetCraftingSkillsString() string {
+	if p.craftingSkills == nil || len(p.craftingSkills) == 0 {
+		return ""
+	}
+	parts := make([]string, 0, len(p.craftingSkills))
+	for skill, level := range p.craftingSkills {
+		if level > 0 {
+			parts = append(parts, fmt.Sprintf("%s:%d", string(skill), level))
+		}
+	}
+	return strings.Join(parts, ",")
+}
+
+// SetCraftingSkillsFromString loads crafting skills from a string (from persistence)
+// Format: "blacksmithing:10,alchemy:25"
+func (p *Player) SetCraftingSkillsFromString(skillsStr string) {
+	p.craftingSkills = make(map[crafting.CraftingSkill]int)
+	if skillsStr == "" {
+		return
+	}
+	pairs := strings.Split(skillsStr, ",")
+	for _, pair := range pairs {
+		parts := strings.Split(pair, ":")
+		if len(parts) == 2 {
+			skill, err := crafting.ParseSkill(parts[0])
+			if err != nil {
+				continue
+			}
+			var level int
+			if _, err := fmt.Sscanf(parts[1], "%d", &level); err == nil {
+				p.craftingSkills[skill] = level
+			}
+		}
+	}
 }

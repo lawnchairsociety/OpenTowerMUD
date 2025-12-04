@@ -155,6 +155,17 @@ func (s *Server) loadPlayer(conn net.Conn, auth *AuthResult) (*player.Player, er
 		p.SetDiscoveredPortals(portals)
 	}
 
+	// Load crafting skills
+	if char.CraftingSkills != "" {
+		p.SetCraftingSkillsFromString(char.CraftingSkills)
+	}
+
+	// Load known recipes
+	if char.KnownRecipes != "" {
+		recipeIDs := strings.Split(char.KnownRecipes, ",")
+		p.SetKnownRecipes(recipeIDs)
+	}
+
 	logger.Info("Player loaded",
 		"player", char.Name,
 		"player_level", char.Level,
@@ -214,6 +225,8 @@ func (s *Server) savePlayerImpl(p *player.Player) error {
 		ClassLevels:    p.GetClassLevelsJSON(),
 		ActiveClass:    string(p.GetActiveClass()),
 		Race:           string(p.GetRace()),
+		CraftingSkills: p.GetCraftingSkillsString(),
+		KnownRecipes:   p.GetKnownRecipesString(),
 	}
 
 	// Get inventory and equipment IDs

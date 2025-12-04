@@ -262,6 +262,14 @@ func (r *Room) GetDescriptionForPlayerWithCustomDesc(playerName string, baseDesc
 				featureDescs = append(featureDescs, "a merchant's stall")
 			case "locked_door":
 				featureDescs = append(featureDescs, "a locked door")
+			case "forge":
+				featureDescs = append(featureDescs, "a blazing forge")
+			case "workbench":
+				featureDescs = append(featureDescs, "a crafting workbench")
+			case "alchemy_lab":
+				featureDescs = append(featureDescs, "an alchemy laboratory")
+			case "enchanting_table":
+				featureDescs = append(featureDescs, "a glowing enchanting table")
 			default:
 				featureDescs = append(featureDescs, f)
 			}
