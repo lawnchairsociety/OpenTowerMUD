@@ -1,0 +1,90 @@
+# Race Definitions for OpenTowerMUD
+# These define the playable races available during character creation
+#
+# Format:
+#   race_id:
+#     name: Display name of the race
+#     description: Detailed description shown during character creation
+#     size: Physical size (Medium or Small)
+#     stat_bonuses: Map of stat abbreviation to bonus (can be negative)
+#       STR: Strength bonus
+#       DEX: Dexterity bonus
+#       CON: Constitution bonus
+#       INT: Intelligence bonus
+#       WIS: Wisdom bonus
+#       CHA: Charisma bonus
+#     abilities: List of racial abilities (flavor text for now)
+
+races:
+  human:
+    name: "Human"
+    description: "Versatile and ambitious, humans are the most adaptable of all races. They excel in any profession and thrive in any environment."
+    size: "Medium"
+    stat_bonuses: {}  # Humans get +1 to one stat of their choice at creation
+    abilities:
+      - "Versatile: +1 to one ability score of your choice"
+
+  dwarf:
+    name: "Dwarf"
+    description: "Stout and sturdy, dwarves are known for their resilience and craftsmanship. They make excellent warriors and are resistant to poison."
+    size: "Medium"
+    stat_bonuses:
+      CON: 2
+      CHA: -2
+    abilities:
+      - "Darkvision: Can see in complete darkness"
+      - "Poison Resistance: Hardy against toxins"
+
+  elf:
+    name: "Elf"
+    description: "Graceful and long-lived, elves possess keen senses and natural agility. They are immune to magical sleep and resistant to enchantments."
+    size: "Medium"
+    stat_bonuses:
+      DEX: 2
+      CON: -2
+    abilities:
+      - "Low-light Vision: Can see in dim light"
+      - "Sleep Immunity: Cannot be magically put to sleep"
+
+  halfling:
+    name: "Halfling"
+    description: "Small but brave, halflings are nimble and lucky. They rarely succumb to fear and have a knack for avoiding danger."
+    size: "Small"
+    stat_bonuses:
+      DEX: 2
+      STR: -2
+    abilities:
+      - "Fearless: Resistant to fear effects"
+      - "Lucky: Fortune favors the small"
+
+  gnome:
+    name: "Gnome"
+    description: "Curious and inventive, gnomes are small but hardy. They have a natural resistance to illusions and a keen intellect."
+    size: "Small"
+    stat_bonuses:
+      CON: 2
+      STR: -2
+    abilities:
+      - "Low-light Vision: Can see in dim light"
+      - "Illusion Resistance: Hard to fool with tricks"
+
+  half-elf:
+    name: "Half-Elf"
+    description: "Combining the best of both worlds, half-elves are diplomatic and adaptable. They inherit elven resistance to sleep magic."
+    size: "Medium"
+    stat_bonuses: {}  # No stat bonuses
+    abilities:
+      - "Sleep Immunity: Cannot be magically put to sleep"
+      - "Adaptable: Fits in with any group"
+
+  half-orc:
+    name: "Half-Orc"
+    description: "Strong and fierce, half-orcs combine human ambition with orcish might. They can see in darkness and fight on when others would fall."
+    size: "Medium"
+    stat_bonuses:
+      STR: 2
+      INT: -2
+      CHA: -2
+    abilities:
+      - "Darkvision: Can see in complete darkness"
+      - "Ferocity: Fight on when near death"

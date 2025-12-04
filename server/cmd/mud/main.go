@@ -14,6 +14,7 @@ import (
 	"github.com/lawnchairsociety/opentowermud/server/internal/items"
 	"github.com/lawnchairsociety/opentowermud/server/internal/logger"
 	"github.com/lawnchairsociety/opentowermud/server/internal/npc"
+	"github.com/lawnchairsociety/opentowermud/server/internal/race"
 	"github.com/lawnchairsociety/opentowermud/server/internal/server"
 	"github.com/lawnchairsociety/opentowermud/server/internal/spells"
 	"github.com/lawnchairsociety/opentowermud/server/internal/tower"
@@ -29,6 +30,7 @@ func main() {
 	npcsFile := flag.String("npcs", "data/npcs.yaml", "Path to NPCs YAML file")
 	mobsFile := flag.String("mobs", "data/mobs.yaml", "Path to mobs YAML file")
 	itemsFile := flag.String("items", "data/items.yaml", "Path to items YAML file")
+	racesFile := flag.String("races", "data/races.yaml", "Path to races YAML file")
 	spellsFile := flag.String("spells", "data/spells.yaml", "Path to spells YAML file")
 	loggingConfig := flag.String("logging", "data/logging.yaml", "Path to logging config YAML file")
 	chatFilterConfig := flag.String("chatfilter", "data/chat_filter.yaml", "Path to chat filter config YAML file")
@@ -96,6 +98,14 @@ func main() {
 	itemsConfig, err := items.LoadItemsFromYAML(*itemsFile)
 	if err != nil {
 		log.Fatalf("Failed to load items config: %v", err)
+	}
+
+	// Load races config
+	racesConfig, err := race.LoadRacesFromYAML(*racesFile)
+	if err != nil {
+		logger.Warning("Failed to load races config, using defaults", "path", *racesFile, "error", err)
+	} else {
+		logger.Info("Races loaded", "count", len(racesConfig.Races))
 	}
 
 	// Load spells config

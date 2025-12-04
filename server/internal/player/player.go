@@ -13,6 +13,7 @@ import (
 	"github.com/lawnchairsociety/opentowermud/server/internal/items"
 	"github.com/lawnchairsociety/opentowermud/server/internal/leveling"
 	"github.com/lawnchairsociety/opentowermud/server/internal/npc"
+	"github.com/lawnchairsociety/opentowermud/server/internal/race"
 	"github.com/lawnchairsociety/opentowermud/server/internal/stats"
 	"github.com/lawnchairsociety/opentowermud/server/internal/world"
 )
@@ -97,6 +98,8 @@ type Player struct {
 	// Class system
 	classLevels *class.ClassLevels // Levels in each class
 	activeClass class.Class        // Which class currently gains XP
+	// Race system
+	race race.Race // Player's race (e.g., "human", "dwarf")
 	// Anti-spam tracking
 	spamTracker *antispam.Tracker
 	// Ignore list - players whose messages we won't see
@@ -142,6 +145,8 @@ func NewPlayer(name string, conn net.Conn, world *world.World, server ServerInte
 		// Class system
 		classLevels: classLevels,
 		activeClass: startingClass,
+		// Race system
+		race: race.Human, // Default to Human
 	}
 
 	// Initialize anti-spam tracker with config from server
@@ -1444,6 +1449,21 @@ func (p *Player) GetActiveClass() class.Class {
 // SetActiveClass changes which class gains XP
 func (p *Player) SetActiveClass(c class.Class) {
 	p.activeClass = c
+}
+
+// GetRace returns the player's race
+func (p *Player) GetRace() race.Race {
+	return p.race
+}
+
+// GetRaceName returns the display name of the player's race
+func (p *Player) GetRaceName() string {
+	return p.race.String()
+}
+
+// SetRace sets the player's race
+func (p *Player) SetRace(r race.Race) {
+	p.race = r
 }
 
 // GetClassLevel returns the level in a specific class

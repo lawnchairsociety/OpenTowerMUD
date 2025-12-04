@@ -487,3 +487,171 @@ func TestGetCharactersByAccountIncludesAbilityScores(t *testing.T) {
 		t.Errorf("Expected Charisma 8, got %d", char.Charisma)
 	}
 }
+
+func TestCreateCharacterWithClassAndRace(t *testing.T) {
+	db := setupTestDB(t)
+
+	account, err := db.CreateAccount("testuser", "password123")
+	if err != nil {
+		t.Fatalf("Failed to create account: %v", err)
+	}
+
+	// Create a dwarf warrior with custom stats
+	char, err := db.CreateCharacterWithClassAndRace(account.ID, "Gimli", "warrior", "dwarf", 15, 12, 14, 10, 10, 8)
+	if err != nil {
+		t.Fatalf("Failed to create character: %v", err)
+	}
+
+	if char.Race != "dwarf" {
+		t.Errorf("Expected Race 'dwarf', got '%s'", char.Race)
+	}
+	if char.PrimaryClass != "warrior" {
+		t.Errorf("Expected PrimaryClass 'warrior', got '%s'", char.PrimaryClass)
+	}
+	if char.Strength != 15 {
+		t.Errorf("Expected Strength 15, got %d", char.Strength)
+	}
+}
+
+func TestCreateCharacterWithClassAndRace_AllRaces(t *testing.T) {
+	db := setupTestDB(t)
+
+	account, err := db.CreateAccount("testuser", "password123")
+	if err != nil {
+		t.Fatalf("Failed to create account: %v", err)
+	}
+
+	// Test all races
+	races := []string{"human", "dwarf", "elf", "halfling", "gnome", "half-elf", "half-orc"}
+	for i, race := range races {
+		name := "Hero" + race
+		char, err := db.CreateCharacterWithClassAndRace(account.ID, name, "warrior", race, 10, 10, 10, 10, 10, 10)
+		if err != nil {
+			t.Fatalf("Failed to create %s character: %v", race, err)
+		}
+		if char.Race != race {
+			t.Errorf("Character %d: Expected Race '%s', got '%s'", i, race, char.Race)
+		}
+	}
+}
+
+func TestGetCharacterByID_IncludesRace(t *testing.T) {
+	db := setupTestDB(t)
+
+	account, err := db.CreateAccount("testuser", "password123")
+	if err != nil {
+		t.Fatalf("Failed to create account: %v", err)
+	}
+
+	created, err := db.CreateCharacterWithClassAndRace(account.ID, "Legolas", "ranger", "elf", 10, 16, 10, 12, 14, 12)
+	if err != nil {
+		t.Fatalf("Failed to create character: %v", err)
+	}
+
+	// Reload by ID
+	char, err := db.GetCharacterByID(created.ID)
+	if err != nil {
+		t.Fatalf("Failed to get character: %v", err)
+	}
+
+	if char.Race != "elf" {
+		t.Errorf("Expected Race 'elf', got '%s'", char.Race)
+	}
+}
+
+func TestGetCharactersByAccount_IncludesRace(t *testing.T) {
+	db := setupTestDB(t)
+
+	account, err := db.CreateAccount("testuser", "password123")
+	if err != nil {
+		t.Fatalf("Failed to create account: %v", err)
+	}
+
+	// Create characters of different races
+	_, err = db.CreateCharacterWithClassAndRace(account.ID, "Frodo", "rogue", "halfling", 8, 16, 12, 12, 12, 14)
+	if err != nil {
+		t.Fatalf("Failed to create halfling: %v", err)
+	}
+	_, err = db.CreateCharacterWithClassAndRace(account.ID, "Gandalf", "mage", "human", 10, 12, 12, 16, 16, 14)
+	if err != nil {
+		t.Fatalf("Failed to create human: %v", err)
+	}
+
+	// Get all characters
+	chars, err := db.GetCharactersByAccount(account.ID)
+	if err != nil {
+		t.Fatalf("Failed to get characters: %v", err)
+	}
+
+	if len(chars) != 2 {
+		t.Fatalf("Expected 2 characters, got %d", len(chars))
+	}
+
+	// Check races are loaded (order may vary, so check by name)
+	for _, char := range chars {
+		switch char.Name {
+		case "Frodo":
+			if char.Race != "halfling" {
+				t.Errorf("Frodo: Expected Race 'halfling', got '%s'", char.Race)
+			}
+		case "Gandalf":
+			if char.Race != "human" {
+				t.Errorf("Gandalf: Expected Race 'human', got '%s'", char.Race)
+			}
+		}
+	}
+}
+
+func TestSaveCharacter_PreservesRace(t *testing.T) {
+	db := setupTestDB(t)
+
+	account, err := db.CreateAccount("testuser", "password123")
+	if err != nil {
+		t.Fatalf("Failed to create account: %v", err)
+	}
+
+	char, err := db.CreateCharacterWithClassAndRace(account.ID, "Thorin", "warrior", "dwarf", 14, 10, 16, 10, 10, 8)
+	if err != nil {
+		t.Fatalf("Failed to create character: %v", err)
+	}
+
+	// Modify and save
+	char.Level = 5
+	char.Experience = 1000
+	err = db.SaveCharacter(char)
+	if err != nil {
+		t.Fatalf("Failed to save character: %v", err)
+	}
+
+	// Reload and verify race is preserved
+	loaded, err := db.GetCharacterByID(char.ID)
+	if err != nil {
+		t.Fatalf("Failed to reload character: %v", err)
+	}
+
+	if loaded.Race != "dwarf" {
+		t.Errorf("Expected Race 'dwarf' after save, got '%s'", loaded.Race)
+	}
+	if loaded.Level != 5 {
+		t.Errorf("Expected Level 5, got %d", loaded.Level)
+	}
+}
+
+func TestCreateCharacter_DefaultsToHuman(t *testing.T) {
+	db := setupTestDB(t)
+
+	account, err := db.CreateAccount("testuser", "password123")
+	if err != nil {
+		t.Fatalf("Failed to create account: %v", err)
+	}
+
+	// Use the basic CreateCharacter which should default to human
+	char, err := db.CreateCharacter(account.ID, "DefaultRace")
+	if err != nil {
+		t.Fatalf("Failed to create character: %v", err)
+	}
+
+	if char.Race != "human" {
+		t.Errorf("Expected default Race 'human', got '%s'", char.Race)
+	}
+}

@@ -154,6 +154,8 @@ type PlayerInterface interface {
 	CanMulticlassInto(className string) (bool, string) // Returns (canMulticlass, reason)
 	AddNewClass(className string) error               // Add a new class at level 1
 	SwitchActiveClass(className string) error         // Switch which class gains XP
+	// Race methods
+	GetRaceName() string // Returns the display name of the player's race
 }
 
 // PlayerInfo contains detailed information about an online player (for admin commands)
@@ -314,6 +316,8 @@ var commandRegistry = map[string]CommandHandler{
 	"password":   executePassword,
 	"class":      executeClass,
 	"classes":    executeClass, // Alias for class
+	"race":       executeRace,
+	"races":      executeRaces,
 
 	// Admin commands
 	"admin": executeAdmin,

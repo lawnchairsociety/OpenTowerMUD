@@ -110,6 +110,20 @@ func NewTestClient(name string, address string) (*TestClient, error) {
 	}
 	time.Sleep(100 * time.Millisecond)
 
+	// Select race (2 = Dwarf for tests - has stat bonuses, avoids human bonus selection)
+	if err := client.SendCommand("2"); err != nil {
+		client.Close()
+		return nil, fmt.Errorf("failed to select race: %w", err)
+	}
+	time.Sleep(100 * time.Millisecond)
+
+	// Confirm race selection (Y/N prompt)
+	if err := client.SendCommand("Y"); err != nil {
+		client.Close()
+		return nil, fmt.Errorf("failed to confirm race: %w", err)
+	}
+	time.Sleep(100 * time.Millisecond)
+
 	// Send ability scores (standard array: 15, 14, 13, 12, 10, 8)
 	// Assign in order: Strength, Dexterity, Constitution, Intelligence, Wisdom, Charisma
 	abilityScores := []string{"15", "14", "13", "12", "10", "8"}

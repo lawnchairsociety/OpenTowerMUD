@@ -127,6 +127,7 @@ func (d *Database) migrate() error {
 	safeMigrations := []string{
 		`ALTER TABLE characters ADD COLUMN gold INTEGER NOT NULL DEFAULT 100`,
 		`ALTER TABLE characters ADD COLUMN key_ring TEXT NOT NULL DEFAULT ''`,
+		`ALTER TABLE characters ADD COLUMN race TEXT NOT NULL DEFAULT 'human'`,
 	}
 
 	for _, m := range migrations {

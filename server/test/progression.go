@@ -147,13 +147,18 @@ func TestScoreCommand(serverAddr string) TestResult {
 
 	hasScore := strings.Contains(fullOutput, "Level") || strings.Contains(fullOutput, "HP") ||
 		strings.Contains(fullOutput, "Gold") || strings.Contains(fullOutput, "XP")
+	hasRace := strings.Contains(fullOutput, "Dwarf") || strings.Contains(fullOutput, "dwarf")
 	logResult(testName, hasScore, "Score displayed")
+	logResult(testName, hasRace, "Race displayed in score")
 
 	if !hasScore {
 		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Score command failed. Got: %v", messages)}
 	}
+	if !hasRace {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Score command missing race. Got: %v", messages)}
+	}
 
-	return TestResult{Name: testName, Passed: true, Message: "Score command displays player summary"}
+	return TestResult{Name: testName, Passed: true, Message: "Score command displays player summary with race"}
 }
 
 // TestClassCommand tests viewing class information
@@ -224,7 +229,7 @@ func TestStartingEquipment(serverAddr string) TestResult {
 	return TestResult{Name: testName, Passed: true, Message: "New players receive starting equipment"}
 }
 
-// TestLookAtPlayer tests looking at another player shows class info
+// TestLookAtPlayer tests looking at another player shows race and class info
 func TestLookAtPlayer(serverAddr string) TestResult {
 	const testName = "Look At Player"
 
@@ -254,18 +259,114 @@ func TestLookAtPlayer(serverAddr string) TestResult {
 	messages := client1.GetMessages()
 	fullOutput := strings.Join(messages, " ")
 
-	// Should show name, level, class, and health status
+	// Should show name, level, race, class, and health status
 	hasName := strings.Contains(fullOutput, name2)
+	hasRace := strings.Contains(fullOutput, "Dwarf") || strings.Contains(fullOutput, "dwarf")
 	hasClass := strings.Contains(fullOutput, "Cleric") || strings.Contains(fullOutput, "cleric")
 	logResult(testName, hasName, "Shows player name")
+	logResult(testName, hasRace, "Shows player race")
 	logResult(testName, hasClass, "Shows player class")
 
 	if !hasName {
 		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Player name not shown. Got: %v", messages)}
 	}
+	if !hasRace {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Player race not shown. Got: %v", messages)}
+	}
 	if !hasClass {
 		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Player class not shown. Got: %v", messages)}
 	}
 
-	return TestResult{Name: testName, Passed: true, Message: "Looking at player shows name, class, and health"}
+	return TestResult{Name: testName, Passed: true, Message: "Looking at player shows name, race, class, and health"}
+}
+
+// TestRaceCommand tests viewing race information
+func TestRaceCommand(serverAddr string) TestResult {
+	const testName = "Race Command"
+
+	name := uniqueName("RaceTest")
+	client, err := testclient.NewTestClient(name, serverAddr)
+	if err != nil {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Connection failed: %v", err)}
+	}
+	defer client.Close()
+
+	time.Sleep(300 * time.Millisecond)
+
+	// Test 'race' command (shows own race)
+	logAction(testName, "Checking own race...")
+	client.ClearMessages()
+	client.SendCommand("race")
+	time.Sleep(300 * time.Millisecond)
+
+	messages := client.GetMessages()
+	fullOutput := strings.Join(messages, " ")
+
+	// Test client creates dwarves by default
+	hasRace := strings.Contains(fullOutput, "Dwarf") || strings.Contains(fullOutput, "dwarf")
+	hasAbilities := strings.Contains(fullOutput, "Darkvision") || strings.Contains(fullOutput, "Poison")
+	logResult(testName, hasRace, "Race name displayed")
+	logResult(testName, hasAbilities, "Race abilities displayed")
+
+	if !hasRace {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Race command failed to show race. Got: %v", messages)}
+	}
+
+	// Test 'race <name>' command (lookup race info)
+	logAction(testName, "Looking up elf race info...")
+	client.ClearMessages()
+	client.SendCommand("race elf")
+	time.Sleep(300 * time.Millisecond)
+
+	messages = client.GetMessages()
+	fullOutput = strings.Join(messages, " ")
+
+	hasElf := strings.Contains(fullOutput, "Elf") || strings.Contains(fullOutput, "elf")
+	hasElfAbility := strings.Contains(fullOutput, "Sleep") || strings.Contains(fullOutput, "DEX")
+	logResult(testName, hasElf, "Elf info displayed")
+	logResult(testName, hasElfAbility, "Elf abilities/bonuses shown")
+
+	if !hasElf {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Race lookup failed. Got: %v", messages)}
+	}
+
+	return TestResult{Name: testName, Passed: true, Message: "Race command shows race info and allows lookup"}
+}
+
+// TestRacesCommand tests viewing all available races
+func TestRacesCommand(serverAddr string) TestResult {
+	const testName = "Races Command"
+
+	name := uniqueName("RacesTest")
+	client, err := testclient.NewTestClient(name, serverAddr)
+	if err != nil {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Connection failed: %v", err)}
+	}
+	defer client.Close()
+
+	time.Sleep(300 * time.Millisecond)
+
+	logAction(testName, "Listing all races...")
+	client.ClearMessages()
+	client.SendCommand("races")
+	time.Sleep(300 * time.Millisecond)
+
+	messages := client.GetMessages()
+	fullOutput := strings.Join(messages, " ")
+
+	// Should show all 7 races
+	hasHuman := strings.Contains(fullOutput, "Human")
+	hasDwarf := strings.Contains(fullOutput, "Dwarf")
+	hasElf := strings.Contains(fullOutput, "Elf")
+	hasHalfling := strings.Contains(fullOutput, "Halfling")
+	logResult(testName, hasHuman, "Human listed")
+	logResult(testName, hasDwarf, "Dwarf listed")
+	logResult(testName, hasElf, "Elf listed")
+	logResult(testName, hasHalfling, "Halfling listed")
+
+	if !hasHuman || !hasDwarf || !hasElf || !hasHalfling {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Races command missing races. Got: %v", messages)}
+	}
+
+	return TestResult{Name: testName, Passed: true, Message: "Races command lists all available races"}
 }

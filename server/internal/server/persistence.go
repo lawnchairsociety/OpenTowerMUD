@@ -11,6 +11,7 @@ import (
 	"github.com/lawnchairsociety/opentowermud/server/internal/items"
 	"github.com/lawnchairsociety/opentowermud/server/internal/logger"
 	"github.com/lawnchairsociety/opentowermud/server/internal/player"
+	"github.com/lawnchairsociety/opentowermud/server/internal/race"
 	"github.com/lawnchairsociety/opentowermud/server/internal/world"
 )
 
@@ -63,6 +64,13 @@ func (s *Server) loadPlayer(conn net.Conn, auth *AuthResult) (*player.Player, er
 		activeClass = primaryClass
 	}
 	p.SetActiveClass(activeClass)
+
+	// Load race data
+	playerRace, _ := race.ParseRace(char.Race)
+	if !playerRace.IsValid() {
+		playerRace = race.Human // Default to human if invalid
+	}
+	p.SetRace(playerRace)
 
 	// Set state
 	if err := p.SetState(char.State); err != nil {
@@ -205,6 +213,7 @@ func (s *Server) savePlayerImpl(p *player.Player) error {
 		PrimaryClass:   string(p.GetPrimaryClass()),
 		ClassLevels:    p.GetClassLevelsJSON(),
 		ActiveClass:    string(p.GetActiveClass()),
+		Race:           string(p.GetRace()),
 	}
 
 	// Get inventory and equipment IDs

@@ -110,11 +110,12 @@ func executeLook(c *Command, p PlayerInterface) string {
 func formatPlayerDescription(target PlayerInterface) string {
 	name := target.GetName()
 	level := target.GetLevel()
+	raceName := target.GetRaceName()
 	className := target.GetPrimaryClassName()
 
 	// Build basic description
 	var sb strings.Builder
-	sb.WriteString(fmt.Sprintf("%s, a level %d %s.\n", name, level, className))
+	sb.WriteString(fmt.Sprintf("%s, a level %d %s %s.\n", name, level, raceName, className))
 
 	// Show equipment summary
 	equipment := target.GetEquipment()

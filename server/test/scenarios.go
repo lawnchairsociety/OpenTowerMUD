@@ -170,6 +170,8 @@ func RunAllTests(serverAddr string) []TestResult {
 	results = append(results, TestAbilityScores(serverAddr))
 	results = append(results, TestScoreCommand(serverAddr))
 	results = append(results, TestClassCommand(serverAddr))
+	results = append(results, TestRaceCommand(serverAddr))
+	results = append(results, TestRacesCommand(serverAddr))
 	results = append(results, TestStartingEquipment(serverAddr))
 	results = append(results, TestLookAtPlayer(serverAddr))
 

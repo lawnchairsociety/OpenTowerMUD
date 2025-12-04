@@ -7,6 +7,7 @@ import (
 
 	"github.com/lawnchairsociety/opentowermud/server/internal/database"
 	"github.com/lawnchairsociety/opentowermud/server/internal/leveling"
+	"github.com/lawnchairsociety/opentowermud/server/internal/race"
 	"github.com/lawnchairsociety/opentowermud/server/internal/stats"
 )
 
@@ -31,8 +32,9 @@ func executeHelp(c *Command, p PlayerInterface) string {
 func executeScore(c *Command, p PlayerInterface) string {
 	var result strings.Builder
 
-	// Header with name and class
+	// Header with name, race, and class
 	result.WriteString(fmt.Sprintf("=== %s ===\n", p.GetName()))
+	result.WriteString(fmt.Sprintf("Race: %s\n", p.GetRaceName()))
 	result.WriteString(fmt.Sprintf("Class: %s\n", p.GetClassLevelsSummary()))
 	result.WriteString(fmt.Sprintf("Active: %s (gaining XP)\n", p.GetActiveClassName()))
 
@@ -166,6 +168,72 @@ func executePassword(c *Command, p PlayerInterface) string {
 	}
 
 	return "Password changed successfully."
+}
+
+// executeRace shows race information
+func executeRace(c *Command, p PlayerInterface) string {
+	if len(c.Args) == 0 {
+		// Show player's own race info
+		playerRace, err := race.ParseRace(strings.ToLower(p.GetRaceName()))
+		if err != nil {
+			return fmt.Sprintf("Your race: %s\n\nUse 'race <name>' to view information about a specific race.\nValid races: Human, Dwarf, Elf, Halfling, Gnome, Half-Elf, Half-Orc", p.GetRaceName())
+		}
+		return formatRaceInfo(playerRace)
+	}
+
+	// Show info about a specific race
+	raceName := strings.ToLower(strings.Join(c.Args, "-"))
+	r, err := race.ParseRace(raceName)
+	if err != nil {
+		return fmt.Sprintf("Unknown race: %s\nValid races: Human, Dwarf, Elf, Halfling, Gnome, Half-Elf, Half-Orc", c.Args[0])
+	}
+	return formatRaceInfo(r)
+}
+
+// formatRaceInfo formats detailed race information
+func formatRaceInfo(r race.Race) string {
+	def := race.GetDefinition(r)
+	if def == nil {
+		return fmt.Sprintf("Race information not found for %s", r.String())
+	}
+
+	var sb strings.Builder
+
+	sb.WriteString(fmt.Sprintf("=== %s ===\n", r.String()))
+	sb.WriteString(fmt.Sprintf("Size: %s\n\n", def.Size))
+	sb.WriteString(fmt.Sprintf("%s\n\n", def.Description))
+
+	sb.WriteString("Stat Bonuses:\n")
+	sb.WriteString(fmt.Sprintf("  %s\n\n", def.GetStatBonusesString()))
+
+	sb.WriteString("Racial Abilities:\n")
+	for _, ability := range def.Abilities {
+		sb.WriteString(fmt.Sprintf("  - %s\n", ability))
+	}
+
+	return sb.String()
+}
+
+// executeRaces lists all available races
+func executeRaces(c *Command, p PlayerInterface) string {
+	var sb strings.Builder
+
+	sb.WriteString("=== Available Races ===\n\n")
+
+	for _, r := range race.AllRaces() {
+		def := race.GetDefinition(r)
+		if def == nil {
+			continue
+		}
+
+		sb.WriteString(fmt.Sprintf("%s (%s)\n", r.String(), def.Size))
+		sb.WriteString(fmt.Sprintf("  Bonuses: %s\n", def.GetStatBonusesString()))
+		sb.WriteString(fmt.Sprintf("  %s\n\n", def.Description))
+	}
+
+	sb.WriteString("Use 'race <name>' for detailed information about a specific race.")
+
+	return sb.String()
 }
 
 // getHelpText returns help text for a given topic

@@ -10,6 +10,7 @@ import (
 
 	"github.com/lawnchairsociety/opentowermud/server/internal/class"
 	"github.com/lawnchairsociety/opentowermud/server/internal/database"
+	"github.com/lawnchairsociety/opentowermud/server/internal/race"
 	"github.com/lawnchairsociety/opentowermud/server/internal/stats"
 )
 
@@ -211,7 +212,13 @@ func (s *Server) handleCharacterSelection(conn net.Conn, scanner *bufio.Scanner,
 				} else {
 					classDisplay = strings.Title(classDisplay)
 				}
-				conn.Write([]byte(fmt.Sprintf("  [%d] %s - Level %d %s\n", i+1, c.Name, c.Level, classDisplay)))
+				raceDisplay := c.Race
+				if raceDisplay == "" {
+					raceDisplay = "Human"
+				} else {
+					raceDisplay = strings.Title(raceDisplay)
+				}
+				conn.Write([]byte(fmt.Sprintf("  [%d] %s - Level %d %s %s\n", i+1, c.Name, c.Level, raceDisplay, classDisplay)))
 			}
 		}
 
@@ -306,14 +313,60 @@ func (s *Server) handleCharacterCreation(conn net.Conn, scanner *bufio.Scanner, 
 		return nil, err
 	}
 
-	// Assign ability scores using the standard array
-	scores, err := s.handleAbilityScoreAssignment(conn, scanner, selectedClass)
+	// Select race
+	selectedRace, err := s.handleRaceSelection(conn, scanner)
 	if err != nil {
 		return nil, err
 	}
 
-	// Create character with assigned ability scores and class
-	character, err := s.db.CreateCharacterWithClass(account.ID, name, selectedClass,
+	// Assign ability scores using the standard array
+	scores, err := s.handleAbilityScoreAssignment(conn, scanner, selectedClass, selectedRace)
+	if err != nil {
+		return nil, err
+	}
+
+	// Apply racial stat bonuses
+	raceDef := race.GetDefinition(race.Race(selectedRace))
+	if raceDef != nil && raceDef.HasStatBonus() {
+		scores.Strength, scores.Dexterity, scores.Constitution,
+			scores.Intelligence, scores.Wisdom, scores.Charisma =
+			raceDef.ApplyStatBonuses(scores.Strength, scores.Dexterity, scores.Constitution,
+				scores.Intelligence, scores.Wisdom, scores.Charisma)
+	}
+
+	// Handle Human's +1 to any stat
+	if selectedRace == "human" {
+		bonusStat, err := s.handleHumanBonusSelection(conn, scanner, scores)
+		if err != nil {
+			return nil, err
+		}
+		switch bonusStat {
+		case "STR":
+			scores.Strength++
+		case "DEX":
+			scores.Dexterity++
+		case "CON":
+			scores.Constitution++
+		case "INT":
+			scores.Intelligence++
+		case "WIS":
+			scores.Wisdom++
+		case "CHA":
+			scores.Charisma++
+		}
+	}
+
+	// Show final stats
+	conn.Write([]byte("\n--- Final Ability Scores ---\n"))
+	conn.Write([]byte(fmt.Sprintf("  STR: %d (%+d)\n", scores.Strength, stats.Modifier(scores.Strength))))
+	conn.Write([]byte(fmt.Sprintf("  DEX: %d (%+d)\n", scores.Dexterity, stats.Modifier(scores.Dexterity))))
+	conn.Write([]byte(fmt.Sprintf("  CON: %d (%+d)\n", scores.Constitution, stats.Modifier(scores.Constitution))))
+	conn.Write([]byte(fmt.Sprintf("  INT: %d (%+d)\n", scores.Intelligence, stats.Modifier(scores.Intelligence))))
+	conn.Write([]byte(fmt.Sprintf("  WIS: %d (%+d)\n", scores.Wisdom, stats.Modifier(scores.Wisdom))))
+	conn.Write([]byte(fmt.Sprintf("  CHA: %d (%+d)\n", scores.Charisma, stats.Modifier(scores.Charisma))))
+
+	// Create character with assigned ability scores, class, and race
+	character, err := s.db.CreateCharacterWithClassAndRace(account.ID, name, selectedClass, selectedRace,
 		scores.Strength, scores.Dexterity, scores.Constitution,
 		scores.Intelligence, scores.Wisdom, scores.Charisma)
 	if err != nil {
@@ -325,7 +378,7 @@ func (s *Server) handleCharacterCreation(conn net.Conn, scanner *bufio.Scanner, 
 		return nil, err
 	}
 
-	conn.Write([]byte(fmt.Sprintf("\nCharacter '%s' the %s created!\n", character.Name, strings.Title(selectedClass))))
+	conn.Write([]byte(fmt.Sprintf("\nCharacter '%s' the %s %s created!\n", character.Name, strings.Title(selectedRace), strings.Title(selectedClass))))
 	return character, nil
 }
 
@@ -381,11 +434,114 @@ func (s *Server) handleClassSelection(conn net.Conn, scanner *bufio.Scanner) (st
 	}
 }
 
+// handleRaceSelection guides the player through choosing a race
+func (s *Server) handleRaceSelection(conn net.Conn, scanner *bufio.Scanner) (string, error) {
+	conn.Write([]byte("\n--- Choose Your Race ---\n\n"))
+
+	// Display all races with descriptions
+	allRaces := race.AllRaces()
+	for i, r := range allRaces {
+		def := race.GetDefinition(r)
+		if def == nil {
+			continue
+		}
+		conn.Write([]byte(fmt.Sprintf("  [%d] %s (%s)\n", i+1, r.String(), def.Size)))
+		conn.Write([]byte(fmt.Sprintf("      %s\n", def.Description)))
+		conn.Write([]byte(fmt.Sprintf("      Stat Bonuses: %s\n", def.GetStatBonusesString())))
+		conn.Write([]byte(fmt.Sprintf("      Abilities: %s\n\n", def.GetAbilitiesString())))
+	}
+
+	for {
+		conn.Write([]byte(fmt.Sprintf("Enter race number (1-%d): ", len(allRaces))))
+
+		if !scanner.Scan() {
+			return "", errors.New("connection closed")
+		}
+		input := strings.TrimSpace(scanner.Text())
+
+		// Parse the input
+		choice, err := strconv.Atoi(input)
+		if err != nil || choice < 1 || choice > len(allRaces) {
+			conn.Write([]byte(fmt.Sprintf("Please enter a number from 1 to %d.\n", len(allRaces))))
+			continue
+		}
+
+		selectedRace := allRaces[choice-1]
+		def := race.GetDefinition(selectedRace)
+
+		// Confirm selection
+		conn.Write([]byte(fmt.Sprintf("\nYou selected: %s\n", selectedRace.String())))
+		conn.Write([]byte(fmt.Sprintf("  %s\n", def.Description)))
+		conn.Write([]byte(fmt.Sprintf("  Stat Bonuses: %s\n", def.GetStatBonusesString())))
+		conn.Write([]byte("\nIs this correct? (Y/N): "))
+
+		if !scanner.Scan() {
+			return "", errors.New("connection closed")
+		}
+		confirm := strings.ToLower(strings.TrimSpace(scanner.Text()))
+
+		if confirm == "y" || confirm == "yes" {
+			return string(selectedRace), nil
+		}
+
+		conn.Write([]byte("\n"))
+	}
+}
+
+// handleHumanBonusSelection lets human players choose which stat to increase by +1
+func (s *Server) handleHumanBonusSelection(conn net.Conn, scanner *bufio.Scanner, scores *stats.AbilityScores) (string, error) {
+	conn.Write([]byte("\n--- Human Versatility ---\n"))
+	conn.Write([]byte("As a Human, you may increase one ability score by 1.\n"))
+	conn.Write([]byte("Current scores:\n"))
+	conn.Write([]byte(fmt.Sprintf("  [1] STR: %d\n", scores.Strength)))
+	conn.Write([]byte(fmt.Sprintf("  [2] DEX: %d\n", scores.Dexterity)))
+	conn.Write([]byte(fmt.Sprintf("  [3] CON: %d\n", scores.Constitution)))
+	conn.Write([]byte(fmt.Sprintf("  [4] INT: %d\n", scores.Intelligence)))
+	conn.Write([]byte(fmt.Sprintf("  [5] WIS: %d\n", scores.Wisdom)))
+	conn.Write([]byte(fmt.Sprintf("  [6] CHA: %d\n", scores.Charisma)))
+
+	statNames := []string{"STR", "DEX", "CON", "INT", "WIS", "CHA"}
+
+	for {
+		conn.Write([]byte("\nWhich stat would you like to increase? (1-6): "))
+
+		if !scanner.Scan() {
+			return "", errors.New("connection closed")
+		}
+		input := strings.TrimSpace(scanner.Text())
+
+		choice, err := strconv.Atoi(input)
+		if err != nil || choice < 1 || choice > 6 {
+			conn.Write([]byte("Please enter a number from 1 to 6.\n"))
+			continue
+		}
+
+		selectedStat := statNames[choice-1]
+		conn.Write([]byte(fmt.Sprintf("\nYou selected +1 %s. Is this correct? (Y/N): ", selectedStat)))
+
+		if !scanner.Scan() {
+			return "", errors.New("connection closed")
+		}
+		confirm := strings.ToLower(strings.TrimSpace(scanner.Text()))
+
+		if confirm == "y" || confirm == "yes" {
+			return selectedStat, nil
+		}
+	}
+}
+
 // handleAbilityScoreAssignment guides the player through assigning ability scores
-func (s *Server) handleAbilityScoreAssignment(conn net.Conn, scanner *bufio.Scanner, selectedClass string) (*stats.AbilityScores, error) {
+func (s *Server) handleAbilityScoreAssignment(conn net.Conn, scanner *bufio.Scanner, selectedClass string, selectedRace string) (*stats.AbilityScores, error) {
 	conn.Write([]byte("\n--- Assign Ability Scores ---\n"))
 	conn.Write([]byte("You have these values to assign: 15, 14, 13, 12, 10, 8\n"))
 	conn.Write([]byte("Each value can only be used once.\n\n"))
+
+	// Show racial bonuses
+	raceDef := race.GetDefinition(race.Race(selectedRace))
+	if raceDef != nil {
+		conn.Write([]byte(fmt.Sprintf("Racial bonuses (%s): %s\n", raceDef.Name.String(), raceDef.GetStatBonusesString())))
+	}
+	conn.Write([]byte("\n"))
 
 	// Show class-specific recommendations
 	conn.Write([]byte(fmt.Sprintf("Recommended stats for %s:\n", strings.Title(selectedClass))))

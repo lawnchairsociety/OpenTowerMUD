@@ -5,6 +5,7 @@ import (
 
 	"github.com/lawnchairsociety/opentowermud/server/internal/class"
 	"github.com/lawnchairsociety/opentowermud/server/internal/leveling"
+	"github.com/lawnchairsociety/opentowermud/server/internal/race"
 )
 
 // createTestPlayer creates a player with proper class initialization for testing
@@ -378,5 +379,50 @@ func TestDiscoverPortal_Idempotent(t *testing.T) {
 	}
 	if count != 1 {
 		t.Errorf("Floor 5 should appear exactly once, appeared %d times", count)
+	}
+}
+
+// ==================== Race Tests ====================
+
+func TestPlayer_GetRace_Default(t *testing.T) {
+	p := &Player{}
+	// Default race should be empty (zero value)
+	if p.GetRace() != "" {
+		t.Errorf("Expected empty default race, got %q", p.GetRace())
+	}
+}
+
+func TestPlayer_SetRace(t *testing.T) {
+	p := &Player{}
+	p.SetRace(race.Dwarf)
+	if p.GetRace() != race.Dwarf {
+		t.Errorf("Expected race 'dwarf', got %q", p.GetRace())
+	}
+}
+
+func TestPlayer_GetRaceName(t *testing.T) {
+	tests := []struct {
+		raceVal  race.Race
+		expected string
+	}{
+		{race.Human, "Human"},
+		{race.Dwarf, "Dwarf"},
+		{race.Elf, "Elf"},
+		{race.Halfling, "Halfling"},
+		{race.Gnome, "Gnome"},
+		{race.HalfElf, "Half-Elf"},
+		{race.HalfOrc, "Half-Orc"},
+		{race.Race("invalid"), "Unknown"},
+		{race.Race(""), "Unknown"},
+	}
+
+	for _, tt := range tests {
+		t.Run(string(tt.raceVal), func(t *testing.T) {
+			p := &Player{}
+			p.SetRace(tt.raceVal)
+			if got := p.GetRaceName(); got != tt.expected {
+				t.Errorf("GetRaceName() = %q, want %q", got, tt.expected)
+			}
+		})
 	}
 }
