@@ -10,9 +10,13 @@ A procedurally generated MUD (Multi-User Dungeon) server featuring a vertical to
    opentowermud.exe      # Windows
    ```
 
-2. Connect via telnet:
+2. Connect via telnet or WebSocket:
    ```bash
+   # Telnet (traditional MUD clients)
    telnet localhost 4000
+
+   # WebSocket (web clients)
+   ws://localhost:4443/ws
    ```
 
 3. Create an account and start playing!
@@ -63,6 +67,15 @@ Difficulty increases as you climb:
 
 - Player accounts and characters are stored in SQLite (`opentowermud.db`)
 - Tower state is saved to `data/tower.yaml`
+
+## Deployment
+
+For production deployment with TLS/SSL support, see [deploy/README.md](deploy/README.md).
+
+The recommended setup uses a reverse proxy (nginx or Caddy) for:
+- Secure WebSocket connections (`wss://`)
+- Automatic certificate management
+- HTTP to HTTPS redirect
 
 ## Building from Source
 
