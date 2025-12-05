@@ -1,14 +1,15 @@
 package server
 
 import (
-	"bufio"
 	"fmt"
 	"math/rand"
 	"net"
+	"net/http"
 	"strings"
 	"sync"
 	"time"
 
+	"github.com/gorilla/websocket"
 	"github.com/lawnchairsociety/opentowermud/server/internal/antispam"
 	"github.com/lawnchairsociety/opentowermud/server/internal/chatfilter"
 	"github.com/lawnchairsociety/opentowermud/server/internal/command"
@@ -174,14 +175,18 @@ func (s *Server) Start() error {
 func (s *Server) handleConnection(conn net.Conn) {
 	defer conn.Close()
 
-	logger.Info("Client connected", "remote_addr", conn.RemoteAddr().String())
+	client := NewTelnetClient(conn)
+	s.handleClient(client)
+}
 
-	scanner := bufio.NewScanner(conn)
+// handleClient is the shared client handling logic for both telnet and WebSocket.
+func (s *Server) handleClient(client Client) {
+	logger.Info("Client connected", "remote_addr", client.RemoteAddr())
 
 	// Handle authentication
-	authResult, err := s.handleAuth(conn, scanner)
+	authResult, err := s.handleAuth(client)
 	if err != nil {
-		logger.Info("Authentication failed", "remote_addr", conn.RemoteAddr().String(), "error", err)
+		logger.Info("Authentication failed", "remote_addr", client.RemoteAddr(), "error", err)
 		return
 	}
 
@@ -189,10 +194,10 @@ func (s *Server) handleConnection(conn net.Conn) {
 	isNewPlayer := authResult.Character.LastPlayed == nil
 
 	// Load character data and create player
-	p, err := s.loadPlayer(conn, authResult)
+	p, err := s.loadPlayer(client, authResult)
 	if err != nil {
 		logger.Error("Failed to load player", "character", authResult.Character.Name, "error", err)
-		conn.Write([]byte("Failed to load character. Please try again.\n"))
+		client.WriteLine("Failed to load character. Please try again.\n")
 		return
 	}
 
@@ -221,6 +226,42 @@ func (s *Server) handleConnection(conn net.Conn) {
 
 	// Handle player session
 	p.HandleSession()
+}
+
+// WebSocket upgrader configuration
+var wsUpgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+	CheckOrigin: func(r *http.Request) bool {
+		return true // Allow all origins (configure in production)
+	},
+}
+
+// StartWebSocket starts the WebSocket server on the given address.
+func (s *Server) StartWebSocket(address string) error {
+	http.HandleFunc("/ws", s.handleWebSocketUpgrade)
+
+	logger.Info("WebSocket server listening", "address", address)
+	return http.ListenAndServe(address, nil)
+}
+
+// handleWebSocketUpgrade upgrades an HTTP connection to WebSocket.
+func (s *Server) handleWebSocketUpgrade(w http.ResponseWriter, r *http.Request) {
+	wsConn, err := wsUpgrader.Upgrade(w, r, nil)
+	if err != nil {
+		logger.Error("WebSocket upgrade failed", "error", err)
+		return
+	}
+
+	go s.handleWebSocketConnection(wsConn)
+}
+
+// handleWebSocketConnection handles a WebSocket client connection.
+func (s *Server) handleWebSocketConnection(wsConn *websocket.Conn) {
+	defer wsConn.Close()
+
+	client := NewWebSocketClient(wsConn)
+	s.handleClient(client)
 }
 
 func (s *Server) Shutdown() {
@@ -1125,15 +1166,11 @@ func (s *Server) GetOnlinePlayersDetailed() []command.PlayerInfo {
 
 	players := make([]command.PlayerInfo, 0, len(s.clients))
 	for _, p := range s.clients {
-		ip := ""
-		if conn := p.GetConnection(); conn != nil {
-			ip = conn.RemoteAddr().String()
-		}
 		players = append(players, command.PlayerInfo{
 			Name:    p.GetName(),
 			Level:   p.GetLevel(),
 			RoomID:  p.GetRoomID(),
-			IP:      ip,
+			IP:      p.GetRemoteAddr(),
 			IsAdmin: p.IsAdmin(),
 		})
 	}

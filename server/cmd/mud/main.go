@@ -24,7 +24,8 @@ import (
 
 func main() {
 	// Parse command-line flags
-	port := flag.Int("port", 4000, "Server port")
+	port := flag.Int("port", 4000, "Telnet server port")
+	wsPort := flag.Int("wsport", 4443, "WebSocket server port")
 	seed := flag.Int64("seed", 0, "World generation seed (default: random based on current time)")
 	towerFile := flag.String("tower", "data/tower.yaml", "Path to tower save file")
 	cityFile := flag.String("city", "data/city_rooms.yaml", "Path to city rooms YAML file")
@@ -166,14 +167,22 @@ func main() {
 		logger.Info("Server running in PILGRIM MODE - combat disabled")
 	}
 
-	// Start server in a goroutine
+	// Start telnet server in a goroutine
 	go func() {
 		if err := srv.Start(); err != nil {
-			log.Fatalf("Server error: %v", err)
+			log.Fatalf("Telnet server error: %v", err)
 		}
 	}()
 
-	logger.Info("MUD Server running", "port", *port)
+	// Start WebSocket server in a goroutine
+	wsAddr := fmt.Sprintf(":%d", *wsPort)
+	go func() {
+		if err := srv.StartWebSocket(wsAddr); err != nil {
+			log.Fatalf("WebSocket server error: %v", err)
+		}
+	}()
+
+	logger.Info("MUD Server running", "telnet_port", *port, "websocket_port", *wsPort)
 	logger.Info("Press Ctrl+C to shutdown")
 
 	// Wait for interrupt signal

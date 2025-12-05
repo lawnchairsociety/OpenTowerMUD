@@ -1,9 +1,7 @@
 package player
 
 import (
-	"bufio"
 	"fmt"
-	"net"
 	"strings"
 	"time"
 
@@ -18,6 +16,22 @@ import (
 	"github.com/lawnchairsociety/opentowermud/server/internal/stats"
 	"github.com/lawnchairsociety/opentowermud/server/internal/world"
 )
+
+// Client abstracts the connection layer for reading/writing messages.
+// This interface is implemented by both TelnetClient and WebSocketClient.
+type Client interface {
+	// ReadLine blocks until a complete line is received (without newline).
+	ReadLine() (string, error)
+
+	// WriteLine sends a message to the client.
+	WriteLine(message string) error
+
+	// Close closes the connection.
+	Close() error
+
+	// RemoteAddr returns the client's address for logging.
+	RemoteAddr() string
+}
 
 // ServerInterface defines methods needed from the server
 type ServerInterface interface {
@@ -59,8 +73,7 @@ func (s PlayerState) String() string {
 
 type Player struct {
 	Name           string
-	conn           net.Conn
-	writer         *bufio.Writer
+	client         Client
 	CurrentRoom    *world.Room
 	world          *world.World
 	server         ServerInterface
@@ -110,15 +123,14 @@ type Player struct {
 	knownRecipes   map[string]bool                // recipe ID -> learned
 }
 
-func NewPlayer(name string, conn net.Conn, world *world.World, server ServerInterface) *Player {
+func NewPlayer(name string, client Client, world *world.World, server ServerInterface) *Player {
 	// Default to Warrior class
 	startingClass := class.Warrior
 	classLevels := class.NewClassLevels(startingClass)
 
 	p := &Player{
 		Name:           name,
-		conn:           conn,
-		writer:         bufio.NewWriter(conn),
+		client:         client,
 		world:          world,
 		server:         server,
 		Inventory:      make([]*items.Item, 0),
@@ -180,13 +192,18 @@ func (p *Player) HandleSession() {
 	p.SendMessage(p.CurrentRoom.GetDescription())
 	p.SendMessage("\nType 'help' for a list of commands.\n\n")
 
-	scanner := bufio.NewScanner(p.conn)
-	for scanner.Scan() {
+	for {
 		if p.disconnected {
 			break
 		}
 
-		input := strings.TrimSpace(scanner.Text())
+		line, err := p.client.ReadLine()
+		if err != nil {
+			// Connection closed or error
+			break
+		}
+
+		input := strings.TrimSpace(line)
 		if input == "" {
 			continue
 		}
@@ -206,8 +223,7 @@ func (p *Player) SendMessage(message string) {
 		return
 	}
 
-	p.writer.WriteString(message)
-	p.writer.Flush()
+	p.client.WriteLine(message)
 }
 
 func (p *Player) Disconnect() {
@@ -216,8 +232,8 @@ func (p *Player) Disconnect() {
 	if p.CurrentRoom != nil {
 		p.CurrentRoom.RemovePlayer(p.Name)
 	}
-	if p.conn != nil {
-		p.conn.Close()
+	if p.client != nil {
+		p.client.Close()
 	}
 }
 
@@ -1214,9 +1230,12 @@ func (p *Player) SetCharisma(val int) {
 	p.Charisma = val
 }
 
-// GetConnection returns the player's network connection (for admin commands)
-func (p *Player) GetConnection() net.Conn {
-	return p.conn
+// GetRemoteAddr returns the player's remote address string (for admin commands)
+func (p *Player) GetRemoteAddr() string {
+	if p.client != nil {
+		return p.client.RemoteAddr()
+	}
+	return ""
 }
 
 // ==================== PORTAL METHODS ====================

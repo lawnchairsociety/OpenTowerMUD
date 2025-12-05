@@ -2,7 +2,6 @@ package server
 
 import (
 	"fmt"
-	"net"
 	"strconv"
 	"strings"
 
@@ -16,11 +15,11 @@ import (
 )
 
 // loadPlayer creates a Player from database character data
-func (s *Server) loadPlayer(conn net.Conn, auth *AuthResult) (*player.Player, error) {
+func (s *Server) loadPlayer(client Client, auth *AuthResult) (*player.Player, error) {
 	char := auth.Character
 
 	// Create the player with basic data
-	p := player.NewPlayer(char.Name, conn, s.world, s)
+	p := player.NewPlayer(char.Name, client, s.world, s)
 
 	// Set persistence IDs
 	p.SetAccountID(auth.Account.ID)
