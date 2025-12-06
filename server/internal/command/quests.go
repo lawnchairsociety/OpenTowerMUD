@@ -503,17 +503,30 @@ func executeTitle(c *Command, p PlayerInterface) string {
 		return showTitles(p)
 	}
 
-	titleArg := strings.ToLower(strings.Join(c.Args, " "))
+	titleArg := strings.Join(c.Args, " ")
 
-	if titleArg == "none" || titleArg == "clear" {
+	if strings.EqualFold(titleArg, "none") || strings.EqualFold(titleArg, "clear") {
 		if err := p.SetActiveTitle(""); err != nil {
 			return fmt.Sprintf("Failed to clear title: %v", err)
 		}
 		return "Your title has been cleared."
 	}
 
-	// Try to set the title
-	if err := p.SetActiveTitle(titleArg); err != nil {
+	// Find the matching title (case-insensitive) from earned titles
+	earnedTitles := p.GetEarnedTitles()
+	var matchedTitle string
+	for _, title := range earnedTitles {
+		if strings.EqualFold(title, titleArg) {
+			matchedTitle = title
+			break
+		}
+	}
+
+	if matchedTitle == "" {
+		return "Cannot set title: you have not earned that title"
+	}
+
+	if err := p.SetActiveTitle(matchedTitle); err != nil {
 		return fmt.Sprintf("Cannot set title: %v", err)
 	}
 

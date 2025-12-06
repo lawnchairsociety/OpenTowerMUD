@@ -123,7 +123,7 @@ quests:
     turn_in_npc: "High Priestess Sera"
     objectives:
       - type: explore
-        target: "city_temple"
+        target: "temple"
         target_name: "Temple"
         required: 1
     rewards:

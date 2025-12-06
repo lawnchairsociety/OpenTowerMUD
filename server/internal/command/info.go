@@ -833,13 +833,13 @@ Usage:
   talk merchant     - Talk to the merchant
   talk priestess    - Talk to a priestess
   speak guard       - Talk to a guard
-  talk bard         - SAVE YOUR GAME! (costs 5 gold)
+  talk bard         - Hear a song about your adventures
+  talk aldric       - Get help and tutorials from the guide
 
 NPCs may give you helpful hints, lore, or just colorful dialogue.
 Not all NPCs have something to say - monsters typically don't talk!
 
-IMPORTANT: To save your progress, visit the bard in the tavern!
-He will compose a song about your adventures for 5 gold.
+Your progress is saved automatically when you disconnect or quit.
 
 Aliases: speak, chat`
 
@@ -873,18 +873,13 @@ See also: class, help class`
 
 	case "save":
 		return `SAVE
-Your progress is saved by visiting the wandering bard in the tavern.
+Your progress is saved automatically!
 
-The bard will compose a ballad about your adventures for 5 gold.
-This immortalizes your deeds and saves your progress!
+  - When you disconnect or quit the game
+  - When the server shuts down for maintenance
+  - After important events like learning a new class
 
-How to save:
-  1. Go to The Weary Wanderer Tavern (from Town Square: south, south, east)
-  2. Type: talk bard
-  3. Pay 5 gold for your song
-
-WARNING: If you disconnect without saving, you will lose all progress
-since your last song! Always visit the bard before logging out.`
+You don't need to do anything special - just play and enjoy!`
 
 	case "tutorial", "guide", "aldric", "newplayer", "new":
 		return `TUTORIAL / NEW PLAYER GUIDE
@@ -897,7 +892,6 @@ He will explain everything you need to know:
   - How to explore the tower
   - Combat basics
   - Where to buy and sell items
-  - How to save your progress (IMPORTANT!)
   - Portal travel system
   - And much more!
 
@@ -908,7 +902,8 @@ Quick Start:
   2. pray            - Heal up at the Temple (go east first)
   3. Go south x3     - Head to the Tower Entrance
   4. up              - Enter the tower and begin your adventure!
-  5. talk bard       - Save at the tavern when done (south, south, east from square)`
+
+Your progress is saved automatically when you disconnect or quit.`
 
 	case "":
 		// Default help - show all commands
@@ -999,8 +994,7 @@ Quests:
   title             - View and set your title
 
 Saving Progress:
-  Visit the bard in the tavern and talk to him to save your progress!
-  The bard will write a song about your adventures (for a small fee).
+  Your progress is saved automatically when you disconnect or quit.
 
 Other:
   time              - Show server uptime

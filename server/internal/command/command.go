@@ -374,7 +374,7 @@ var commandRegistry = map[string]CommandHandler{
 
 	// Special static responses
 	"save": func(c *Command, p PlayerInterface) string {
-		return "To save your progress, visit the bard in the tavern and ask him to write a song about your adventures."
+		return "Your progress is saved automatically when you disconnect or quit. Just play and enjoy!"
 	},
 }
 

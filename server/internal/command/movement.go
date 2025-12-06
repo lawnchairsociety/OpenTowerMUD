@@ -244,7 +244,7 @@ func executeMoveDirection(c *Command, p PlayerInterface, direction string) strin
 	}
 
 	// Update quest explore progress
-	updateQuestExploreProgress(p, server, nextRoom.GetID())
+	updateQuestExploreProgress(p, server, nextRoom)
 
 	return fmt.Sprintf("You move %s.\n\n%s", direction, nextRoom.GetDescriptionForPlayer(p.GetName()))
 }
@@ -446,7 +446,7 @@ func getPortalCommandName(roomID string) string {
 }
 
 // updateQuestExploreProgress updates explore quest progress when a player enters a room
-func updateQuestExploreProgress(p PlayerInterface, server ServerInterface, roomID string) {
+func updateQuestExploreProgress(p PlayerInterface, server ServerInterface, room RoomInterface) {
 	questRegistry := server.GetQuestRegistry()
 	if questRegistry == nil {
 		return
@@ -457,7 +457,40 @@ func updateQuestExploreProgress(p PlayerInterface, server ServerInterface, roomI
 		return
 	}
 
+	roomID := room.GetID()
+
 	// Check all active quests for explore objectives matching this room
+	for _, questID := range questLog.GetActiveQuests() {
+		questDef, exists := questRegistry.GetQuest(questID)
+		if !exists {
+			continue
+		}
+
+		// Check each explore objective to see if this room matches
+		for i, obj := range questDef.Objectives {
+			if obj.Type != quest.QuestTypeExplore {
+				continue
+			}
+
+			// Check if room matches the objective target (exact match or symbolic target)
+			if !roomMatchesExploreTarget(room, obj.Target) {
+				continue
+			}
+
+			if questLog.UpdateExploreProgressForQuest(questID, questDef, obj.Target) {
+				// Notify player of quest progress
+				progress, _ := questLog.GetQuestProgress(questID)
+				current := progress.Objectives[i].Current
+				targetName := obj.TargetName
+				if targetName == "" {
+					targetName = obj.Target
+				}
+				p.SendMessage(fmt.Sprintf("\nQuest progress: Explored %s - %d/%d\n", targetName, current, obj.Required))
+			}
+		}
+	}
+
+	// Also check for exact room ID matches (for city rooms like "temple")
 	for _, questID := range questLog.GetActiveQuests() {
 		questDef, exists := questRegistry.GetQuest(questID)
 		if !exists {
@@ -479,4 +512,38 @@ func updateQuestExploreProgress(p PlayerInterface, server ServerInterface, roomI
 			}
 		}
 	}
+}
+
+// roomMatchesExploreTarget checks if a room matches a symbolic explore target
+// Symbolic targets:
+//   - gen_fN_portal: portal room on floor N (e.g., gen_f1_portal, gen_f5_portal)
+//   - gen_fN_boss: boss room on floor N (e.g., gen_f10_boss)
+func roomMatchesExploreTarget(room RoomInterface, target string) bool {
+	// Check for generated floor portal targets (gen_f1_portal, gen_f5_portal, etc.)
+	if strings.HasPrefix(target, "gen_f") && strings.HasSuffix(target, "_portal") {
+		// Extract floor number from target
+		floorStr := strings.TrimPrefix(target, "gen_f")
+		floorStr = strings.TrimSuffix(floorStr, "_portal")
+		var targetFloor int
+		if _, err := fmt.Sscanf(floorStr, "%d", &targetFloor); err != nil {
+			return false
+		}
+		// Check if room is on the target floor and has portal feature
+		return room.GetFloor() == targetFloor && room.HasFeature("portal")
+	}
+
+	// Check for generated floor boss targets (gen_f10_boss, etc.)
+	if strings.HasPrefix(target, "gen_f") && strings.HasSuffix(target, "_boss") {
+		// Extract floor number from target
+		floorStr := strings.TrimPrefix(target, "gen_f")
+		floorStr = strings.TrimSuffix(floorStr, "_boss")
+		var targetFloor int
+		if _, err := fmt.Sscanf(floorStr, "%d", &targetFloor); err != nil {
+			return false
+		}
+		// Check if room is on the target floor and has boss feature
+		return room.GetFloor() == targetFloor && room.HasFeature("boss")
+	}
+
+	return false
 }
