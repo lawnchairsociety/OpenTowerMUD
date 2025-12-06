@@ -182,13 +182,19 @@ func (d *Database) SaveCharacterFull(c *Character, inventoryIDs []string, equipm
 			race = ?,
 			crafting_skills = ?,
 			known_recipes = ?,
+			quest_log = ?,
+			quest_inventory = ?,
+			earned_titles = ?,
+			active_title = ?,
 			last_played = CURRENT_TIMESTAMP
 		 WHERE id = ?`,
 		c.RoomID, c.Health, c.MaxHealth, c.Mana, c.MaxMana,
 		c.Level, c.Experience, c.State, c.MaxCarryWeight, c.LearnedSpells,
 		c.DiscoveredPortals, c.Strength, c.Dexterity, c.Constitution, c.Intelligence, c.Wisdom, c.Charisma,
 		c.Gold, c.KeyRing, c.PrimaryClass, c.ClassLevels, c.ActiveClass, c.Race,
-		c.CraftingSkills, c.KnownRecipes, c.ID,
+		c.CraftingSkills, c.KnownRecipes,
+		c.QuestLog, c.QuestInventory, c.EarnedTitles, c.ActiveTitle,
+		c.ID,
 	)
 	if err != nil {
 		return fmt.Errorf("failed to save character: %w", err)
