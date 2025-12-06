@@ -49,6 +49,11 @@ type Character struct {
 	// Crafting system
 	CraftingSkills string // Comma-separated list of skill:level pairs (e.g., "blacksmithing:10,alchemy:25")
 	KnownRecipes   string // Comma-separated list of recipe IDs
+	// Quest system
+	QuestLog       string // JSON-serialized PlayerQuestLog
+	QuestInventory string // Comma-separated list of quest item IDs
+	EarnedTitles   string // Comma-separated list of earned title IDs
+	ActiveTitle    string // Currently displayed title ID
 	CreatedAt      time.Time
 	LastPlayed     *time.Time
 }
@@ -206,6 +211,8 @@ func (d *Database) GetCharactersByAccount(accountID int64) ([]*Character, error)
 		        discovered_portals, strength, dexterity, constitution, intelligence, wisdom, charisma,
 		        gold, key_ring, primary_class, class_levels, active_class, race,
 		        COALESCE(crafting_skills, ''), COALESCE(known_recipes, ''),
+		        COALESCE(quest_log, '{}'), COALESCE(quest_inventory, ''),
+		        COALESCE(earned_titles, ''), COALESCE(active_title, ''),
 		        created_at, last_played
 		 FROM characters WHERE account_id = ? ORDER BY last_played DESC NULLS LAST, name`,
 		accountID,
@@ -239,6 +246,8 @@ func (d *Database) GetCharacterByName(name string) (*Character, error) {
 		        discovered_portals, strength, dexterity, constitution, intelligence, wisdom, charisma,
 		        gold, key_ring, primary_class, class_levels, active_class, race,
 		        COALESCE(crafting_skills, ''), COALESCE(known_recipes, ''),
+		        COALESCE(quest_log, '{}'), COALESCE(quest_inventory, ''),
+		        COALESCE(earned_titles, ''), COALESCE(active_title, ''),
 		        created_at, last_played
 		 FROM characters WHERE name = ?`,
 		name,
@@ -263,6 +272,8 @@ func (d *Database) GetCharacterByID(id int64) (*Character, error) {
 		        discovered_portals, strength, dexterity, constitution, intelligence, wisdom, charisma,
 		        gold, key_ring, primary_class, class_levels, active_class, race,
 		        COALESCE(crafting_skills, ''), COALESCE(known_recipes, ''),
+		        COALESCE(quest_log, '{}'), COALESCE(quest_inventory, ''),
+		        COALESCE(earned_titles, ''), COALESCE(active_title, ''),
 		        created_at, last_played
 		 FROM characters WHERE id = ?`,
 		id,
@@ -308,13 +319,19 @@ func (d *Database) SaveCharacter(c *Character) error {
 			race = ?,
 			crafting_skills = ?,
 			known_recipes = ?,
+			quest_log = ?,
+			quest_inventory = ?,
+			earned_titles = ?,
+			active_title = ?,
 			last_played = CURRENT_TIMESTAMP
 		 WHERE id = ?`,
 		c.RoomID, c.Health, c.MaxHealth, c.Mana, c.MaxMana,
 		c.Level, c.Experience, c.State, c.MaxCarryWeight, c.LearnedSpells,
 		c.DiscoveredPortals, c.Strength, c.Dexterity, c.Constitution, c.Intelligence, c.Wisdom, c.Charisma,
 		c.Gold, c.KeyRing, c.PrimaryClass, c.ClassLevels, c.ActiveClass, c.Race,
-		c.CraftingSkills, c.KnownRecipes, c.ID,
+		c.CraftingSkills, c.KnownRecipes,
+		c.QuestLog, c.QuestInventory, c.EarnedTitles, c.ActiveTitle,
+		c.ID,
 	)
 	if err != nil {
 		return fmt.Errorf("failed to save character: %w", err)
@@ -386,6 +403,7 @@ func scanCharacter(rows *sql.Rows) (*Character, error) {
 		&c.DiscoveredPortals, &c.Strength, &c.Dexterity, &c.Constitution, &c.Intelligence, &c.Wisdom, &c.Charisma,
 		&c.Gold, &c.KeyRing, &c.PrimaryClass, &c.ClassLevels, &c.ActiveClass, &c.Race,
 		&c.CraftingSkills, &c.KnownRecipes,
+		&c.QuestLog, &c.QuestInventory, &c.EarnedTitles, &c.ActiveTitle,
 		&c.CreatedAt, &lastPlayed,
 	)
 	if err != nil {
@@ -412,6 +430,7 @@ func scanCharacterRow(row *sql.Row) (*Character, error) {
 		&c.DiscoveredPortals, &c.Strength, &c.Dexterity, &c.Constitution, &c.Intelligence, &c.Wisdom, &c.Charisma,
 		&c.Gold, &c.KeyRing, &c.PrimaryClass, &c.ClassLevels, &c.ActiveClass, &c.Race,
 		&c.CraftingSkills, &c.KnownRecipes,
+		&c.QuestLog, &c.QuestInventory, &c.EarnedTitles, &c.ActiveTitle,
 		&c.CreatedAt, &lastPlayed,
 	)
 	if err != nil {

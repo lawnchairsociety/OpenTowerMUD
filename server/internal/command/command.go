@@ -12,6 +12,7 @@ import (
 	"github.com/lawnchairsociety/opentowermud/server/internal/leveling"
 	"github.com/lawnchairsociety/opentowermud/server/internal/logger"
 	"github.com/lawnchairsociety/opentowermud/server/internal/npc"
+	"github.com/lawnchairsociety/opentowermud/server/internal/quest"
 	"github.com/lawnchairsociety/opentowermud/server/internal/spells"
 )
 
@@ -55,6 +56,8 @@ type ServerInterface interface {
 	CreateItem(id string) *items.Item
 	// Crafting methods
 	GetRecipeRegistry() *crafting.RecipeRegistry
+	// Quest methods
+	GetQuestRegistry() *quest.QuestRegistry
 }
 
 // PlayerInterface defines the methods we need from a player object
@@ -170,6 +173,23 @@ type PlayerInterface interface {
 	// Item management for crafting
 	CountItemsByID(itemID string) int
 	RemoveItemByID(itemID string) bool
+	// Quest methods
+	GetQuestLog() *quest.PlayerQuestLog
+	HasActiveQuest(questID string) bool
+	HasCompletedQuest(questID string) bool
+	GetQuestState() *quest.PlayerQuestState
+	// Quest inventory methods
+	GetQuestInventory() []*items.Item
+	AddQuestItem(item *items.Item)
+	RemoveQuestItem(itemID string) (*items.Item, bool)
+	HasQuestItem(itemID string) bool
+	ClearQuestInventoryForQuest(questItemIDs []string)
+	// Title methods
+	GetEarnedTitles() []string
+	HasEarnedTitle(titleID string) bool
+	EarnTitle(titleID string)
+	GetActiveTitle() string
+	SetActiveTitle(titleID string) error
 }
 
 // PlayerInfo contains detailed information about an online player (for admin commands)
@@ -339,6 +359,15 @@ var commandRegistry = map[string]CommandHandler{
 	"make":   executeCraft, // Alias
 	"learn":  executeLearn,
 	"skills": executeSkills,
+
+	// Quest commands
+	"quest":    executeQuest,
+	"quests":   executeQuest,
+	"journal":  executeQuest,
+	"accept":   executeAccept,
+	"complete": executeComplete,
+	"turnin":   executeComplete,
+	"title":    executeTitle,
 
 	// Admin commands
 	"admin": executeAdmin,

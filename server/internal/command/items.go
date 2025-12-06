@@ -7,6 +7,7 @@ import (
 	"github.com/lawnchairsociety/opentowermud/server/internal/items"
 	"github.com/lawnchairsociety/opentowermud/server/internal/logger"
 	"github.com/lawnchairsociety/opentowermud/server/internal/npc"
+	"github.com/lawnchairsociety/opentowermud/server/internal/quest"
 )
 
 // executeTake picks up an item from the current room
@@ -60,6 +61,10 @@ func executeTake(c *Command, p PlayerInterface) string {
 			"player", p.GetName(),
 			"item", foundItem.Name,
 			"room", room.GetID())
+
+		// Update quest fetch progress
+		updateQuestItemProgress(p, removedItem.ID)
+
 		return fmt.Sprintf("You take the %s.", foundItem.Name)
 	}
 
@@ -445,4 +450,45 @@ func findShopNPC(room RoomInterface) *npc.NPC {
 		}
 	}
 	return nil
+}
+
+// updateQuestItemProgress updates fetch quest progress when a player picks up an item
+func updateQuestItemProgress(p PlayerInterface, itemID string) {
+	server, ok := p.GetServer().(ServerInterface)
+	if !ok {
+		return
+	}
+
+	questRegistry := server.GetQuestRegistry()
+	if questRegistry == nil {
+		return
+	}
+
+	questLog := p.GetQuestLog()
+	if questLog == nil {
+		return
+	}
+
+	// Check all active quests for fetch objectives matching this item
+	for _, questID := range questLog.GetActiveQuests() {
+		questDef, exists := questRegistry.GetQuest(questID)
+		if !exists {
+			continue
+		}
+
+		if questLog.UpdateItemProgressForQuest(questID, questDef, itemID) {
+			// Notify player of quest progress
+			progress, _ := questLog.GetQuestProgress(questID)
+			for i, obj := range questDef.Objectives {
+				if obj.Type == quest.QuestTypeFetch && strings.ToLower(obj.Target) == strings.ToLower(itemID) {
+					current := progress.Objectives[i].Current
+					targetName := obj.TargetName
+					if targetName == "" {
+						targetName = obj.Target
+					}
+					p.SendMessage(fmt.Sprintf("Quest progress: %s - %d/%d\n", targetName, current, obj.Required))
+				}
+			}
+		}
+	}
 }

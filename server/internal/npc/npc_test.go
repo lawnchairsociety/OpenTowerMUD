@@ -360,3 +360,226 @@ func TestLootTableFromDefinition(t *testing.T) {
 		t.Errorf("Second loot entry incorrect: %+v", lootTable[1])
 	}
 }
+
+// ==================== Quest Giver Tests ====================
+
+func TestNPCQuestGiver_Basic(t *testing.T) {
+	npc := NewNPC(
+		"quest_giver",
+		"A quest giving NPC",
+		5, 50, 0, 0, 0,
+		false, false,
+		"town_square",
+		0, 0,
+	)
+
+	// Initially not a quest giver
+	if npc.IsQuestGiver() {
+		t.Error("New NPC should not be a quest giver initially")
+	}
+
+	// Set as quest giver with quests
+	npc.SetGivesQuests([]string{"quest_001", "quest_002"})
+
+	if !npc.IsQuestGiver() {
+		t.Error("NPC should be a quest giver after setting quests")
+	}
+
+	quests := npc.GetGivesQuests()
+	if len(quests) != 2 {
+		t.Errorf("Expected 2 quests, got %d", len(quests))
+	}
+}
+
+func TestNPCQuestGiver_CanGiveQuest(t *testing.T) {
+	npc := NewNPC(
+		"quest_giver",
+		"A quest giving NPC",
+		5, 50, 0, 0, 0,
+		false, false,
+		"town_square",
+		0, 0,
+	)
+
+	npc.SetGivesQuests([]string{"pest_control", "herb_gathering"})
+
+	if !npc.CanGiveQuest("pest_control") {
+		t.Error("NPC should be able to give pest_control quest")
+	}
+	if !npc.CanGiveQuest("herb_gathering") {
+		t.Error("NPC should be able to give herb_gathering quest")
+	}
+	if npc.CanGiveQuest("unknown_quest") {
+		t.Error("NPC should not be able to give unknown_quest")
+	}
+}
+
+func TestNPCQuestGiver_TurnInQuests(t *testing.T) {
+	npc := NewNPC(
+		"quest_receiver",
+		"An NPC that accepts quest turn-ins",
+		5, 50, 0, 0, 0,
+		false, false,
+		"town_hall",
+		0, 0,
+	)
+
+	npc.SetTurnInQuests([]string{"delivery_quest", "fetch_quest"})
+
+	turnInQuests := npc.GetTurnInQuests()
+	if len(turnInQuests) != 2 {
+		t.Errorf("Expected 2 turn-in quests, got %d", len(turnInQuests))
+	}
+
+	if !npc.CanTurnInQuest("delivery_quest") {
+		t.Error("NPC should accept delivery_quest turn-in")
+	}
+	if !npc.CanTurnInQuest("fetch_quest") {
+		t.Error("NPC should accept fetch_quest turn-in")
+	}
+	if npc.CanTurnInQuest("unknown_quest") {
+		t.Error("NPC should not accept unknown_quest turn-in")
+	}
+}
+
+func TestNPCQuestGiver_HasQuestInteraction(t *testing.T) {
+	npc := NewNPC(
+		"test_npc",
+		"A test NPC",
+		5, 50, 0, 0, 0,
+		false, false,
+		"test_room",
+		0, 0,
+	)
+
+	// No quest interaction initially
+	if npc.HasQuestInteraction() {
+		t.Error("NPC without quests should not have quest interaction")
+	}
+
+	// Set gives quests
+	npc.SetGivesQuests([]string{"quest_1"})
+	if !npc.HasQuestInteraction() {
+		t.Error("NPC with gives_quests should have quest interaction")
+	}
+
+	// Reset and set turn-in only
+	npc2 := NewNPC(
+		"test_npc2",
+		"Another test NPC",
+		5, 50, 0, 0, 0,
+		false, false,
+		"test_room",
+		0, 0,
+	)
+	npc2.SetTurnInQuests([]string{"quest_2"})
+	if !npc2.HasQuestInteraction() {
+		t.Error("NPC with turn_in_quests should have quest interaction")
+	}
+}
+
+func TestNPCQuestGiverFromDefinition(t *testing.T) {
+	def := NPCDefinition{
+		Name:         "Guard Captain",
+		Description:  "The captain of the city guard",
+		Level:        10,
+		Health:       100,
+		QuestGiver:   true,
+		GivesQuests:  []string{"pest_control", "bandit_hunt"},
+		TurnInQuests: []string{"pest_control", "bandit_hunt"},
+	}
+
+	npc := CreateNPCFromDefinition(def, "barracks")
+
+	if !npc.IsQuestGiver() {
+		t.Error("NPC should be a quest giver from definition")
+	}
+
+	quests := npc.GetGivesQuests()
+	if len(quests) != 2 {
+		t.Errorf("Expected 2 quests, got %d", len(quests))
+	}
+
+	if !npc.CanGiveQuest("pest_control") {
+		t.Error("NPC should be able to give pest_control quest")
+	}
+	if !npc.CanGiveQuest("bandit_hunt") {
+		t.Error("NPC should be able to give bandit_hunt quest")
+	}
+
+	if !npc.CanTurnInQuest("pest_control") {
+		t.Error("NPC should accept pest_control turn-in")
+	}
+}
+
+func TestNPCQuestGiver_SetQuestGiverFlag(t *testing.T) {
+	npc := NewNPC(
+		"test_npc",
+		"A test NPC",
+		5, 50, 0, 0, 0,
+		false, false,
+		"test_room",
+		0, 0,
+	)
+
+	// Set flag manually (without quests - should still not be "quest giver")
+	npc.SetQuestGiver(true)
+
+	// IsQuestGiver requires both flag AND quests
+	if npc.IsQuestGiver() {
+		t.Error("NPC should not be quest giver without quests even with flag set")
+	}
+
+	// Now add quests
+	npc.SetGivesQuests([]string{"quest_1"})
+	if !npc.IsQuestGiver() {
+		t.Error("NPC should be quest giver with flag and quests")
+	}
+}
+
+func TestNPCQuestGiver_GetQuestsReturnsCopy(t *testing.T) {
+	npc := NewNPC(
+		"test_npc",
+		"A test NPC",
+		5, 50, 0, 0, 0,
+		false, false,
+		"test_room",
+		0, 0,
+	)
+
+	npc.SetGivesQuests([]string{"quest_1", "quest_2"})
+
+	// Get quests and modify the returned slice
+	quests := npc.GetGivesQuests()
+	quests[0] = "modified"
+
+	// Original should be unchanged
+	originalQuests := npc.GetGivesQuests()
+	if originalQuests[0] == "modified" {
+		t.Error("GetGivesQuests should return a copy, not the original slice")
+	}
+}
+
+func TestNPCQuestGiver_EmptyQuests(t *testing.T) {
+	npc := NewNPC(
+		"test_npc",
+		"A test NPC",
+		5, 50, 0, 0, 0,
+		false, false,
+		"test_room",
+		0, 0,
+	)
+
+	// Set empty quest list
+	npc.SetGivesQuests([]string{})
+	npc.SetQuestGiver(true)
+
+	// Should not be quest giver with empty quests
+	if npc.IsQuestGiver() {
+		t.Error("NPC should not be quest giver with empty quests list")
+	}
+
+	if npc.CanGiveQuest("any") {
+		t.Error("NPC with no quests should not be able to give any quest")
+	}
+}

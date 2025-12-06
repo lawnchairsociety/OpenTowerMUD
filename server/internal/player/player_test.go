@@ -4,7 +4,9 @@ import (
 	"testing"
 
 	"github.com/lawnchairsociety/opentowermud/server/internal/class"
+	"github.com/lawnchairsociety/opentowermud/server/internal/items"
 	"github.com/lawnchairsociety/opentowermud/server/internal/leveling"
+	"github.com/lawnchairsociety/opentowermud/server/internal/quest"
 	"github.com/lawnchairsociety/opentowermud/server/internal/race"
 )
 
@@ -424,5 +426,320 @@ func TestPlayer_GetRaceName(t *testing.T) {
 				t.Errorf("GetRaceName() = %q, want %q", got, tt.expected)
 			}
 		})
+	}
+}
+
+// ==================== Quest System Tests ====================
+
+func TestPlayer_GetQuestLog_InitializesIfNil(t *testing.T) {
+	p := &Player{}
+	ql := p.GetQuestLog()
+	if ql == nil {
+		t.Error("GetQuestLog should return a non-nil quest log")
+	}
+}
+
+func TestPlayer_SetQuestLogFromJSON_ValidJSON(t *testing.T) {
+	p := &Player{}
+	jsonStr := `{"active":{"test_quest":{"quest_id":"test_quest","status":"active","objectives":[{"current":3}]}},"completed":{"old_quest":true}}`
+	p.SetQuestLogFromJSON(jsonStr)
+
+	if !p.HasActiveQuest("test_quest") {
+		t.Error("Expected test_quest to be active")
+	}
+	if !p.HasCompletedQuest("old_quest") {
+		t.Error("Expected old_quest to be completed")
+	}
+}
+
+func TestPlayer_SetQuestLogFromJSON_InvalidJSON(t *testing.T) {
+	p := &Player{}
+	p.SetQuestLogFromJSON("invalid json {{{")
+
+	// Should not panic and should have empty quest log
+	if p.GetQuestLog() == nil {
+		t.Error("Should have quest log even after invalid JSON")
+	}
+}
+
+func TestPlayer_SetQuestLogFromJSON_EmptyJSON(t *testing.T) {
+	p := &Player{}
+	p.SetQuestLogFromJSON("{}")
+
+	if p.HasActiveQuest("any") || p.HasCompletedQuest("any") {
+		t.Error("Empty JSON should result in empty quest log")
+	}
+}
+
+func TestPlayer_GetQuestLogJSON(t *testing.T) {
+	p := &Player{}
+	p.questLog = quest.NewPlayerQuestLog()
+
+	json := p.GetQuestLogJSON()
+	if json == "" {
+		t.Error("Expected non-empty JSON")
+	}
+}
+
+func TestPlayer_HasActiveQuest_NilLog(t *testing.T) {
+	p := &Player{}
+	if p.HasActiveQuest("test") {
+		t.Error("HasActiveQuest should return false with nil log")
+	}
+}
+
+func TestPlayer_HasCompletedQuest_NilLog(t *testing.T) {
+	p := &Player{}
+	if p.HasCompletedQuest("test") {
+		t.Error("HasCompletedQuest should return false with nil log")
+	}
+}
+
+func TestPlayer_GetQuestState(t *testing.T) {
+	p := createTestPlayer()
+	p.Level = 10
+
+	state := p.GetQuestState()
+
+	if state.Level != 10 {
+		t.Errorf("Expected level 10, got %d", state.Level)
+	}
+	if state.ActiveClass != "warrior" {
+		t.Errorf("Expected active class 'warrior', got %s", state.ActiveClass)
+	}
+	if state.ClassLevels == nil {
+		t.Error("ClassLevels should not be nil")
+	}
+	if state.CraftingSkills == nil {
+		t.Error("CraftingSkills should not be nil")
+	}
+	if state.CompletedQuests == nil {
+		t.Error("CompletedQuests should not be nil")
+	}
+	if state.ActiveQuests == nil {
+		t.Error("ActiveQuests should not be nil")
+	}
+}
+
+// ==================== Quest Inventory Tests ====================
+
+func TestPlayer_QuestInventory_AddAndRemove(t *testing.T) {
+	p := &Player{
+		questInventory: make([]*items.Item, 0),
+	}
+
+	// Create a test quest item
+	testItem := &items.Item{ID: "quest_letter", Name: "Quest Letter"}
+
+	// Add item
+	p.AddQuestItem(testItem)
+	if len(p.GetQuestInventory()) != 1 {
+		t.Error("Expected 1 item in quest inventory")
+	}
+	if !p.HasQuestItem("quest_letter") {
+		t.Error("HasQuestItem should return true")
+	}
+
+	// Remove item
+	removed, ok := p.RemoveQuestItem("quest_letter")
+	if !ok {
+		t.Error("RemoveQuestItem should return true")
+	}
+	if removed.ID != "quest_letter" {
+		t.Error("Removed item should be quest_letter")
+	}
+	if len(p.GetQuestInventory()) != 0 {
+		t.Error("Quest inventory should be empty")
+	}
+}
+
+func TestPlayer_QuestInventory_FindByPartialName(t *testing.T) {
+	p := &Player{
+		questInventory: make([]*items.Item, 0),
+	}
+
+	p.AddQuestItem(&items.Item{ID: "royal_letter", Name: "Royal Letter"})
+
+	// Find by partial name
+	item, found := p.FindQuestItem("royal")
+	if !found {
+		t.Error("Should find item by partial name")
+	}
+	if item.ID != "royal_letter" {
+		t.Error("Found wrong item")
+	}
+
+	// Case insensitive
+	item, found = p.FindQuestItem("LETTER")
+	if !found {
+		t.Error("Should find item case-insensitively")
+	}
+}
+
+func TestPlayer_GetQuestInventoryString(t *testing.T) {
+	p := &Player{
+		questInventory: make([]*items.Item, 0),
+	}
+
+	// Empty inventory
+	if p.GetQuestInventoryString() != "" {
+		t.Error("Empty inventory should return empty string")
+	}
+
+	// With items
+	p.AddQuestItem(&items.Item{ID: "item1", Name: "Item 1"})
+	p.AddQuestItem(&items.Item{ID: "item2", Name: "Item 2"})
+
+	str := p.GetQuestInventoryString()
+	if str != "item1,item2" {
+		t.Errorf("Expected 'item1,item2', got '%s'", str)
+	}
+}
+
+func TestPlayer_ClearQuestInventoryForQuest(t *testing.T) {
+	p := &Player{
+		questInventory: make([]*items.Item, 0),
+	}
+
+	// Add some quest items
+	p.AddQuestItem(&items.Item{ID: "letter_a", Name: "Letter A"})
+	p.AddQuestItem(&items.Item{ID: "package_b", Name: "Package B"})
+	p.AddQuestItem(&items.Item{ID: "other_item", Name: "Other Item"})
+
+	// Clear items for a specific quest
+	p.ClearQuestInventoryForQuest([]string{"letter_a", "package_b"})
+
+	if len(p.GetQuestInventory()) != 1 {
+		t.Errorf("Expected 1 item remaining, got %d", len(p.GetQuestInventory()))
+	}
+	if !p.HasQuestItem("other_item") {
+		t.Error("other_item should still be present")
+	}
+	if p.HasQuestItem("letter_a") || p.HasQuestItem("package_b") {
+		t.Error("Quest items should have been removed")
+	}
+}
+
+// ==================== Title Tests ====================
+
+func TestPlayer_Titles_EarnAndSet(t *testing.T) {
+	p := &Player{
+		earnedTitles: make(map[string]bool),
+	}
+
+	// Check no titles initially
+	if p.HasEarnedTitle("champion") {
+		t.Error("Should not have title initially")
+	}
+
+	// Earn a title
+	p.EarnTitle("champion")
+	if !p.HasEarnedTitle("champion") {
+		t.Error("Should have earned title")
+	}
+
+	// Set active title (should succeed)
+	err := p.SetActiveTitle("champion")
+	if err != nil {
+		t.Errorf("SetActiveTitle failed: %v", err)
+	}
+	if p.GetActiveTitle() != "champion" {
+		t.Error("Active title should be 'champion'")
+	}
+
+	// Try to set unearned title (should fail)
+	err = p.SetActiveTitle("legend")
+	if err == nil {
+		t.Error("SetActiveTitle should fail for unearned title")
+	}
+
+	// Clear active title
+	err = p.SetActiveTitle("")
+	if err != nil {
+		t.Errorf("SetActiveTitle('') failed: %v", err)
+	}
+	if p.GetActiveTitle() != "" {
+		t.Error("Active title should be empty")
+	}
+}
+
+func TestPlayer_GetEarnedTitles(t *testing.T) {
+	p := &Player{
+		earnedTitles: make(map[string]bool),
+	}
+
+	// No titles
+	titles := p.GetEarnedTitles()
+	if len(titles) != 0 {
+		t.Error("Should have no titles initially")
+	}
+
+	// Earn titles
+	p.EarnTitle("novice")
+	p.EarnTitle("champion")
+
+	titles = p.GetEarnedTitles()
+	if len(titles) != 2 {
+		t.Errorf("Expected 2 titles, got %d", len(titles))
+	}
+}
+
+func TestPlayer_Titles_Persistence(t *testing.T) {
+	p := &Player{
+		earnedTitles: make(map[string]bool),
+	}
+
+	p.EarnTitle("novice")
+	p.EarnTitle("champion")
+
+	// Get as string
+	str := p.GetEarnedTitlesString()
+	if str == "" {
+		t.Error("Should have non-empty titles string")
+	}
+
+	// Load from string into new player
+	p2 := &Player{}
+	p2.SetEarnedTitlesFromString(str)
+
+	if !p2.HasEarnedTitle("novice") || !p2.HasEarnedTitle("champion") {
+		t.Error("Titles not loaded correctly from string")
+	}
+}
+
+func TestPlayer_SetEarnedTitlesFromString_Empty(t *testing.T) {
+	p := &Player{}
+	p.SetEarnedTitlesFromString("")
+
+	if len(p.GetEarnedTitles()) != 0 {
+		t.Error("Should have no titles from empty string")
+	}
+}
+
+func TestPlayer_GetDisplayName(t *testing.T) {
+	p := &Player{
+		Name:         "Hero",
+		earnedTitles: make(map[string]bool),
+	}
+
+	// Without title
+	if p.GetDisplayName() != "Hero" {
+		t.Error("Display name should be just name without title")
+	}
+
+	// With title
+	p.EarnTitle("Champion")
+	p.SetActiveTitle("Champion")
+
+	expected := "Hero, Champion"
+	if p.GetDisplayName() != expected {
+		t.Errorf("Expected '%s', got '%s'", expected, p.GetDisplayName())
+	}
+}
+
+func TestPlayer_HasEarnedTitle_NilMap(t *testing.T) {
+	p := &Player{}
+	if p.HasEarnedTitle("test") {
+		t.Error("HasEarnedTitle should return false with nil map")
 	}
 }

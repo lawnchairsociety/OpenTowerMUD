@@ -42,6 +42,15 @@ npcs:
       - "town_square"
     respawn_median: 0
     respawn_variation: 0
+    quest_giver: true
+    gives_quests:
+      - tower_introduction
+      - floor_five
+      - floor_ten
+    turn_in_quests:
+      - tower_introduction
+      - floor_five
+      - floor_ten
 
   traveling_merchant:
     name: "traveling merchant"
@@ -103,6 +112,13 @@ npcs:
       - "temple"
     respawn_median: 0
     respawn_variation: 0
+    quest_giver: true
+    gives_quests:
+      - blessing_of_light
+      - cleanse_the_undead
+    turn_in_quests:
+      - blessing_of_light
+      - cleanse_the_undead
 
   temple_acolyte:
     name: "temple acolyte"
@@ -143,6 +159,19 @@ npcs:
       - "barracks"
     respawn_median: 0
     respawn_variation: 0
+    quest_giver: true
+    gives_quests:
+      - first_blood
+      - pest_control
+      - bat_infestation
+      - goblin_threat
+      - skeleton_patrol
+    turn_in_quests:
+      - first_blood
+      - pest_control
+      - bat_infestation
+      - goblin_threat
+      - skeleton_patrol
 
   city_guard:
     name: "city guard"
@@ -186,6 +215,13 @@ npcs:
       - "armory"
     respawn_median: 0
     respawn_variation: 0
+    quest_giver: true
+    gives_quests:
+      - iron_collection
+      - forging_ahead
+    turn_in_quests:
+      - iron_collection
+      - forging_ahead
 
   smith_apprentice:
     name: "smith apprentice"
@@ -260,6 +296,13 @@ npcs:
       - "general_store"
     respawn_median: 0
     respawn_variation: 0
+    quest_giver: true
+    gives_quests:
+      - crystal_hunt
+      - mushroom_gathering
+    turn_in_quests:
+      - crystal_hunt
+      - mushroom_gathering
 
   # Training Hall NPCs
   combat_instructor:
@@ -281,6 +324,11 @@ npcs:
       - "training_hall"
     respawn_median: 0
     respawn_variation: 0
+    quest_giver: true
+    gives_quests:
+      - warrior_trial
+    turn_in_quests:
+      - warrior_trial
 
   training_dummy:
     name: "training dummy"
@@ -347,6 +395,11 @@ npcs:
       - "tavern"
     respawn_median: 0
     respawn_variation: 0
+    quest_giver: true
+    gives_quests:
+      - tavern_tales
+    turn_in_quests:
+      - tavern_tales
 
   # Market Street NPCs
   street_vendor:

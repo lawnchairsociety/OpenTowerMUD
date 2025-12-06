@@ -623,6 +623,73 @@ Higher skill = better success chance + access to advanced recipes.
 
 See also: help craft, help learn`
 
+	case "quest", "quests", "journal":
+		return `QUEST [list | <quest name>]
+View your quest journal and track your progress.
+
+Usage:
+  quest              - Show quest journal summary
+  quest list         - Show all active quests with progress
+  quest <name>       - Show detailed info about a specific quest
+
+Your quest journal shows:
+  - Total active and completed quests
+  - Progress on each objective
+  - Rewards you'll receive on completion
+
+See also: help accept, help complete, help title`
+
+	case "accept":
+		return `ACCEPT [quest name]
+Accept quests from quest-giving NPCs.
+
+Usage:
+  accept              - Show available quests from nearby NPCs
+  accept <quest>      - Accept a specific quest
+
+Requirements:
+  - You must be in the same room as the quest giver
+  - Some quests have level requirements
+  - Some quests require completing prerequisite quests
+
+See also: help quest, help complete`
+
+	case "complete", "turnin":
+		return `COMPLETE [quest name]
+Turn in completed quests to receive rewards.
+
+Usage:
+  complete            - Turn in a completed quest
+  complete <name>     - Turn in a specific quest
+
+Requirements:
+  - You must have completed all quest objectives
+  - You must be in the same room as the turn-in NPC
+
+Rewards may include:
+  - Gold and Experience
+  - Items
+  - Crafting recipes
+  - Titles
+
+Aliases: turnin
+
+See also: help quest, help accept`
+
+	case "title":
+		return `TITLE [title name | none]
+View and set your displayed title.
+
+Usage:
+  title               - Show your earned titles
+  title <name>        - Set your active title
+  title none          - Clear your active title
+
+Titles are earned by completing quests. Your active title
+is displayed with your name when other players look at you.
+
+See also: help quest, help complete`
+
 	case "class", "classes":
 		return `CLASS [subcommand]
 View and manage your character classes.
@@ -922,6 +989,14 @@ Crafting (at crafting stations):
   craft info <recipe> - Show recipe details
   learn [recipe]    - Learn recipes from a crafting trainer
   skills            - Show your crafting skill levels
+
+Quests:
+  quest             - View your quest journal
+  quest list        - Show all active quests with progress
+  accept            - See available quests from nearby NPCs
+  accept <quest>    - Accept a specific quest
+  complete          - Turn in a completed quest
+  title             - View and set your title
 
 Saving Progress:
   Visit the bard in the tavern and talk to him to save your progress!

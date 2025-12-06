@@ -63,7 +63,10 @@ func (w *World) InitializeWithPaths(seed int64, worldFilePath, npcsFilePath, mob
 					n.RoomID = room.ID
 					n.OriginalRoomID = room.ID
 					room.AddNPC(n)
+					logger.Info("Added NPC to room", "npc", n.Name, "room", room.ID, "attackable", n.Attackable)
 				}
+			} else {
+				logger.Warning("Room not found for NPC location", "location", location)
 			}
 		}
 	}

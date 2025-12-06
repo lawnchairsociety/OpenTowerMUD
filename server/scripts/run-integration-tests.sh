@@ -83,9 +83,10 @@ if nc -z localhost "$SERVER_PORT" 2>/dev/null; then
     exit 1
 fi
 
-# Clean up any existing test database
+# Clean up any existing test database and stale tower data
 TEST_DB="data/test/players_test.db"
 rm -f "$TEST_DB" "$TEST_DB-wal" "$TEST_DB-shm"
+rm -f "data/tower.yaml"
 
 # Start server with test configuration
 echo -e "${YELLOW}Starting server on port $SERVER_PORT with test configuration...${NC}"
@@ -100,6 +101,7 @@ echo "Server logs: $SERVER_LOG"
     --items data/test/items_test.yaml \
     --recipes data/test/recipes_test.yaml \
     --chatfilter data/test/chat_filter_test.yaml \
+    --quests data/quests.yaml \
     > "$SERVER_LOG" 2>&1 &
 
 SERVER_PID=$!

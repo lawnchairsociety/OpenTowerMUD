@@ -1,0 +1,313 @@
+# Quest definitions
+# Types: kill, fetch, delivery, explore, craft, cast
+# Categories: main, side, class, crafting
+
+quests:
+  # =========================================
+  # TUTORIAL / INTRODUCTION QUESTS (Main)
+  # =========================================
+  tower_introduction:
+    name: "The Tower Awaits"
+    description: "Aldric believes you're ready to explore the tower. Visit the portal room on Floor 1 to prove yourself."
+    category: main
+    giver_npc: "Aldric the old guide"
+    turn_in_npc: "Aldric the old guide"
+    objectives:
+      - type: explore
+        target: "gen_f1_portal"
+        target_name: "Floor 1 Portal Room"
+        required: 1
+    rewards:
+      gold: 25
+      experience: 50
+      title: "Apprentice Adventurer"
+    min_level: 1
+
+  first_blood:
+    name: "First Blood"
+    description: "The tower is dangerous. Prove you can handle yourself by defeating your first enemy."
+    category: main
+    giver_npc: "Guard Captain Marcus"
+    turn_in_npc: "Guard Captain Marcus"
+    objectives:
+      - type: kill
+        target: "giant_rat"
+        target_name: "Giant Rat"
+        required: 1
+    rewards:
+      gold: 15
+      experience: 30
+    min_level: 1
+    prereqs:
+      - tower_introduction
+
+  # =========================================
+  # SIDE QUESTS - Guard Captain Marcus
+  # =========================================
+  pest_control:
+    name: "Pest Control"
+    description: "Giant rats have been spotted in the tower entrance. Clear them out to make the area safer."
+    category: side
+    giver_npc: "Guard Captain Marcus"
+    turn_in_npc: "Guard Captain Marcus"
+    objectives:
+      - type: kill
+        target: "giant_rat"
+        target_name: "Giant Rat"
+        required: 5
+    rewards:
+      gold: 30
+      experience: 75
+    min_level: 1
+    repeatable: true
+
+  bat_infestation:
+    name: "Bat Infestation"
+    description: "Bats have been swarming near the tower stairs. Help reduce their numbers."
+    category: side
+    giver_npc: "Guard Captain Marcus"
+    turn_in_npc: "Guard Captain Marcus"
+    objectives:
+      - type: kill
+        target: "bat"
+        target_name: "Bat"
+        required: 8
+    rewards:
+      gold: 40
+      experience: 100
+    min_level: 2
+    repeatable: true
+
+  goblin_threat:
+    name: "Goblin Threat"
+    description: "Goblins have been raiding travelers entering the tower. Put an end to their mischief."
+    category: side
+    giver_npc: "Guard Captain Marcus"
+    turn_in_npc: "Guard Captain Marcus"
+    objectives:
+      - type: kill
+        target: "goblin"
+        target_name: "Goblin"
+        required: 10
+    rewards:
+      gold: 75
+      experience: 200
+      title: "Goblin Slayer"
+    min_level: 3
+
+  skeleton_patrol:
+    name: "Skeleton Patrol"
+    description: "Undead skeletons have been seen wandering the lower floors. Destroy them."
+    category: side
+    giver_npc: "Guard Captain Marcus"
+    turn_in_npc: "Guard Captain Marcus"
+    objectives:
+      - type: kill
+        target: "skeleton"
+        target_name: "Skeleton"
+        required: 8
+    rewards:
+      gold: 100
+      experience: 250
+    min_level: 4
+    repeatable: true
+
+  # =========================================
+  # SIDE QUESTS - High Priestess Sera
+  # =========================================
+  blessing_of_light:
+    name: "Blessing of Light"
+    description: "Visit the temple and pray at the altar to receive the blessing of the light."
+    category: side
+    giver_npc: "High Priestess Sera"
+    turn_in_npc: "High Priestess Sera"
+    objectives:
+      - type: explore
+        target: "city_temple"
+        target_name: "Temple"
+        required: 1
+    rewards:
+      gold: 10
+      experience: 25
+    min_level: 1
+
+  cleanse_the_undead:
+    name: "Cleanse the Undead"
+    description: "The undead are an abomination. Help cleanse the tower of their corruption."
+    category: side
+    giver_npc: "High Priestess Sera"
+    turn_in_npc: "High Priestess Sera"
+    objectives:
+      - type: kill
+        target: "skeleton"
+        target_name: "Skeleton"
+        required: 5
+      - type: kill
+        target: "ghoul"
+        target_name: "Ghoul"
+        required: 3
+    rewards:
+      gold: 150
+      experience: 350
+      title: "Purifier"
+    min_level: 5
+
+  # =========================================
+  # SIDE QUESTS - Master Smith Bron
+  # =========================================
+  iron_collection:
+    name: "Iron Collection"
+    description: "The smithy needs iron ore for new equipment. Gather some from slain creatures."
+    category: side
+    giver_npc: "Master Smith Bron"
+    turn_in_npc: "Master Smith Bron"
+    objectives:
+      - type: fetch
+        target: "iron_ore"
+        target_name: "Iron Ore"
+        required: 5
+    rewards:
+      gold: 40
+      experience: 80
+      items:
+        - iron_dagger
+    min_level: 2
+    repeatable: true
+
+  forging_ahead:
+    name: "Forging Ahead"
+    description: "Prove your smithing skills by crafting an iron dagger."
+    category: crafting
+    giver_npc: "Master Smith Bron"
+    turn_in_npc: "Master Smith Bron"
+    objectives:
+      - type: craft
+        target: "iron_dagger"
+        target_name: "Iron Dagger"
+        required: 1
+    rewards:
+      gold: 50
+      experience: 100
+      recipes:
+        - iron_sword
+    required_crafting_skill: blacksmithing
+    required_crafting_level: 5
+
+  # =========================================
+  # SIDE QUESTS - Shopkeeper Mira
+  # =========================================
+  crystal_hunt:
+    name: "Crystal Hunt"
+    description: "Mira needs crystals for her shop. Bring her some from the tower."
+    category: side
+    giver_npc: "Shopkeeper Mira"
+    turn_in_npc: "Shopkeeper Mira"
+    objectives:
+      - type: fetch
+        target: "crystal"
+        target_name: "Crystal"
+        required: 3
+    rewards:
+      gold: 60
+      experience: 100
+    min_level: 2
+    repeatable: true
+
+  mushroom_gathering:
+    name: "Mushroom Gathering"
+    description: "The alchemist needs mushrooms from the tower depths. Collect some for a reward."
+    category: side
+    giver_npc: "Shopkeeper Mira"
+    turn_in_npc: "Shopkeeper Mira"
+    objectives:
+      - type: fetch
+        target: "mushroom"
+        target_name: "Mushroom"
+        required: 5
+    rewards:
+      gold: 35
+      experience: 60
+    min_level: 1
+    repeatable: true
+
+  # =========================================
+  # EXPLORATION QUESTS - Aldric
+  # =========================================
+  floor_five:
+    name: "Deeper Into Darkness"
+    description: "The tower grows more dangerous with each floor. Reach Floor 5 to prove your worth."
+    category: main
+    giver_npc: "Aldric the old guide"
+    turn_in_npc: "Aldric the old guide"
+    objectives:
+      - type: explore
+        target: "gen_f5_portal"
+        target_name: "Floor 5 Portal"
+        required: 1
+    rewards:
+      gold: 150
+      experience: 400
+      title: "Tower Explorer"
+    min_level: 5
+    prereqs:
+      - tower_introduction
+
+  floor_ten:
+    name: "The First Boss"
+    description: "A powerful boss guards Floor 10. Reach the boss floor to prove you're ready for the challenge."
+    category: main
+    giver_npc: "Aldric the old guide"
+    turn_in_npc: "Aldric the old guide"
+    objectives:
+      - type: explore
+        target: "gen_f10_boss"
+        target_name: "Floor 10 Boss Room"
+        required: 1
+    rewards:
+      gold: 300
+      experience: 800
+      title: "Boss Hunter"
+    min_level: 8
+    prereqs:
+      - floor_five
+
+  # =========================================
+  # CLASS QUESTS - Combat Instructor Vex
+  # =========================================
+  warrior_trial:
+    name: "Warrior's Trial"
+    description: "Prove your combat prowess by defeating formidable foes."
+    category: class
+    giver_npc: "Combat Instructor Vex"
+    turn_in_npc: "Combat Instructor Vex"
+    objectives:
+      - type: kill
+        target: "orc_warrior"
+        target_name: "Orc Warrior"
+        required: 5
+    rewards:
+      gold: 200
+      experience: 500
+      title: "Proven Warrior"
+    required_class: warrior
+    required_class_level: 5
+
+  # =========================================
+  # DAILY/REPEATABLE QUESTS - Tavern
+  # =========================================
+  tavern_tales:
+    name: "Tavern Tales"
+    description: "The bard wants to hear tales of your adventures. Defeat any enemies and return."
+    category: side
+    giver_npc: "wandering bard"
+    turn_in_npc: "wandering bard"
+    objectives:
+      - type: kill
+        target: "goblin"
+        target_name: "Any Enemy"
+        required: 3
+    rewards:
+      gold: 20
+      experience: 50
+    min_level: 1
+    repeatable: true

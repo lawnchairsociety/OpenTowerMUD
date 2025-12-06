@@ -12,6 +12,7 @@ import (
 	"github.com/lawnchairsociety/opentowermud/server/internal/items"
 	"github.com/lawnchairsociety/opentowermud/server/internal/leveling"
 	"github.com/lawnchairsociety/opentowermud/server/internal/npc"
+	"github.com/lawnchairsociety/opentowermud/server/internal/quest"
 	"github.com/lawnchairsociety/opentowermud/server/internal/race"
 	"github.com/lawnchairsociety/opentowermud/server/internal/stats"
 	"github.com/lawnchairsociety/opentowermud/server/internal/world"
@@ -121,6 +122,11 @@ type Player struct {
 	// Crafting system
 	craftingSkills map[crafting.CraftingSkill]int // skill -> level (0-100)
 	knownRecipes   map[string]bool                // recipe ID -> learned
+	// Quest system
+	questLog       *quest.PlayerQuestLog // Active and completed quests
+	questInventory []*items.Item         // Quest-bound items (weightless, can't drop)
+	earnedTitles   map[string]bool       // title ID -> earned
+	activeTitle    string                // Currently displayed title
 }
 
 func NewPlayer(name string, client Client, world *world.World, server ServerInterface) *Player {
@@ -166,6 +172,11 @@ func NewPlayer(name string, client Client, world *world.World, server ServerInte
 		// Crafting system
 		craftingSkills: make(map[crafting.CraftingSkill]int),
 		knownRecipes:   make(map[string]bool),
+		// Quest system
+		questLog:       quest.NewPlayerQuestLog(),
+		questInventory: make([]*items.Item, 0),
+		earnedTitles:   make(map[string]bool),
+		activeTitle:    "",
 	}
 
 	// Initialize anti-spam tracker with config from server
@@ -1940,4 +1951,252 @@ func (p *Player) SetCraftingSkillsFromString(skillsStr string) {
 			}
 		}
 	}
+}
+
+// ==================== QUEST METHODS ====================
+
+// GetQuestLog returns the player's quest log
+func (p *Player) GetQuestLog() *quest.PlayerQuestLog {
+	if p.questLog == nil {
+		p.questLog = quest.NewPlayerQuestLog()
+	}
+	return p.questLog
+}
+
+// SetQuestLog sets the player's quest log (used when loading from database)
+func (p *Player) SetQuestLog(ql *quest.PlayerQuestLog) {
+	p.questLog = ql
+}
+
+// GetQuestLogJSON returns the quest log as a JSON string (for persistence)
+func (p *Player) GetQuestLogJSON() string {
+	if p.questLog == nil {
+		return "{}"
+	}
+	return p.questLog.ToJSON()
+}
+
+// SetQuestLogFromJSON sets the quest log from a JSON string (from persistence)
+func (p *Player) SetQuestLogFromJSON(jsonStr string) {
+	ql, err := quest.PlayerQuestLogFromJSON(jsonStr)
+	if err != nil {
+		// If parsing fails, start with empty log
+		p.questLog = quest.NewPlayerQuestLog()
+		return
+	}
+	p.questLog = ql
+}
+
+// HasActiveQuest returns true if the player has an active quest with the given ID
+func (p *Player) HasActiveQuest(questID string) bool {
+	if p.questLog == nil {
+		return false
+	}
+	return p.questLog.HasActiveQuest(questID)
+}
+
+// HasCompletedQuest returns true if the player has completed a quest with the given ID
+func (p *Player) HasCompletedQuest(questID string) bool {
+	if p.questLog == nil {
+		return false
+	}
+	return p.questLog.HasCompletedQuest(questID)
+}
+
+// GetQuestState returns the player's state for quest availability checks
+func (p *Player) GetQuestState() *quest.PlayerQuestState {
+	state := &quest.PlayerQuestState{
+		Level:           p.Level,
+		ActiveClass:     string(p.activeClass),
+		ClassLevels:     make(map[string]int),
+		CraftingSkills:  make(map[string]int),
+		CompletedQuests: make(map[string]bool),
+		ActiveQuests:    make(map[string]bool),
+	}
+
+	// Copy class levels
+	if p.classLevels != nil {
+		for _, c := range p.classLevels.GetClasses() {
+			state.ClassLevels[string(c)] = p.classLevels.GetLevel(c)
+		}
+	}
+
+	// Copy crafting skills
+	for skill, level := range p.craftingSkills {
+		state.CraftingSkills[string(skill)] = level
+	}
+
+	// Copy quest state
+	if p.questLog != nil {
+		for _, questID := range p.questLog.GetCompletedQuests() {
+			state.CompletedQuests[questID] = true
+		}
+		for _, questID := range p.questLog.GetActiveQuests() {
+			state.ActiveQuests[questID] = true
+		}
+	}
+
+	return state
+}
+
+// ==================== QUEST INVENTORY METHODS ====================
+
+// GetQuestInventory returns the player's quest-bound items
+func (p *Player) GetQuestInventory() []*items.Item {
+	return p.questInventory
+}
+
+// AddQuestItem adds a quest-bound item to the player's quest inventory
+func (p *Player) AddQuestItem(item *items.Item) {
+	p.questInventory = append(p.questInventory, item)
+}
+
+// RemoveQuestItem removes a quest item by ID from the quest inventory
+func (p *Player) RemoveQuestItem(itemID string) (*items.Item, bool) {
+	for i, item := range p.questInventory {
+		if item.ID == itemID {
+			removed := p.questInventory[i]
+			p.questInventory = append(p.questInventory[:i], p.questInventory[i+1:]...)
+			return removed, true
+		}
+	}
+	return nil, false
+}
+
+// HasQuestItem returns true if the player has a quest item with the given ID
+func (p *Player) HasQuestItem(itemID string) bool {
+	for _, item := range p.questInventory {
+		if item.ID == itemID {
+			return true
+		}
+	}
+	return false
+}
+
+// FindQuestItem finds a quest item by partial name match
+func (p *Player) FindQuestItem(partial string) (*items.Item, bool) {
+	partial = strings.ToLower(partial)
+	for _, item := range p.questInventory {
+		if strings.Contains(strings.ToLower(item.Name), partial) {
+			return item, true
+		}
+	}
+	return nil, false
+}
+
+// GetQuestInventoryString returns quest inventory as comma-separated item IDs (for persistence)
+func (p *Player) GetQuestInventoryString() string {
+	if len(p.questInventory) == 0 {
+		return ""
+	}
+	ids := make([]string, len(p.questInventory))
+	for i, item := range p.questInventory {
+		ids[i] = item.ID
+	}
+	return strings.Join(ids, ",")
+}
+
+// SetQuestInventoryFromString sets quest inventory from comma-separated item IDs
+// Note: This needs an item registry to convert IDs back to items
+// For now, items are stored and must be re-created by the loader
+func (p *Player) SetQuestInventoryFromString(invStr string) {
+	p.questInventory = make([]*items.Item, 0)
+	// Note: Items will be recreated by the persistence layer using the item registry
+}
+
+// ClearQuestInventoryForQuest removes all quest items associated with a quest
+func (p *Player) ClearQuestInventoryForQuest(questItemIDs []string) {
+	if len(questItemIDs) == 0 {
+		return
+	}
+	// Build a set of quest item IDs to remove
+	removeSet := make(map[string]bool)
+	for _, id := range questItemIDs {
+		removeSet[id] = true
+	}
+	// Filter out the quest items
+	newInventory := make([]*items.Item, 0, len(p.questInventory))
+	for _, item := range p.questInventory {
+		if !removeSet[item.ID] {
+			newInventory = append(newInventory, item)
+		}
+	}
+	p.questInventory = newInventory
+}
+
+// ==================== TITLE METHODS ====================
+
+// GetEarnedTitles returns a list of earned title IDs
+func (p *Player) GetEarnedTitles() []string {
+	if p.earnedTitles == nil {
+		return nil
+	}
+	titles := make([]string, 0, len(p.earnedTitles))
+	for titleID := range p.earnedTitles {
+		titles = append(titles, titleID)
+	}
+	return titles
+}
+
+// HasEarnedTitle returns true if the player has earned a specific title
+func (p *Player) HasEarnedTitle(titleID string) bool {
+	if p.earnedTitles == nil {
+		return false
+	}
+	return p.earnedTitles[titleID]
+}
+
+// EarnTitle adds a title to the player's earned titles
+func (p *Player) EarnTitle(titleID string) {
+	if p.earnedTitles == nil {
+		p.earnedTitles = make(map[string]bool)
+	}
+	p.earnedTitles[titleID] = true
+}
+
+// GetActiveTitle returns the player's currently displayed title
+func (p *Player) GetActiveTitle() string {
+	return p.activeTitle
+}
+
+// SetActiveTitle sets the player's displayed title (must be earned first)
+func (p *Player) SetActiveTitle(titleID string) error {
+	if titleID == "" {
+		p.activeTitle = ""
+		return nil
+	}
+	if !p.HasEarnedTitle(titleID) {
+		return fmt.Errorf("you have not earned that title")
+	}
+	p.activeTitle = titleID
+	return nil
+}
+
+// GetEarnedTitlesString returns earned titles as comma-separated string (for persistence)
+func (p *Player) GetEarnedTitlesString() string {
+	titles := p.GetEarnedTitles()
+	return strings.Join(titles, ",")
+}
+
+// SetEarnedTitlesFromString sets earned titles from comma-separated string (from persistence)
+func (p *Player) SetEarnedTitlesFromString(titlesStr string) {
+	p.earnedTitles = make(map[string]bool)
+	if titlesStr == "" {
+		return
+	}
+	titles := strings.Split(titlesStr, ",")
+	for _, titleID := range titles {
+		titleID = strings.TrimSpace(titleID)
+		if titleID != "" {
+			p.earnedTitles[titleID] = true
+		}
+	}
+}
+
+// GetDisplayName returns the player's name with their active title (if any)
+func (p *Player) GetDisplayName() string {
+	if p.activeTitle == "" {
+		return p.Name
+	}
+	return fmt.Sprintf("%s, %s", p.Name, p.activeTitle)
 }

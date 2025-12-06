@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/lawnchairsociety/opentowermud/server/internal/logger"
+	"github.com/lawnchairsociety/opentowermud/server/internal/quest"
 	"github.com/lawnchairsociety/opentowermud/server/internal/world"
 )
 
@@ -242,6 +243,9 @@ func executeMoveDirection(c *Command, p PlayerInterface, direction string) strin
 		}
 	}
 
+	// Update quest explore progress
+	updateQuestExploreProgress(p, server, nextRoom.GetID())
+
 	return fmt.Sprintf("You move %s.\n\n%s", direction, nextRoom.GetDescriptionForPlayer(p.GetName()))
 }
 
@@ -438,5 +442,41 @@ func getPortalCommandName(roomID string) string {
 			return "frontier"
 		}
 		return roomID
+	}
+}
+
+// updateQuestExploreProgress updates explore quest progress when a player enters a room
+func updateQuestExploreProgress(p PlayerInterface, server ServerInterface, roomID string) {
+	questRegistry := server.GetQuestRegistry()
+	if questRegistry == nil {
+		return
+	}
+
+	questLog := p.GetQuestLog()
+	if questLog == nil {
+		return
+	}
+
+	// Check all active quests for explore objectives matching this room
+	for _, questID := range questLog.GetActiveQuests() {
+		questDef, exists := questRegistry.GetQuest(questID)
+		if !exists {
+			continue
+		}
+
+		if questLog.UpdateExploreProgressForQuest(questID, questDef, roomID) {
+			// Notify player of quest progress
+			progress, _ := questLog.GetQuestProgress(questID)
+			for i, obj := range questDef.Objectives {
+				if obj.Type == quest.QuestTypeExplore && strings.EqualFold(obj.Target, roomID) {
+					current := progress.Objectives[i].Current
+					targetName := obj.TargetName
+					if targetName == "" {
+						targetName = obj.Target
+					}
+					p.SendMessage(fmt.Sprintf("\nQuest progress: Explored %s - %d/%d\n", targetName, current, obj.Required))
+				}
+			}
+		}
 	}
 }

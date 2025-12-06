@@ -165,6 +165,40 @@ func (s *Server) loadPlayer(client Client, auth *AuthResult) (*player.Player, er
 		p.SetKnownRecipes(recipeIDs)
 	}
 
+	// Load quest log
+	if char.QuestLog != "" && char.QuestLog != "{}" {
+		p.SetQuestLogFromJSON(char.QuestLog)
+	}
+
+	// Load quest inventory items
+	if char.QuestInventory != "" {
+		questItemIDs := strings.Split(char.QuestInventory, ",")
+		for _, itemID := range questItemIDs {
+			itemID = strings.TrimSpace(itemID)
+			if itemID == "" {
+				continue
+			}
+			if s.itemsConfig != nil {
+				if item, exists := s.itemsConfig.GetItemByID(itemID); exists {
+					p.AddQuestItem(item)
+				} else {
+					logger.Warning("Unknown quest item", "character", char.Name, "item_id", itemID)
+				}
+			}
+		}
+	}
+
+	// Load earned titles
+	if char.EarnedTitles != "" {
+		p.SetEarnedTitlesFromString(char.EarnedTitles)
+	}
+
+	// Load active title
+	if char.ActiveTitle != "" {
+		// Silently ignore error if title not earned (corrupted data)
+		_ = p.SetActiveTitle(char.ActiveTitle)
+	}
+
 	logger.Info("Player loaded",
 		"player", char.Name,
 		"player_level", char.Level,
@@ -198,34 +232,38 @@ func (s *Server) savePlayerImpl(p *player.Player) error {
 
 	// Build character data
 	char := &database.Character{
-		ID:             charID,
-		AccountID:      p.GetAccountID(),
-		Name:           p.GetName(),
-		RoomID:         p.GetRoomID(),
-		Health:         p.GetHealth(),
-		MaxHealth:      p.GetMaxHealth(),
-		Mana:           p.GetMana(),
-		MaxMana:        p.GetMaxMana(),
-		Level:          p.GetLevel(),
-		Experience:     p.GetExperience(),
-		State:          p.GetState(),
-		MaxCarryWeight: p.MaxCarryWeight,
-		LearnedSpells:  p.GetLearnedSpellsString(),
+		ID:                charID,
+		AccountID:         p.GetAccountID(),
+		Name:              p.GetName(),
+		RoomID:            p.GetRoomID(),
+		Health:            p.GetHealth(),
+		MaxHealth:         p.GetMaxHealth(),
+		Mana:              p.GetMana(),
+		MaxMana:           p.GetMaxMana(),
+		Level:             p.GetLevel(),
+		Experience:        p.GetExperience(),
+		State:             p.GetState(),
+		MaxCarryWeight:    p.MaxCarryWeight,
+		LearnedSpells:     p.GetLearnedSpellsString(),
 		DiscoveredPortals: p.GetDiscoveredPortalsString(),
-		Strength:       p.GetStrength(),
-		Dexterity:      p.GetDexterity(),
-		Constitution:   p.GetConstitution(),
-		Intelligence:   p.GetIntelligence(),
-		Wisdom:         p.GetWisdom(),
-		Charisma:       p.GetCharisma(),
-		Gold:           p.GetGold(),
-		KeyRing:        p.GetKeyRingString(),
-		PrimaryClass:   string(p.GetPrimaryClass()),
-		ClassLevels:    p.GetClassLevelsJSON(),
-		ActiveClass:    string(p.GetActiveClass()),
-		Race:           string(p.GetRace()),
-		CraftingSkills: p.GetCraftingSkillsString(),
-		KnownRecipes:   p.GetKnownRecipesString(),
+		Strength:          p.GetStrength(),
+		Dexterity:         p.GetDexterity(),
+		Constitution:      p.GetConstitution(),
+		Intelligence:      p.GetIntelligence(),
+		Wisdom:            p.GetWisdom(),
+		Charisma:          p.GetCharisma(),
+		Gold:              p.GetGold(),
+		KeyRing:           p.GetKeyRingString(),
+		PrimaryClass:      string(p.GetPrimaryClass()),
+		ClassLevels:       p.GetClassLevelsJSON(),
+		ActiveClass:       string(p.GetActiveClass()),
+		Race:              string(p.GetRace()),
+		CraftingSkills:    p.GetCraftingSkillsString(),
+		KnownRecipes:      p.GetKnownRecipesString(),
+		QuestLog:          p.GetQuestLogJSON(),
+		QuestInventory:    p.GetQuestInventoryString(),
+		EarnedTitles:      p.GetEarnedTitlesString(),
+		ActiveTitle:       p.GetActiveTitle(),
 	}
 
 	// Get inventory and equipment IDs

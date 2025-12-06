@@ -7,7 +7,7 @@ npcs:
   # ===================
   old_guide:
     name: "Aldric the old guide"
-    description: "A weathered old man with kind eyes and a cloak that has seen better days."
+    description: "A weathered old man with kind eyes and a cloak that has seen better days. He leans on a gnarled walking stick and watches newcomers with a knowing smile."
     level: 10
     health: 100
     damage: 0
@@ -16,11 +16,19 @@ npcs:
     aggressive: false
     attackable: false
     dialogue:
-      - "Greetings, adventurer! New to our little city, are you?"
+      - "Greetings, adventurer! New to our little city, are you? Talk to me and I'll tell you all you need to know!"
+      - "The tower looms ever upward... infinite floors, infinite danger, infinite glory."
     locations:
       - "town_square"
     respawn_median: 0
     respawn_variation: 0
+    quest_giver: true
+    gives_quests:
+      - tower_introduction
+      - floor_five
+      - floor_ten
+    turn_in_quests:
+      - tower_introduction
 
   # ===================
   # Temple NPCs
@@ -206,6 +214,37 @@ npcs:
   # ===================
   # Guard NPCs
   # ===================
+  guard_captain:
+    name: "Guard Captain Marcus"
+    description: "A grizzled veteran with scars telling tales of many battles. His armor gleams with meticulous care."
+    level: 15
+    health: 200
+    damage: 25
+    armor: 10
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "I've lost too many good soldiers to that tower. Be careful up there."
+      - "The creatures grow stronger the higher you climb. Never let your guard down."
+      - "If you see anything unusual, report back to me immediately."
+    locations:
+      - "barracks"
+    respawn_median: 0
+    respawn_variation: 0
+    quest_giver: true
+    gives_quests:
+      - first_blood
+      - pest_control
+      - bat_infestation
+      - goblin_threat
+      - skeleton_patrol
+    turn_in_quests:
+      - first_blood
+      - pest_control
+      - bat_infestation
+      - goblin_threat
+
   city_guard:
     name: "city guard"
     description: "A disciplined soldier in the city's colors, ever watchful for threats."

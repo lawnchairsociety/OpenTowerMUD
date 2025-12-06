@@ -20,6 +20,7 @@ import (
 	"github.com/lawnchairsociety/opentowermud/server/internal/logger"
 	"github.com/lawnchairsociety/opentowermud/server/internal/npc"
 	"github.com/lawnchairsociety/opentowermud/server/internal/player"
+	"github.com/lawnchairsociety/opentowermud/server/internal/quest"
 	"github.com/lawnchairsociety/opentowermud/server/internal/spells"
 	"github.com/lawnchairsociety/opentowermud/server/internal/tower"
 	"github.com/lawnchairsociety/opentowermud/server/internal/world"
@@ -43,6 +44,7 @@ type Server struct {
 	itemsConfig         *items.ItemsConfig
 	spellRegistry       *spells.SpellRegistry
 	recipeRegistry      *crafting.RecipeRegistry
+	questRegistry       *quest.QuestRegistry
 }
 
 func NewServer(address string, world *world.World, pilgrimMode bool) *Server {
@@ -86,6 +88,16 @@ func (s *Server) SetRecipeRegistry(registry *crafting.RecipeRegistry) {
 // GetRecipeRegistry returns the recipe registry
 func (s *Server) GetRecipeRegistry() *crafting.RecipeRegistry {
 	return s.recipeRegistry
+}
+
+// SetQuestRegistry sets the quest registry
+func (s *Server) SetQuestRegistry(registry *quest.QuestRegistry) {
+	s.questRegistry = registry
+}
+
+// GetQuestRegistry returns the quest registry
+func (s *Server) GetQuestRegistry() *quest.QuestRegistry {
+	return s.questRegistry
 }
 
 // CreateItem creates a new instance of an item by its ID
@@ -868,6 +880,34 @@ func (s *Server) handleNPCDeath(npc *npc.NPC, room *world.Room) {
 			}
 
 			attackerNames = append(attackerNames, attackerName)
+
+			// Update quest kill progress for this attacker
+			if s.questRegistry != nil {
+				mobID := strings.ToLower(strings.ReplaceAll(npc.GetName(), " ", "_"))
+				questLog := attacker.GetQuestLog()
+				if questLog != nil {
+					// Check all active quests for kill objectives matching this mob
+					for _, questID := range questLog.GetActiveQuests() {
+						questDef, exists := s.questRegistry.GetQuest(questID)
+						if exists {
+							if questLog.UpdateKillProgressForQuest(questID, questDef, mobID) {
+								// Notify player of quest progress
+								progress, _ := questLog.GetQuestProgress(questID)
+								for i, obj := range questDef.Objectives {
+									if obj.Type == quest.QuestTypeKill && strings.ToLower(obj.Target) == mobID {
+										current := progress.Objectives[i].Current
+										targetName := obj.TargetName
+										if targetName == "" {
+											targetName = obj.Target
+										}
+										attacker.SendMessage(fmt.Sprintf("Quest progress: %s - %d/%d\n", targetName, current, obj.Required))
+									}
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 

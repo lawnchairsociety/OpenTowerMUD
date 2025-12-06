@@ -67,6 +67,9 @@ type NPC struct {
 	TrainerClass     string          // Class this NPC trains (for multiclassing)
 	CraftingTrainer  string          // Crafting skill this NPC teaches (blacksmithing, alchemy, etc.)
 	TeachesRecipes   []string        // Recipe IDs this NPC can teach
+	QuestGiver       bool            // Can this NPC give quests?
+	GivesQuests      []string        // Quest IDs this NPC can give
+	TurnInQuests     []string        // Quest IDs that can be turned in to this NPC
 	mu               sync.RWMutex
 }
 
@@ -742,4 +745,84 @@ func (n *NPC) IsCraftingTrainer() bool {
 	n.mu.RLock()
 	defer n.mu.RUnlock()
 	return n.CraftingTrainer != "" && len(n.TeachesRecipes) > 0
+}
+
+// IsQuestGiver returns true if this NPC can give quests
+func (n *NPC) IsQuestGiver() bool {
+	n.mu.RLock()
+	defer n.mu.RUnlock()
+	return n.QuestGiver && len(n.GivesQuests) > 0
+}
+
+// SetQuestGiver sets whether this NPC can give quests
+func (n *NPC) SetQuestGiver(isQuestGiver bool) {
+	n.mu.Lock()
+	defer n.mu.Unlock()
+	n.QuestGiver = isQuestGiver
+}
+
+// GetGivesQuests returns the list of quest IDs this NPC can give
+func (n *NPC) GetGivesQuests() []string {
+	n.mu.RLock()
+	defer n.mu.RUnlock()
+	quests := make([]string, len(n.GivesQuests))
+	copy(quests, n.GivesQuests)
+	return quests
+}
+
+// SetGivesQuests sets the quest IDs this NPC can give
+func (n *NPC) SetGivesQuests(questIDs []string) {
+	n.mu.Lock()
+	defer n.mu.Unlock()
+	n.GivesQuests = questIDs
+	if len(questIDs) > 0 {
+		n.QuestGiver = true
+	}
+}
+
+// CanGiveQuest returns true if this NPC can give a specific quest
+func (n *NPC) CanGiveQuest(questID string) bool {
+	n.mu.RLock()
+	defer n.mu.RUnlock()
+	for _, id := range n.GivesQuests {
+		if id == questID {
+			return true
+		}
+	}
+	return false
+}
+
+// GetTurnInQuests returns the list of quest IDs that can be turned in to this NPC
+func (n *NPC) GetTurnInQuests() []string {
+	n.mu.RLock()
+	defer n.mu.RUnlock()
+	quests := make([]string, len(n.TurnInQuests))
+	copy(quests, n.TurnInQuests)
+	return quests
+}
+
+// SetTurnInQuests sets the quest IDs that can be turned in to this NPC
+func (n *NPC) SetTurnInQuests(questIDs []string) {
+	n.mu.Lock()
+	defer n.mu.Unlock()
+	n.TurnInQuests = questIDs
+}
+
+// CanTurnInQuest returns true if a specific quest can be turned in to this NPC
+func (n *NPC) CanTurnInQuest(questID string) bool {
+	n.mu.RLock()
+	defer n.mu.RUnlock()
+	for _, id := range n.TurnInQuests {
+		if id == questID {
+			return true
+		}
+	}
+	return false
+}
+
+// HasQuestInteraction returns true if this NPC has any quest-related interactions
+func (n *NPC) HasQuestInteraction() bool {
+	n.mu.RLock()
+	defer n.mu.RUnlock()
+	return len(n.GivesQuests) > 0 || len(n.TurnInQuests) > 0
 }

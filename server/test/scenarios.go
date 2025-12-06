@@ -3,6 +3,7 @@ package test
 import (
 	"database/sql"
 	"fmt"
+	"strings"
 	"sync/atomic"
 	"time"
 
@@ -114,13 +115,17 @@ func navigateToTemple(client *testclient.TestClient) {
 func RunAllTests(serverAddr string) []TestResult {
 	results := make([]TestResult, 0)
 
-	// Group 1: Core Connection & Movement
+	// Group 1: Connection & Account System
 	results = append(results, TestBasicConnection(serverAddr))
 	results = append(results, TestMovement(serverAddr))
 	results = append(results, TestMultipleClientsMovement(serverAddr))
 	results = append(results, TestLookCommand(serverAddr))
+	results = append(results, TestAccountSystem(serverAddr))
+	results = append(results, TestInventoryPersistence(serverAddr))
+	results = append(results, TestRoomPersistence(serverAddr))
+	results = append(results, TestLastVisitedCityRespawn(serverAddr))
 
-	// Group 2: Communication
+	// Group 2: Communication & Social
 	results = append(results, TestSayCommand(serverAddr))
 	results = append(results, TestTellCommand(serverAddr))
 	results = append(results, TestShoutCommand(serverAddr))
@@ -137,67 +142,205 @@ func RunAllTests(serverAddr string) []TestResult {
 	results = append(results, TestReportCommand(serverAddr))
 	results = append(results, TestIgnoreList(serverAddr))
 
-	// Group 3: Inventory & Shopping
+	// Group 3: Character Info & Stats
+	results = append(results, TestScoreCommand(serverAddr))
+	results = append(results, TestClassCommand(serverAddr))
+	results = append(results, TestRaceCommand(serverAddr))
+	results = append(results, TestRacesCommand(serverAddr))
+	results = append(results, TestAbilityScores(serverAddr))
+	results = append(results, TestStartingEquipment(serverAddr))
+	results = append(results, TestLookAtPlayer(serverAddr))
+	results = append(results, TestConsiderSelf(serverAddr))
+	results = append(results, TestSkillsCommand(serverAddr))
+	results = append(results, TestTitleCommand(serverAddr))
+	results = append(results, TestPlayerLevelUp(serverAddr))
+
+	// Group 4: Inventory & Shopping
 	results = append(results, TestInventorySystem(serverAddr))
 	results = append(results, TestSellItem(serverAddr))
 	results = append(results, TestEquipment(serverAddr))
 	results = append(results, TestConsumables(serverAddr))
 
-	// Group 4: Combat System (non-killing tests first)
+	// Group 5: Combat System
 	results = append(results, TestUnattackableNPC(serverAddr))
 	results = append(results, TestAttackRolls(serverAddr))
 	results = append(results, TestFleeCommand(serverAddr))
 	results = append(results, TestCombatAndKill(serverAddr))
 	results = append(results, TestMobRespawn(serverAddr))
 
-	// Group 5: Magic System
+	// Group 6: Magic System
 	results = append(results, TestSpellCasting(serverAddr))
 	results = append(results, TestHealOtherPlayer(serverAddr))
 	results = append(results, TestBlessSpell(serverAddr))
 	results = append(results, TestSpellDamageWithModifiers(serverAddr))
 
-	// Group 6: Room Features
+	// Group 7: Room Features & Tower
 	results = append(results, TestPrayCommand(serverAddr))
 	results = append(results, TestPortalCommand(serverAddr))
-	results = append(results, TestConsiderSelf(serverAddr))
 	results = append(results, TestLookAtFeature(serverAddr))
+	results = append(results, TestTowerClimb(serverAddr))
+
+	// Group 8: NPCs & Training
 	results = append(results, TestTrainCommand(serverAddr))
 	results = append(results, TestTrainerLocations(serverAddr))
+	results = append(results, TestLearnFromTrainer(serverAddr))
+	results = append(results, TestCraftingTrainerLocations(serverAddr))
 
-	// Group 7: Tower & Progression
-	results = append(results, TestTowerClimb(serverAddr))
-	results = append(results, TestPlayerLevelUp(serverAddr))
-	results = append(results, TestAbilityScores(serverAddr))
-	results = append(results, TestScoreCommand(serverAddr))
-	results = append(results, TestClassCommand(serverAddr))
-	results = append(results, TestRaceCommand(serverAddr))
-	results = append(results, TestRacesCommand(serverAddr))
-	results = append(results, TestStartingEquipment(serverAddr))
-	results = append(results, TestLookAtPlayer(serverAddr))
-
-	// Group 8: Account System
-	results = append(results, TestAccountSystem(serverAddr))
-	results = append(results, TestInventoryPersistence(serverAddr))
-	results = append(results, TestRoomPersistence(serverAddr))
-	results = append(results, TestLastVisitedCityRespawn(serverAddr))
-
-	// Group 9: Admin Commands
-	results = append(results, TestAdminCommandsHidden(serverAddr))
-	results = append(results, TestAdminAnnounce(serverAddr))
-
-	// Group 10: Crafting System
-	results = append(results, TestSkillsCommand(serverAddr))
+	// Group 9: Crafting System
 	results = append(results, TestCraftingStationForge(serverAddr))
 	results = append(results, TestCraftingStationWorkbench(serverAddr))
 	results = append(results, TestCraftingStationAlchemyLab(serverAddr))
 	results = append(results, TestCraftingStationEnchantingTable(serverAddr))
-	results = append(results, TestLearnFromTrainer(serverAddr))
 	results = append(results, TestCraftWithoutStation(serverAddr))
 	results = append(results, TestCraftWithoutMaterials(serverAddr))
 	results = append(results, TestBuyCraftingMaterials(serverAddr))
 	results = append(results, TestCraftRecipeInfo(serverAddr))
-	results = append(results, TestCraftingTrainerLocations(serverAddr))
 	results = append(results, TestCraftingSkillPersistence(serverAddr))
+
+	// Group 10: Quest System
+	results = append(results, TestQuestCommand(serverAddr))
+	results = append(results, TestQuestJournalAlias(serverAddr))
+	results = append(results, TestQuestGiverNPC(serverAddr))
+	results = append(results, TestQuestListWithNPC(serverAddr))
+	results = append(results, TestAcceptQuest(serverAddr))
+	results = append(results, TestQuestProgress(serverAddr))
+	results = append(results, TestQuestPrerequisites(serverAddr))
+	results = append(results, TestCompleteQuestNotReady(serverAddr))
+
+	// Group 11: Admin Commands
+	results = append(results, TestAdminCommandsHidden(serverAddr))
+	results = append(results, TestAdminAnnounce(serverAddr))
+
+	return results
+}
+
+// testEntry holds a test function and its name
+type testEntry struct {
+	Name string
+	Func func(string) TestResult
+}
+
+// getAllTests returns all test entries in order
+func getAllTests() []testEntry {
+	return []testEntry{
+		// Group 1: Connection & Account System
+		{"Basic Connection", TestBasicConnection},
+		{"Movement", TestMovement},
+		{"Multiple Clients Movement", TestMultipleClientsMovement},
+		{"Look Command", TestLookCommand},
+		{"Account System", TestAccountSystem},
+		{"Inventory Persistence", TestInventoryPersistence},
+		{"Room Persistence", TestRoomPersistence},
+		{"Death Respawn", TestLastVisitedCityRespawn},
+
+		// Group 2: Communication & Social
+		{"Say Command", TestSayCommand},
+		{"Tell Command", TestTellCommand},
+		{"Shout Command", TestShoutCommand},
+		{"Emote Command", TestEmoteCommand},
+		{"Give Item", TestGiveItem},
+		{"Give Gold", TestGiveGold},
+		{"Give Requires Same Room", TestGiveRequiresSameRoom},
+		{"Chat Filter Replace", TestChatFilterReplace},
+		{"Antispam Rate Limit", TestAntispamRateLimit},
+		{"Antispam Repeat Message", TestAntispamRepeatMessage},
+		{"Ignore Command", TestIgnoreCommand},
+		{"Ignore Tell", TestIgnoreTell},
+		{"Unignore Command", TestUnignoreCommand},
+		{"Report Command", TestReportCommand},
+		{"Ignore List", TestIgnoreList},
+
+		// Group 3: Character Info & Stats
+		{"Score Command", TestScoreCommand},
+		{"Class Command", TestClassCommand},
+		{"Race Command", TestRaceCommand},
+		{"Races Command", TestRacesCommand},
+		{"Ability Scores", TestAbilityScores},
+		{"Starting Equipment", TestStartingEquipment},
+		{"Look At Player", TestLookAtPlayer},
+		{"Consider Self", TestConsiderSelf},
+		{"Skills Command", TestSkillsCommand},
+		{"Title Command", TestTitleCommand},
+		{"Player Level Up", TestPlayerLevelUp},
+
+		// Group 4: Inventory & Shopping
+		{"Inventory System", TestInventorySystem},
+		{"Sell Item", TestSellItem},
+		{"Equipment", TestEquipment},
+		{"Consumables", TestConsumables},
+
+		// Group 5: Combat System
+		{"Unattackable NPC", TestUnattackableNPC},
+		{"Attack Rolls", TestAttackRolls},
+		{"Flee Command", TestFleeCommand},
+		{"Combat and Kill", TestCombatAndKill},
+		{"Mob Respawn", TestMobRespawn},
+
+		// Group 6: Magic System
+		{"Spell Casting", TestSpellCasting},
+		{"Heal Other Player", TestHealOtherPlayer},
+		{"Bless Spell", TestBlessSpell},
+		{"Spell Damage Modifiers", TestSpellDamageWithModifiers},
+
+		// Group 7: Room Features & Tower
+		{"Pray Command", TestPrayCommand},
+		{"Portal Command", TestPortalCommand},
+		{"Look At Feature", TestLookAtFeature},
+		{"Tower Climb", TestTowerClimb},
+
+		// Group 8: NPCs & Training
+		{"Train Command", TestTrainCommand},
+		{"Trainer Locations", TestTrainerLocations},
+		{"Learn From Trainer", TestLearnFromTrainer},
+		{"Crafting Trainer Locations", TestCraftingTrainerLocations},
+
+		// Group 9: Crafting System
+		{"Crafting Station - Forge", TestCraftingStationForge},
+		{"Crafting Station - Workbench", TestCraftingStationWorkbench},
+		{"Crafting Station - Alchemy Lab", TestCraftingStationAlchemyLab},
+		{"Crafting Station - Enchanting Table", TestCraftingStationEnchantingTable},
+		{"Craft Without Station", TestCraftWithoutStation},
+		{"Craft Without Materials", TestCraftWithoutMaterials},
+		{"Buy Crafting Materials", TestBuyCraftingMaterials},
+		{"Craft Recipe Info", TestCraftRecipeInfo},
+		{"Crafting Skill Persistence", TestCraftingSkillPersistence},
+
+		// Group 10: Quest System
+		{"Quest Command", TestQuestCommand},
+		{"Quest Journal Alias", TestQuestJournalAlias},
+		{"Quest Giver NPC", TestQuestGiverNPC},
+		{"Quest List With NPC", TestQuestListWithNPC},
+		{"Accept Quest", TestAcceptQuest},
+		{"Quest Progress", TestQuestProgress},
+		{"Quest Prerequisites", TestQuestPrerequisites},
+		{"Complete Quest Not Ready", TestCompleteQuestNotReady},
+
+		// Group 11: Admin Commands
+		{"Admin Commands Hidden", TestAdminCommandsHidden},
+		{"Admin Announce", TestAdminAnnounce},
+	}
+}
+
+// GetTestNames returns the names of all available tests
+func GetTestNames() []string {
+	tests := getAllTests()
+	names := make([]string, len(tests))
+	for i, t := range tests {
+		names[i] = t.Name
+	}
+	return names
+}
+
+// RunFilteredTests runs only tests whose names contain the filter string (case-insensitive)
+func RunFilteredTests(serverAddr string, filter string) []TestResult {
+	results := make([]TestResult, 0)
+	filterLower := strings.ToLower(filter)
+
+	for _, t := range getAllTests() {
+		if strings.Contains(strings.ToLower(t.Name), filterLower) {
+			results = append(results, t.Func(serverAddr))
+		}
+	}
 
 	return results
 }

@@ -70,7 +70,39 @@ func executeTalk(c *Command, p PlayerInterface) string {
 		return fmt.Sprintf("The %s doesn't seem interested in conversation.", foundNPC.GetName())
 	}
 
-	return fmt.Sprintf("The %s says, \"%s\"", foundNPC.GetName(), dialogue)
+	response := fmt.Sprintf("The %s says, \"%s\"", foundNPC.GetName(), dialogue)
+
+	// Check if NPC is a quest giver with available quests
+	if foundNPC.IsQuestGiver() {
+		questHint := getQuestGiverHint(p, foundNPC)
+		if questHint != "" {
+			response += "\n\n" + questHint
+		}
+	}
+
+	return response
+}
+
+// getQuestGiverHint returns a hint about available quests from this NPC
+func getQuestGiverHint(p PlayerInterface, npcGiver *npc.NPC) string {
+	server, ok := p.GetServer().(ServerInterface)
+	if !ok {
+		return ""
+	}
+
+	questRegistry := server.GetQuestRegistry()
+	if questRegistry == nil {
+		return ""
+	}
+
+	playerState := p.GetQuestState()
+	available := questRegistry.GetAvailableQuestsForPlayer(npcGiver.GetName(), playerState)
+
+	if len(available) == 0 {
+		return ""
+	}
+
+	return fmt.Sprintf("[%s has %d quest(s) available. Type 'accept' to see them.]", npcGiver.GetName(), len(available))
 }
 
 // handleBardInteraction provides flavor dialogue with the bard

@@ -15,6 +15,7 @@ import (
 	"github.com/lawnchairsociety/opentowermud/server/internal/items"
 	"github.com/lawnchairsociety/opentowermud/server/internal/logger"
 	"github.com/lawnchairsociety/opentowermud/server/internal/npc"
+	"github.com/lawnchairsociety/opentowermud/server/internal/quest"
 	"github.com/lawnchairsociety/opentowermud/server/internal/race"
 	"github.com/lawnchairsociety/opentowermud/server/internal/server"
 	"github.com/lawnchairsociety/opentowermud/server/internal/spells"
@@ -35,6 +36,7 @@ func main() {
 	racesFile := flag.String("races", "data/races.yaml", "Path to races YAML file")
 	spellsFile := flag.String("spells", "data/spells.yaml", "Path to spells YAML file")
 	recipesFile := flag.String("recipes", "data/recipes.yaml", "Path to crafting recipes YAML file")
+	questsFile := flag.String("quests", "data/quests.yaml", "Path to quests YAML file")
 	loggingConfig := flag.String("logging", "data/logging.yaml", "Path to logging config YAML file")
 	chatFilterConfig := flag.String("chatfilter", "data/chat_filter.yaml", "Path to chat filter config YAML file")
 	pilgrimMode := flag.Bool("pilgrim", false, "Enable pilgrim mode (peaceful exploration, no combat)")
@@ -126,6 +128,14 @@ func main() {
 		logger.Info("Recipes loaded", "count", recipeRegistry.Count())
 	}
 
+	// Load quests config
+	questRegistry := quest.NewQuestRegistry()
+	if err := questRegistry.LoadFromYAML(*questsFile); err != nil {
+		logger.Warning("Failed to load quests config, quests disabled", "path", *questsFile, "error", err)
+	} else {
+		logger.Info("Quests loaded", "count", questRegistry.Count())
+	}
+
 	// Initialize player database
 	db, err := database.Open(*dbFile)
 	if err != nil {
@@ -138,11 +148,12 @@ func main() {
 	addr := fmt.Sprintf(":%d", *port)
 	srv := server.NewServer(addr, gameWorld, *pilgrimMode)
 
-	// Set database, items config, spell registry, and recipe registry on server
+	// Set database, items config, spell registry, recipe registry, and quest registry on server
 	srv.SetDatabase(db)
 	srv.SetItemsConfig(itemsConfig)
 	srv.SetSpellRegistry(spellRegistry)
 	srv.SetRecipeRegistry(recipeRegistry)
+	srv.SetQuestRegistry(questRegistry)
 
 	// Set up dynamic spawn scaling based on player count
 	srv.SetupDynamicSpawns(gameTower)

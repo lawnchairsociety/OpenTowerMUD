@@ -7,6 +7,7 @@ import (
 
 	"github.com/lawnchairsociety/opentowermud/server/internal/crafting"
 	"github.com/lawnchairsociety/opentowermud/server/internal/npc"
+	"github.com/lawnchairsociety/opentowermud/server/internal/quest"
 )
 
 // executeCraft handles the craft command
@@ -258,6 +259,9 @@ func attemptCraft(p PlayerInterface, recipes *crafting.RecipeRegistry, recipeNam
 		sb.WriteString(fmt.Sprintf("You created: %s\n", strings.Join(createdItems, ", ")))
 	}
 
+	// Update quest craft progress
+	updateQuestCraftProgress(p, recipe.OutputItem)
+
 	if newLevel > oldLevel {
 		sb.WriteString(fmt.Sprintf("Your %s skill increased to %d! (+%d)",
 			recipe.Skill.String(), newLevel, recipe.SkillGain))
@@ -461,4 +465,45 @@ func learnRecipe(p PlayerInterface, trainer *npc.NPC, trainerSkill string, teach
 	sb.WriteString(fmt.Sprintf("You can now craft this at a %s.", crafting.StationName(recipe.Station)))
 
 	return sb.String()
+}
+
+// updateQuestCraftProgress updates craft quest progress when a player crafts an item
+func updateQuestCraftProgress(p PlayerInterface, itemID string) {
+	server, ok := p.GetServer().(ServerInterface)
+	if !ok {
+		return
+	}
+
+	questRegistry := server.GetQuestRegistry()
+	if questRegistry == nil {
+		return
+	}
+
+	questLog := p.GetQuestLog()
+	if questLog == nil {
+		return
+	}
+
+	// Check all active quests for craft objectives matching this item
+	for _, questID := range questLog.GetActiveQuests() {
+		questDef, exists := questRegistry.GetQuest(questID)
+		if !exists {
+			continue
+		}
+
+		if questLog.UpdateCraftProgressForQuest(questID, questDef, itemID) {
+			// Notify player of quest progress
+			progress, _ := questLog.GetQuestProgress(questID)
+			for i, obj := range questDef.Objectives {
+				if obj.Type == quest.QuestTypeCraft && strings.EqualFold(obj.Target, itemID) {
+					current := progress.Objectives[i].Current
+					targetName := obj.TargetName
+					if targetName == "" {
+						targetName = obj.Target
+					}
+					p.SendMessage(fmt.Sprintf("Quest progress: Crafted %s - %d/%d\n", targetName, current, obj.Required))
+				}
+			}
+		}
+	}
 }

@@ -43,6 +43,9 @@ type NPCDefinition struct {
 	TrainerClass     string          `yaml:"trainer_class"`     // Class this NPC trains (warrior, mage, cleric, rogue, ranger, paladin)
 	CraftingTrainer  string          `yaml:"crafting_trainer"`  // Crafting skill this NPC teaches (blacksmithing, leatherworking, alchemy, enchanting)
 	TeachesRecipes   []string        `yaml:"teaches_recipes"`   // Recipe IDs this NPC can teach
+	QuestGiver       bool            `yaml:"quest_giver"`       // Can this NPC give quests?
+	GivesQuests      []string        `yaml:"gives_quests"`      // Quest IDs this NPC can give
+	TurnInQuests     []string        `yaml:"turn_in_quests"`    // Quest IDs that can be turned in to this NPC
 	Locations        []string        `yaml:"locations"`         // Room IDs where this NPC spawns
 	RespawnMedian    int             `yaml:"respawn_median"`    // Median respawn time in seconds
 	RespawnVariation int             `yaml:"respawn_variation"` // Variation in respawn time (+/- seconds)
@@ -122,6 +125,16 @@ func CreateNPCFromDefinition(def NPCDefinition, roomID string) *NPC {
 	}
 	if len(def.TeachesRecipes) > 0 {
 		npc.SetTeachesRecipes(def.TeachesRecipes)
+	}
+	// Set quest giver info
+	if def.QuestGiver || len(def.GivesQuests) > 0 {
+		npc.SetQuestGiver(true)
+	}
+	if len(def.GivesQuests) > 0 {
+		npc.SetGivesQuests(def.GivesQuests)
+	}
+	if len(def.TurnInQuests) > 0 {
+		npc.SetTurnInQuests(def.TurnInQuests)
 	}
 	// Convert YAML loot table to NPC loot table
 	if len(def.LootTable) > 0 {
