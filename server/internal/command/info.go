@@ -991,7 +991,8 @@ Crafting (at crafting stations):
 Quests:
   quest             - View your quest journal
   quest list        - Show all active quests with progress
-  accept            - See available quests from nearby NPCs
+  quest available   - See available quests from nearby NPCs
+  quest available <name> - Preview a quest before accepting
   accept <quest>    - Accept a specific quest
   complete          - Turn in a completed quest
   title             - View and set your title
