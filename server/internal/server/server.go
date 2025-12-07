@@ -920,9 +920,10 @@ func (s *Server) processPlayerAttack(p *player.Player) {
 		for _, targetName := range targets {
 			if targetName != p.GetName() {
 				if targetPlayerInterface := s.FindPlayer(targetName); targetPlayerInterface != nil {
-					targetPlayer := targetPlayerInterface.(*player.Player)
-					targetPlayer.SendMessage(fmt.Sprintf("\n%s %s %s and misses!\n",
-						p.GetName(), attackVerbThirdPerson, npc.GetName()))
+					if targetPlayer, ok := targetPlayerInterface.(*player.Player); ok {
+						targetPlayer.SendMessage(fmt.Sprintf("\n%s %s %s and misses!\n",
+							p.GetName(), attackVerbThirdPerson, npc.GetName()))
+					}
 				}
 			}
 		}
@@ -957,9 +958,10 @@ func (s *Server) processPlayerAttack(p *player.Player) {
 	for _, targetName := range targets {
 		if targetName != p.GetName() {
 			if targetPlayerInterface := s.FindPlayer(targetName); targetPlayerInterface != nil {
-				targetPlayer := targetPlayerInterface.(*player.Player)
-				targetPlayer.SendMessage(fmt.Sprintf("\n%s hits %s for %d damage! (%d/%d HP)\n",
-					p.GetName(), npc.GetName(), npcDamageTaken, npc.GetHealth(), npc.GetMaxHealth()))
+				if targetPlayer, ok := targetPlayerInterface.(*player.Player); ok {
+					targetPlayer.SendMessage(fmt.Sprintf("\n%s hits %s for %d damage! (%d/%d HP)\n",
+						p.GetName(), npc.GetName(), npcDamageTaken, npc.GetHealth(), npc.GetMaxHealth()))
+				}
 			}
 		}
 	}
@@ -1056,15 +1058,16 @@ func (s *Server) processNPCAttacks() {
 			targets := npc.GetTargets()
 			for _, fighterName := range targets {
 				if fighterInterface := s.FindPlayer(fighterName); fighterInterface != nil {
-					fighter := fighterInterface.(*player.Player)
-					if fighterName == targetName {
-						// Message for the target
-						fighter.SendMessage(fmt.Sprintf("%s hits you for %d damage! (%d/%d HP)\n",
-							npc.GetName(), playerDamageTaken, targetPlayer.GetHealth(), targetPlayer.GetMaxHealth()))
-					} else {
-						// Message for other fighters
-						fighter.SendMessage(fmt.Sprintf("%s hits %s for %d damage!\n",
-							npc.GetName(), targetName, playerDamageTaken))
+					if fighter, ok := fighterInterface.(*player.Player); ok {
+						if fighterName == targetName {
+							// Message for the target
+							fighter.SendMessage(fmt.Sprintf("%s hits you for %d damage! (%d/%d HP)\n",
+								npc.GetName(), playerDamageTaken, targetPlayer.GetHealth(), targetPlayer.GetMaxHealth()))
+						} else {
+							// Message for other fighters
+							fighter.SendMessage(fmt.Sprintf("%s hits %s for %d damage!\n",
+								npc.GetName(), targetName, playerDamageTaken))
+						}
 					}
 				}
 			}
@@ -1103,7 +1106,10 @@ func (s *Server) handleNPCDeath(npc *npc.NPC, room *world.Room) {
 	// Award XP and send messages to all attackers
 	for _, attackerName := range attackers {
 		if attackerInterface := s.FindPlayer(attackerName); attackerInterface != nil {
-			attacker := attackerInterface.(*player.Player)
+			attacker, ok := attackerInterface.(*player.Player)
+			if !ok {
+				continue
+			}
 
 			// End combat
 			attacker.EndCombat()
@@ -1170,12 +1176,13 @@ func (s *Server) handleNPCDeath(npc *npc.NPC, room *world.Room) {
 		}
 		for _, attackerName := range attackers {
 			if attackerInterface := s.FindPlayer(attackerName); attackerInterface != nil {
-				attacker := attackerInterface.(*player.Player)
-				attacker.AddGold(goldPerPlayer)
-				if len(attackers) == 1 {
-					attacker.SendMessage(fmt.Sprintf("You loot %d gold.\n", goldPerPlayer))
-				} else {
-					attacker.SendMessage(fmt.Sprintf("You loot %d gold (split %d ways).\n", goldPerPlayer, len(attackers)))
+				if attacker, ok := attackerInterface.(*player.Player); ok {
+					attacker.AddGold(goldPerPlayer)
+					if len(attackers) == 1 {
+						attacker.SendMessage(fmt.Sprintf("You loot %d gold.\n", goldPerPlayer))
+					} else {
+						attacker.SendMessage(fmt.Sprintf("You loot %d gold (split %d ways).\n", goldPerPlayer, len(attackers)))
+					}
 				}
 			}
 		}
@@ -1198,8 +1205,9 @@ func (s *Server) handleNPCDeath(npc *npc.NPC, room *world.Room) {
 			lootMsg := fmt.Sprintf("%s dropped: %s\n", npc.GetName(), strings.Join(droppedItemNames, ", "))
 			for _, attackerName := range attackers {
 				if attackerInterface := s.FindPlayer(attackerName); attackerInterface != nil {
-					attacker := attackerInterface.(*player.Player)
-					attacker.SendMessage(lootMsg)
+					if attacker, ok := attackerInterface.(*player.Player); ok {
+						attacker.SendMessage(lootMsg)
+					}
 				}
 			}
 		}
@@ -1215,8 +1223,9 @@ func (s *Server) handleNPCDeath(npc *npc.NPC, room *world.Room) {
 		// Notify all attackers about the key drop
 		for _, attackerName := range attackers {
 			if attackerInterface := s.FindPlayer(attackerName); attackerInterface != nil {
-				attacker := attackerInterface.(*player.Player)
-				attacker.SendMessage(fmt.Sprintf("\n*** %s dropped a %s! ***\n", npc.GetName(), bossKey.Name))
+				if attacker, ok := attackerInterface.(*player.Player); ok {
+					attacker.SendMessage(fmt.Sprintf("\n*** %s dropped a %s! ***\n", npc.GetName(), bossKey.Name))
+				}
 			}
 		}
 
@@ -1343,9 +1352,10 @@ func (s *Server) handleNPCFlee(n *npc.NPC, room *world.Room) {
 	fleeMessage := fmt.Sprintf("\n%s panics and flees %s!\n", n.GetName(), fleeDirection)
 	for _, targetName := range targets {
 		if targetPlayerInterface := s.FindPlayer(targetName); targetPlayerInterface != nil {
-			targetPlayer := targetPlayerInterface.(*player.Player)
-			targetPlayer.SendMessage(fleeMessage)
-			targetPlayer.EndCombat()
+			if targetPlayer, ok := targetPlayerInterface.(*player.Player); ok {
+				targetPlayer.SendMessage(fleeMessage)
+				targetPlayer.EndCombat()
+			}
 		}
 	}
 

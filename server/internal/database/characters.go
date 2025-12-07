@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"strings"
@@ -93,8 +94,10 @@ func (d *Database) CreateCharacterWithClassAndRace(accountID int64, name string,
 		race = "human"
 	}
 
-	// Build initial class levels JSON
-	classLevels := fmt.Sprintf(`{"%s":1}`, primaryClass)
+	// Build initial class levels JSON using proper marshaling to avoid injection
+	classLevelsMap := map[string]int{primaryClass: 1}
+	classLevelsBytes, _ := json.Marshal(classLevelsMap)
+	classLevels := string(classLevelsBytes)
 
 	// Calculate starting HP/Mana based on class
 	startingHP, startingMana := calculateStartingStats(primaryClass, str, dex, con, int_, wis, cha)
