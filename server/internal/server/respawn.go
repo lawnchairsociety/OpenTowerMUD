@@ -13,6 +13,7 @@ type RespawnManager struct {
 	deadNPCs []*npc.NPC
 	mu       sync.RWMutex
 	stopChan chan struct{}
+	wg       sync.WaitGroup
 }
 
 // NewRespawnManager creates a new respawn manager
@@ -46,16 +47,19 @@ func (rm *RespawnManager) AddDeadNPC(n *npc.NPC) {
 
 // Start begins the respawn checking loop
 func (rm *RespawnManager) Start(respawnFunc func(*npc.NPC)) {
+	rm.wg.Add(1)
 	go rm.checkRespawns(respawnFunc)
 }
 
-// Stop stops the respawn checking loop
+// Stop stops the respawn checking loop and waits for it to finish
 func (rm *RespawnManager) Stop() {
 	close(rm.stopChan)
+	rm.wg.Wait()
 }
 
 // checkRespawns periodically checks for NPCs ready to respawn
 func (rm *RespawnManager) checkRespawns(respawnFunc func(*npc.NPC)) {
+	defer rm.wg.Done()
 	ticker := time.NewTicker(5 * time.Second) // Check every 5 seconds
 	defer ticker.Stop()
 

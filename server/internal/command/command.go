@@ -241,6 +241,32 @@ type RoomInterface interface {
 	GetExitKeyRequired(direction string) string
 	UnlockExit(direction string)
 	GetNPCs() []*npc.NPC
+	FindNPC(partial string) *npc.NPC
+	AddNPC(n *npc.NPC)
+	RemoveNPC(n *npc.NPC)
+}
+
+// GetRoom safely extracts the room from a player's GetCurrentRoom() result.
+// Returns the RoomInterface and true if successful, or nil and false if the
+// room is nil or not a valid room type.
+func GetRoom(p PlayerInterface) (RoomInterface, bool) {
+	roomIface := p.GetCurrentRoom()
+	if roomIface == nil {
+		return nil, false
+	}
+	room, ok := roomIface.(RoomInterface)
+	return room, ok
+}
+
+// MustGetRoom returns the room or panics with a descriptive error.
+// Use this only in contexts where a nil room indicates a programming error.
+func MustGetRoom(p PlayerInterface) RoomInterface {
+	room, ok := GetRoom(p)
+	if !ok {
+		logger.Error("Player has invalid room", "player", p.GetName())
+		panic("player has nil or invalid room - this should never happen")
+	}
+	return room
 }
 
 // WorldInterface defines the methods we need from a world object

@@ -78,9 +78,14 @@ func (s *Server) loadPlayer(client Client, auth *AuthResult) (*player.Player, er
 
 	// Load room - find the room in the world
 	room := s.world.GetRoom(char.RoomID)
+	roomRelocated := false
 	if room == nil {
 		// Room doesn't exist (maybe world changed), use starting room
+		logger.Warning("Player's saved room not found, using starting room",
+			"player", char.Name,
+			"saved_room_id", char.RoomID)
 		room = s.world.GetStartingRoom()
+		roomRelocated = true
 	}
 	if room == nil {
 		return nil, fmt.Errorf("no valid room found for player %s (tried %s and starting room)", char.Name, char.RoomID)
@@ -93,6 +98,11 @@ func (s *Server) loadPlayer(client Client, auth *AuthResult) (*player.Player, er
 	}
 	p.CurrentRoom = room
 	room.AddPlayer(char.Name)
+
+	// Notify player if they were relocated
+	if roomRelocated {
+		p.SendMessage("\n[Your previous location no longer exists. You have been moved to the town square.]\n")
+	}
 
 	// Load inventory
 	inventoryIDs, err := s.db.LoadInventory(char.ID)
@@ -361,10 +371,14 @@ func getClassStartingItems(className string) []string {
 
 // handleDisconnect handles player disconnect cleanup and auto-saves progress
 func (s *Server) handleDisconnect(p *player.Player) {
-	room := p.GetCurrentRoom().(*world.Room)
+	roomIface := p.GetCurrentRoom()
+	var room *world.Room
+	if roomIface != nil {
+		room, _ = roomIface.(*world.Room)
+	}
 
 	// Check if player was in combat - end the combat state
-	if p.IsInCombat() {
+	if p.IsInCombat() && room != nil {
 		npc := room.FindNPC(p.GetCombatTarget())
 
 		// End combat with NPC

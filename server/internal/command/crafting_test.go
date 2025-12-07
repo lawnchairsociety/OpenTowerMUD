@@ -34,6 +34,9 @@ func (m *mockRoom) IsExitLocked(direction string) bool                          
 func (m *mockRoom) GetExitKeyRequired(direction string) string                        { return "" }
 func (m *mockRoom) UnlockExit(direction string)                                       {}
 func (m *mockRoom) GetNPCs() []*npc.NPC                                               { return nil }
+func (m *mockRoom) FindNPC(name string) *npc.NPC                                      { return nil }
+func (m *mockRoom) AddNPC(n *npc.NPC)                                                 {}
+func (m *mockRoom) RemoveNPC(n *npc.NPC)                                              {}
 
 func TestGetStationInRoom(t *testing.T) {
 	tests := []struct {

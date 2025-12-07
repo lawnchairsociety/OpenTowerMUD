@@ -8,7 +8,6 @@ import (
 	"github.com/lawnchairsociety/opentowermud/server/internal/npc"
 	"github.com/lawnchairsociety/opentowermud/server/internal/spells"
 	"github.com/lawnchairsociety/opentowermud/server/internal/stats"
-	"github.com/lawnchairsociety/opentowermud/server/internal/world"
 )
 
 // executeCast handles casting spells
@@ -80,7 +79,10 @@ func executeCast(c *Command, p PlayerInterface) string {
 	}
 
 	// Target specified - determine if it's a player or NPC
-	room := p.GetCurrentRoom().(*world.Room)
+	room, ok := GetRoom(p)
+	if !ok {
+		return "Error: You are not in a valid room."
+	}
 
 	// First check if target is a player in the room
 	if spell.CanTargetAlly() {
@@ -88,8 +90,8 @@ func executeCast(c *Command, p PlayerInterface) string {
 			targetPlayer, ok := targetPlayerIface.(PlayerInterface)
 			if ok {
 				// Verify target is in same room
-				targetRoom := targetPlayer.GetCurrentRoom().(*world.Room)
-				if targetRoom.GetID() == room.GetID() {
+				targetRoom, targetOk := GetRoom(targetPlayer)
+				if targetOk && targetRoom.GetID() == room.GetID() {
 					return castAllySpell(c, p, spell, targetPlayer)
 				}
 			}
@@ -198,7 +200,10 @@ func castAllySpell(c *Command, p PlayerInterface, spell *spells.Spell, target Pl
 		return "Internal error: invalid server type"
 	}
 
-	room := p.GetCurrentRoom().(*world.Room)
+	room, ok := GetRoom(p)
+	if !ok {
+		return "Internal error: invalid room type"
+	}
 
 	// Get WIS modifier for healing
 	wisMod := p.GetWisdomMod()
@@ -255,7 +260,7 @@ func castAllySpell(c *Command, p PlayerInterface, spell *spells.Spell, target Pl
 }
 
 // castEnemySpell handles spells that target NPCs/enemies
-func castEnemySpell(c *Command, p PlayerInterface, spell *spells.Spell, targetNPC *npc.NPC, room *world.Room) string {
+func castEnemySpell(c *Command, p PlayerInterface, spell *spells.Spell, targetNPC *npc.NPC, room RoomInterface) string {
 	// Check if NPC is attackable
 	if spell.HasDamageEffect() && !targetNPC.IsAttackable() {
 		return fmt.Sprintf("You cannot attack %s!", targetNPC.GetName())
@@ -357,7 +362,10 @@ func castEnemySpell(c *Command, p PlayerInterface, spell *spells.Spell, targetNP
 
 // castRoomSpell handles spells that affect all enemies in the room
 func castRoomSpell(c *Command, p PlayerInterface, spell *spells.Spell) string {
-	room := p.GetCurrentRoom().(*world.Room)
+	room, ok := GetRoom(p)
+	if !ok {
+		return "Error: You are not in a valid room."
+	}
 
 	// Get all attackable NPCs in the room
 	allNPCs := room.GetNPCs()

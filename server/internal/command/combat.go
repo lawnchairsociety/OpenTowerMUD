@@ -3,8 +3,6 @@ package command
 import (
 	"fmt"
 	"strings"
-
-	"github.com/lawnchairsociety/opentowermud/server/internal/world"
 )
 
 // executeAttack initiates combat with an NPC
@@ -26,7 +24,10 @@ func executeAttack(c *Command, p PlayerInterface) string {
 	}
 
 	targetName := c.GetItemName()
-	room := p.GetCurrentRoom().(*world.Room)
+	room, ok := GetRoom(p)
+	if !ok {
+		return "Error: You are not in a valid room."
+	}
 
 	// Find the NPC in the room
 	npc := room.FindNPC(targetName)
@@ -63,7 +64,10 @@ func executeFlee(c *Command, p PlayerInterface) string {
 		return "You aren't fighting anyone!"
 	}
 
-	room := p.GetCurrentRoom().(*world.Room)
+	room, ok := GetRoom(p)
+	if !ok {
+		return "Error: You are not in a valid room."
+	}
 
 	// Find the NPC player is fighting
 	npc := room.FindNPC(p.GetCombatTarget())
@@ -103,7 +107,11 @@ func executeFlee(c *Command, p PlayerInterface) string {
 	// Move player
 	p.MoveTo(targetRoom)
 
-	return fmt.Sprintf("You flee %s!\n\n%s", direction, p.GetCurrentRoom().(*world.Room).GetDescriptionForPlayer(p.GetName()))
+	newRoom, _ := GetRoom(p)
+	if newRoom == nil {
+		return fmt.Sprintf("You flee %s!", direction)
+	}
+	return fmt.Sprintf("You flee %s!\n\n%s", direction, newRoom.GetDescriptionForPlayer(p.GetName()))
 }
 
 // executeConsider evaluates an NPC's difficulty
@@ -121,7 +129,10 @@ func executeConsider(c *Command, p PlayerInterface) string {
 		return executeConsiderSelf(c, p)
 	}
 
-	room := p.GetCurrentRoom().(*world.Room)
+	room, ok := GetRoom(p)
+	if !ok {
+		return "Error: You are not in a valid room."
+	}
 
 	// Find the NPC in the room
 	npc := room.FindNPC(targetName)

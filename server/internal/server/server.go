@@ -748,7 +748,14 @@ func (s *Server) processPlayerAttack(p *player.Player) {
 	}
 
 	// Get the room
-	room := p.GetCurrentRoom().(*world.Room)
+	roomIface := p.GetCurrentRoom()
+	if roomIface == nil {
+		return
+	}
+	room, ok := roomIface.(*world.Room)
+	if !ok {
+		return
+	}
 
 	// Find the NPC
 	npc := room.FindNPC(p.GetCombatTarget())
@@ -882,7 +889,11 @@ func (s *Server) processNPCAttacks() {
 				npc.EndCombat(targetName)
 				continue
 			}
-			targetPlayer := targetPlayerInterface.(*player.Player)
+			targetPlayer, ok := targetPlayerInterface.(*player.Player)
+			if !ok {
+				npc.EndCombat(targetName)
+				continue
+			}
 			if !targetPlayer.IsAlive() {
 				// Target is dead, remove from targets
 				npc.EndCombat(targetName)
@@ -890,8 +901,14 @@ func (s *Server) processNPCAttacks() {
 			}
 
 			// Check if target is still in the same room as the NPC
-			targetRoom := targetPlayer.GetCurrentRoom().(*world.Room)
-			if targetRoom.GetID() != room.GetID() {
+			targetRoomIface := targetPlayer.GetCurrentRoom()
+			if targetRoomIface == nil {
+				npc.EndCombat(targetName)
+				targetPlayer.EndCombat()
+				continue
+			}
+			targetRoom, ok := targetRoomIface.(*world.Room)
+			if !ok || targetRoom.GetID() != room.GetID() {
 				// Target has left the room, remove from combat
 				logger.Debug("Combat target left room",
 					"npc", npc.GetName(),
@@ -1153,6 +1170,7 @@ func (s *Server) handlePlayerDeath(p *player.Player, npc *npc.NPC, room *world.R
 	respawnRoom := s.world.GetStartingRoom()
 
 	// Send death message
+	// Note: No gold/XP penalty - respawning at town is the only penalty
 	p.SendMessage("\n\n*** YOU HAVE DIED ***\n")
 	p.SendMessage(fmt.Sprintf("You will respawn at %s.\n\n", respawnRoom.Name))
 
@@ -1188,7 +1206,14 @@ func (s *Server) handleNPCFlee(n *npc.NPC, room *world.Room) {
 
 	// Pick a random direction
 	fleeDirection := availableDirections[rand.Intn(len(availableDirections))]
-	destRoom := room.GetExit(fleeDirection).(*world.Room)
+	destRoomIface := room.GetExit(fleeDirection)
+	if destRoomIface == nil {
+		return
+	}
+	destRoom, ok := destRoomIface.(*world.Room)
+	if !ok {
+		return
+	}
 
 	// Get all players fighting this NPC before ending combat
 	targets := n.GetTargets()
@@ -1240,7 +1265,14 @@ func (s *Server) checkAggressiveNPCs(p *player.Player) {
 	}
 
 	// Get the room
-	room := p.GetCurrentRoom().(*world.Room)
+	roomIface := p.GetCurrentRoom()
+	if roomIface == nil {
+		return
+	}
+	room, ok := roomIface.(*world.Room)
+	if !ok {
+		return
+	}
 
 	// Check all NPCs in the room
 	npcs := room.GetNPCs()
