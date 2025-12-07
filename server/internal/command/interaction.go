@@ -50,7 +50,7 @@ func executeTalk(c *Command, p PlayerInterface) string {
 
 	// Check if NPC is alive
 	if !foundNPC.IsAlive() {
-		return fmt.Sprintf("The %s is dead and cannot respond.", foundNPC.GetName())
+		return fmt.Sprintf("The %s is dead and can't respond.", foundNPC.GetName())
 	}
 
 	// Special handling for the bard - flavor interaction
@@ -392,7 +392,7 @@ func executeUnlock(c *Command, p PlayerInterface) string {
 
 	// Check if player has the key on their key ring
 	if !p.HasKey(keyID) {
-		return fmt.Sprintf("You don't have the key to unlock this door.")
+		return "You don't have the key to unlock this door."
 	}
 
 	// Check if this is a boss key (boss keys are reusable)

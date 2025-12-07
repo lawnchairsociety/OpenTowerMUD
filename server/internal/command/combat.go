@@ -37,7 +37,7 @@ func executeAttack(c *Command, p PlayerInterface) string {
 
 	// Check if NPC is attackable
 	if !npc.IsAttackable() {
-		return fmt.Sprintf("You cannot attack %s!", npc.GetName())
+		return fmt.Sprintf("You can't attack %s!", npc.GetName())
 	}
 
 	// Check if joining an ongoing fight

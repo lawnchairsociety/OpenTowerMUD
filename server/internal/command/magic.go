@@ -41,9 +41,9 @@ func executeCast(c *Command, p PlayerInterface) string {
 	if !p.CanCastSpellForClass(spell.AllowedClasses, spell.Level) {
 		// Check if it's a class restriction or level restriction
 		if len(spell.AllowedClasses) > 0 {
-			return fmt.Sprintf("You cannot cast '%s'. This spell requires being a %s.", spell.Name, strings.Join(spell.AllowedClasses, " or "))
+			return fmt.Sprintf("You can't cast '%s'. This spell requires being a %s.", spell.Name, strings.Join(spell.AllowedClasses, " or "))
 		}
-		return fmt.Sprintf("You cannot cast '%s' yet. (Requires level %d)", spell.Name, spell.Level)
+		return fmt.Sprintf("You can't cast '%s' yet. (Requires level %d)", spell.Name, spell.Level)
 	}
 
 	// Check if player has enough mana
@@ -263,7 +263,7 @@ func castAllySpell(c *Command, p PlayerInterface, spell *spells.Spell, target Pl
 func castEnemySpell(c *Command, p PlayerInterface, spell *spells.Spell, targetNPC *npc.NPC, room RoomInterface) string {
 	// Check if NPC is attackable
 	if spell.HasDamageEffect() && !targetNPC.IsAttackable() {
-		return fmt.Sprintf("You cannot attack %s!", targetNPC.GetName())
+		return fmt.Sprintf("You can't attack %s!", targetNPC.GetName())
 	}
 
 	// Deduct mana

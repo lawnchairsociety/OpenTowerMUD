@@ -353,7 +353,7 @@ func executeGiveItem(args []string, p PlayerInterface, server ServerInterface, r
 	// Find the item in player's inventory
 	item, found := p.FindItem(itemName)
 	if !found {
-		return fmt.Sprintf("You don't have '%s'.", itemName)
+		return fmt.Sprintf("You don't have '%s' in your inventory.", itemName)
 	}
 
 	// Find target player in same room

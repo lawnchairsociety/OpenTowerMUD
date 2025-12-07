@@ -202,7 +202,7 @@ func attemptCraft(p PlayerInterface, recipes *crafting.RecipeRegistry, recipeNam
 	// Check requirements
 	canCraft, reason := canCraftRecipe(p, recipe)
 	if !canCraft {
-		return fmt.Sprintf("You cannot craft %s: %s", recipe.Name, reason)
+		return fmt.Sprintf("You can't craft %s: %s", recipe.Name, reason)
 	}
 
 	// Check ingredients

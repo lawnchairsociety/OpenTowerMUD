@@ -139,7 +139,7 @@ func executeTell(c *Command, p PlayerInterface) string {
 
 	// If no player found, return error
 	if target == nil {
-		return fmt.Sprintf("Player '%s' not found.", c.Args[0])
+		return fmt.Sprintf("Player '%s' is not online.", c.Args[0])
 	}
 
 	// Check if there's a message after the player name
