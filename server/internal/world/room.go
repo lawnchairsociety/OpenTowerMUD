@@ -292,6 +292,13 @@ func (r *Room) GetBaseDescription() string {
 	return r.Description
 }
 
+// SetDescription sets the room's base description (thread-safe)
+func (r *Room) SetDescription(desc string) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	r.Description = desc
+}
+
 // GetDescriptionDay returns the day-specific room description
 func (r *Room) GetDescriptionDay() string {
 	r.mu.RLock()

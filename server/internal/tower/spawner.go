@@ -339,7 +339,7 @@ func SpawnMerchantOnFloor(floor *Floor, floorNum int) *npc.NPC {
 	stairsRoom.AddFeature("merchant")
 
 	// Update room description to mention the merchant
-	stairsRoom.Description = fmt.Sprintf("%s A crusty old merchant has set up a small trading post here.", stairsRoom.Description)
+	stairsRoom.SetDescription(fmt.Sprintf("%s A crusty old merchant has set up a small trading post here.", stairsRoom.GetBaseDescription()))
 
 	return merchant
 }

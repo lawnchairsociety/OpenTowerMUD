@@ -60,8 +60,8 @@ func (w *World) InitializeWithPaths(seed int64, worldFilePath, npcsFilePath, mob
 			room := w.GetRoom(location)
 			if room != nil {
 				for _, n := range npcs {
-					n.RoomID = room.ID
-					n.OriginalRoomID = room.ID
+					n.SetRoomID(room.ID)
+					n.SetOriginalRoomID(room.ID)
 					room.AddNPC(n)
 					logger.Info("Added NPC to room", "npc", n.Name, "room", room.ID, "attackable", n.Attackable)
 				}

@@ -1123,7 +1123,7 @@ func (s *Server) respawnNPC(npc *npc.NPC) {
 	}
 
 	// Update NPC's current room ID
-	npc.RoomID = originalRoomID
+	npc.SetRoomID(originalRoomID)
 
 	// Add NPC back to the room
 	originalRoom.AddNPC(npc)
@@ -1212,7 +1212,7 @@ func (s *Server) handleNPCFlee(n *npc.NPC, room *world.Room) {
 	// Move the NPC to the new room
 	room.RemoveNPC(n)
 	destRoom.AddNPC(n)
-	n.RoomID = destRoom.GetID()
+	n.SetRoomID(destRoom.GetID())
 
 	logger.Debug("NPC fled",
 		"npc", n.GetName(),

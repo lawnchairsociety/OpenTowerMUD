@@ -352,6 +352,27 @@ func (n *NPC) GetOriginalRoomID() string {
 	return n.OriginalRoomID
 }
 
+// SetOriginalRoomID sets the NPC's original spawn room ID (thread-safe)
+func (n *NPC) SetOriginalRoomID(roomID string) {
+	n.mu.Lock()
+	defer n.mu.Unlock()
+	n.OriginalRoomID = roomID
+}
+
+// GetRoomID returns the NPC's current room ID
+func (n *NPC) GetRoomID() string {
+	n.mu.RLock()
+	defer n.mu.RUnlock()
+	return n.RoomID
+}
+
+// SetRoomID sets the NPC's current room ID (thread-safe)
+func (n *NPC) SetRoomID(roomID string) {
+	n.mu.Lock()
+	defer n.mu.Unlock()
+	n.RoomID = roomID
+}
+
 // GetRespawnTime returns when this NPC should respawn
 func (n *NPC) GetRespawnTime() time.Time {
 	n.mu.RLock()
