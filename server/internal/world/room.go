@@ -101,6 +101,15 @@ func (r *Room) RemovePlayer(playerName string) {
 	}
 }
 
+// GetPlayers returns a copy of the player names in this room
+func (r *Room) GetPlayers() []string {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+	players := make([]string, len(r.Players))
+	copy(players, r.Players)
+	return players
+}
+
 // AddNPC adds an NPC to this room
 func (r *Room) AddNPC(n *npc.NPC) {
 	r.mu.Lock()

@@ -594,18 +594,39 @@ func (s *Server) BroadcastToRoom(roomID string, message string, exclude interfac
 // BroadcastToRoomFromPlayer sends a message to all players in a specific room,
 // respecting ignore lists if senderName is provided
 func (s *Server) BroadcastToRoomFromPlayer(roomID string, message string, exclude interface{}, senderName string) {
+	// Get the room to access its player list
+	room := s.world.GetRoom(roomID)
+	if room == nil {
+		return
+	}
+
+	// Get player names in the room (O(1) lookup vs O(n) iteration)
+	playerNames := room.GetPlayers()
+	if len(playerNames) == 0 {
+		return
+	}
+
+	// Type assert exclude to *player.Player if provided
+	var excludeName string
+	if exclude != nil {
+		if excludePlayer, ok := exclude.(*player.Player); ok {
+			excludeName = excludePlayer.GetName()
+		}
+	}
+
+	// Look up each player by name and send message
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 
-	// Type assert exclude to *player.Player if provided
-	var excludePlayer *player.Player
-	if exclude != nil {
-		excludePlayer, _ = exclude.(*player.Player)
-	}
-
-	for _, client := range s.clients {
+	for _, playerName := range playerNames {
 		// Skip excluded player
-		if excludePlayer != nil && client == excludePlayer {
+		if excludeName != "" && playerName == excludeName {
+			continue
+		}
+
+		// Look up the player
+		client, exists := s.clients[playerName]
+		if !exists {
 			continue
 		}
 
@@ -614,24 +635,7 @@ func (s *Server) BroadcastToRoomFromPlayer(roomID string, message string, exclud
 			continue
 		}
 
-		// Check if client is in the specified room
-		currentRoomIface := client.GetCurrentRoom()
-		if currentRoomIface == nil {
-			continue
-		}
-
-		// Type assert to access the room's GetID method
-		type RoomWithID interface {
-			GetID() string
-		}
-		currentRoom, ok := currentRoomIface.(RoomWithID)
-		if !ok {
-			continue
-		}
-
-		if currentRoom.GetID() == roomID {
-			client.SendMessage(message)
-		}
+		client.SendMessage(message)
 	}
 }
 
