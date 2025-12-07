@@ -36,7 +36,15 @@ func executeLook(c *Command, p PlayerInterface) string {
 		}
 
 		// Build full description with time-based variant
-		return room.GetDescriptionForPlayerWithCustomDesc(p.GetName(), baseDesc)
+		desc := room.GetDescriptionForPlayerWithCustomDesc(p.GetName(), baseDesc)
+
+		// Append player stall information
+		stallInfo := getPlayersWithStallsInRoom(p, server, room)
+		if stallInfo != "" {
+			desc += stallInfo
+		}
+
+		return desc
 	}
 
 	// Otherwise, examine a specific object
@@ -125,6 +133,13 @@ func formatPlayerDescription(target PlayerInterface) string {
 		sb.WriteString(fmt.Sprintf("%s (%s), a level %d %s %s.\n", name, title, level, raceName, className))
 	} else {
 		sb.WriteString(fmt.Sprintf("%s, a level %d %s %s.\n", name, level, raceName, className))
+	}
+
+	// Show if they have a stall open
+	if target.IsStallOpen() {
+		stallItems := target.GetStallInventory()
+		sb.WriteString(fmt.Sprintf("\nThey have a stall open with %d item(s) for sale.\n", len(stallItems)))
+		sb.WriteString("Use 'browse " + name + "' to see their wares.\n")
 	}
 
 	// Show equipment summary
@@ -551,4 +566,51 @@ func roomMatchesExploreTarget(room RoomInterface, target string) bool {
 	}
 
 	return false
+}
+
+// getPlayersWithStallsInRoom returns information about players with open stalls in the room
+func getPlayersWithStallsInRoom(currentPlayer PlayerInterface, server ServerInterface, room RoomInterface) string {
+	onlinePlayers := server.GetOnlinePlayers()
+	var stallOwners []string
+
+	for _, playerName := range onlinePlayers {
+		// Skip the current player
+		if playerName == currentPlayer.GetName() {
+			continue
+		}
+
+		// Find the player object
+		playerIface := server.FindPlayer(playerName)
+		if playerIface == nil {
+			continue
+		}
+
+		player, ok := playerIface.(PlayerInterface)
+		if !ok {
+			continue
+		}
+
+		// Check if in the same room
+		playerRoomIface := player.GetCurrentRoom()
+		playerRoom, ok := playerRoomIface.(RoomInterface)
+		if !ok {
+			continue
+		}
+
+		if playerRoom.GetID() != room.GetID() {
+			continue
+		}
+
+		// Check if stall is open
+		if player.IsStallOpen() {
+			itemCount := len(player.GetStallInventory())
+			stallOwners = append(stallOwners, fmt.Sprintf("%s (%d items)", playerName, itemCount))
+		}
+	}
+
+	if len(stallOwners) == 0 {
+		return ""
+	}
+
+	return "\nPlayer stalls: " + strings.Join(stallOwners, ", ") + "\n"
 }

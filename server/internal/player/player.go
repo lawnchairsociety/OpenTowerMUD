@@ -127,6 +127,9 @@ type Player struct {
 	questInventory []*items.Item         // Quest-bound items (weightless, can't drop)
 	earnedTitles   map[string]bool       // title ID -> earned
 	activeTitle    string                // Currently displayed title
+	// Player stall system
+	stallOpen      bool                    // Is the player's stall open for business?
+	stallInventory []*command.StallItem    // Items for sale in the stall
 }
 
 func NewPlayer(name string, client Client, world *world.World, server ServerInterface) *Player {
@@ -177,6 +180,9 @@ func NewPlayer(name string, client Client, world *world.World, server ServerInte
 		questInventory: make([]*items.Item, 0),
 		earnedTitles:   make(map[string]bool),
 		activeTitle:    "",
+		// Stall system
+		stallOpen:      false,
+		stallInventory: make([]*command.StallItem, 0),
 	}
 
 	// Initialize anti-spam tracker with config from server
@@ -239,6 +245,14 @@ func (p *Player) SendMessage(message string) {
 
 func (p *Player) Disconnect() {
 	p.disconnected = true
+	// Close stall and return items to inventory
+	if p.stallOpen {
+		for _, stallItem := range p.stallInventory {
+			p.Inventory = append(p.Inventory, stallItem.Item)
+		}
+		p.stallInventory = make([]*command.StallItem, 0)
+		p.stallOpen = false
+	}
 	// Remove player from current room
 	if p.CurrentRoom != nil {
 		p.CurrentRoom.RemovePlayer(p.Name)
@@ -252,6 +266,16 @@ func (p *Player) MoveTo(roomIface interface{}) {
 	room, ok := roomIface.(*world.Room)
 	if !ok {
 		return // Silent fail if invalid room type
+	}
+
+	// Close stall when moving rooms - return items to inventory
+	if p.stallOpen {
+		for _, stallItem := range p.stallInventory {
+			p.Inventory = append(p.Inventory, stallItem.Item)
+		}
+		p.stallInventory = make([]*command.StallItem, 0)
+		p.stallOpen = false
+		p.SendMessage("Your stall has been closed as you leave the area.\n")
 	}
 
 	// Remove from old room, add to new room
@@ -2199,4 +2223,71 @@ func (p *Player) GetDisplayName() string {
 		return p.Name
 	}
 	return fmt.Sprintf("%s, %s", p.Name, p.activeTitle)
+}
+
+// ==================== STALL METHODS ====================
+
+// IsStallOpen returns whether the player's stall is open for business
+func (p *Player) IsStallOpen() bool {
+	return p.stallOpen
+}
+
+// OpenStall opens the player's stall for business
+func (p *Player) OpenStall() {
+	p.stallOpen = true
+}
+
+// CloseStall closes the player's stall
+func (p *Player) CloseStall() {
+	p.stallOpen = false
+}
+
+// GetStallInventory returns the player's stall inventory
+func (p *Player) GetStallInventory() []*command.StallItem {
+	return p.stallInventory
+}
+
+// AddToStall adds an item to the player's stall with a price
+// The item is removed from the player's regular inventory
+func (p *Player) AddToStall(item *items.Item, price int) {
+	p.stallInventory = append(p.stallInventory, &command.StallItem{
+		Item:  item,
+		Price: price,
+	})
+}
+
+// RemoveFromStall removes an item from the stall by partial name match
+// Returns the item and true if found, nil and false otherwise
+func (p *Player) RemoveFromStall(partial string) (*command.StallItem, bool) {
+	partial = strings.ToLower(partial)
+	for i, stallItem := range p.stallInventory {
+		if strings.Contains(strings.ToLower(stallItem.Item.Name), partial) {
+			removed := p.stallInventory[i]
+			p.stallInventory = append(p.stallInventory[:i], p.stallInventory[i+1:]...)
+			return removed, true
+		}
+	}
+	return nil, false
+}
+
+// FindInStall finds an item in the stall by partial name match
+func (p *Player) FindInStall(partial string) (*command.StallItem, bool) {
+	partial = strings.ToLower(partial)
+	for _, stallItem := range p.stallInventory {
+		if strings.Contains(strings.ToLower(stallItem.Item.Name), partial) {
+			return stallItem, true
+		}
+	}
+	return nil, false
+}
+
+// ClearStall returns all items from the stall to the player's inventory and closes the stall
+func (p *Player) ClearStall() []*items.Item {
+	returnedItems := make([]*items.Item, 0, len(p.stallInventory))
+	for _, stallItem := range p.stallInventory {
+		returnedItems = append(returnedItems, stallItem.Item)
+	}
+	p.stallInventory = make([]*command.StallItem, 0)
+	p.stallOpen = false
+	return returnedItems
 }

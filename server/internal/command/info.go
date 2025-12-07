@@ -781,18 +781,18 @@ Shows your current gold and available items for purchase.
 
 Alias: list`
 
-	case "buy", "purchase":
+	case "buy":
 		return `BUY <item>
-Purchase an item from a shop.
+Purchase an item from an NPC shop.
 
 Usage:
   buy treasure key  - Buy a treasure key
   buy key           - Partial names work
 
-You must be in a room with a shop and have enough gold.
+You must be in a room with a shop NPC and have enough gold.
 Keys are automatically added to your key ring.
 
-Alias: purchase`
+Note: To buy from other players, see 'help purchase'.`
 
 	case "sell":
 		return `SELL <item>
@@ -827,6 +827,50 @@ Usage:
 
 Both players must be in the same room.
 Items require the recipient to have enough carrying capacity.`
+
+	case "stall":
+		return `STALL [command]
+Set up a stall to sell items to other players.
+
+Commands:
+  stall open           - Open your stall for business
+  stall close          - Close your stall (items return to inventory)
+  stall add <item> <price> - Add an item to your stall
+  stall remove <item>  - Remove an item from your stall
+  stall list           - View items in your stall
+  stall help           - Show this help
+
+Notes:
+  - You can only open a stall in the city (floor 0)
+  - Your stall closes if you leave the room or disconnect
+  - Items in your stall are not in your inventory
+
+See also: help browse, help purchase`
+
+	case "browse":
+		return `BROWSE <player>
+View items for sale in another player's stall.
+
+Usage:
+  browse Bob           - See what Bob has for sale
+
+The player must be in the same room and have an open stall.
+Use 'purchase <item> from <player>' to buy items.
+
+See also: help stall, help purchase`
+
+	case "purchase":
+		return `PURCHASE <item> from <player>
+Buy an item from another player's stall.
+
+Usage:
+  purchase sword from Bob     - Buy a sword from Bob's stall
+  purchase rusty sword from Bob - Partial names work
+
+The player must be in the same room with an open stall.
+You need enough gold and carrying capacity.
+
+See also: help stall, help browse`
 
 	case "talk", "speak", "chat":
 		return `TALK <npc name>
@@ -980,6 +1024,11 @@ Shop (at General Store):
   sell <item>       - Sell an item (50% of item value)
   gold              - Check your gold balance
   give <item/gold> <player> - Give item or gold to another player
+
+Player Stalls (sell items to other players):
+  stall             - Manage your player stall (open, close, add, remove, list)
+  browse <player>   - View another player's stall
+  purchase <item> from <player> - Buy from a player's stall
 
 Crafting (at crafting stations):
   craft             - Show recipes available at current station

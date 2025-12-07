@@ -16,6 +16,12 @@ import (
 	"github.com/lawnchairsociety/opentowermud/server/internal/spells"
 )
 
+// StallItem represents an item for sale in a player's stall
+type StallItem struct {
+	Item  *items.Item // The item being sold
+	Price int         // The asking price in gold
+}
+
 // ServerInterface defines the methods we need from the server
 // To avoid circular dependencies, this is defined with interface{} parameters
 type ServerInterface interface {
@@ -190,6 +196,15 @@ type PlayerInterface interface {
 	EarnTitle(titleID string)
 	GetActiveTitle() string
 	SetActiveTitle(titleID string) error
+	// Stall methods
+	IsStallOpen() bool
+	OpenStall()
+	CloseStall()
+	GetStallInventory() []*StallItem
+	AddToStall(item *items.Item, price int)
+	RemoveFromStall(partial string) (*StallItem, bool)
+	FindInStall(partial string) (*StallItem, bool)
+	ClearStall() []*items.Item
 }
 
 // PlayerInfo contains detailed information about an online player (for admin commands)
@@ -325,12 +340,16 @@ var commandRegistry = map[string]CommandHandler{
 	"shop":     executeShop,
 	"list":     executeShop,
 	"buy":      executeBuy,
-	"purchase": executeBuy,
 	"sell":     executeSell,
 	"gold":     executeGold,
 	"money":    executeGold,
 	"wallet":   executeGold,
 	"give":     executeGive,
+
+	// Player stall commands
+	"stall":    executeStall,
+	"browse":   executeBrowse,
+	"purchase": executePurchase,
 
 	// Interaction commands
 	"talk":   executeTalk,
