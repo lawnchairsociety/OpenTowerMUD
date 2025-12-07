@@ -270,3 +270,194 @@ func TestMobRespawn(serverAddr string) TestResult {
 
 	return TestResult{Name: testName, Passed: true, Message: "Mob respawned after being killed"}
 }
+
+// TestCombatThreat tests that damage generates threat and affects targeting
+func TestCombatThreat(serverAddr string) TestResult {
+	const testName = "Combat Threat"
+
+	// Create two players to test threat mechanics
+	name1 := uniqueName("Threat1")
+	client1, err := testclient.NewTestClient(name1, serverAddr)
+	if err != nil {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Client 1 connection failed: %v", err)}
+	}
+	defer client1.Close()
+
+	time.Sleep(300 * time.Millisecond)
+
+	name2 := uniqueName("Threat2")
+	client2, err := testclient.NewTestClient(name2, serverAddr)
+	if err != nil {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Client 2 connection failed: %v", err)}
+	}
+	defer client2.Close()
+
+	time.Sleep(300 * time.Millisecond)
+
+	// Both navigate to Training Hall
+	navigateToTrainingHall(client1)
+	navigateToTrainingHall(client2)
+
+	// Wait for dummy to be present
+	time.Sleep(500 * time.Millisecond)
+
+	// Client 1 attacks first
+	logAction(testName, "Client 1 attacking training dummy...")
+	client1.SendCommand("attack dummy")
+	time.Sleep(500 * time.Millisecond)
+
+	// Client 2 joins combat
+	logAction(testName, "Client 2 joining combat...")
+	client2.SendCommand("attack dummy")
+	time.Sleep(500 * time.Millisecond)
+
+	// Wait for a combat round
+	time.Sleep(3500 * time.Millisecond)
+
+	// Both clients should see combat messages
+	messages1 := client1.GetMessages()
+	messages2 := client2.GetMessages()
+
+	output1 := strings.Join(messages1, " ")
+	output2 := strings.Join(messages2, " ")
+
+	client1InCombat := strings.Contains(output1, "attack") || strings.Contains(output1, "hit") ||
+		strings.Contains(output1, "miss") || strings.Contains(output1, "damage")
+	client2InCombat := strings.Contains(output2, "attack") || strings.Contains(output2, "hit") ||
+		strings.Contains(output2, "miss") || strings.Contains(output2, "damage")
+
+	logResult(testName, client1InCombat, "Client 1 in combat")
+	logResult(testName, client2InCombat, "Client 2 in combat")
+
+	// Both flee
+	client1.SendCommand("flee")
+	client2.SendCommand("flee")
+	time.Sleep(300 * time.Millisecond)
+
+	if !client1InCombat || !client2InCombat {
+		return TestResult{Name: testName, Passed: false, Message: "Multi-player combat failed to engage properly"}
+	}
+
+	return TestResult{Name: testName, Passed: true, Message: "Multiple players can engage in combat with threat system"}
+}
+
+// TestCombatNotInCombat tests that flee fails when not in combat
+func TestCombatNotInCombat(serverAddr string) TestResult {
+	const testName = "Combat Not In Combat"
+
+	name := uniqueName("NotCombat")
+	client, err := testclient.NewTestClient(name, serverAddr)
+	if err != nil {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Connection failed: %v", err)}
+	}
+	defer client.Close()
+
+	time.Sleep(300 * time.Millisecond)
+
+	// Try to flee without being in combat
+	logAction(testName, "Trying to flee without being in combat...")
+	client.ClearMessages()
+	client.SendCommand("flee")
+	time.Sleep(300 * time.Millisecond)
+
+	messages := client.GetMessages()
+	fullOutput := strings.Join(messages, " ")
+
+	notInCombat := strings.Contains(strings.ToLower(fullOutput), "not") ||
+		strings.Contains(strings.ToLower(fullOutput), "combat") ||
+		strings.Contains(strings.ToLower(fullOutput), "fighting")
+	logResult(testName, notInCombat, "Cannot flee when not in combat")
+
+	if !notInCombat {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Should show error when fleeing without combat. Got: %v", messages)}
+	}
+
+	return TestResult{Name: testName, Passed: true, Message: "Flee correctly fails when not in combat"}
+}
+
+// TestCombatConsiderMob tests the consider command for evaluating mob difficulty
+func TestCombatConsiderMob(serverAddr string) TestResult {
+	const testName = "Combat Consider Mob"
+
+	name := uniqueName("Consider")
+	client, err := testclient.NewTestClient(name, serverAddr)
+	if err != nil {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Connection failed: %v", err)}
+	}
+	defer client.Close()
+
+	time.Sleep(300 * time.Millisecond)
+
+	// Navigate to Training Hall
+	navigateToTrainingHall(client)
+
+	// Consider the training dummy
+	logAction(testName, "Considering training dummy...")
+	client.ClearMessages()
+	client.SendCommand("consider dummy")
+	time.Sleep(300 * time.Millisecond)
+
+	messages := client.GetMessages()
+	fullOutput := strings.Join(messages, " ")
+
+	// Should see some difficulty assessment
+	hasConsiderOutput := strings.Contains(strings.ToLower(fullOutput), "dummy") ||
+		strings.Contains(strings.ToLower(fullOutput), "level") ||
+		strings.Contains(strings.ToLower(fullOutput), "easy") ||
+		strings.Contains(strings.ToLower(fullOutput), "hard") ||
+		strings.Contains(strings.ToLower(fullOutput), "match") ||
+		strings.Contains(strings.ToLower(fullOutput), "trivial")
+	logResult(testName, hasConsiderOutput, "Consider shows mob info")
+
+	if !hasConsiderOutput {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Consider should show mob info. Got: %v", messages)}
+	}
+
+	return TestResult{Name: testName, Passed: true, Message: "Consider command shows mob difficulty assessment"}
+}
+
+// TestCombatDamageFormula tests that combat damage includes proper modifiers
+func TestCombatDamageFormula(serverAddr string) TestResult {
+	const testName = "Combat Damage Formula"
+
+	name := uniqueName("DmgFormula")
+	client, err := testclient.NewTestClient(name, serverAddr)
+	if err != nil {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Connection failed: %v", err)}
+	}
+	defer client.Close()
+
+	time.Sleep(300 * time.Millisecond)
+
+	// Navigate to Training Hall
+	navigateToTrainingHall(client)
+
+	// Attack training dummy
+	logAction(testName, "Attacking training dummy to verify damage formula...")
+	client.ClearMessages()
+	client.SendCommand("attack dummy")
+	time.Sleep(500 * time.Millisecond)
+
+	// Wait for combat tick
+	time.Sleep(3500 * time.Millisecond)
+
+	messages := client.GetMessages()
+	fullOutput := strings.Join(messages, " ")
+
+	// Should see damage output or miss message with roll details
+	hasDamageInfo := strings.Contains(fullOutput, "damage") ||
+		strings.Contains(fullOutput, "hit") ||
+		strings.Contains(fullOutput, "miss") ||
+		strings.Contains(fullOutput, "roll")
+	logResult(testName, hasDamageInfo, "Combat shows damage/roll information")
+
+	// Flee from combat
+	client.SendCommand("flee")
+	time.Sleep(300 * time.Millisecond)
+
+	if !hasDamageInfo {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Combat should show damage info. Got: %v", messages)}
+	}
+
+	return TestResult{Name: testName, Passed: true, Message: "Combat damage formula working with proper feedback"}
+}

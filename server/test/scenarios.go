@@ -167,6 +167,10 @@ func RunAllTests(serverAddr string) []TestResult {
 	results = append(results, TestFleeCommand(serverAddr))
 	results = append(results, TestCombatAndKill(serverAddr))
 	results = append(results, TestMobRespawn(serverAddr))
+	results = append(results, TestCombatThreat(serverAddr))
+	results = append(results, TestCombatNotInCombat(serverAddr))
+	results = append(results, TestCombatConsiderMob(serverAddr))
+	results = append(results, TestCombatDamageFormula(serverAddr))
 
 	// Group 6: Magic System
 	results = append(results, TestSpellCasting(serverAddr))
@@ -210,6 +214,17 @@ func RunAllTests(serverAddr string) []TestResult {
 	// Group 11: Admin Commands
 	results = append(results, TestAdminCommandsHidden(serverAddr))
 	results = append(results, TestAdminAnnounce(serverAddr))
+
+	// Group 12: Player Stalls
+	results = append(results, TestStallOpen(serverAddr))
+	results = append(results, TestStallClose(serverAddr))
+	results = append(results, TestStallAddItem(serverAddr))
+	results = append(results, TestStallRemoveItem(serverAddr))
+	results = append(results, TestStallList(serverAddr))
+	results = append(results, TestStallBrowse(serverAddr))
+	results = append(results, TestStallPurchase(serverAddr))
+	results = append(results, TestStallCloseOnRoomChange(serverAddr))
+	results = append(results, TestStallRequiresCity(serverAddr))
 
 	return results
 }
@@ -275,6 +290,10 @@ func getAllTests() []testEntry {
 		{"Flee Command", TestFleeCommand},
 		{"Combat and Kill", TestCombatAndKill},
 		{"Mob Respawn", TestMobRespawn},
+		{"Combat Threat", TestCombatThreat},
+		{"Combat Not In Combat", TestCombatNotInCombat},
+		{"Combat Consider Mob", TestCombatConsiderMob},
+		{"Combat Damage Formula", TestCombatDamageFormula},
 
 		// Group 6: Magic System
 		{"Spell Casting", TestSpellCasting},
@@ -318,6 +337,17 @@ func getAllTests() []testEntry {
 		// Group 11: Admin Commands
 		{"Admin Commands Hidden", TestAdminCommandsHidden},
 		{"Admin Announce", TestAdminAnnounce},
+
+		// Group 12: Player Stalls
+		{"Stall Open", TestStallOpen},
+		{"Stall Close", TestStallClose},
+		{"Stall Add Item", TestStallAddItem},
+		{"Stall Remove Item", TestStallRemoveItem},
+		{"Stall List", TestStallList},
+		{"Stall Browse", TestStallBrowse},
+		{"Stall Purchase", TestStallPurchase},
+		{"Stall Close On Room Change", TestStallCloseOnRoomChange},
+		{"Stall Requires City", TestStallRequiresCity},
 	}
 }
 
