@@ -35,6 +35,7 @@ type Server struct {
 	clients             map[string]*player.Player
 	mu                  sync.RWMutex
 	shutdown            chan struct{}
+	shutdownOnce        sync.Once
 	StartTime           time.Time
 	gameClock           *gametime.GameClock
 	respawnManager      *RespawnManager
@@ -378,40 +379,42 @@ func getRealIP(r *http.Request) string {
 }
 
 func (s *Server) Shutdown() {
-	close(s.shutdown)
-	if s.listener != nil {
-		s.listener.Close()
-	}
-
-	// Stop the respawn manager
-	s.respawnManager.Stop()
-
-	// Stop the dynamic spawn manager
-	if s.dynamicSpawnManager != nil {
-		s.dynamicSpawnManager.Stop()
-	}
-
-	// Stop the login rate limiter
-	if s.loginRateLimiter != nil {
-		s.loginRateLimiter.Stop()
-	}
-
-	// Auto-save all connected players before shutdown
-	s.mu.Lock()
-	for _, client := range s.clients {
-		if err := s.SavePlayer(client); err != nil {
-			logger.Error("Failed to auto-save player on shutdown",
-				"player", client.GetName(),
-				"error", err)
-		} else {
-			logger.Info("Auto-saved player on shutdown",
-				"player", client.GetName())
+	s.shutdownOnce.Do(func() {
+		close(s.shutdown)
+		if s.listener != nil {
+			s.listener.Close()
 		}
-		client.Disconnect()
-	}
-	s.mu.Unlock()
 
-	logger.Info("Server shutdown complete, all players saved")
+		// Stop the respawn manager
+		s.respawnManager.Stop()
+
+		// Stop the dynamic spawn manager
+		if s.dynamicSpawnManager != nil {
+			s.dynamicSpawnManager.Stop()
+		}
+
+		// Stop the login rate limiter
+		if s.loginRateLimiter != nil {
+			s.loginRateLimiter.Stop()
+		}
+
+		// Auto-save all connected players before shutdown
+		s.mu.Lock()
+		for _, client := range s.clients {
+			if err := s.SavePlayer(client); err != nil {
+				logger.Error("Failed to auto-save player on shutdown",
+					"player", client.GetName(),
+					"error", err)
+			} else {
+				logger.Info("Auto-saved player on shutdown",
+					"player", client.GetName())
+			}
+			client.Disconnect()
+		}
+		s.mu.Unlock()
+
+		logger.Info("Server shutdown complete, all players saved")
+	})
 }
 
 func (s *Server) BroadcastMessage(message string, exclude *player.Player) {

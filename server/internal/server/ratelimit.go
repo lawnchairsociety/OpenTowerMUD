@@ -99,12 +99,18 @@ func (rl *LoginRateLimiter) RecordFailure(ip string) (bool, time.Duration) {
 		info.lockoutCount++
 		// Exponential backoff: double the lockout each time, up to max
 		lockoutDuration := time.Duration(rl.lockoutSeconds) * time.Second
+		maxDuration := time.Duration(rl.maxLockoutSeconds) * time.Second
 		for i := 1; i < info.lockoutCount; i++ {
-			lockoutDuration *= 2
-			if lockoutDuration > time.Duration(rl.maxLockoutSeconds)*time.Second {
-				lockoutDuration = time.Duration(rl.maxLockoutSeconds) * time.Second
+			// Check before multiplication to prevent overflow
+			if lockoutDuration >= maxDuration/2 {
+				lockoutDuration = maxDuration
 				break
 			}
+			lockoutDuration *= 2
+		}
+		// Final cap to ensure we never exceed max (handles edge cases)
+		if lockoutDuration > maxDuration {
+			lockoutDuration = maxDuration
 		}
 		info.lockedUntil = time.Now().Add(lockoutDuration)
 		info.failedAttempts = 0 // Reset attempts for next round

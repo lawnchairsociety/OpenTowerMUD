@@ -43,38 +43,41 @@ func (c *WebSocketClient) ReadLine() (string, error) {
 	}
 	c.mu.Unlock()
 
-	// Read a new message from the WebSocket
-	_, message, err := c.conn.ReadMessage()
-	if err != nil {
-		return "", err
-	}
-
-	// Convert to string and split by newlines (in case client sends multiple lines)
-	text := string(message)
-	lines := strings.Split(text, "\n")
-
-	// Filter out empty lines and trim whitespace
-	filtered := make([]string, 0, len(lines))
-	for _, line := range lines {
-		trimmed := strings.TrimSpace(line)
-		if trimmed != "" {
-			filtered = append(filtered, trimmed)
+	// Loop until we get a non-empty message (avoids recursive call that could overflow stack)
+	for {
+		// Read a new message from the WebSocket
+		_, message, err := c.conn.ReadMessage()
+		if err != nil {
+			return "", err
 		}
-	}
 
-	if len(filtered) == 0 {
-		// Empty message, try again
-		return c.ReadLine()
-	}
+		// Convert to string and split by newlines (in case client sends multiple lines)
+		text := string(message)
+		lines := strings.Split(text, "\n")
 
-	// Return first line, buffer the rest
-	c.mu.Lock()
-	if len(filtered) > 1 {
-		c.readBuf = append(c.readBuf, filtered[1:]...)
-	}
-	c.mu.Unlock()
+		// Filter out empty lines and trim whitespace
+		filtered := make([]string, 0, len(lines))
+		for _, line := range lines {
+			trimmed := strings.TrimSpace(line)
+			if trimmed != "" {
+				filtered = append(filtered, trimmed)
+			}
+		}
 
-	return filtered[0], nil
+		if len(filtered) == 0 {
+			// Empty message, continue loop to read next message
+			continue
+		}
+
+		// Return first line, buffer the rest
+		c.mu.Lock()
+		if len(filtered) > 1 {
+			c.readBuf = append(c.readBuf, filtered[1:]...)
+		}
+		c.mu.Unlock()
+
+		return filtered[0], nil
+	}
 }
 
 // WriteLine writes a message to the WebSocket client.
