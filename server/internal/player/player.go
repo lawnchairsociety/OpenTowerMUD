@@ -130,6 +130,8 @@ type Player struct {
 	// Player stall system
 	stallOpen      bool                    // Is the player's stall open for business?
 	stallInventory []*command.StallItem    // Items for sale in the stall
+	// Session tracking
+	lastActivity time.Time // Last time player sent input (for idle timeout)
 }
 
 func NewPlayer(name string, client Client, world *world.World, server ServerInterface) *Player {
@@ -183,6 +185,8 @@ func NewPlayer(name string, client Client, world *world.World, server ServerInte
 		// Stall system
 		stallOpen:      false,
 		stallInventory: make([]*command.StallItem, 0),
+		// Session tracking
+		lastActivity: time.Now(),
 	}
 
 	// Initialize anti-spam tracker with config from server
@@ -224,6 +228,9 @@ func (p *Player) HandleSession() {
 		if input == "" {
 			continue
 		}
+
+		// Update activity timestamp for idle tracking
+		p.lastActivity = time.Now()
 
 		// Parse and execute command
 		cmd := command.ParseCommand(input)
@@ -2290,4 +2297,21 @@ func (p *Player) ClearStall() []*items.Item {
 	p.stallInventory = make([]*command.StallItem, 0)
 	p.stallOpen = false
 	return returnedItems
+}
+
+// ==================== SESSION METHODS ====================
+
+// GetLastActivity returns the time of the player's last input
+func (p *Player) GetLastActivity() time.Time {
+	return p.lastActivity
+}
+
+// UpdateActivity updates the player's last activity timestamp to now
+func (p *Player) UpdateActivity() {
+	p.lastActivity = time.Now()
+}
+
+// IsIdle returns true if the player has been idle longer than the given duration
+func (p *Player) IsIdle(timeout time.Duration) bool {
+	return time.Since(p.lastActivity) > timeout
 }

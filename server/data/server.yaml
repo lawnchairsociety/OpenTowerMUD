@@ -49,3 +49,10 @@ rate_limit:
   # Maximum lockout duration in seconds for exponential backoff (default: 300)
   # After each lockout, the duration doubles until reaching this maximum
   max_lockout_seconds: 300
+
+session:
+  # Idle timeout in minutes (default: 30)
+  # Players with no activity for this long will be disconnected
+  # Set to 0 to disable idle timeout (not recommended)
+  # NOTE: Players with open stalls are exempt from idle timeout
+  idle_timeout_minutes: 30

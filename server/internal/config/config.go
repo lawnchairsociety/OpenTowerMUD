@@ -14,6 +14,15 @@ type ServerConfig struct {
 	Password    PasswordConfig    `yaml:"password"`
 	Connections ConnectionsConfig `yaml:"connections"`
 	RateLimit   RateLimitConfig   `yaml:"rate_limit"`
+	Session     SessionConfig     `yaml:"session"`
+}
+
+// SessionConfig holds session management settings.
+type SessionConfig struct {
+	// IdleTimeoutMinutes is how long a player can be idle before being disconnected.
+	// 0 means no timeout (not recommended).
+	// Players with open stalls are exempt from idle timeout.
+	IdleTimeoutMinutes int `yaml:"idle_timeout_minutes"`
 }
 
 // RateLimitConfig holds rate limiting settings for login attempts.
@@ -90,6 +99,9 @@ func DefaultConfig() *ServerConfig {
 			MaxAttempts:       5,   // Default: 5 attempts before lockout
 			LockoutSeconds:    30,  // Default: 30 second initial lockout
 			MaxLockoutSeconds: 300, // Default: 5 minute max lockout
+		},
+		Session: SessionConfig{
+			IdleTimeoutMinutes: 30, // Default: 30 minutes idle timeout
 		},
 	}
 }

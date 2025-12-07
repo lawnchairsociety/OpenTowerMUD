@@ -183,6 +183,9 @@ func (s *Server) Start() error {
 	// Start the respawn manager
 	s.respawnManager.Start(s.respawnNPC)
 
+	// Start the idle timeout checker
+	go s.startIdleTimeoutTicker()
+
 	// Note: Auto-save is disabled. Players save by talking to the bard in the tavern.
 
 	for {
@@ -685,6 +688,59 @@ func (s *Server) BroadcastToFloorFromPlayer(floor int, message string, exclude i
 		if currentRoom.GetFloor() == floor {
 			client.SendMessage(message)
 		}
+	}
+}
+
+// startIdleTimeoutTicker runs a background ticker that disconnects idle players
+func (s *Server) startIdleTimeoutTicker() {
+	ticker := time.NewTicker(1 * time.Minute) // Check every minute
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-s.shutdown:
+			return
+		case <-ticker.C:
+			s.checkIdlePlayers()
+		}
+	}
+}
+
+// checkIdlePlayers disconnects players who have been idle too long
+func (s *Server) checkIdlePlayers() {
+	// Get timeout from config (0 means disabled)
+	timeoutMinutes := 0
+	if s.serverConfig != nil {
+		timeoutMinutes = s.serverConfig.Session.IdleTimeoutMinutes
+	}
+	if timeoutMinutes <= 0 {
+		return // Idle timeout disabled
+	}
+
+	timeout := time.Duration(timeoutMinutes) * time.Minute
+
+	s.mu.RLock()
+	// Build list of idle players (excluding those with stalls open and items for sale)
+	var idlePlayers []*player.Player
+	for _, p := range s.clients {
+		// Skip players with open stalls that have items - they're intentionally AFK selling
+		// Empty stalls don't count as a valid reason to stay connected
+		if p.IsStallOpen() && len(p.GetStallInventory()) > 0 {
+			continue
+		}
+		if p.IsIdle(timeout) {
+			idlePlayers = append(idlePlayers, p)
+		}
+	}
+	s.mu.RUnlock()
+
+	// Disconnect idle players
+	for _, p := range idlePlayers {
+		logger.Info("Disconnecting idle player",
+			"player", p.GetName(),
+			"idle_minutes", timeoutMinutes)
+		p.SendMessage("\n\n*** You have been disconnected due to inactivity. ***\n")
+		p.Disconnect()
 	}
 }
 
