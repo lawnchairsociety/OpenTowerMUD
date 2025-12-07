@@ -186,7 +186,8 @@ func (s *Server) Start() error {
 	// Start the idle timeout checker
 	go s.startIdleTimeoutTicker()
 
-	// Note: Auto-save is disabled. Players save by talking to the bard in the tavern.
+	// Start the auto-save ticker
+	go s.startAutoSaveTicker()
 
 	for {
 		select {
@@ -704,6 +705,66 @@ func (s *Server) startIdleTimeoutTicker() {
 			s.checkIdlePlayers()
 		}
 	}
+}
+
+// startAutoSaveTicker runs a background ticker that periodically saves all players
+func (s *Server) startAutoSaveTicker() {
+	// Get interval from config (0 means disabled)
+	intervalMinutes := 0
+	if s.serverConfig != nil {
+		intervalMinutes = s.serverConfig.Session.AutoSaveIntervalMinutes
+	}
+	if intervalMinutes <= 0 {
+		logger.Info("Auto-save disabled")
+		return
+	}
+
+	interval := time.Duration(intervalMinutes) * time.Minute
+	ticker := time.NewTicker(interval)
+	defer ticker.Stop()
+
+	logger.Info("Auto-save enabled", "interval_minutes", intervalMinutes)
+
+	for {
+		select {
+		case <-s.shutdown:
+			return
+		case <-ticker.C:
+			s.autoSaveAllPlayers()
+		}
+	}
+}
+
+// autoSaveAllPlayers saves all connected players' progress
+func (s *Server) autoSaveAllPlayers() {
+	s.mu.RLock()
+	players := make([]*player.Player, 0, len(s.clients))
+	for _, p := range s.clients {
+		players = append(players, p)
+	}
+	s.mu.RUnlock()
+
+	if len(players) == 0 {
+		return
+	}
+
+	savedCount := 0
+	errorCount := 0
+
+	for _, p := range players {
+		if err := s.savePlayerImpl(p); err != nil {
+			logger.Warning("Auto-save failed for player",
+				"player", p.GetName(),
+				"error", err)
+			errorCount++
+		} else {
+			savedCount++
+		}
+	}
+
+	logger.Debug("Auto-save completed",
+		"saved", savedCount,
+		"errors", errorCount)
 }
 
 // checkIdlePlayers disconnects players who have been idle too long

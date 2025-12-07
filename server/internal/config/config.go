@@ -23,6 +23,10 @@ type SessionConfig struct {
 	// 0 means no timeout (not recommended).
 	// Players with open stalls are exempt from idle timeout.
 	IdleTimeoutMinutes int `yaml:"idle_timeout_minutes"`
+
+	// AutoSaveIntervalMinutes is how often player progress is automatically saved.
+	// 0 means auto-save is disabled (players must save manually).
+	AutoSaveIntervalMinutes int `yaml:"auto_save_interval_minutes"`
 }
 
 // RateLimitConfig holds rate limiting settings for login attempts.
@@ -101,7 +105,8 @@ func DefaultConfig() *ServerConfig {
 			MaxLockoutSeconds: 300, // Default: 5 minute max lockout
 		},
 		Session: SessionConfig{
-			IdleTimeoutMinutes: 30, // Default: 30 minutes idle timeout
+			IdleTimeoutMinutes:      30, // Default: 30 minutes idle timeout
+			AutoSaveIntervalMinutes: 5,  // Default: auto-save every 5 minutes
 		},
 	}
 }

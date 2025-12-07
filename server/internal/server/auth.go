@@ -10,6 +10,7 @@ import (
 
 	"github.com/lawnchairsociety/opentowermud/server/internal/class"
 	"github.com/lawnchairsociety/opentowermud/server/internal/database"
+	"github.com/lawnchairsociety/opentowermud/server/internal/logger"
 	"github.com/lawnchairsociety/opentowermud/server/internal/race"
 	"github.com/lawnchairsociety/opentowermud/server/internal/stats"
 )
@@ -126,14 +127,26 @@ func (s *Server) handleLogin(client Client) (*AuthResult, error) {
 	account, err := s.db.ValidateLogin(username, password, ipAddress)
 	if err != nil {
 		if errors.Is(err, database.ErrAccountBanned) {
+			logger.Info("Login attempt on banned account",
+				"username", username,
+				"ip", ipAddress,
+				"event", "login_banned")
 			client.WriteLine("\n*** YOUR ACCOUNT HAS BEEN BANNED ***\n")
 			client.WriteLine("Contact an administrator if you believe this is an error.\n")
 			return nil, errors.New("account banned")
 		}
 		if errors.Is(err, database.ErrInvalidCredentials) {
+			logger.Info("Failed login attempt",
+				"username", username,
+				"ip", ipAddress,
+				"event", "login_failed")
 			// Record failed attempt
 			if s.loginRateLimiter != nil {
 				if locked, duration := s.loginRateLimiter.RecordFailure(ipAddress); locked {
+					logger.Warning("IP rate limited after failed logins",
+						"ip", ipAddress,
+						"lockout_seconds", int(duration.Seconds()),
+						"event", "login_ratelimit")
 					client.WriteLine(fmt.Sprintf("Invalid username or password. Too many attempts - locked out for %d seconds.\n",
 						int(duration.Seconds())))
 					return nil, errors.New("rate limited")
@@ -150,6 +163,12 @@ func (s *Server) handleLogin(client Client) (*AuthResult, error) {
 	if s.loginRateLimiter != nil {
 		s.loginRateLimiter.RecordSuccess(ipAddress)
 	}
+
+	logger.Info("Successful login",
+		"username", account.Username,
+		"account_id", account.ID,
+		"ip", ipAddress,
+		"event", "login_success")
 
 	client.WriteLine(fmt.Sprintf("\nWelcome back, %s!\n", account.Username))
 
@@ -230,6 +249,7 @@ func (s *Server) handleRegister(client Client) (*AuthResult, error) {
 	}
 
 	// Create account
+	ipAddress := getIPFromAddr(client.RemoteAddr())
 	account, err := s.db.CreateAccount(username, password)
 	if err != nil {
 		if errors.Is(err, database.ErrAccountExists) {
@@ -239,6 +259,12 @@ func (s *Server) handleRegister(client Client) (*AuthResult, error) {
 		client.WriteLine("An error occurred. Please try again.\n")
 		return nil, err
 	}
+
+	logger.Info("Account registered",
+		"username", account.Username,
+		"account_id", account.ID,
+		"ip", ipAddress,
+		"event", "account_register")
 
 	client.WriteLine(fmt.Sprintf("\nAccount created! Welcome, %s!\n", account.Username))
 
@@ -453,6 +479,14 @@ func (s *Server) handleCharacterCreation(client Client, account *database.Accoun
 		client.WriteLine("An error occurred. Please try again.\n")
 		return nil, err
 	}
+
+	logger.Info("Character created",
+		"character", character.Name,
+		"character_id", character.ID,
+		"account_id", account.ID,
+		"class", selectedClass,
+		"race", selectedRace,
+		"event", "character_create")
 
 	client.WriteLine(fmt.Sprintf("\nCharacter '%s' the %s %s created!\n", character.Name, strings.Title(selectedRace), strings.Title(selectedClass)))
 	return character, nil
@@ -742,6 +776,13 @@ func (s *Server) handleCharacterDeletion(client Client, account *database.Accoun
 		client.WriteLine("An error occurred. Please try again.\n")
 		return err
 	}
+
+	logger.Info("Character deleted",
+		"character", selected.Name,
+		"character_id", selected.ID,
+		"account_id", account.ID,
+		"level", selected.Level,
+		"event", "character_delete")
 
 	client.WriteLine(fmt.Sprintf("Character '%s' has been deleted.\n", selected.Name))
 	return nil

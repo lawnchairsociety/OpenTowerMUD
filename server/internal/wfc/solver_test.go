@@ -265,3 +265,190 @@ func TestCoordKey(t *testing.T) {
 		}
 	}
 }
+
+// TestIsConnectedWithConnectedTiles tests the isConnected function with connected tiles
+func TestIsConnectedWithConnectedTiles(t *testing.T) {
+	solver := NewSolver(10, 10, 0)
+
+	// Create a simple connected layout: 3 tiles in a row
+	tiles := []*Tile{
+		NewTile(TileCorridor, 0, 0),
+		NewTile(TileCorridor, 1, 0),
+		NewTile(TileCorridor, 2, 0),
+	}
+	// Connect them: 0 -> 1 -> 2
+	tiles[0].SetConnection(East, true)
+	tiles[1].SetConnection(West, true)
+	tiles[1].SetConnection(East, true)
+	tiles[2].SetConnection(West, true)
+
+	if !solver.isConnected(tiles) {
+		t.Error("Connected tiles should pass isConnected check")
+	}
+}
+
+// TestIsConnectedWithDisconnectedTiles tests the isConnected function with disconnected tiles
+func TestIsConnectedWithDisconnectedTiles(t *testing.T) {
+	solver := NewSolver(10, 10, 0)
+
+	// Create disconnected tiles: two separate groups
+	tiles := []*Tile{
+		NewTile(TileCorridor, 0, 0),
+		NewTile(TileCorridor, 1, 0),
+		NewTile(TileCorridor, 5, 5), // Disconnected
+	}
+	// Connect only first two
+	tiles[0].SetConnection(East, true)
+	tiles[1].SetConnection(West, true)
+	// tiles[2] has no connections
+
+	if solver.isConnected(tiles) {
+		t.Error("Disconnected tiles should fail isConnected check")
+	}
+}
+
+// TestIsConnectedEmptyTiles tests isConnected with empty tile list
+func TestIsConnectedEmptyTiles(t *testing.T) {
+	solver := NewSolver(10, 10, 0)
+
+	if !solver.isConnected([]*Tile{}) {
+		t.Error("Empty tile list should be considered connected")
+	}
+}
+
+// TestIsConnectedSingleTile tests isConnected with a single tile
+func TestIsConnectedSingleTile(t *testing.T) {
+	solver := NewSolver(10, 10, 0)
+
+	tiles := []*Tile{NewTile(TileCorridor, 5, 5)}
+
+	if !solver.isConnected(tiles) {
+		t.Error("Single tile should be considered connected")
+	}
+}
+
+// TestConnectivityMultipleSeeds tests that WFC consistently produces connected layouts
+func TestConnectivityMultipleSeeds(t *testing.T) {
+	seeds := []int64{1, 42, 100, 255, 1000, 5000, 9999}
+
+	for _, seed := range seeds {
+		solver := NewSolver(12, 12, seed)
+		solver.MinRooms = 15
+		solver.MaxRooms = 30
+		solver.RequireStairs = false
+
+		tiles, err := solver.Solve()
+		if err != nil {
+			t.Fatalf("Seed %d: Solve() failed: %v", seed, err)
+		}
+
+		// Verify all tiles are connected
+		if !solver.isConnected(tiles) {
+			t.Errorf("Seed %d: Generated layout is not connected", seed)
+		}
+
+		// Verify BFS reaches all tiles
+		if len(tiles) > 0 {
+			visited := bfsTiles(tiles)
+			if len(visited) != len(tiles) {
+				t.Errorf("Seed %d: BFS visited %d tiles but generated %d tiles",
+					seed, len(visited), len(tiles))
+			}
+		}
+	}
+}
+
+// TestConnectivityWithBossAndStairs tests connectivity when boss and stairs are required
+func TestConnectivityWithBossAndStairs(t *testing.T) {
+	solver := NewSolver(15, 15, 12345)
+	solver.MinRooms = 20
+	solver.MaxRooms = 40
+	solver.RequireStairs = true
+	solver.SetRequireBoss(true)
+
+	tiles, err := solver.Solve()
+	if err != nil {
+		t.Fatalf("Solve() failed: %v", err)
+	}
+
+	// Verify connectivity
+	if !solver.isConnected(tiles) {
+		t.Error("Layout with boss and stairs should be connected")
+	}
+
+	// Verify special tiles exist and are reachable
+	var stairsUp, stairsDown, boss *Tile
+	for _, tile := range tiles {
+		switch tile.Type {
+		case TileStairsUp:
+			stairsUp = tile
+		case TileStairsDown:
+			stairsDown = tile
+		case TileBoss:
+			boss = tile
+		}
+	}
+
+	// All special tiles should be reachable from any starting point
+	visited := bfsTiles(tiles)
+	if stairsUp != nil && !visited[coordKey(stairsUp.X, stairsUp.Y)] {
+		t.Error("Stairs up tile is not reachable")
+	}
+	if stairsDown != nil && !visited[coordKey(stairsDown.X, stairsDown.Y)] {
+		t.Error("Stairs down tile is not reachable")
+	}
+	if boss != nil && !visited[coordKey(boss.X, boss.Y)] {
+		t.Error("Boss tile is not reachable")
+	}
+}
+
+// bfsTiles performs BFS traversal on WFC tiles and returns visited coordinates
+func bfsTiles(tiles []*Tile) map[string]bool {
+	if len(tiles) == 0 {
+		return map[string]bool{}
+	}
+
+	tileMap := make(map[string]*Tile)
+	for _, t := range tiles {
+		tileMap[coordKey(t.X, t.Y)] = t
+	}
+
+	visited := make(map[string]bool)
+	queue := []*Tile{tiles[0]}
+	visited[coordKey(tiles[0].X, tiles[0].Y)] = true
+
+	for len(queue) > 0 {
+		current := queue[0]
+		queue = queue[1:]
+
+		for _, dir := range AllDirections() {
+			if !current.HasConnection(dir) {
+				continue
+			}
+
+			nx, ny := current.X, current.Y
+			switch dir {
+			case North:
+				ny--
+			case South:
+				ny++
+			case East:
+				nx++
+			case West:
+				nx--
+			}
+
+			key := coordKey(nx, ny)
+			if visited[key] {
+				continue
+			}
+
+			if neighbor, ok := tileMap[key]; ok {
+				visited[key] = true
+				queue = append(queue, neighbor)
+			}
+		}
+	}
+
+	return visited
+}

@@ -858,3 +858,224 @@ func TestMerchantNPCProperties(t *testing.T) {
 		t.Error("Merchant should not be aggressive")
 	}
 }
+
+// TestFloorConnectivityMultipleSeeds tests floor connectivity across different seeds
+// This ensures the WFC algorithm consistently produces connected floors
+func TestFloorConnectivityMultipleSeeds(t *testing.T) {
+	seeds := []int64{1, 42, 123, 456, 789, 1000, 9999, 12345, 54321, 99999}
+
+	for _, seed := range seeds {
+		tower := NewTower(seed)
+
+		// Test floors 1, 5, and 10 (regular, mid, and boss)
+		for _, floorNum := range []int{1, 5, 10} {
+			floor, err := tower.GetFloor(floorNum)
+			if err != nil {
+				t.Fatalf("Seed %d, Floor %d: GetFloor failed: %v", seed, floorNum, err)
+			}
+
+			// Verify connectivity from entrance (stairs down)
+			if !verifyFloorConnectivity(floor) {
+				t.Errorf("Seed %d, Floor %d: Not all rooms are connected from entrance", seed, floorNum)
+			}
+		}
+	}
+}
+
+// TestAllRoomsReachableFromEntrance verifies BFS traversal from entrance reaches all rooms
+func TestAllRoomsReachableFromEntrance(t *testing.T) {
+	tower := NewTower(77777)
+
+	for floorNum := 1; floorNum <= 5; floorNum++ {
+		floor, err := tower.GetFloor(floorNum)
+		if err != nil {
+			t.Fatalf("GetFloor(%d) failed: %v", floorNum, err)
+		}
+
+		entrance := floor.GetStairsDown()
+		if entrance == nil {
+			t.Fatalf("Floor %d: No entrance (stairs down) room", floorNum)
+		}
+
+		rooms := floor.GetRooms()
+		visited := bfsTraverseFloor(entrance, floor.Number)
+
+		unreachable := []string{}
+		for id := range rooms {
+			if !visited[id] {
+				unreachable = append(unreachable, id)
+			}
+		}
+
+		if len(unreachable) > 0 {
+			t.Errorf("Floor %d: %d rooms unreachable from entrance: %v",
+				floorNum, len(unreachable), unreachable)
+		}
+	}
+}
+
+// TestSpecialRoomsReachable verifies stairs up, boss room, and treasure rooms are reachable
+func TestSpecialRoomsReachable(t *testing.T) {
+	tower := NewTower(88888)
+
+	// Test a boss floor (10)
+	floor, err := tower.GetFloor(10)
+	if err != nil {
+		t.Fatalf("GetFloor(10) failed: %v", err)
+	}
+
+	entrance := floor.GetStairsDown()
+	if entrance == nil {
+		t.Fatal("Floor 10: No entrance room")
+	}
+
+	visited := bfsTraverseFloor(entrance, floor.Number)
+
+	// Verify stairs up is reachable
+	stairsUp := floor.GetStairsUp()
+	if stairsUp != nil && !visited[stairsUp.ID] {
+		t.Error("Stairs up room is not reachable from entrance")
+	}
+
+	// Verify boss room is reachable (if exists)
+	for _, room := range floor.GetRooms() {
+		if room.Type == world.RoomTypeBoss && !visited[room.ID] {
+			t.Errorf("Boss room %s is not reachable from entrance", room.ID)
+		}
+	}
+
+	// Verify treasure rooms are reachable
+	for _, room := range floor.GetRooms() {
+		if room.Type == world.RoomTypeTreasure && !visited[room.ID] {
+			t.Errorf("Treasure room %s is not reachable from entrance", room.ID)
+		}
+	}
+}
+
+// TestBidirectionalConnections verifies all room connections are bidirectional
+func TestBidirectionalConnections(t *testing.T) {
+	tower := NewTower(33333)
+
+	floor, err := tower.GetFloor(3)
+	if err != nil {
+		t.Fatalf("GetFloor(3) failed: %v", err)
+	}
+
+	rooms := floor.GetRooms()
+	opposites := map[string]string{
+		"north": "south",
+		"south": "north",
+		"east":  "west",
+		"west":  "east",
+	}
+
+	for _, room := range rooms {
+		for dir, opposite := range opposites {
+			exit := room.GetExit(dir)
+			if exit == nil {
+				continue
+			}
+			neighbor, ok := exit.(*world.Room)
+			if !ok || neighbor.Floor != floor.Number {
+				continue // Skip cross-floor connections
+			}
+
+			// Verify the neighbor has a reverse connection
+			reverseExit := neighbor.GetExit(opposite)
+			if reverseExit == nil {
+				t.Errorf("Room %s has %s exit to %s, but %s has no %s exit back",
+					room.ID, dir, neighbor.ID, neighbor.ID, opposite)
+				continue
+			}
+			reverseRoom, ok := reverseExit.(*world.Room)
+			if !ok {
+				continue
+			}
+			if reverseRoom.ID != room.ID {
+				t.Errorf("Room %s has %s exit to %s, but %s's %s exit goes to %s instead of back",
+					room.ID, dir, neighbor.ID, neighbor.ID, opposite, reverseRoom.ID)
+			}
+		}
+	}
+}
+
+// TestNoIsolatedRoomClusters verifies there are no isolated clusters of rooms
+func TestNoIsolatedRoomClusters(t *testing.T) {
+	tower := NewTower(44444)
+
+	for floorNum := 1; floorNum <= 3; floorNum++ {
+		floor, err := tower.GetFloor(floorNum)
+		if err != nil {
+			t.Fatalf("GetFloor(%d) failed: %v", floorNum, err)
+		}
+
+		rooms := floor.GetRooms()
+		if len(rooms) == 0 {
+			t.Fatalf("Floor %d has no rooms", floorNum)
+		}
+
+		// Start from any room and count reachable rooms
+		var startRoom *world.Room
+		for _, r := range rooms {
+			startRoom = r
+			break
+		}
+
+		visited := bfsTraverseFloor(startRoom, floor.Number)
+
+		if len(visited) != len(rooms) {
+			t.Errorf("Floor %d: Found %d connected rooms but floor has %d total rooms (isolated cluster detected)",
+				floorNum, len(visited), len(rooms))
+		}
+	}
+}
+
+// verifyFloorConnectivity checks if all rooms on a floor are reachable from the entrance
+func verifyFloorConnectivity(floor *Floor) bool {
+	rooms := floor.GetRooms()
+	if len(rooms) == 0 {
+		return true
+	}
+
+	entrance := floor.GetStairsDown()
+	if entrance == nil {
+		return false
+	}
+
+	visited := bfsTraverseFloor(entrance, floor.Number)
+	return len(visited) == len(rooms)
+}
+
+// bfsTraverseFloor performs BFS from a starting room and returns visited room IDs
+func bfsTraverseFloor(start *world.Room, floorNum int) map[string]bool {
+	visited := make(map[string]bool)
+	queue := []*world.Room{start}
+	visited[start.ID] = true
+
+	for len(queue) > 0 {
+		current := queue[0]
+		queue = queue[1:]
+
+		for _, dir := range []string{"north", "south", "east", "west"} {
+			exit := current.GetExit(dir)
+			if exit == nil {
+				continue
+			}
+			nextRoom, ok := exit.(*world.Room)
+			if !ok {
+				continue
+			}
+			// Only traverse rooms on the same floor
+			if nextRoom.Floor != floorNum {
+				continue
+			}
+			if visited[nextRoom.ID] {
+				continue
+			}
+			visited[nextRoom.ID] = true
+			queue = append(queue, nextRoom)
+		}
+	}
+
+	return visited
+}
