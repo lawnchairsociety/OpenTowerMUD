@@ -1,0 +1,51 @@
+# OpenTowerMUD Server Configuration
+# Security and network settings
+
+websocket:
+  # Allowed origins for WebSocket connections (CORS policy)
+  # Empty list = same-origin only (most secure)
+  # Use "*" to allow all origins (NOT recommended for production)
+  # Examples:
+  #   - "https://example.com"
+  #   - "http://localhost:3000"
+  allowed_origins: []
+
+  # Maximum message size in bytes (default: 4096)
+  # Prevents memory exhaustion from oversized messages
+  max_message_size: 4096
+
+password:
+  # Minimum password length (default: 8)
+  min_length: 8
+
+  # Require at least one uppercase letter (default: true)
+  require_uppercase: true
+
+  # Require at least one lowercase letter (default: true)
+  require_lowercase: true
+
+  # Require at least one digit (default: true)
+  require_digit: true
+
+  # Require at least one special character (default: false)
+  require_special: false
+
+connections:
+  # Maximum concurrent connections from a single IP address (default: 3)
+  # Set to 0 for unlimited (not recommended)
+  max_per_ip: 3
+
+  # Maximum total concurrent connections to the server (default: 100)
+  # Set to 0 for unlimited
+  max_total: 100
+
+rate_limit:
+  # Maximum failed login attempts before lockout (default: 5)
+  max_attempts: 5
+
+  # Initial lockout duration in seconds (default: 30)
+  lockout_seconds: 30
+
+  # Maximum lockout duration in seconds for exponential backoff (default: 300)
+  # After each lockout, the duration doubles until reaching this maximum
+  max_lockout_seconds: 300

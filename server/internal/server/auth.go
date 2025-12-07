@@ -91,6 +91,18 @@ func (s *Server) handleAuth(client Client) (*AuthResult, error) {
 func (s *Server) handleLogin(client Client) (*AuthResult, error) {
 	client.WriteLine("\n--- Login ---\n")
 
+	// Get IP address for rate limiting
+	ipAddress := getIPFromAddr(client.RemoteAddr())
+
+	// Check if IP is rate limited
+	if s.loginRateLimiter != nil {
+		if locked, remaining := s.loginRateLimiter.IsLocked(ipAddress); locked {
+			client.WriteLine(fmt.Sprintf("Too many failed login attempts. Please wait %d seconds.\n",
+				int(remaining.Seconds())))
+			return nil, errors.New("rate limited")
+		}
+	}
+
 	// Get username
 	client.WriteLine("Username: ")
 	username, err := client.ReadLine()
@@ -110,9 +122,6 @@ func (s *Server) handleLogin(client Client) (*AuthResult, error) {
 		return nil, errors.New("connection closed")
 	}
 
-	// Get IP address from client
-	ipAddress := getIPFromAddr(client.RemoteAddr())
-
 	// Validate credentials
 	account, err := s.db.ValidateLogin(username, password, ipAddress)
 	if err != nil {
@@ -122,11 +131,24 @@ func (s *Server) handleLogin(client Client) (*AuthResult, error) {
 			return nil, errors.New("account banned")
 		}
 		if errors.Is(err, database.ErrInvalidCredentials) {
+			// Record failed attempt
+			if s.loginRateLimiter != nil {
+				if locked, duration := s.loginRateLimiter.RecordFailure(ipAddress); locked {
+					client.WriteLine(fmt.Sprintf("Invalid username or password. Too many attempts - locked out for %d seconds.\n",
+						int(duration.Seconds())))
+					return nil, errors.New("rate limited")
+				}
+			}
 			client.WriteLine("Invalid username or password.\n")
 			return nil, errors.New("invalid credentials")
 		}
 		client.WriteLine("An error occurred. Please try again.\n")
 		return nil, err
+	}
+
+	// Successful login - clear rate limit
+	if s.loginRateLimiter != nil {
+		s.loginRateLimiter.RecordSuccess(ipAddress)
 	}
 
 	client.WriteLine(fmt.Sprintf("\nWelcome back, %s!\n", account.Username))
@@ -184,15 +206,16 @@ func (s *Server) handleRegister(client Client) (*AuthResult, error) {
 		return nil, errors.New("username taken")
 	}
 
-	// Get password
-	client.WriteLine("Choose a password (min 4 characters): ")
+	// Get password with validation
+	pwConfig := s.GetServerConfig().Password
+	client.WriteLine(fmt.Sprintf("Choose a password (%s): ", pwConfig.GetRequirementsText()))
 	password, err := client.ReadLine()
 	if err != nil {
 		return nil, errors.New("connection closed")
 	}
-	if len(password) < 4 {
-		client.WriteLine("Password must be at least 4 characters.\n")
-		return nil, errors.New("password too short")
+	if validationErr := pwConfig.ValidatePassword(password); validationErr != "" {
+		client.WriteLine(validationErr + "\n")
+		return nil, errors.New("password requirements not met")
 	}
 
 	// Confirm password

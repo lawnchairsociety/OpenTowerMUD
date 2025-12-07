@@ -7,6 +7,11 @@ import (
 	"github.com/gorilla/websocket"
 )
 
+// MaxWebSocketMessageSize is the maximum size of a WebSocket message in bytes.
+// This prevents malicious clients from sending extremely large messages to exhaust server memory.
+// 4KB is generous for MUD commands which are typically short text strings.
+const MaxWebSocketMessageSize = 4096
+
 // WebSocketClient wraps a WebSocket connection for browser-based communication.
 type WebSocketClient struct {
 	conn    *websocket.Conn
@@ -16,6 +21,9 @@ type WebSocketClient struct {
 
 // NewWebSocketClient creates a new WebSocketClient from a WebSocket connection.
 func NewWebSocketClient(conn *websocket.Conn) *WebSocketClient {
+	// Set read limit to prevent memory exhaustion from oversized messages
+	conn.SetReadLimit(MaxWebSocketMessageSize)
+
 	return &WebSocketClient{
 		conn:    conn,
 		readBuf: make([]string, 0),

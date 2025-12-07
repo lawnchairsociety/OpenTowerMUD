@@ -13,12 +13,13 @@ import (
 	"github.com/lawnchairsociety/opentowermud/server/internal/antispam"
 	"github.com/lawnchairsociety/opentowermud/server/internal/chatfilter"
 	"github.com/lawnchairsociety/opentowermud/server/internal/command"
-	"github.com/lawnchairsociety/opentowermud/server/internal/namefilter"
+	"github.com/lawnchairsociety/opentowermud/server/internal/config"
 	"github.com/lawnchairsociety/opentowermud/server/internal/crafting"
 	"github.com/lawnchairsociety/opentowermud/server/internal/database"
 	"github.com/lawnchairsociety/opentowermud/server/internal/gametime"
 	"github.com/lawnchairsociety/opentowermud/server/internal/items"
 	"github.com/lawnchairsociety/opentowermud/server/internal/logger"
+	"github.com/lawnchairsociety/opentowermud/server/internal/namefilter"
 	"github.com/lawnchairsociety/opentowermud/server/internal/npc"
 	"github.com/lawnchairsociety/opentowermud/server/internal/player"
 	"github.com/lawnchairsociety/opentowermud/server/internal/quest"
@@ -47,6 +48,9 @@ type Server struct {
 	spellRegistry       *spells.SpellRegistry
 	recipeRegistry      *crafting.RecipeRegistry
 	questRegistry       *quest.QuestRegistry
+	serverConfig        *config.ServerConfig
+	connLimiter         *ConnLimiter
+	loginRateLimiter    *LoginRateLimiter
 }
 
 func NewServer(address string, world *world.World, pilgrimMode bool) *Server {
@@ -100,6 +104,23 @@ func (s *Server) SetQuestRegistry(registry *quest.QuestRegistry) {
 // GetQuestRegistry returns the quest registry
 func (s *Server) GetQuestRegistry() *quest.QuestRegistry {
 	return s.questRegistry
+}
+
+// SetServerConfig sets the server configuration
+func (s *Server) SetServerConfig(cfg *config.ServerConfig) {
+	s.serverConfig = cfg
+	// Initialize connection limiter with the new config
+	s.connLimiter = NewConnLimiter(cfg.Connections)
+	// Initialize login rate limiter
+	s.loginRateLimiter = NewLoginRateLimiter(cfg.RateLimit)
+}
+
+// GetServerConfig returns the server configuration
+func (s *Server) GetServerConfig() *config.ServerConfig {
+	if s.serverConfig == nil {
+		return config.DefaultConfig()
+	}
+	return s.serverConfig
 }
 
 // CreateItem creates a new instance of an item by its ID
@@ -187,7 +208,25 @@ func (s *Server) Start() error {
 }
 
 func (s *Server) handleConnection(conn net.Conn) {
-	defer conn.Close()
+	remoteAddr := conn.RemoteAddr().String()
+	ip := extractIP(remoteAddr)
+
+	// Check connection limits
+	if s.connLimiter != nil && !s.connLimiter.TryAcquire(ip) {
+		logger.Warning("Connection rejected - limit exceeded",
+			"remote_addr", remoteAddr,
+			"ip", ip)
+		conn.Write([]byte("Too many connections. Please try again later.\r\n"))
+		conn.Close()
+		return
+	}
+
+	defer func() {
+		if s.connLimiter != nil {
+			s.connLimiter.Release(ip)
+		}
+		conn.Close()
+	}()
 
 	client := NewTelnetClient(conn)
 	s.handleClient(client)
@@ -242,15 +281,6 @@ func (s *Server) handleClient(client Client) {
 	p.HandleSession()
 }
 
-// WebSocket upgrader configuration
-var wsUpgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
-	CheckOrigin: func(r *http.Request) bool {
-		return true // Allow all origins (configure in production)
-	},
-}
-
 // StartWebSocket starts the WebSocket server on the given address.
 func (s *Server) StartWebSocket(address string) error {
 	http.HandleFunc("/ws", s.handleWebSocketUpgrade)
@@ -261,21 +291,86 @@ func (s *Server) StartWebSocket(address string) error {
 
 // handleWebSocketUpgrade upgrades an HTTP connection to WebSocket.
 func (s *Server) handleWebSocketUpgrade(w http.ResponseWriter, r *http.Request) {
-	wsConn, err := wsUpgrader.Upgrade(w, r, nil)
-	if err != nil {
-		logger.Error("WebSocket upgrade failed", "error", err)
+	// Get the real client IP (supports X-Forwarded-For from reverse proxies)
+	clientIP := getRealIP(r)
+
+	// Check connection limits before upgrading
+	if s.connLimiter != nil && !s.connLimiter.TryAcquire(clientIP) {
+		logger.Warning("WebSocket connection rejected - limit exceeded",
+			"remote_addr", r.RemoteAddr,
+			"client_ip", clientIP)
+		http.Error(w, "Too many connections. Please try again later.", http.StatusTooManyRequests)
 		return
 	}
 
-	go s.handleWebSocketConnection(wsConn)
+	// Create upgrader with origin check based on server config
+	upgrader := websocket.Upgrader{
+		ReadBufferSize:  1024,
+		WriteBufferSize: 1024,
+		CheckOrigin: func(r *http.Request) bool {
+			origin := r.Header.Get("Origin")
+			cfg := s.GetServerConfig()
+			allowed := cfg.WebSocket.IsOriginAllowed(origin, r.Host)
+			if !allowed {
+				logger.Warning("WebSocket connection rejected - origin not allowed",
+					"origin", origin,
+					"host", r.Host,
+					"remote_addr", r.RemoteAddr)
+			}
+			return allowed
+		},
+	}
+
+	wsConn, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		logger.Error("WebSocket upgrade failed", "error", err)
+		// Release the connection slot since upgrade failed
+		if s.connLimiter != nil {
+			s.connLimiter.Release(clientIP)
+		}
+		return
+	}
+
+	go s.handleWebSocketConnection(wsConn, clientIP)
 }
 
 // handleWebSocketConnection handles a WebSocket client connection.
-func (s *Server) handleWebSocketConnection(wsConn *websocket.Conn) {
-	defer wsConn.Close()
+func (s *Server) handleWebSocketConnection(wsConn *websocket.Conn, clientIP string) {
+	defer func() {
+		if s.connLimiter != nil {
+			s.connLimiter.Release(clientIP)
+		}
+		wsConn.Close()
+	}()
 
 	client := NewWebSocketClient(wsConn)
 	s.handleClient(client)
+}
+
+// getRealIP extracts the real client IP from an HTTP request.
+// It checks X-Forwarded-For header first (for reverse proxy setups),
+// then falls back to the direct remote address.
+func getRealIP(r *http.Request) string {
+	// Check X-Forwarded-For header (set by reverse proxies like nginx)
+	if xff := r.Header.Get("X-Forwarded-For"); xff != "" {
+		// X-Forwarded-For can contain multiple IPs: "client, proxy1, proxy2"
+		// The first one is the original client
+		ips := strings.Split(xff, ",")
+		if len(ips) > 0 {
+			clientIP := strings.TrimSpace(ips[0])
+			if clientIP != "" {
+				return clientIP
+			}
+		}
+	}
+
+	// Check X-Real-IP header (alternative header used by some proxies)
+	if xri := r.Header.Get("X-Real-IP"); xri != "" {
+		return strings.TrimSpace(xri)
+	}
+
+	// Fall back to direct remote address
+	return extractIP(r.RemoteAddr)
 }
 
 func (s *Server) Shutdown() {
@@ -290,6 +385,11 @@ func (s *Server) Shutdown() {
 	// Stop the dynamic spawn manager
 	if s.dynamicSpawnManager != nil {
 		s.dynamicSpawnManager.Stop()
+	}
+
+	// Stop the login rate limiter
+	if s.loginRateLimiter != nil {
+		s.loginRateLimiter.Stop()
 	}
 
 	// Auto-save all connected players before shutdown

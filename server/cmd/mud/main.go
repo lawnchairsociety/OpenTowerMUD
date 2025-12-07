@@ -10,11 +10,12 @@ import (
 	"time"
 
 	"github.com/lawnchairsociety/opentowermud/server/internal/chatfilter"
+	"github.com/lawnchairsociety/opentowermud/server/internal/config"
 	"github.com/lawnchairsociety/opentowermud/server/internal/crafting"
-	"github.com/lawnchairsociety/opentowermud/server/internal/namefilter"
 	"github.com/lawnchairsociety/opentowermud/server/internal/database"
 	"github.com/lawnchairsociety/opentowermud/server/internal/items"
 	"github.com/lawnchairsociety/opentowermud/server/internal/logger"
+	"github.com/lawnchairsociety/opentowermud/server/internal/namefilter"
 	"github.com/lawnchairsociety/opentowermud/server/internal/npc"
 	"github.com/lawnchairsociety/opentowermud/server/internal/quest"
 	"github.com/lawnchairsociety/opentowermud/server/internal/race"
@@ -41,6 +42,7 @@ func main() {
 	loggingConfig := flag.String("logging", "data/logging.yaml", "Path to logging config YAML file")
 	chatFilterConfig := flag.String("chatfilter", "data/chat_filter.yaml", "Path to chat filter config YAML file")
 	nameFilterConfig := flag.String("namefilter", "data/name_filter.yaml", "Path to name filter config YAML file")
+	serverConfigFile := flag.String("config", "data/server.yaml", "Path to server config YAML file")
 	pilgrimMode := flag.Bool("pilgrim", false, "Enable pilgrim mode (peaceful exploration, no combat)")
 	readOnly := flag.Bool("readonly", false, "Run in read-only mode (world changes won't be saved to disk)")
 	dbFile := flag.String("db", "data/opentowermud.db", "Path to player database file")
@@ -156,6 +158,21 @@ func main() {
 	srv.SetSpellRegistry(spellRegistry)
 	srv.SetRecipeRegistry(recipeRegistry)
 	srv.SetQuestRegistry(questRegistry)
+
+	// Load and set server config (security settings, etc.)
+	serverCfg, err := config.LoadConfig(*serverConfigFile)
+	if err != nil {
+		logger.Warning("Failed to load server config, using defaults", "path", *serverConfigFile, "error", err)
+		serverCfg = config.DefaultConfig()
+	}
+	srv.SetServerConfig(serverCfg)
+	if len(serverCfg.WebSocket.AllowedOrigins) == 0 {
+		logger.Info("WebSocket CORS policy", "mode", "same-origin")
+	} else if len(serverCfg.WebSocket.AllowedOrigins) == 1 && serverCfg.WebSocket.AllowedOrigins[0] == "*" {
+		logger.Warning("WebSocket CORS allows all origins (not recommended for production)")
+	} else {
+		logger.Info("WebSocket CORS policy", "allowed_origins", serverCfg.WebSocket.AllowedOrigins)
+	}
 
 	// Set up dynamic spawn scaling based on player count
 	srv.SetupDynamicSpawns(gameTower)
