@@ -13,6 +13,7 @@ import (
 	"github.com/lawnchairsociety/opentowermud/server/internal/antispam"
 	"github.com/lawnchairsociety/opentowermud/server/internal/chatfilter"
 	"github.com/lawnchairsociety/opentowermud/server/internal/command"
+	"github.com/lawnchairsociety/opentowermud/server/internal/namefilter"
 	"github.com/lawnchairsociety/opentowermud/server/internal/crafting"
 	"github.com/lawnchairsociety/opentowermud/server/internal/database"
 	"github.com/lawnchairsociety/opentowermud/server/internal/gametime"
@@ -40,6 +41,7 @@ type Server struct {
 	pilgrimMode         bool
 	chatFilter          *chatfilter.ChatFilter
 	chatFilterConfig    *chatfilter.Config
+	nameFilter          *namefilter.NameFilter
 	db                  *database.Database
 	itemsConfig         *items.ItemsConfig
 	spellRegistry       *spells.SpellRegistry
@@ -467,6 +469,16 @@ func (s *Server) GetAntispamConfig() *antispam.Config {
 // GetChatFilter returns the chat filter
 func (s *Server) GetChatFilter() *chatfilter.ChatFilter {
 	return s.chatFilter
+}
+
+// SetNameFilter sets the name filter for the server
+func (s *Server) SetNameFilter(nf *namefilter.NameFilter) {
+	s.nameFilter = nf
+}
+
+// GetNameFilter returns the name filter
+func (s *Server) GetNameFilter() *namefilter.NameFilter {
+	return s.nameFilter
 }
 
 // GetGameClock returns the game clock

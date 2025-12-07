@@ -23,6 +23,11 @@ func executeQuest(c *Command, p PlayerInterface) string {
 	case "list":
 		return showQuestList(p)
 	case "available":
+		// Check if a quest name was provided
+		if len(c.Args) > 1 {
+			questName := strings.Join(c.Args[1:], " ")
+			return showAvailableQuestDetails(p, questName)
+		}
 		return showAvailableQuests(p)
 	default:
 		// Try to show details for a specific quest
@@ -243,6 +248,101 @@ func showAvailableQuests(p PlayerInterface) string {
 	playerState := p.GetQuestState()
 
 	return listAvailableQuests(questGivers, questRegistry, playerState)
+}
+
+// showAvailableQuestDetails shows details of an available quest before accepting
+func showAvailableQuestDetails(p PlayerInterface, questName string) string {
+	room := p.GetCurrentRoom()
+	if room == nil {
+		return "You are nowhere."
+	}
+
+	worldRoom, ok := room.(*world.Room)
+	if !ok {
+		return "Internal error: invalid room type"
+	}
+
+	server := p.GetServer().(ServerInterface)
+	questRegistry := server.GetQuestRegistry()
+	if questRegistry == nil {
+		return "Quest system not available."
+	}
+
+	// Find quest givers in the room
+	var questGivers []*npc.NPC
+	for _, n := range worldRoom.GetNPCs() {
+		if n.IsQuestGiver() && n.IsAlive() {
+			questGivers = append(questGivers, n)
+		}
+	}
+
+	if len(questGivers) == 0 {
+		return "There is no one here offering quests."
+	}
+
+	// Get player's quest state for filtering
+	playerState := p.GetQuestState()
+	searchName := strings.ToLower(questName)
+
+	// Search through available quests from all quest givers
+	for _, giver := range questGivers {
+		available := questRegistry.GetAvailableQuestsForPlayer(giver.GetName(), playerState)
+		for _, q := range available {
+			if strings.Contains(strings.ToLower(q.Name), searchName) ||
+				strings.Contains(strings.ToLower(q.ID), searchName) {
+				return formatAvailableQuestDetails(q, giver.GetName())
+			}
+		}
+	}
+
+	return fmt.Sprintf("No available quest matching '%s'. Use 'quests available' to see available quests.", questName)
+}
+
+// formatAvailableQuestDetails formats details for a quest that hasn't been accepted yet
+func formatAvailableQuestDetails(q *quest.Quest, giverName string) string {
+	var sb strings.Builder
+
+	sb.WriteString(fmt.Sprintf("=== %s ===\n", q.Name))
+	sb.WriteString(fmt.Sprintf("Offered by: %s\n\n", giverName))
+	sb.WriteString(fmt.Sprintf("%s\n\n", q.Description))
+
+	// Objectives preview
+	sb.WriteString("Objectives:\n")
+	for _, obj := range q.Objectives {
+		targetName := obj.TargetName
+		if targetName == "" {
+			targetName = obj.Target
+		}
+		sb.WriteString(fmt.Sprintf("  - %s %s: 0/%d\n",
+			getObjectiveVerb(obj.Type), targetName, obj.Required))
+	}
+
+	// Turn-in NPC
+	if q.TurnInNPC != "" {
+		sb.WriteString(fmt.Sprintf("\nTurn in to: %s\n", q.TurnInNPC))
+	}
+
+	// Rewards
+	sb.WriteString("\nRewards:\n")
+	if q.Rewards.Gold > 0 {
+		sb.WriteString(fmt.Sprintf("  - %d gold\n", q.Rewards.Gold))
+	}
+	if q.Rewards.Experience > 0 {
+		sb.WriteString(fmt.Sprintf("  - %d experience\n", q.Rewards.Experience))
+	}
+	for _, item := range q.Rewards.Items {
+		sb.WriteString(fmt.Sprintf("  - %s\n", item))
+	}
+	if len(q.Rewards.Recipes) > 0 {
+		sb.WriteString(fmt.Sprintf("  - Recipe: %s\n", strings.Join(q.Rewards.Recipes, ", ")))
+	}
+	if q.Rewards.Title != "" {
+		sb.WriteString(fmt.Sprintf("  - Title: %s\n", q.Rewards.Title))
+	}
+
+	sb.WriteString(fmt.Sprintf("\nUse 'accept %s' to accept this quest.", strings.ToLower(q.Name)))
+
+	return sb.String()
 }
 
 // getObjectiveVerb returns the appropriate verb for an objective type

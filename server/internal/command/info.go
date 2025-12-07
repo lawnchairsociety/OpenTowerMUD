@@ -624,13 +624,15 @@ Higher skill = better success chance + access to advanced recipes.
 See also: help craft, help learn`
 
 	case "quest", "quests", "journal":
-		return `QUEST [list | <quest name>]
+		return `QUEST [list | available [name] | <quest name>]
 View your quest journal and track your progress.
 
 Usage:
-  quest              - Show quest journal summary
-  quest list         - Show all active quests with progress
-  quest <name>       - Show detailed info about a specific quest
+  quest                    - Show quest journal summary
+  quest list               - Show all active quests with progress
+  quest available          - Show quests offered by nearby NPCs
+  quest available <name>   - Preview a quest before accepting
+  quest <name>             - Show detailed info about an active quest
 
 Your quest journal shows:
   - Total active and completed quests
@@ -640,17 +642,18 @@ Your quest journal shows:
 See also: help accept, help complete, help title`
 
 	case "accept":
-		return `ACCEPT [quest name]
+		return `ACCEPT <quest name>
 Accept quests from quest-giving NPCs.
 
 Usage:
-  accept              - Show available quests from nearby NPCs
   accept <quest>      - Accept a specific quest
 
 Requirements:
   - You must be in the same room as the quest giver
   - Some quests have level requirements
   - Some quests require completing prerequisite quests
+
+Use 'quests available' to see quests offered by nearby NPCs.
 
 See also: help quest, help complete`
 

@@ -1,0 +1,25 @@
+# Name Filter Configuration
+# This file configures word filtering for character names
+
+# Enable or disable the name filter
+enabled: true
+
+# List of banned words (case-insensitive)
+# Names containing any of these words will be rejected
+banned_words:
+  - admin
+  - moderator
+  - gamemaster
+  - staff
+  - developer
+  - owner
+  - operator
+  - sysop
+  - gm
+
+# List of banned names (case-insensitive, exact match)
+# These specific names will be rejected entirely
+banned_names: []
+  # - gandalf
+  # - drizzt
+  # - legolas

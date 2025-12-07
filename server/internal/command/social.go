@@ -84,6 +84,17 @@ func executeWho(c *Command, p PlayerInterface) string {
 
 	result := "Online Players:\n"
 	for _, playerName := range players {
+		// Try to get the player's title
+		playerIface := server.FindPlayer(playerName)
+		if playerIface != nil {
+			if player, ok := playerIface.(PlayerInterface); ok {
+				title := player.GetActiveTitle()
+				if title != "" {
+					result += fmt.Sprintf("  - %s (%s)\n", playerName, title)
+					continue
+				}
+			}
+		}
 		result += fmt.Sprintf("  - %s\n", playerName)
 	}
 	return result

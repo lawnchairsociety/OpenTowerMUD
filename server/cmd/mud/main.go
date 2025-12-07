@@ -11,6 +11,7 @@ import (
 
 	"github.com/lawnchairsociety/opentowermud/server/internal/chatfilter"
 	"github.com/lawnchairsociety/opentowermud/server/internal/crafting"
+	"github.com/lawnchairsociety/opentowermud/server/internal/namefilter"
 	"github.com/lawnchairsociety/opentowermud/server/internal/database"
 	"github.com/lawnchairsociety/opentowermud/server/internal/items"
 	"github.com/lawnchairsociety/opentowermud/server/internal/logger"
@@ -39,6 +40,7 @@ func main() {
 	questsFile := flag.String("quests", "data/quests.yaml", "Path to quests YAML file")
 	loggingConfig := flag.String("logging", "data/logging.yaml", "Path to logging config YAML file")
 	chatFilterConfig := flag.String("chatfilter", "data/chat_filter.yaml", "Path to chat filter config YAML file")
+	nameFilterConfig := flag.String("namefilter", "data/name_filter.yaml", "Path to name filter config YAML file")
 	pilgrimMode := flag.Bool("pilgrim", false, "Enable pilgrim mode (peaceful exploration, no combat)")
 	readOnly := flag.Bool("readonly", false, "Run in read-only mode (world changes won't be saved to disk)")
 	dbFile := flag.String("db", "data/opentowermud.db", "Path to player database file")
@@ -171,6 +173,18 @@ func main() {
 		}
 		if filterCfg.Antispam != nil && filterCfg.Antispam.Enabled {
 			logger.Info("Anti-spam enabled", "max_messages", filterCfg.Antispam.MaxMessages, "time_window", filterCfg.Antispam.TimeWindowSeconds)
+		}
+	}
+
+	// Load and set name filter
+	nameCfg, err := namefilter.LoadConfig(*nameFilterConfig)
+	if err != nil {
+		logger.Warning("Failed to load name filter config, name filter disabled", "path", *nameFilterConfig, "error", err)
+	} else {
+		nf := namefilter.New(nameCfg)
+		srv.SetNameFilter(nf)
+		if nameCfg.Enabled {
+			logger.Info("Name filter enabled", "banned_words", len(nameCfg.BannedWords), "banned_names", len(nameCfg.BannedNames))
 		}
 	}
 

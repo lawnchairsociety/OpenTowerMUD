@@ -6,12 +6,49 @@ import (
 	"net"
 	"strconv"
 	"strings"
+	"unicode"
 
 	"github.com/lawnchairsociety/opentowermud/server/internal/class"
 	"github.com/lawnchairsociety/opentowermud/server/internal/database"
 	"github.com/lawnchairsociety/opentowermud/server/internal/race"
 	"github.com/lawnchairsociety/opentowermud/server/internal/stats"
 )
+
+// isValidCharacterName checks if a character name contains only allowed characters.
+// Allowed: letters (any language), hyphens, and apostrophes.
+// Names cannot start or end with hyphens/apostrophes, and cannot have consecutive special characters.
+func isValidCharacterName(name string) bool {
+	if len(name) == 0 {
+		return false
+	}
+
+	runes := []rune(name)
+
+	// First and last character must be a letter
+	if !unicode.IsLetter(runes[0]) || !unicode.IsLetter(runes[len(runes)-1]) {
+		return false
+	}
+
+	prevWasSpecial := false
+	for _, r := range runes {
+		if unicode.IsLetter(r) {
+			prevWasSpecial = false
+			continue
+		}
+		if r == '-' || r == '\'' {
+			// No consecutive special characters
+			if prevWasSpecial {
+				return false
+			}
+			prevWasSpecial = true
+			continue
+		}
+		// Any other character is invalid
+		return false
+	}
+
+	return true
+}
 
 // AuthResult contains the result of the authentication flow
 type AuthResult struct {
@@ -297,6 +334,19 @@ func (s *Server) handleCharacterCreation(client Client, account *database.Accoun
 	if len(name) > 20 {
 		client.WriteLine("Character name must be 20 characters or less.\n")
 		return nil, errors.New("name too long")
+	}
+	if !isValidCharacterName(name) {
+		client.WriteLine("Character name can only contain letters, hyphens, and apostrophes.\n")
+		return nil, errors.New("invalid characters in name")
+	}
+
+	// Check name filter for banned words/names
+	if nf := s.GetNameFilter(); nf != nil {
+		result := nf.Check(name)
+		if !result.Allowed {
+			client.WriteLine(result.Reason + "\n")
+			return nil, errors.New("name not allowed")
+		}
 	}
 
 	// Check if name exists

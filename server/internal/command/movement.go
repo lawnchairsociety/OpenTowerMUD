@@ -117,10 +117,15 @@ func formatPlayerDescription(target PlayerInterface) string {
 	level := target.GetLevel()
 	raceName := target.GetRaceName()
 	className := target.GetPrimaryClassName()
+	title := target.GetActiveTitle()
 
 	// Build basic description
 	var sb strings.Builder
-	sb.WriteString(fmt.Sprintf("%s, a level %d %s %s.\n", name, level, raceName, className))
+	if title != "" {
+		sb.WriteString(fmt.Sprintf("%s (%s), a level %d %s %s.\n", name, title, level, raceName, className))
+	} else {
+		sb.WriteString(fmt.Sprintf("%s, a level %d %s %s.\n", name, level, raceName, className))
+	}
 
 	// Show equipment summary
 	equipment := target.GetEquipment()
