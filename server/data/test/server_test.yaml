@@ -1,0 +1,29 @@
+# OpenTowerMUD Test Server Configuration
+# Relaxed settings for integration testing
+
+websocket:
+  allowed_origins: []
+  max_message_size: 4096
+
+password:
+  # Relaxed password requirements for test accounts
+  min_length: 6
+  require_uppercase: false
+  require_lowercase: false
+  require_digit: false
+  require_special: false
+
+connections:
+  # Higher limit for tests - multiple test clients run from same IP
+  max_per_ip: 20
+  max_total: 100
+
+rate_limit:
+  # More lenient for tests
+  max_attempts: 20
+  lockout_seconds: 5
+  max_lockout_seconds: 30
+
+session:
+  idle_timeout_minutes: 30
+  auto_save_interval_minutes: 5

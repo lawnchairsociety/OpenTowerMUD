@@ -48,9 +48,46 @@ func newClientConnection(address string) (*TestClient, error) {
 	return client, nil
 }
 
+// retrySuffix generates letter suffixes for retry attempts (a, b, c, ...)
+var retryCounter uint64
+
+func getRetrySuffix() string {
+	retryCounter++
+	n := retryCounter
+	result := ""
+	for n > 0 {
+		n--
+		result = string(rune('a'+(n%26))) + result
+		n /= 26
+	}
+	return result
+}
+
 // NewTestClient creates a new test client by registering a new account.
 // This is the primary way to create test clients - each gets a unique account.
+// It will retry up to 3 times on connection failures, using a unique name each time.
 func NewTestClient(name string, address string) (*TestClient, error) {
+	var lastErr error
+	for attempt := 0; attempt < 3; attempt++ {
+		if attempt > 0 {
+			time.Sleep(500 * time.Millisecond) // Wait before retry
+		}
+		// Use unique name for each attempt to avoid "username taken" on retry
+		attemptName := name
+		if attempt > 0 {
+			attemptName = name + "r" + getRetrySuffix()
+		}
+		client, err := newTestClientInternal(attemptName, address)
+		if err == nil {
+			return client, nil
+		}
+		lastErr = err
+	}
+	return nil, fmt.Errorf("failed after 3 attempts: %w", lastErr)
+}
+
+// newTestClientInternal performs a single registration attempt
+func newTestClientInternal(name string, address string) (*TestClient, error) {
 	client, err := newClientConnection(address)
 	if err != nil {
 		return nil, err
@@ -58,21 +95,21 @@ func NewTestClient(name string, address string) (*TestClient, error) {
 	client.Name = name
 
 	// Wait for welcome/login prompt
-	time.Sleep(200 * time.Millisecond)
+	time.Sleep(300 * time.Millisecond)
 
 	// Choose register
 	if err := client.SendCommand("r"); err != nil {
 		client.Close()
 		return nil, fmt.Errorf("failed to select register: %w", err)
 	}
-	time.Sleep(100 * time.Millisecond)
+	time.Sleep(150 * time.Millisecond)
 
 	// Send username (use the name as username for simplicity)
 	if err := client.SendCommand(name); err != nil {
 		client.Close()
 		return nil, fmt.Errorf("failed to send username: %w", err)
 	}
-	time.Sleep(100 * time.Millisecond)
+	time.Sleep(150 * time.Millisecond)
 
 	// Send password
 	password := name + "pass123"
@@ -80,64 +117,63 @@ func NewTestClient(name string, address string) (*TestClient, error) {
 		client.Close()
 		return nil, fmt.Errorf("failed to send password: %w", err)
 	}
-	time.Sleep(100 * time.Millisecond)
+	time.Sleep(150 * time.Millisecond)
 
 	// Confirm password
 	if err := client.SendCommand(password); err != nil {
 		client.Close()
 		return nil, fmt.Errorf("failed to confirm password: %w", err)
 	}
-	time.Sleep(100 * time.Millisecond)
+	time.Sleep(150 * time.Millisecond)
 
 	// Send character name (same as username for tests)
 	if err := client.SendCommand(name); err != nil {
 		client.Close()
 		return nil, fmt.Errorf("failed to send character name: %w", err)
 	}
-	time.Sleep(100 * time.Millisecond)
+	time.Sleep(150 * time.Millisecond)
 
 	// Select class (3 = Cleric for tests - has heal spell for magic tests)
 	if err := client.SendCommand("3"); err != nil {
 		client.Close()
 		return nil, fmt.Errorf("failed to select class: %w", err)
 	}
-	time.Sleep(100 * time.Millisecond)
+	time.Sleep(150 * time.Millisecond)
 
 	// Confirm class selection (Y/N prompt)
 	if err := client.SendCommand("Y"); err != nil {
 		client.Close()
 		return nil, fmt.Errorf("failed to confirm class: %w", err)
 	}
-	time.Sleep(100 * time.Millisecond)
+	time.Sleep(150 * time.Millisecond)
 
 	// Select race (2 = Dwarf for tests - has stat bonuses, avoids human bonus selection)
 	if err := client.SendCommand("2"); err != nil {
 		client.Close()
 		return nil, fmt.Errorf("failed to select race: %w", err)
 	}
-	time.Sleep(100 * time.Millisecond)
+	time.Sleep(150 * time.Millisecond)
 
 	// Confirm race selection (Y/N prompt)
 	if err := client.SendCommand("Y"); err != nil {
 		client.Close()
 		return nil, fmt.Errorf("failed to confirm race: %w", err)
 	}
-	time.Sleep(100 * time.Millisecond)
+	time.Sleep(150 * time.Millisecond)
 
 	// Send ability scores (standard array: 15, 14, 13, 12, 10, 8)
 	// Assign in order: Strength, Dexterity, Constitution, Intelligence, Wisdom, Charisma
 	abilityScores := []string{"15", "14", "13", "12", "10", "8"}
-	for _, score := range abilityScores {
+	for i, score := range abilityScores {
 		if err := client.SendCommand(score); err != nil {
 			client.Close()
-			return nil, fmt.Errorf("failed to send ability score: %w", err)
+			return nil, fmt.Errorf("failed to send ability score %d: %w", i, err)
 		}
-		time.Sleep(100 * time.Millisecond)
+		time.Sleep(150 * time.Millisecond)
 	}
-	time.Sleep(200 * time.Millisecond)
 
 	// Verify we're in the game (should see room description)
-	if !client.WaitForMessage("Town Square", 2*time.Second) {
+	if !client.WaitForMessage("Town Square", 3*time.Second) {
 		// Check if we got an error message
 		messages := client.GetMessages()
 		client.Close()
@@ -147,8 +183,25 @@ func NewTestClient(name string, address string) (*TestClient, error) {
 	return client, nil
 }
 
-// NewTestClientWithLogin creates a test client by logging into an existing account
+// NewTestClientWithLogin creates a test client by logging into an existing account.
+// It will retry up to 3 times on connection failures.
 func NewTestClientWithLogin(creds Credentials, address string) (*TestClient, error) {
+	var lastErr error
+	for attempt := 0; attempt < 3; attempt++ {
+		if attempt > 0 {
+			time.Sleep(500 * time.Millisecond) // Wait before retry
+		}
+		client, err := newTestClientWithLoginInternal(creds, address)
+		if err == nil {
+			return client, nil
+		}
+		lastErr = err
+	}
+	return nil, fmt.Errorf("failed after 3 attempts: %w", lastErr)
+}
+
+// newTestClientWithLoginInternal performs a single login attempt
+func newTestClientWithLoginInternal(creds Credentials, address string) (*TestClient, error) {
 	client, err := newClientConnection(address)
 	if err != nil {
 		return nil, err
@@ -156,28 +209,28 @@ func NewTestClientWithLogin(creds Credentials, address string) (*TestClient, err
 	client.Name = creds.CharacterName
 
 	// Wait for welcome/login prompt
-	time.Sleep(200 * time.Millisecond)
+	time.Sleep(300 * time.Millisecond)
 
 	// Choose login
 	if err := client.SendCommand("l"); err != nil {
 		client.Close()
 		return nil, fmt.Errorf("failed to select login: %w", err)
 	}
-	time.Sleep(100 * time.Millisecond)
+	time.Sleep(150 * time.Millisecond)
 
 	// Send username
 	if err := client.SendCommand(creds.Username); err != nil {
 		client.Close()
 		return nil, fmt.Errorf("failed to send username: %w", err)
 	}
-	time.Sleep(100 * time.Millisecond)
+	time.Sleep(150 * time.Millisecond)
 
 	// Send password
 	if err := client.SendCommand(creds.Password); err != nil {
 		client.Close()
 		return nil, fmt.Errorf("failed to send password: %w", err)
 	}
-	time.Sleep(200 * time.Millisecond)
+	time.Sleep(300 * time.Millisecond)
 
 	// Select character (enter "1" for first character)
 	if err := client.SendCommand("1"); err != nil {

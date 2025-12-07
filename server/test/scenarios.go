@@ -14,10 +14,27 @@ import (
 // uniqueCounter provides unique IDs for test players within a single run
 var uniqueCounter uint64
 
-// uniqueName generates a unique name by appending a counter suffix
+// uniqueName generates a unique name by appending a letter-based suffix
+// Character names can only contain letters (no numbers), so we convert
+// the counter to a base-26 letter sequence (a, b, ..., z, aa, ab, ...)
 func uniqueName(base string) string {
 	counter := atomic.AddUint64(&uniqueCounter, 1)
-	return fmt.Sprintf("%s%d", base, counter)
+	suffix := counterToLetters(counter)
+	return base + suffix
+}
+
+// counterToLetters converts a number to a letter sequence (1=a, 2=b, ..., 26=z, 27=aa, 28=ab, ...)
+func counterToLetters(n uint64) string {
+	if n == 0 {
+		return "a"
+	}
+	result := ""
+	for n > 0 {
+		n-- // Make it 0-indexed
+		result = string(rune('a'+(n%26))) + result
+		n /= 26
+	}
+	return result
 }
 
 // Verbose controls whether detailed logging is shown during tests
@@ -120,10 +137,16 @@ func RunAllTests(serverAddr string) []TestResult {
 	results = append(results, TestMovement(serverAddr))
 	results = append(results, TestMultipleClientsMovement(serverAddr))
 	results = append(results, TestLookCommand(serverAddr))
+	results = append(results, TestExitsCommand(serverAddr))
+	results = append(results, TestUnlockCommand(serverAddr))
+	results = append(results, TestUnlockNoArgs(serverAddr))
+	results = append(results, TestMovementAliases(serverAddr))
 	results = append(results, TestAccountSystem(serverAddr))
 	results = append(results, TestInventoryPersistence(serverAddr))
 	results = append(results, TestRoomPersistence(serverAddr))
 	results = append(results, TestLastVisitedCityRespawn(serverAddr))
+	results = append(results, TestPasswordChangeNoArgs(serverAddr))
+	results = append(results, TestPasswordChangeWrongOld(serverAddr))
 
 	// Group 2: Communication & Social
 	results = append(results, TestSayCommand(serverAddr))
@@ -141,6 +164,8 @@ func RunAllTests(serverAddr string) []TestResult {
 	results = append(results, TestUnignoreCommand(serverAddr))
 	results = append(results, TestReportCommand(serverAddr))
 	results = append(results, TestIgnoreList(serverAddr))
+	results = append(results, TestWhoCommand(serverAddr))
+	results = append(results, TestWhoMultiplePlayers(serverAddr))
 
 	// Group 3: Character Info & Stats
 	results = append(results, TestScoreCommand(serverAddr))
@@ -160,6 +185,15 @@ func RunAllTests(serverAddr string) []TestResult {
 	results = append(results, TestSellItem(serverAddr))
 	results = append(results, TestEquipment(serverAddr))
 	results = append(results, TestConsumables(serverAddr))
+	results = append(results, TestDrinkCommand(serverAddr))
+	results = append(results, TestDrinkPotion(serverAddr))
+	results = append(results, TestDrinkNonDrinkable(serverAddr))
+	results = append(results, TestHoldCommand(serverAddr))
+	results = append(results, TestUseCommand(serverAddr))
+	results = append(results, TestUseAltar(serverAddr))
+	results = append(results, TestTakeCommand(serverAddr))
+	results = append(results, TestGetCommand(serverAddr))
+	results = append(results, TestPickupCommand(serverAddr))
 
 	// Group 5: Combat System
 	results = append(results, TestUnattackableNPC(serverAddr))
@@ -189,6 +223,12 @@ func RunAllTests(serverAddr string) []TestResult {
 	results = append(results, TestTrainerLocations(serverAddr))
 	results = append(results, TestLearnFromTrainer(serverAddr))
 	results = append(results, TestCraftingTrainerLocations(serverAddr))
+	results = append(results, TestTimeCommand(serverAddr))
+	results = append(results, TestSleepCommand(serverAddr))
+	results = append(results, TestWakeCommand(serverAddr))
+	results = append(results, TestWakeWhenNotSleeping(serverAddr))
+	results = append(results, TestStandCommand(serverAddr))
+	results = append(results, TestStandWhenStanding(serverAddr))
 
 	// Group 9: Crafting System
 	results = append(results, TestCraftingStationForge(serverAddr))
@@ -243,10 +283,16 @@ func getAllTests() []testEntry {
 		{"Movement", TestMovement},
 		{"Multiple Clients Movement", TestMultipleClientsMovement},
 		{"Look Command", TestLookCommand},
+		{"Exits Command", TestExitsCommand},
+		{"Unlock Command", TestUnlockCommand},
+		{"Unlock No Args", TestUnlockNoArgs},
+		{"Movement Aliases", TestMovementAliases},
 		{"Account System", TestAccountSystem},
 		{"Inventory Persistence", TestInventoryPersistence},
 		{"Room Persistence", TestRoomPersistence},
 		{"Death Respawn", TestLastVisitedCityRespawn},
+		{"Password Change No Args", TestPasswordChangeNoArgs},
+		{"Password Change Wrong Old", TestPasswordChangeWrongOld},
 
 		// Group 2: Communication & Social
 		{"Say Command", TestSayCommand},
@@ -264,6 +310,8 @@ func getAllTests() []testEntry {
 		{"Unignore Command", TestUnignoreCommand},
 		{"Report Command", TestReportCommand},
 		{"Ignore List", TestIgnoreList},
+		{"Who Command", TestWhoCommand},
+		{"Who Multiple Players", TestWhoMultiplePlayers},
 
 		// Group 3: Character Info & Stats
 		{"Score Command", TestScoreCommand},
@@ -283,6 +331,15 @@ func getAllTests() []testEntry {
 		{"Sell Item", TestSellItem},
 		{"Equipment", TestEquipment},
 		{"Consumables", TestConsumables},
+		{"Drink Command", TestDrinkCommand},
+		{"Drink Potion", TestDrinkPotion},
+		{"Drink Non-Drinkable", TestDrinkNonDrinkable},
+		{"Hold Command", TestHoldCommand},
+		{"Use Command", TestUseCommand},
+		{"Use Altar", TestUseAltar},
+		{"Take Command", TestTakeCommand},
+		{"Get Command", TestGetCommand},
+		{"Pickup Command", TestPickupCommand},
 
 		// Group 5: Combat System
 		{"Unattackable NPC", TestUnattackableNPC},
@@ -312,6 +369,12 @@ func getAllTests() []testEntry {
 		{"Trainer Locations", TestTrainerLocations},
 		{"Learn From Trainer", TestLearnFromTrainer},
 		{"Crafting Trainer Locations", TestCraftingTrainerLocations},
+		{"Time Command", TestTimeCommand},
+		{"Sleep Command", TestSleepCommand},
+		{"Wake Command", TestWakeCommand},
+		{"Wake When Not Sleeping", TestWakeWhenNotSleeping},
+		{"Stand Command", TestStandCommand},
+		{"Stand When Standing", TestStandWhenStanding},
 
 		// Group 9: Crafting System
 		{"Crafting Station - Forge", TestCraftingStationForge},

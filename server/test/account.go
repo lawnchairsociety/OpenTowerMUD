@@ -171,3 +171,74 @@ func TestLastVisitedCityRespawn(serverAddr string) TestResult {
 
 	return TestResult{Name: testName, Passed: true, Message: "Player starts in Town Square (death respawn point)"}
 }
+
+// TestPasswordChangeNoArgs tests password command without arguments
+func TestPasswordChangeNoArgs(serverAddr string) TestResult {
+	const testName = "Password Change No Args"
+
+	name := uniqueName("PasswordNoArgs")
+	client, err := testclient.NewTestClient(name, serverAddr)
+	if err != nil {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Connection failed: %v", err)}
+	}
+	defer client.Close()
+
+	time.Sleep(300 * time.Millisecond)
+
+	// Try password without arguments
+	logAction(testName, "Testing password command without args...")
+	client.ClearMessages()
+	client.SendCommand("password")
+	time.Sleep(300 * time.Millisecond)
+
+	messages := client.GetMessages()
+	fullOutput := strings.Join(messages, " ")
+
+	// Should see usage message
+	hasUsage := strings.Contains(strings.ToLower(fullOutput), "usage") ||
+		strings.Contains(strings.ToLower(fullOutput), "old_password") ||
+		strings.Contains(strings.ToLower(fullOutput), "new_password")
+	logResult(testName, hasUsage, "Usage message shown")
+
+	if !hasUsage {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Password should show usage. Got: %v", messages)}
+	}
+
+	return TestResult{Name: testName, Passed: true, Message: "Password command shows usage when missing arguments"}
+}
+
+// TestPasswordChangeWrongOld tests password command with wrong old password
+func TestPasswordChangeWrongOld(serverAddr string) TestResult {
+	const testName = "Password Change Wrong Old"
+
+	name := uniqueName("PasswordWrong")
+	client, err := testclient.NewTestClient(name, serverAddr)
+	if err != nil {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Connection failed: %v", err)}
+	}
+	defer client.Close()
+
+	time.Sleep(300 * time.Millisecond)
+
+	// Try password with wrong old password
+	logAction(testName, "Testing password command with wrong old password...")
+	client.ClearMessages()
+	client.SendCommand("password WrongPassword123 NewPassword456")
+	time.Sleep(300 * time.Millisecond)
+
+	messages := client.GetMessages()
+	fullOutput := strings.Join(messages, " ")
+
+	// Should see error about incorrect password
+	wrongPassword := strings.Contains(strings.ToLower(fullOutput), "incorrect") ||
+		strings.Contains(strings.ToLower(fullOutput), "wrong") ||
+		strings.Contains(strings.ToLower(fullOutput), "invalid") ||
+		strings.Contains(strings.ToLower(fullOutput), "not match")
+	logResult(testName, wrongPassword, "Wrong password rejected")
+
+	if !wrongPassword {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Password should reject wrong old password. Got: %v", messages)}
+	}
+
+	return TestResult{Name: testName, Passed: true, Message: "Password command rejects incorrect old password"}
+}

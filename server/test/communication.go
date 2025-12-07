@@ -735,8 +735,8 @@ func TestIgnoreList(serverAddr string) TestResult {
 	const testName = "Ignore List"
 
 	name1 := uniqueName("ListViewer")
-	name2 := uniqueName("ToIgnore1")
-	name3 := uniqueName("ToIgnore2")
+	name2 := uniqueName("ToIgnoreOne")
+	name3 := uniqueName("ToIgnoreTwo")
 	logAction(testName, fmt.Sprintf("Connecting %s, %s, %s...", name1, name2, name3))
 
 	viewer, err1 := testclient.NewTestClient(name1, serverAddr)
@@ -745,11 +745,15 @@ func TestIgnoreList(serverAddr string) TestResult {
 	}
 	defer viewer.Close()
 
+	time.Sleep(300 * time.Millisecond) // Wait between client connections
+
 	ignored1, err2 := testclient.NewTestClient(name2, serverAddr)
 	if err2 != nil {
 		return TestResult{Name: testName, Passed: false, Message: "Failed to connect ignored1"}
 	}
 	defer ignored1.Close()
+
+	time.Sleep(300 * time.Millisecond) // Wait between client connections
 
 	ignored2, err3 := testclient.NewTestClient(name3, serverAddr)
 	if err3 != nil {
@@ -788,4 +792,88 @@ func TestIgnoreList(serverAddr string) TestResult {
 	}
 
 	return TestResult{Name: testName, Passed: true, Message: "Ignore list shows all ignored players"}
+}
+
+// TestWhoCommand tests the who command listing online players
+func TestWhoCommand(serverAddr string) TestResult {
+	const testName = "Who Command"
+
+	name := uniqueName("WhoTest")
+	client, err := testclient.NewTestClient(name, serverAddr)
+	if err != nil {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Connection failed: %v", err)}
+	}
+	defer client.Close()
+
+	time.Sleep(300 * time.Millisecond)
+
+	// Execute the who command
+	logAction(testName, "Checking who command...")
+	client.ClearMessages()
+	client.SendCommand("who")
+	time.Sleep(300 * time.Millisecond)
+
+	messages := client.GetMessages()
+	fullOutput := strings.Join(messages, " ")
+
+	// Should see "Online Players" and our own name in the list
+	hasPlayerList := strings.Contains(fullOutput, "Online") || strings.Contains(fullOutput, "Player")
+	hasOwnName := strings.Contains(fullOutput, "WhoTest")
+	logResult(testName, hasPlayerList, "Player list header shown")
+	logResult(testName, hasOwnName, "Own name in list")
+
+	if !hasPlayerList {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Who command failed. Got: %v", messages)}
+	}
+	if !hasOwnName {
+		return TestResult{Name: testName, Passed: false, Message: "Own name not shown in who list"}
+	}
+
+	return TestResult{Name: testName, Passed: true, Message: "Who command shows online players including self"}
+}
+
+// TestWhoMultiplePlayers tests the who command with multiple connected players
+func TestWhoMultiplePlayers(serverAddr string) TestResult {
+	const testName = "Who Multiple Players"
+
+	// Create first player
+	name1 := uniqueName("WhoMultiOne")
+	client1, err := testclient.NewTestClient(name1, serverAddr)
+	if err != nil {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Client 1 connection failed: %v", err)}
+	}
+	defer client1.Close()
+
+	time.Sleep(500 * time.Millisecond) // Wait between client connections
+
+	// Create second player
+	name2 := uniqueName("WhoMultiTwo")
+	client2, err := testclient.NewTestClient(name2, serverAddr)
+	if err != nil {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Client 2 connection failed: %v", err)}
+	}
+	defer client2.Close()
+
+	time.Sleep(500 * time.Millisecond)
+
+	// First player checks who
+	logAction(testName, "Player 1 checking who list...")
+	client1.ClearMessages()
+	client1.SendCommand("who")
+	time.Sleep(300 * time.Millisecond)
+
+	messages := client1.GetMessages()
+	fullOutput := strings.Join(messages, " ")
+
+	// Both players should be visible
+	hasPlayer1 := strings.Contains(fullOutput, "WhoMultiOne")
+	hasPlayer2 := strings.Contains(fullOutput, "WhoMultiTwo")
+	logResult(testName, hasPlayer1, "Player 1 in list")
+	logResult(testName, hasPlayer2, "Player 2 in list")
+
+	if !hasPlayer1 || !hasPlayer2 {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Who command missing players. Got: %v", messages)}
+	}
+
+	return TestResult{Name: testName, Passed: true, Message: "Who command shows multiple online players"}
 }

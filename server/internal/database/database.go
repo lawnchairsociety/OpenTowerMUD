@@ -40,6 +40,12 @@ func Open(path string) (*Database, error) {
 		return nil, fmt.Errorf("failed to enable WAL mode: %w", err)
 	}
 
+	// Set busy timeout to wait for locks instead of immediately failing
+	if _, err := db.Exec("PRAGMA busy_timeout = 5000"); err != nil {
+		db.Close()
+		return nil, fmt.Errorf("failed to set busy timeout: %w", err)
+	}
+
 	d := &Database{db: db}
 
 	if err := d.migrate(); err != nil {

@@ -16,7 +16,7 @@ import (
 func TestAdminCommandsHidden(serverAddr string) TestResult {
 	const testName = "Admin Commands Hidden"
 
-	name := uniqueName("NonAdmin")
+	name := uniqueName("RegularUser")
 	client, err := testclient.NewTestClient(name, serverAddr)
 	if err != nil {
 		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Connection failed: %v", err)}

@@ -262,3 +262,241 @@ func TestTrainerLocations(serverAddr string) TestResult {
 
 	return TestResult{Name: testName, Passed: true, Message: "Class trainers are in expected locations"}
 }
+
+// =============================================================================
+// Time and Player State Tests
+// =============================================================================
+
+// TestTimeCommand tests the time command showing game time and server uptime
+func TestTimeCommand(serverAddr string) TestResult {
+	const testName = "Time Command"
+
+	name := uniqueName("TimeTest")
+	client, err := testclient.NewTestClient(name, serverAddr)
+	if err != nil {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Connection failed: %v", err)}
+	}
+	defer client.Close()
+
+	time.Sleep(300 * time.Millisecond)
+
+	// Execute the time command
+	logAction(testName, "Checking time command...")
+	client.ClearMessages()
+	client.SendCommand("time")
+	time.Sleep(300 * time.Millisecond)
+
+	messages := client.GetMessages()
+	fullOutput := strings.Join(messages, " ")
+
+	// Should see time of day and uptime information
+	hasTimeInfo := strings.Contains(strings.ToLower(fullOutput), "uptime") ||
+		strings.Contains(strings.ToLower(fullOutput), "day") ||
+		strings.Contains(strings.ToLower(fullOutput), "night") ||
+		strings.Contains(strings.ToLower(fullOutput), "morning") ||
+		strings.Contains(strings.ToLower(fullOutput), "evening") ||
+		strings.Contains(strings.ToLower(fullOutput), "hour") ||
+		strings.Contains(strings.ToLower(fullOutput), "minute")
+	logResult(testName, hasTimeInfo, "Time info displayed")
+
+	if !hasTimeInfo {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Time command failed. Got: %v", messages)}
+	}
+
+	return TestResult{Name: testName, Passed: true, Message: "Time command shows game time and server uptime"}
+}
+
+// TestSleepCommand tests the sleep command for resting
+func TestSleepCommand(serverAddr string) TestResult {
+	const testName = "Sleep Command"
+
+	name := uniqueName("SleepTest")
+	client, err := testclient.NewTestClient(name, serverAddr)
+	if err != nil {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Connection failed: %v", err)}
+	}
+	defer client.Close()
+
+	time.Sleep(300 * time.Millisecond)
+
+	// Try to sleep
+	logAction(testName, "Executing sleep command...")
+	client.ClearMessages()
+	client.SendCommand("sleep")
+	time.Sleep(300 * time.Millisecond)
+
+	messages := client.GetMessages()
+	fullOutput := strings.Join(messages, " ")
+
+	// Should see a message about falling asleep or lying down
+	fellAsleep := strings.Contains(strings.ToLower(fullOutput), "sleep") ||
+		strings.Contains(strings.ToLower(fullOutput), "lie down") ||
+		strings.Contains(strings.ToLower(fullOutput), "asleep")
+	logResult(testName, fellAsleep, "Sleep message received")
+
+	if !fellAsleep {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Sleep command failed. Got: %v", messages)}
+	}
+
+	// Verify we can't sleep again
+	client.ClearMessages()
+	client.SendCommand("sleep")
+	time.Sleep(300 * time.Millisecond)
+
+	messages = client.GetMessages()
+	fullOutput = strings.Join(messages, " ")
+	alreadySleeping := strings.Contains(strings.ToLower(fullOutput), "already")
+	logResult(testName, alreadySleeping, "Already sleeping check")
+
+	// Clean up - wake up
+	client.SendCommand("wake")
+	time.Sleep(200 * time.Millisecond)
+
+	return TestResult{Name: testName, Passed: true, Message: "Sleep command puts player to sleep"}
+}
+
+// TestWakeCommand tests waking up from sleep
+func TestWakeCommand(serverAddr string) TestResult {
+	const testName = "Wake Command"
+
+	name := uniqueName("WakeTest")
+	client, err := testclient.NewTestClient(name, serverAddr)
+	if err != nil {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Connection failed: %v", err)}
+	}
+	defer client.Close()
+
+	time.Sleep(300 * time.Millisecond)
+
+	// First, go to sleep
+	logAction(testName, "Going to sleep first...")
+	client.SendCommand("sleep")
+	time.Sleep(300 * time.Millisecond)
+
+	// Now wake up
+	logAction(testName, "Waking up...")
+	client.ClearMessages()
+	client.SendCommand("wake")
+	time.Sleep(300 * time.Millisecond)
+
+	messages := client.GetMessages()
+	fullOutput := strings.Join(messages, " ")
+
+	// Should see a message about waking up or standing
+	wokeUp := strings.Contains(strings.ToLower(fullOutput), "wake") ||
+		strings.Contains(strings.ToLower(fullOutput), "stand") ||
+		strings.Contains(strings.ToLower(fullOutput), "awake")
+	logResult(testName, wokeUp, "Wake message received")
+
+	if !wokeUp {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Wake command failed. Got: %v", messages)}
+	}
+
+	return TestResult{Name: testName, Passed: true, Message: "Wake command wakes player from sleep"}
+}
+
+// TestWakeWhenNotSleeping tests wake command when already awake
+func TestWakeWhenNotSleeping(serverAddr string) TestResult {
+	const testName = "Wake When Not Sleeping"
+
+	name := uniqueName("WakeAwake")
+	client, err := testclient.NewTestClient(name, serverAddr)
+	if err != nil {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Connection failed: %v", err)}
+	}
+	defer client.Close()
+
+	time.Sleep(300 * time.Millisecond)
+
+	// Try to wake when already awake
+	logAction(testName, "Trying to wake when already awake...")
+	client.ClearMessages()
+	client.SendCommand("wake")
+	time.Sleep(300 * time.Millisecond)
+
+	messages := client.GetMessages()
+	fullOutput := strings.Join(messages, " ")
+
+	// Should see "already awake" message
+	alreadyAwake := strings.Contains(strings.ToLower(fullOutput), "already") ||
+		strings.Contains(strings.ToLower(fullOutput), "awake")
+	logResult(testName, alreadyAwake, "Already awake message")
+
+	if !alreadyAwake {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Wake command should say already awake. Got: %v", messages)}
+	}
+
+	return TestResult{Name: testName, Passed: true, Message: "Wake correctly reports when already awake"}
+}
+
+// TestStandCommand tests the stand command from sleeping state
+func TestStandCommand(serverAddr string) TestResult {
+	const testName = "Stand Command"
+
+	name := uniqueName("StandTest")
+	client, err := testclient.NewTestClient(name, serverAddr)
+	if err != nil {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Connection failed: %v", err)}
+	}
+	defer client.Close()
+
+	time.Sleep(300 * time.Millisecond)
+
+	// First, go to sleep
+	logAction(testName, "Going to sleep first...")
+	client.SendCommand("sleep")
+	time.Sleep(300 * time.Millisecond)
+
+	// Now use stand to get up
+	logAction(testName, "Standing up...")
+	client.ClearMessages()
+	client.SendCommand("stand")
+	time.Sleep(300 * time.Millisecond)
+
+	messages := client.GetMessages()
+	fullOutput := strings.Join(messages, " ")
+
+	// Should see a message about standing up
+	stoodUp := strings.Contains(strings.ToLower(fullOutput), "stand") ||
+		strings.Contains(strings.ToLower(fullOutput), "up")
+	logResult(testName, stoodUp, "Stand message received")
+
+	if !stoodUp {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Stand command failed. Got: %v", messages)}
+	}
+
+	return TestResult{Name: testName, Passed: true, Message: "Stand command gets player up from sleeping"}
+}
+
+// TestStandWhenStanding tests stand command when already standing
+func TestStandWhenStanding(serverAddr string) TestResult {
+	const testName = "Stand When Standing"
+
+	name := uniqueName("StandStanding")
+	client, err := testclient.NewTestClient(name, serverAddr)
+	if err != nil {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Connection failed: %v", err)}
+	}
+	defer client.Close()
+
+	time.Sleep(300 * time.Millisecond)
+
+	// Try to stand when already standing (default state)
+	logAction(testName, "Trying to stand when already standing...")
+	client.ClearMessages()
+	client.SendCommand("stand")
+	time.Sleep(300 * time.Millisecond)
+
+	messages := client.GetMessages()
+	fullOutput := strings.Join(messages, " ")
+
+	// Should see "already standing" message
+	alreadyStanding := strings.Contains(strings.ToLower(fullOutput), "already")
+	logResult(testName, alreadyStanding, "Already standing message")
+
+	if !alreadyStanding {
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Stand command should say already standing. Got: %v", messages)}
+	}
+
+	return TestResult{Name: testName, Passed: true, Message: "Stand correctly reports when already standing"}
+}

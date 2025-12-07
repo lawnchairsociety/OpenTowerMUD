@@ -202,9 +202,10 @@ func TestMobRespawn(serverAddr string) TestResult {
 	navigateToTrainingHall(client)
 
 	// Wait for test rat to be present (may have been killed by previous test)
+	// Rat has 5s median respawn, so wait up to 15 seconds
 	logAction(testName, "Waiting for test rat to be present...")
 	var ratPresent bool
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 15; i++ {
 		client.ClearMessages()
 		client.SendCommand("look")
 		time.Sleep(500 * time.Millisecond)
@@ -276,23 +277,23 @@ func TestCombatThreat(serverAddr string) TestResult {
 	const testName = "Combat Threat"
 
 	// Create two players to test threat mechanics
-	name1 := uniqueName("Threat1")
+	name1 := uniqueName("ThreatOne")
 	client1, err := testclient.NewTestClient(name1, serverAddr)
 	if err != nil {
 		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Client 1 connection failed: %v", err)}
 	}
 	defer client1.Close()
 
-	time.Sleep(300 * time.Millisecond)
+	time.Sleep(500 * time.Millisecond) // Wait between client connections
 
-	name2 := uniqueName("Threat2")
+	name2 := uniqueName("ThreatTwo")
 	client2, err := testclient.NewTestClient(name2, serverAddr)
 	if err != nil {
 		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Client 2 connection failed: %v", err)}
 	}
 	defer client2.Close()
 
-	time.Sleep(300 * time.Millisecond)
+	time.Sleep(500 * time.Millisecond)
 
 	// Both navigate to Training Hall
 	navigateToTrainingHall(client1)
