@@ -102,7 +102,7 @@ func TestQuestGiverNPC(serverAddr string) TestResult {
 
 	// Should show dialogue AND hint about available quests
 	hasQuestHint := strings.Contains(fullOutput, "quest") || strings.Contains(fullOutput, "Quest") ||
-		strings.Contains(fullOutput, "accept")
+		strings.Contains(fullOutput, "quests available")
 	logResult(testName, hasQuestHint, "NPC shows quest hint when talking")
 
 	if !hasQuestHint {
@@ -220,7 +220,7 @@ func TestQuestProgress(serverAddr string) TestResult {
 	return TestResult{Name: testName, Passed: true, Message: "Quest progress tracking works"}
 }
 
-// TestQuestListWithNPC tests the accept command shows available quests from nearby NPC
+// TestQuestListWithNPC tests the 'quests available' command shows available quests from nearby NPC
 func TestQuestListWithNPC(serverAddr string) TestResult {
 	const testName = "Quest List With NPC"
 
@@ -237,10 +237,10 @@ func TestQuestListWithNPC(serverAddr string) TestResult {
 	logAction(testName, "Navigating to Barracks...")
 	navigateToBarracks(client)
 
-	// Use accept command without arguments to see available quests
+	// Use 'quests available' command to see available quests
 	logAction(testName, "Listing available quests...")
 	client.ClearMessages()
-	client.SendCommand("accept")
+	client.SendCommand("quests available")
 	time.Sleep(300 * time.Millisecond)
 
 	messages := client.GetMessages()
@@ -249,14 +249,14 @@ func TestQuestListWithNPC(serverAddr string) TestResult {
 	// Should list available quests from Guard Captain Marcus
 	hasQuestList := strings.Contains(fullOutput, "quest") || strings.Contains(fullOutput, "Quest") ||
 		strings.Contains(fullOutput, "Pest Control") || strings.Contains(fullOutput, "First Blood") ||
-		strings.Contains(fullOutput, "available") || strings.Contains(fullOutput, "accept")
-	logResult(testName, hasQuestList, "Accept shows available quests")
+		strings.Contains(fullOutput, "Available") || strings.Contains(fullOutput, "offers")
+	logResult(testName, hasQuestList, "'quests available' shows available quests")
 
 	if !hasQuestList {
-		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Accept command didn't show quests. Got: %v", messages)}
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("'quests available' command didn't show quests. Got: %v", messages)}
 	}
 
-	return TestResult{Name: testName, Passed: true, Message: "Accept command shows available quests from NPC"}
+	return TestResult{Name: testName, Passed: true, Message: "'quests available' command shows available quests from NPC"}
 }
 
 // TestQuestPrerequisites tests that quest prerequisites are enforced

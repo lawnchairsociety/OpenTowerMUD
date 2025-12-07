@@ -22,6 +22,8 @@ func executeQuest(c *Command, p PlayerInterface) string {
 	switch subcommand {
 	case "list":
 		return showQuestList(p)
+	case "available":
+		return showAvailableQuests(p)
 	default:
 		// Try to show details for a specific quest
 		return showQuestDetails(c, p)
@@ -207,6 +209,42 @@ func formatQuestDetails(q *quest.Quest, questLog *quest.PlayerQuestLog) string {
 	return sb.String()
 }
 
+// showAvailableQuests shows quests available from NPCs in the current room
+func showAvailableQuests(p PlayerInterface) string {
+	room := p.GetCurrentRoom()
+	if room == nil {
+		return "You are nowhere."
+	}
+
+	worldRoom, ok := room.(*world.Room)
+	if !ok {
+		return "Internal error: invalid room type"
+	}
+
+	server := p.GetServer().(ServerInterface)
+	questRegistry := server.GetQuestRegistry()
+	if questRegistry == nil {
+		return "Quest system not available."
+	}
+
+	// Find quest givers in the room
+	var questGivers []*npc.NPC
+	for _, n := range worldRoom.GetNPCs() {
+		if n.IsQuestGiver() && n.IsAlive() {
+			questGivers = append(questGivers, n)
+		}
+	}
+
+	if len(questGivers) == 0 {
+		return "There is no one here offering quests."
+	}
+
+	// Get player's quest state for filtering
+	playerState := p.GetQuestState()
+
+	return listAvailableQuests(questGivers, questRegistry, playerState)
+}
+
 // getObjectiveVerb returns the appropriate verb for an objective type
 func getObjectiveVerb(objType quest.QuestType) string {
 	switch objType {
@@ -260,9 +298,9 @@ func executeAccept(c *Command, p PlayerInterface) string {
 	// Get player's quest state for filtering
 	playerState := p.GetQuestState()
 
-	// If no args, list available quests from all NPCs
+	// Require a quest name argument
 	if len(c.Args) == 0 {
-		return listAvailableQuests(questGivers, questRegistry, playerState)
+		return "Usage: accept <quest name>\nUse 'quests available' to see available quests."
 	}
 
 	// Try to accept a specific quest

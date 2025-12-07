@@ -102,7 +102,7 @@ func getQuestGiverHint(p PlayerInterface, npcGiver *npc.NPC) string {
 		return ""
 	}
 
-	return fmt.Sprintf("[%s has %d quest(s) available. Type 'accept' to see them.]", npcGiver.GetName(), len(available))
+	return fmt.Sprintf("[%s has %d quest(s) available. Type 'quests available' to see them.]", npcGiver.GetName(), len(available))
 }
 
 // handleBardInteraction provides flavor dialogue with the bard
@@ -163,6 +163,8 @@ func handleGuideInteraction(c *Command, p PlayerInterface, guide *npc.NPC) strin
 		return getGuideShopTopic(guide, p)
 	case "portal", "portals", "travel":
 		return getGuidePortalTopic(guide)
+	case "quest", "quests", "journal":
+		return getGuideQuestTopic(guide)
 	case "commands", "help":
 		return getGuideCommandsTopic(guide)
 	default:
@@ -182,10 +184,12 @@ the Endless Tower. What would you like to know about?"
   talk %s save     - How your progress is saved
   talk %s shop     - Buying, selling, and equipment
   talk %s portal   - Fast travel between floors
+  talk %s quests   - Finding and completing quests
   talk %s commands - Quick reference of useful commands
 
 He leans on his walking stick. "Just ask about any topic, friend!"`,
 		guide.GetName(), p.GetName(),
+		strings.ToLower(strings.Split(guide.GetName(), " ")[0]),
 		strings.ToLower(strings.Split(guide.GetName(), " ")[0]),
 		strings.ToLower(strings.Split(guide.GetName(), " ")[0]),
 		strings.ToLower(strings.Split(guide.GetName(), " ")[0]),
@@ -291,6 +295,38 @@ func getGuidePortalTopic(guide *npc.NPC) string {
 "Discover portals as you climb - they're lifesavers!"`, guide.GetName())
 }
 
+// getGuideQuestTopic explains the quest system
+func getGuideQuestTopic(guide *npc.NPC) string {
+	return fmt.Sprintf(`%s strokes his beard thoughtfully.
+
+"Quests! Yes, many folk in the city need help with tasks. Complete their
+quests and you'll be rewarded handsomely!"
+
+  FINDING QUESTS:
+  - Look for NPCs with tasks - they'll hint at having quests when you talk
+  - Type 'quests available' to see what quests nearby NPCs offer
+
+  ACCEPTING QUESTS:
+  - Type 'accept <quest name>' to take on a quest
+  - Your quest journal tracks all your active quests
+
+  TRACKING PROGRESS:
+  - Type 'quest' to see your journal summary
+  - Type 'quest list' to see all active quests with progress
+  - Type 'quest <name>' for details on a specific quest
+
+  COMPLETING QUESTS:
+  - Fulfill the objectives (kill monsters, collect items, explore places)
+  - Return to the quest giver and type 'complete' to turn it in
+  - Receive gold, experience, items, or even titles as rewards!
+
+  TITLES:
+  - Some quests reward titles you can display with your name
+  - Type 'title' to see earned titles, 'title <name>' to set one
+
+"I have a few quests myself, if you're interested!"`, guide.GetName())
+}
+
 // getGuideCommandsTopic provides a quick reference
 func getGuideCommandsTopic(guide *npc.NPC) string {
 	return fmt.Sprintf(`%s counts off on his fingers.
@@ -305,6 +341,7 @@ func getGuideCommandsTopic(guide *npc.NPC) string {
   SOCIAL:       say <msg>, tell <player> <msg>, who
   TRAVEL:       portal, portal <floor>
   COMMERCE:     shop, buy <item>, sell <item>, gold
+  QUESTS:       quest, accept <quest>, complete, title
   OTHER:        help, talk <npc>, time
 
 "Type 'help' for the full list, or 'help <command>' for details!"`, guide.GetName())
