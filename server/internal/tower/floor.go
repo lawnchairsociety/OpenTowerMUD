@@ -16,6 +16,7 @@ type Floor struct {
 	StairsDownRoom string                 // Room ID with stairs going down (empty for floor 0)
 	PortalRoom     string                 // Room ID with portal (for fast travel)
 	Generated      time.Time              // When this floor was generated
+	GeneratedSeed  int64                  // Seed used to generate this floor (for reproducible spawning)
 	mu             sync.RWMutex
 }
 

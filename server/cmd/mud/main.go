@@ -51,6 +51,9 @@ func main() {
 	readOnly := flag.Bool("readonly", false, "Run in read-only mode (world changes won't be saved to disk)")
 	dbFile := flag.String("db", "data/opentowermud.db", "Path to player database file")
 	makeAdmin := flag.String("make-admin", "", "Promote an existing account to admin and exit (requires username)")
+	towerID := flag.String("tower-id", "human", "Tower identifier (e.g., human, elf, dwarf)")
+	dataDir := flag.String("data-dir", "data", "Path to data directory")
+	useStaticFloors := flag.Bool("static-floors", false, "Load floors from YAML files instead of generating via WFC")
 	flag.Parse()
 
 	// Handle --make-admin flag (promotes account and exits)
@@ -87,6 +90,21 @@ func main() {
 	gameTower, err := initializeTower(worldSeed, *towerFile, *cityFile, *mobsFile, *itemsFile)
 	if err != nil {
 		log.Fatalf("Failed to initialize tower: %v", err)
+	}
+
+	// Configure tower settings
+	gameTower.SetTowerID(*towerID)
+	gameTower.SetDataDir(*dataDir)
+	gameTower.SetUseStaticFloors(*useStaticFloors)
+
+	if *useStaticFloors {
+		logger.Info("Tower using static floors", "tower_id", *towerID, "data_dir", *dataDir)
+		// Preload all static floors at startup
+		floorsLoaded, err := gameTower.PreloadStaticFloors(100) // Try up to 100 floors
+		if err != nil {
+			log.Fatalf("Failed to preload static floors: %v", err)
+		}
+		logger.Info("Static floors preloaded", "count", floorsLoaded)
 	}
 
 	// Configure auto-save for tower (unless read-only)

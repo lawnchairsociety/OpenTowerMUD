@@ -1,0 +1,370 @@
+# Floor 14 - human tower
+# Generated with seed: 56
+# Room count: 50
+
+floor: 14
+tower: human
+generated_seed: 56
+stairs_up: human_f14_r4_6
+stairs_down: human_f14_r7_6
+portal_room: human_f14_r7_6
+rooms:
+  human_f14_r3_10:
+    name: Tower Corridor (Floor 14)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      east: human_f14_r4_10
+  human_f14_r3_3:
+    name: Tower Chamber (Floor 14)
+    description: You stand in a chamber within the tower. The ancient stone walls are cold to the touch.
+    type: room
+    exits:
+      east: human_f14_r4_3
+  human_f14_r3_4:
+    name: Treasure Room (Floor 14)
+    description: This chamber holds the remnants of some forgotten hoard. Glittering objects catch the torchlight.
+    type: treasure
+    features:
+      - treasure
+    exits:
+      east: human_f14_r4_4
+  human_f14_r3_7:
+    name: Tower Corridor (Floor 14)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      east: human_f14_r4_7
+  human_f14_r3_8:
+    name: Tower Corridor (Floor 14)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      east: human_f14_r4_8
+  human_f14_r4_10:
+    name: Tower Corridor (Floor 14)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      east: human_f14_r5_10
+      west: human_f14_r3_10
+  human_f14_r4_2:
+    name: Tower Corridor (Floor 14)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      south: human_f14_r4_3
+  human_f14_r4_3:
+    name: Tower Corridor (Floor 14)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      north: human_f14_r4_2
+      south: human_f14_r4_4
+      west: human_f14_r3_3
+  human_f14_r4_4:
+    name: Tower Corridor (Floor 14)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      north: human_f14_r4_3
+      south: human_f14_r4_5
+      east: human_f14_r5_4
+      west: human_f14_r3_4
+  human_f14_r4_5:
+    name: Tower Chamber (Floor 14)
+    description: You stand in a chamber within the tower. The ancient stone walls are cold to the touch.
+    type: room
+    exits:
+      north: human_f14_r4_4
+  human_f14_r4_6:
+    name: Ascending Stairway (Floor 14)
+    description: A spiral staircase ascends into the darkness above. The stone steps are worn smooth by countless travelers.
+    type: stairs_up
+    features:
+      - stairs_up
+    exits:
+      east: human_f14_r5_6
+  human_f14_r4_7:
+    name: Tower Chamber (Floor 14)
+    description: You stand in a chamber within the tower. The ancient stone walls are cold to the touch.
+    type: room
+    exits:
+      south: human_f14_r4_8
+      east: human_f14_r5_7
+      west: human_f14_r3_7
+  human_f14_r4_8:
+    name: Tower Corridor (Floor 14)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      north: human_f14_r4_7
+      west: human_f14_r3_8
+  human_f14_r4_9:
+    name: Tower Corridor (Floor 14)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      east: human_f14_r5_9
+  human_f14_r5_10:
+    name: Tower Corridor (Floor 14)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      south: human_f14_r5_11
+      east: human_f14_r6_10
+      west: human_f14_r4_10
+  human_f14_r5_11:
+    name: Tower Corridor (Floor 14)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      north: human_f14_r5_10
+  human_f14_r5_3:
+    name: Tower Corridor (Floor 14)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      south: human_f14_r5_4
+      east: human_f14_r6_3
+  human_f14_r5_4:
+    name: Tower Corridor (Floor 14)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      north: human_f14_r5_3
+      south: human_f14_r5_5
+      west: human_f14_r4_4
+  human_f14_r5_5:
+    name: Tower Corridor (Floor 14)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      north: human_f14_r5_4
+      south: human_f14_r5_6
+  human_f14_r5_6:
+    name: Tower Corridor (Floor 14)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      north: human_f14_r5_5
+      east: human_f14_r6_6
+      west: human_f14_r4_6
+  human_f14_r5_7:
+    name: Tower Corridor (Floor 14)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      east: human_f14_r6_7
+      west: human_f14_r4_7
+  human_f14_r5_8:
+    name: Tower Corridor (Floor 14)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      south: human_f14_r5_9
+      east: human_f14_r6_8
+  human_f14_r5_9:
+    name: Tower Corridor (Floor 14)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      north: human_f14_r5_8
+      west: human_f14_r4_9
+  human_f14_r6_10:
+    name: Tower Corridor (Floor 14)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      north: human_f14_r6_9
+      south: human_f14_r6_11
+      west: human_f14_r5_10
+  human_f14_r6_11:
+    name: Tower Corridor (Floor 14)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      north: human_f14_r6_10
+  human_f14_r6_3:
+    name: Tower Corridor (Floor 14)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      west: human_f14_r5_3
+  human_f14_r6_4:
+    name: Tower Chamber (Floor 14)
+    description: You stand in a chamber within the tower. The ancient stone walls are cold to the touch.
+    type: room
+    exits:
+      south: human_f14_r6_5
+  human_f14_r6_5:
+    name: Tower Chamber (Floor 14)
+    description: You stand in a chamber within the tower. The ancient stone walls are cold to the touch.
+    type: room
+    exits:
+      north: human_f14_r6_4
+      south: human_f14_r6_6
+  human_f14_r6_6:
+    name: Treasure Room (Floor 14)
+    description: This chamber holds the remnants of some forgotten hoard. Glittering objects catch the torchlight.
+    type: treasure
+    features:
+      - treasure
+    exits:
+      north: human_f14_r6_5
+      south: human_f14_r6_7
+      west: human_f14_r5_6
+  human_f14_r6_7:
+    name: Tower Corridor (Floor 14)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      north: human_f14_r6_6
+      south: human_f14_r6_8
+      east: human_f14_r7_7
+      west: human_f14_r5_7
+  human_f14_r6_8:
+    name: Tower Corridor (Floor 14)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      north: human_f14_r6_7
+      south: human_f14_r6_9
+      west: human_f14_r5_8
+  human_f14_r6_9:
+    name: Tower Corridor (Floor 14)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      north: human_f14_r6_8
+      south: human_f14_r6_10
+  human_f14_r7_10:
+    name: Tower Chamber (Floor 14)
+    description: You stand in a chamber within the tower. The ancient stone walls are cold to the touch.
+    type: room
+    exits:
+      north: human_f14_r7_9
+      south: human_f14_r7_11
+      east: human_f14_r8_10
+  human_f14_r7_11:
+    name: Tower Chamber (Floor 14)
+    description: You stand in a chamber within the tower. The ancient stone walls are cold to the touch.
+    type: room
+    exits:
+      north: human_f14_r7_10
+      east: human_f14_r8_11
+  human_f14_r7_6:
+    name: Descending Stairway (Floor 14)
+    description: A spiral staircase descends from above. A shimmering portal offers quick travel to floors you've visited.
+    type: stairs_down
+    features:
+      - stairs_down
+      - portal
+    exits:
+      south: human_f14_r7_7
+      east: human_f14_r8_6
+  human_f14_r7_7:
+    name: Tower Corridor (Floor 14)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      north: human_f14_r7_6
+      south: human_f14_r7_8
+      west: human_f14_r6_7
+  human_f14_r7_8:
+    name: Tower Corridor (Floor 14)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      north: human_f14_r7_7
+      south: human_f14_r7_9
+      east: human_f14_r8_8
+  human_f14_r7_9:
+    name: Tower Chamber (Floor 14)
+    description: You stand in a chamber within the tower. The ancient stone walls are cold to the touch.
+    type: room
+    exits:
+      north: human_f14_r7_8
+      south: human_f14_r7_10
+      east: human_f14_r8_9
+  human_f14_r8_10:
+    name: Tower Chamber (Floor 14)
+    description: You stand in a chamber within the tower. The ancient stone walls are cold to the touch.
+    type: room
+    exits:
+      east: human_f14_r9_10
+      west: human_f14_r7_10
+  human_f14_r8_11:
+    name: Tower Chamber (Floor 14)
+    description: You stand in a chamber within the tower. The ancient stone walls are cold to the touch.
+    type: room
+    exits:
+      south: human_f14_r8_12
+      west: human_f14_r7_11
+  human_f14_r8_12:
+    name: Tower Chamber (Floor 14)
+    description: You stand in a chamber within the tower. The ancient stone walls are cold to the touch.
+    type: room
+    exits:
+      north: human_f14_r8_11
+  human_f14_r8_6:
+    name: Tower Corridor (Floor 14)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      east: human_f14_r9_6
+      west: human_f14_r7_6
+  human_f14_r8_7:
+    name: Tower Corridor (Floor 14)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      south: human_f14_r8_8
+  human_f14_r8_8:
+    name: Tower Corridor (Floor 14)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      north: human_f14_r8_7
+      east: human_f14_r9_8
+      west: human_f14_r7_8
+  human_f14_r8_9:
+    name: Tower Chamber (Floor 14)
+    description: You stand in a chamber within the tower. The ancient stone walls are cold to the touch.
+    type: room
+    exits:
+      east: human_f14_r9_9
+      west: human_f14_r7_9
+  human_f14_r9_10:
+    name: Tower Corridor (Floor 14)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      west: human_f14_r8_10
+  human_f14_r9_6:
+    name: Treasure Room (Floor 14)
+    description: This chamber holds the remnants of some forgotten hoard. Glittering objects catch the torchlight.
+    type: treasure
+    features:
+      - treasure
+    exits:
+      west: human_f14_r8_6
+  human_f14_r9_7:
+    name: Tower Chamber (Floor 14)
+    description: You stand in a chamber within the tower. The ancient stone walls are cold to the touch.
+    type: room
+    exits:
+      south: human_f14_r9_8
+  human_f14_r9_8:
+    name: Tower Chamber (Floor 14)
+    description: You stand in a chamber within the tower. The ancient stone walls are cold to the touch.
+    type: room
+    exits:
+      north: human_f14_r9_7
+      west: human_f14_r8_8
+  human_f14_r9_9:
+    name: Tower Corridor (Floor 14)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      west: human_f14_r8_9

@@ -1,0 +1,370 @@
+# Floor 19 - human tower
+# Generated with seed: 61
+# Room count: 50
+
+floor: 19
+tower: human
+generated_seed: 61
+stairs_up: human_f19_r4_8
+stairs_down: human_f19_r7_8
+portal_room: human_f19_r7_8
+rooms:
+  human_f19_r10_5:
+    name: Tower Corridor (Floor 19)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      south: human_f19_r10_6
+  human_f19_r10_6:
+    name: Tower Corridor (Floor 19)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      north: human_f19_r10_5
+      east: human_f19_r11_6
+      west: human_f19_r9_6
+  human_f19_r10_7:
+    name: Tower Chamber (Floor 19)
+    description: You stand in a chamber within the tower. The ancient stone walls are cold to the touch.
+    type: room
+    exits:
+      south: human_f19_r10_8
+      east: human_f19_r11_7
+      west: human_f19_r9_7
+  human_f19_r10_8:
+    name: Tower Chamber (Floor 19)
+    description: You stand in a chamber within the tower. The ancient stone walls are cold to the touch.
+    type: room
+    exits:
+      north: human_f19_r10_7
+  human_f19_r11_6:
+    name: Tower Chamber (Floor 19)
+    description: You stand in a chamber within the tower. The ancient stone walls are cold to the touch.
+    type: room
+    exits:
+      west: human_f19_r10_6
+  human_f19_r11_7:
+    name: Tower Corridor (Floor 19)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      south: human_f19_r11_8
+      east: human_f19_r12_7
+      west: human_f19_r10_7
+  human_f19_r11_8:
+    name: Tower Chamber (Floor 19)
+    description: You stand in a chamber within the tower. The ancient stone walls are cold to the touch.
+    type: room
+    exits:
+      north: human_f19_r11_7
+  human_f19_r12_7:
+    name: Tower Corridor (Floor 19)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      west: human_f19_r11_7
+  human_f19_r4_7:
+    name: Tower Corridor (Floor 19)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      east: human_f19_r5_7
+  human_f19_r4_8:
+    name: Ascending Stairway (Floor 19)
+    description: A spiral staircase ascends into the darkness above. The stone steps are worn smooth by countless travelers.
+    type: stairs_up
+    features:
+      - stairs_up
+    exits:
+      east: human_f19_r5_8
+  human_f19_r4_9:
+    name: Tower Chamber (Floor 19)
+    description: You stand in a chamber within the tower. The ancient stone walls are cold to the touch.
+    type: room
+    exits:
+      east: human_f19_r5_9
+  human_f19_r5_10:
+    name: Tower Chamber (Floor 19)
+    description: You stand in a chamber within the tower. The ancient stone walls are cold to the touch.
+    type: room
+    exits:
+      north: human_f19_r5_9
+  human_f19_r5_11:
+    name: Tower Chamber (Floor 19)
+    description: You stand in a chamber within the tower. The ancient stone walls are cold to the touch.
+    type: room
+    exits:
+      east: human_f19_r6_11
+  human_f19_r5_5:
+    name: Tower Corridor (Floor 19)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      east: human_f19_r6_5
+  human_f19_r5_6:
+    name: Treasure Room (Floor 19)
+    description: This chamber holds the remnants of some forgotten hoard. Glittering objects catch the torchlight.
+    type: treasure
+    features:
+      - treasure
+    exits:
+      south: human_f19_r5_7
+      east: human_f19_r6_6
+  human_f19_r5_7:
+    name: Tower Corridor (Floor 19)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      north: human_f19_r5_6
+      west: human_f19_r4_7
+  human_f19_r5_8:
+    name: Tower Chamber (Floor 19)
+    description: You stand in a chamber within the tower. The ancient stone walls are cold to the touch.
+    type: room
+    exits:
+      east: human_f19_r6_8
+      west: human_f19_r4_8
+  human_f19_r5_9:
+    name: Tower Corridor (Floor 19)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      south: human_f19_r5_10
+      east: human_f19_r6_9
+      west: human_f19_r4_9
+  human_f19_r6_10:
+    name: Tower Corridor (Floor 19)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      north: human_f19_r6_9
+      south: human_f19_r6_11
+  human_f19_r6_11:
+    name: Tower Chamber (Floor 19)
+    description: You stand in a chamber within the tower. The ancient stone walls are cold to the touch.
+    type: room
+    exits:
+      north: human_f19_r6_10
+      east: human_f19_r7_11
+      west: human_f19_r5_11
+  human_f19_r6_3:
+    name: Tower Chamber (Floor 19)
+    description: You stand in a chamber within the tower. The ancient stone walls are cold to the touch.
+    type: room
+    exits:
+      east: human_f19_r7_3
+  human_f19_r6_4:
+    name: Tower Chamber (Floor 19)
+    description: You stand in a chamber within the tower. The ancient stone walls are cold to the touch.
+    type: room
+    exits:
+      south: human_f19_r6_5
+  human_f19_r6_5:
+    name: Tower Chamber (Floor 19)
+    description: You stand in a chamber within the tower. The ancient stone walls are cold to the touch.
+    type: room
+    exits:
+      north: human_f19_r6_4
+      east: human_f19_r7_5
+      west: human_f19_r5_5
+  human_f19_r6_6:
+    name: Tower Chamber (Floor 19)
+    description: You stand in a chamber within the tower. The ancient stone walls are cold to the touch.
+    type: room
+    exits:
+      south: human_f19_r6_7
+      west: human_f19_r5_6
+  human_f19_r6_7:
+    name: Tower Chamber (Floor 19)
+    description: You stand in a chamber within the tower. The ancient stone walls are cold to the touch.
+    type: room
+    exits:
+      north: human_f19_r6_6
+      south: human_f19_r6_8
+      east: human_f19_r7_7
+  human_f19_r6_8:
+    name: Tower Chamber (Floor 19)
+    description: You stand in a chamber within the tower. The ancient stone walls are cold to the touch.
+    type: room
+    exits:
+      north: human_f19_r6_7
+      south: human_f19_r6_9
+      west: human_f19_r5_8
+  human_f19_r6_9:
+    name: Tower Corridor (Floor 19)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      north: human_f19_r6_8
+      south: human_f19_r6_10
+      east: human_f19_r7_9
+      west: human_f19_r5_9
+  human_f19_r7_10:
+    name: Tower Chamber (Floor 19)
+    description: You stand in a chamber within the tower. The ancient stone walls are cold to the touch.
+    type: room
+    exits:
+      north: human_f19_r7_9
+      east: human_f19_r8_10
+  human_f19_r7_11:
+    name: Tower Corridor (Floor 19)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      west: human_f19_r6_11
+  human_f19_r7_3:
+    name: Tower Corridor (Floor 19)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      south: human_f19_r7_4
+      west: human_f19_r6_3
+  human_f19_r7_4:
+    name: Tower Chamber (Floor 19)
+    description: You stand in a chamber within the tower. The ancient stone walls are cold to the touch.
+    type: room
+    exits:
+      north: human_f19_r7_3
+      south: human_f19_r7_5
+  human_f19_r7_5:
+    name: Tower Chamber (Floor 19)
+    description: You stand in a chamber within the tower. The ancient stone walls are cold to the touch.
+    type: room
+    exits:
+      north: human_f19_r7_4
+      east: human_f19_r8_5
+      west: human_f19_r6_5
+  human_f19_r7_6:
+    name: Tower Chamber (Floor 19)
+    description: You stand in a chamber within the tower. The ancient stone walls are cold to the touch.
+    type: room
+    exits:
+      south: human_f19_r7_7
+      east: human_f19_r8_6
+  human_f19_r7_7:
+    name: Tower Corridor (Floor 19)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      north: human_f19_r7_6
+      south: human_f19_r7_8
+      east: human_f19_r8_7
+      west: human_f19_r6_7
+  human_f19_r7_8:
+    name: Descending Stairway (Floor 19)
+    description: A spiral staircase descends from above. A shimmering portal offers quick travel to floors you've visited.
+    type: stairs_down
+    features:
+      - stairs_down
+      - portal
+    exits:
+      north: human_f19_r7_7
+  human_f19_r7_9:
+    name: Tower Corridor (Floor 19)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      south: human_f19_r7_10
+      west: human_f19_r6_9
+  human_f19_r8_10:
+    name: Treasure Room (Floor 19)
+    description: This chamber holds the remnants of some forgotten hoard. Glittering objects catch the torchlight.
+    type: treasure
+    features:
+      - treasure
+    exits:
+      west: human_f19_r7_10
+  human_f19_r8_3:
+    name: Tower Chamber (Floor 19)
+    description: You stand in a chamber within the tower. The ancient stone walls are cold to the touch.
+    type: room
+    exits:
+      south: human_f19_r8_4
+  human_f19_r8_4:
+    name: Tower Corridor (Floor 19)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      north: human_f19_r8_3
+      south: human_f19_r8_5
+      east: human_f19_r9_4
+  human_f19_r8_5:
+    name: Tower Corridor (Floor 19)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      north: human_f19_r8_4
+      south: human_f19_r8_6
+      east: human_f19_r9_5
+      west: human_f19_r7_5
+  human_f19_r8_6:
+    name: Tower Chamber (Floor 19)
+    description: You stand in a chamber within the tower. The ancient stone walls are cold to the touch.
+    type: room
+    exits:
+      north: human_f19_r8_5
+      east: human_f19_r9_6
+      west: human_f19_r7_6
+  human_f19_r8_7:
+    name: Tower Corridor (Floor 19)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      south: human_f19_r8_8
+      east: human_f19_r9_7
+      west: human_f19_r7_7
+  human_f19_r8_8:
+    name: Treasure Room (Floor 19)
+    description: This chamber holds the remnants of some forgotten hoard. Glittering objects catch the torchlight.
+    type: treasure
+    features:
+      - treasure
+    exits:
+      north: human_f19_r8_7
+      south: human_f19_r8_9
+      east: human_f19_r9_8
+  human_f19_r8_9:
+    name: Tower Corridor (Floor 19)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      north: human_f19_r8_8
+      east: human_f19_r9_9
+  human_f19_r9_4:
+    name: Tower Corridor (Floor 19)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      west: human_f19_r8_4
+  human_f19_r9_5:
+    name: Tower Corridor (Floor 19)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      west: human_f19_r8_5
+  human_f19_r9_6:
+    name: Tower Corridor (Floor 19)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      east: human_f19_r10_6
+      west: human_f19_r8_6
+  human_f19_r9_7:
+    name: Tower Corridor (Floor 19)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      east: human_f19_r10_7
+      west: human_f19_r8_7
+  human_f19_r9_8:
+    name: Tower Chamber (Floor 19)
+    description: You stand in a chamber within the tower. The ancient stone walls are cold to the touch.
+    type: room
+    exits:
+      west: human_f19_r8_8
+  human_f19_r9_9:
+    name: Tower Corridor (Floor 19)
+    description: A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.
+    type: corridor
+    exits:
+      west: human_f19_r8_9

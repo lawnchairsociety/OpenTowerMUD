@@ -389,7 +389,7 @@ func executeMailSendFull(args string, p PlayerInterface, server ServerInterface,
 	// Notify recipient if online
 	if targetIface := server.FindPlayer(recipientName); targetIface != nil {
 		if target, ok := targetIface.(PlayerInterface); ok {
-			target.SendMessage(fmt.Sprintf("\n[MAIL] You've received a new message from %s.\n", p.GetName()))
+			target.SendMessage(fmt.Sprintf("\nA faint shimmer of magic surrounds you as a letter from %s materializes in your mailbox.\n", p.GetName()))
 		}
 	}
 

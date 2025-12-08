@@ -17,6 +17,9 @@ type Tower struct {
 	Floors       map[int]*Floor    // All generated floors
 	HighestFloor int               // Highest floor generated so far
 	SavePath     string            // Path to save tower data
+	TowerID      string            // Tower identifier (e.g., "human", "elf")
+	DataDir      string            // Path to data directory for loading floors
+	UseStaticFloors bool           // If true, load floors from YAML instead of generating
 	mobSpawner   *MobSpawner       // Spawner for floor mobs
 	lootSpawner  *LootSpawner      // Spawner for treasure loot
 	mu           sync.RWMutex
@@ -25,13 +28,16 @@ type Tower struct {
 // NewTower creates a new tower with the given seed
 func NewTower(seed int64) *Tower {
 	return &Tower{
-		Seed:         seed,
-		Floors:       make(map[int]*Floor),
-		HighestFloor: 0,
+		Seed:            seed,
+		Floors:          make(map[int]*Floor),
+		HighestFloor:    0,
+		TowerID:         "human",  // Default tower ID
+		DataDir:         "data",   // Default data directory
+		UseStaticFloors: false,    // Default to WFC generation for backwards compatibility
 	}
 }
 
-// GetFloor returns a floor by number, generating it if necessary
+// GetFloor returns a floor by number, generating or loading it if necessary
 func (t *Tower) GetFloor(floorNum int) (*Floor, error) {
 	t.mu.RLock()
 	floor, exists := t.Floors[floorNum]
@@ -41,7 +47,10 @@ func (t *Tower) GetFloor(floorNum int) (*Floor, error) {
 		return floor, nil
 	}
 
-	// Generate the floor
+	// Load from YAML or generate via WFC
+	if t.UseStaticFloors {
+		return t.loadFloor(floorNum)
+	}
 	return t.generateFloor(floorNum)
 }
 
@@ -164,6 +173,66 @@ func (t *Tower) generateFloor(floorNum int) (*Floor, error) {
 			}
 		}()
 	}
+
+	return floor, nil
+}
+
+// loadFloor loads a floor from a static YAML file
+func (t *Tower) loadFloor(floorNum int) (*Floor, error) {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+
+	// Double-check it wasn't loaded while we were waiting for the lock
+	if floor, exists := t.Floors[floorNum]; exists {
+		return floor, nil
+	}
+
+	// Floor 0 is the city - it should be set externally
+	if floorNum == 0 {
+		return nil, fmt.Errorf("floor 0 (city) must be set explicitly, not loaded")
+	}
+
+	// Build path to floor YAML file
+	path := fmt.Sprintf("%s/towers/%s/floor_%d.yaml", t.DataDir, t.TowerID, floorNum)
+
+	// Load the floor from YAML
+	floor, err := LoadFloorFromYAML(path)
+	if err != nil {
+		return nil, fmt.Errorf("failed to load floor %d from %s: %w", floorNum, path, err)
+	}
+
+	// Store the floor
+	t.Floors[floorNum] = floor
+	if floorNum > t.HighestFloor {
+		t.HighestFloor = floorNum
+	}
+
+	// Connect stairs to adjacent floors if they exist
+	t.connectStairsLocked(floorNum)
+
+	// Create floor-specific RNG for reproducible spawning using the floor's generated seed
+	floorRNG := rand.New(rand.NewSource(floor.GeneratedSeed * 1000))
+
+	// Spawn mobs on the floor if spawner is configured
+	if t.mobSpawner != nil {
+		t.mobSpawner.SpawnMobsOnFloor(floor, floorNum, floorRNG)
+	}
+
+	// Spawn loot in treasure/boss rooms if spawner is configured
+	if t.lootSpawner != nil {
+		t.lootSpawner.SpawnLootOnFloor(floor, floorNum, floorRNG)
+	}
+
+	// Lock stairs on boss floors - players must defeat boss to get key
+	if IsBossFloor(floorNum) {
+		t.lockStairsOnBossFloor(floor, floorNum)
+	}
+
+	// Lock treasure room entrances - players must use purchasable keys
+	t.lockTreasureRooms(floor)
+
+	// Spawn merchant on floors that have one
+	SpawnMerchantOnFloor(floor, floorNum)
 
 	return floor, nil
 }
@@ -330,6 +399,52 @@ func (t *Tower) SetSavePath(path string) {
 	t.mu.Lock()
 	defer t.mu.Unlock()
 	t.SavePath = path
+}
+
+// SetTowerID sets the tower identifier
+func (t *Tower) SetTowerID(id string) {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+	t.TowerID = id
+}
+
+// SetDataDir sets the data directory path
+func (t *Tower) SetDataDir(dir string) {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+	t.DataDir = dir
+}
+
+// SetUseStaticFloors enables or disables loading floors from YAML files
+func (t *Tower) SetUseStaticFloors(useStatic bool) {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+	t.UseStaticFloors = useStatic
+}
+
+// PreloadStaticFloors loads all static floor YAML files from 1 to maxFloor.
+// Returns the number of floors loaded and any error encountered.
+func (t *Tower) PreloadStaticFloors(maxFloor int) (int, error) {
+	if !t.UseStaticFloors {
+		return 0, fmt.Errorf("preloading requires UseStaticFloors to be enabled")
+	}
+
+	loaded := 0
+	for floorNum := 1; floorNum <= maxFloor; floorNum++ {
+		path := fmt.Sprintf("%s/towers/%s/floor_%d.yaml", t.DataDir, t.TowerID, floorNum)
+		if !FloorFileExists(path) {
+			// Stop when we hit a missing floor file
+			break
+		}
+
+		_, err := t.GetFloor(floorNum)
+		if err != nil {
+			return loaded, fmt.Errorf("failed to preload floor %d: %w", floorNum, err)
+		}
+		loaded++
+	}
+
+	return loaded, nil
 }
 
 // SetMobSpawner sets the mob spawner for floor generation

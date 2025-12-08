@@ -32,9 +32,9 @@ guide:
   tower: |
     %s points toward the massive tower looming to the south.
 
-    "That's the Endless Tower - it's why we're all here." He squints upward,
-    shielding his eyes. "The tower shimmers and shifts... some say it rearranges
-    itself when no one is watching. No one knows how tall it truly is."
+    "That's the Arcane Spire - it's why we're all here." He squints upward,
+    shielding his eyes. "Many adventurers have tried to reach the top. Few have
+    succeeded. A powerful guardian awaits those who dare climb to the summit."
 
       - Go SOUTH four times from Town Square to reach the TOWER ENTRANCE
       - Type 'up' to begin climbing
