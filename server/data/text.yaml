@@ -1,0 +1,312 @@
+# Externalized text blocks for OpenTowerMUD
+# This file contains static text meant for player display
+
+# Welcome banner shown at login
+welcome:
+  banner: |
+    =====================================
+        Welcome to Open Tower MUD!
+    =====================================
+
+    [L] Login
+    [R] Register
+
+# Guide (Aldric) tutorial topics
+guide:
+  greeting: |
+    %s smiles warmly as you approach.
+
+    "Ah, %s! Welcome to our fair city. I'm here to help newcomers survive
+    the Endless Tower. What would you like to know about?"
+
+      talk %s tower    - The Endless Tower and what awaits you
+      talk %s combat   - How to fight and stay alive
+      talk %s save     - How your progress is saved
+      talk %s shop     - Buying, selling, and equipment
+      talk %s portal   - Fast travel between floors
+      talk %s quests   - Finding and completing quests
+      talk %s commands - Quick reference of useful commands
+
+    He leans on his walking stick. "Just ask about any topic, friend!"
+
+  tower: |
+    %s points toward the massive tower looming to the south.
+
+    "That's the Endless Tower - it's why we're all here." He squints upward,
+    shielding his eyes. "The tower shimmers and shifts... some say it rearranges
+    itself when no one is watching. No one knows how tall it truly is."
+
+      - Go SOUTH four times from Town Square to reach the TOWER ENTRANCE
+      - Type 'up' to begin climbing
+      - Each floor has corridors, chambers, and treasure rooms
+      - Every 10th floor has a powerful BOSS guarding the way forward!
+      - The higher you climb, the stronger the monsters... and better the loot!
+
+    "Start on floor 1, get some experience, then work your way up!"
+
+  combat: |
+    %s's expression grows serious.
+
+    "The tower is dangerous. Here's how to not die... too often:"
+
+      BEFORE FIGHTING:
+      - Type 'consider <monster>' to assess if you can handle it
+      - Visit the TEMPLE (east from here) and type 'pray' to fully heal
+
+      DURING COMBAT:
+      - Type 'attack <monster>' to start fighting
+      - Combat continues automatically every few seconds
+      - Type 'flee' to escape if you're losing!
+
+      RECOVERY:
+      - Type 'sleep' to regenerate health faster (5 HP/tick)
+      - Type 'wake' to stand back up
+      - Or return to the temple and 'pray' for instant full heal
+
+    "Always check your health before going deeper!"
+
+  save: |
+    %s nods reassuringly.
+
+    "Ah, worried about losing your progress? Fear not!"
+
+      Your progress is saved automatically:
+      - When you disconnect or quit the game
+      - When the server shuts down for maintenance
+      - After important events like learning a new class
+
+      You don't need to do anything special - just play and enjoy!
+
+    "The magic of this realm remembers all your deeds, friend."
+
+  shop: |
+    %s jingles a few coins in his pocket.
+
+    "Gold makes the world go round, friend! You've got %d gold to start."
+
+      SHOPPING (General Store - south then east from here):
+      - Type 'shop' to see items for sale
+      - Type 'buy <item>' to purchase
+      - Type 'sell <item>' to sell loot (50%% of value)
+
+      EQUIPMENT:
+      - Type 'wield <weapon>' to equip a weapon
+      - Type 'wear <armor>' to put on armor
+      - Type 'inventory' to see what you're carrying
+      - Type 'equipment' to see what you have equipped
+
+      LOOT:
+      - Monsters drop items when defeated
+      - Type 'get <item>' to pick them up
+
+    "Buy a weapon before heading into the tower!"
+
+  portal: |
+    %s gestures to a shimmering spot nearby.
+
+    "Once you've explored the tower, travel becomes much easier!"
+
+      - Each floor's STAIRWAY has a magical portal
+      - When you find a stairway, you 'discover' that floor's portal
+      - Type 'portal' to see floors you've discovered
+      - Type 'portal <floor>' to instantly travel there!
+
+      - Town Square (floor 0) is always available
+      - Great for quick trips back to heal, shop, and save!
+
+    "Discover portals as you climb - they're lifesavers!"
+
+  quests: |
+    %s strokes his beard thoughtfully.
+
+    "Quests! Yes, many folk in the city need help with tasks. Complete their
+    quests and you'll be rewarded handsomely!"
+
+      FINDING QUESTS:
+      - Look for NPCs with tasks - they'll hint at having quests when you talk
+      - Type 'quests available' to see what quests nearby NPCs offer
+
+      ACCEPTING QUESTS:
+      - Type 'accept <quest name>' to take on a quest
+      - Your quest journal tracks all your active quests
+
+      TRACKING PROGRESS:
+      - Type 'quest' to see your journal summary
+      - Type 'quest list' to see all active quests with progress
+      - Type 'quest <name>' for details on a specific quest
+
+      COMPLETING QUESTS:
+      - Fulfill the objectives (kill monsters, collect items, explore places)
+      - Return to the quest giver and type 'complete' to turn it in
+      - Receive gold, experience, items, or even titles as rewards!
+
+      TITLES:
+      - Some quests reward titles you can display with your name
+      - Type 'title' to see earned titles, 'title <name>' to set one
+
+    "I have a few quests myself, if you're interested!"
+
+  commands: |
+    %s counts off on his fingers.
+
+    "Here are the commands you'll use most:"
+
+      MOVEMENT:     north, south, east, west, up, down (or n,s,e,w,u,d)
+      LOOKING:      look, exits, inventory, equipment
+      COMBAT:       attack <target>, flee, consider <target>
+      ITEMS:        get <item>, drop <item>, wield <weapon>, wear <armor>
+      RECOVERY:     pray (at altar), sleep, wake
+      SOCIAL:       say <msg>, tell <player> <msg>, who
+      TRAVEL:       portal, portal <floor>
+      COMMERCE:     shop, buy <item>, sell <item>, gold
+      QUESTS:       quest, accept <quest>, complete, title
+      OTHER:        help, talk <npc>, time
+
+    "Type 'help' for the full list, or 'help <command>' for details!"
+
+# Bard interaction template
+bard:
+  song: |
+    The %s strums his lute and smiles warmly at you.
+
+    "Ah, %s! Let me sing of your adventures..."
+
+    He clears his throat and begins to play:
+
+    %s
+    %s
+    %s
+    %s
+
+    The bard bows with a flourish. "May your legend grow ever greater, friend!"
+
+# Class-related text
+classes:
+  # Class ability previews shown in 'class info <class>'
+  abilities:
+    warrior: |
+      - Melee damage bonus (+1 per 3 levels)
+      - Heavy armor AC bonus (level 10+)
+      - Second Wind: HP regen in combat (level 15+)
+      - HP bonus (+10% at level 20)
+    mage: |
+      - Powerful damage spells (fireball, ice storm, meteor)
+      - INT-based spellcasting
+      - Arcane Shield: +2 AC (level 15+)
+      - Highest spell damage potential
+    cleric: |
+      - Healing spells (heal, cure wounds, resurrection)
+      - WIS-based spellcasting
+      - Divine Protection: +1 AC (level 10+)
+      - Sanctuary: 25% damage reduction below 25% HP (level 20+)
+    rogue: |
+      - Sneak Attack (+1d6, +1d6 every 5 levels)
+      - Finesse weapon proficiency (DEX for attack/damage)
+      - Evasion: 10% dodge chance (level 15+)
+      - Assassinate: Execute enemies below 20% HP (level 20+)
+    ranger: |
+      - Ranged damage bonus (+2 base, +1 per 3 levels)
+      - Favored Enemy: +25% damage vs beasts
+      - Nature spells (hunter's mark, spike growth)
+      - Multishot: 20% chance for double attack (level 20+)
+    paladin: |
+      - Smite: Extra radiant damage
+      - Holy damage bonus vs undead/demons (+2)
+      - Healing spells (lay on hands, cure wounds)
+      - Lay on Hands: HP regen out of combat (level 15+)
+
+  # Welcome messages when learning a new class
+  welcome:
+    warrior: |
+      As a Warrior, you gain:
+        - Proficiency with all weapons and heavy armor
+        - High hit die (d10) for maximum HP
+        - Melee damage bonuses as you level
+        - Second Wind ability at higher levels
+    mage: |
+      As a Mage, you gain:
+        - Access to powerful damage spells (fireball, ice storm, meteor)
+        - Intelligence-based spellcasting
+        - High mana pool growth
+        - Arcane Shield at higher levels
+    cleric: |
+      As a Cleric, you gain:
+        - Access to healing spells (heal, cure wounds, resurrection)
+        - Wisdom-based spellcasting
+        - Medium armor proficiency
+        - Divine protection abilities at higher levels
+    rogue: |
+      As a Rogue, you gain:
+        - Sneak Attack bonus damage
+        - Finesse weapon proficiency (DEX for attack/damage)
+        - Light armor proficiency
+        - Evasion and assassination abilities at higher levels
+    ranger: |
+      As a Ranger, you gain:
+        - Ranged weapon proficiency and damage bonuses
+        - Favored Enemy bonus against beasts
+        - Nature spells (hunter's mark, spike growth)
+        - Medium armor proficiency
+    paladin: |
+      As a Paladin, you gain:
+        - Smite ability for extra radiant damage
+        - Bonus damage against undead and demons
+        - Access to healing spells
+        - Heavy armor and martial weapon proficiency
+
+  # Trainer acceptance dialogue
+  trainer_accept:
+    warrior: |
+      %s grips your forearm firmly.
+
+      "Welcome to the path of iron and blood, %s. Your muscles will ache, your bones will bruise, but you will emerge unbreakable."
+    mage: |
+      %s's eyes glow with arcane power.
+
+      "The weave of magic opens to you now, %s. Feel the energy of the world flowing through your mind. Use it wisely... or not. I find destruction quite educational."
+    cleric: |
+      %s places a gentle hand on your head.
+
+      "The divine light shines upon you, %s. You are now a vessel for powers beyond mortal understanding. Go forth and heal the world... or smite the wicked."
+    rogue: |
+      %s seems to appear from nowhere.
+
+      "Clever choice, %s. The shadows welcome you. Remember: the best fight is the one your enemy never sees coming."
+    ranger: |
+      %s whistles, and the wolf at their feet howls approval.
+
+      "The wilds accept you, %s. Every beast, every track, every rustle in the undergrowth will speak to you now. Listen well."
+    paladin: |
+      %s draws their blade and touches it to your shoulder.
+
+      "Rise, %s, champion of light. The oath is sworn. Your blade shall be the bane of darkness, your shield the hope of the innocent."
+
+  # Trainer rejection dialogue (when player doesn't meet requirements)
+  trainer_reject:
+    warrior: "Your body lacks the strength required for a warrior's training. Build your muscles first."
+    mage: "I sense your mind is... underdeveloped for arcane study. Sharpen your intellect."
+    cleric: "The divine requires wisdom to channel. Your spirit is not yet ready."
+    rogue: "You move like a stone golem. Work on your agility before seeking my teachings."
+    ranger: "A ranger needs both quick reflexes and keen perception. You lack these qualities."
+    paladin: "A paladin requires both strength of arm and force of personality. You fall short."
+
+  # Stat recommendations for character creation
+  stat_recommendations:
+    warrior: |
+      Primary: STR (attack/damage) | Secondary: CON (HP)
+      Suggested: STR 15, CON 14, DEX 13
+    mage: |
+      Primary: INT (spellcasting) | Secondary: CON (HP)
+      Suggested: INT 15, CON 14, DEX 13
+    cleric: |
+      Primary: WIS (spellcasting) | Secondary: CON (HP)
+      Suggested: WIS 15, CON 14, STR 13
+    rogue: |
+      Primary: DEX (attack/damage) | Secondary: CON (HP)
+      Suggested: DEX 15, CON 14, INT 13
+    ranger: |
+      Primary: DEX (attack) | Secondary: WIS (spells), CON (HP)
+      Suggested: DEX 15, WIS 14, CON 13
+    paladin: |
+      Primary: STR (attack) | Secondary: CHA (spells), CON (HP)
+      Suggested: STR 15, CHA 14, CON 13

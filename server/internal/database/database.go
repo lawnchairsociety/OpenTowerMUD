@@ -127,6 +127,34 @@ func (d *Database) migrate() error {
 		`CREATE INDEX IF NOT EXISTS idx_characters_account_id ON characters(account_id)`,
 		`CREATE INDEX IF NOT EXISTS idx_inventory_character_id ON inventory(character_id)`,
 		`CREATE INDEX IF NOT EXISTS idx_equipment_character_id ON equipment(character_id)`,
+
+		// Mail tables
+		`CREATE TABLE IF NOT EXISTS mail (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			sender_id INTEGER NOT NULL,
+			sender_name TEXT NOT NULL,
+			recipient_id INTEGER NOT NULL,
+			recipient_name TEXT NOT NULL,
+			subject TEXT NOT NULL,
+			body TEXT NOT NULL,
+			gold_attached INTEGER DEFAULT 0,
+			gold_collected INTEGER DEFAULT 0,
+			items_collected INTEGER DEFAULT 0,
+			read INTEGER DEFAULT 0,
+			sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+			FOREIGN KEY (sender_id) REFERENCES characters(id),
+			FOREIGN KEY (recipient_id) REFERENCES characters(id)
+		)`,
+		`CREATE TABLE IF NOT EXISTS mail_items (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			mail_id INTEGER NOT NULL,
+			item_id TEXT NOT NULL,
+			collected INTEGER DEFAULT 0,
+			FOREIGN KEY (mail_id) REFERENCES mail(id) ON DELETE CASCADE
+		)`,
+		`CREATE INDEX IF NOT EXISTS idx_mail_recipient ON mail(recipient_id, read)`,
+		`CREATE INDEX IF NOT EXISTS idx_mail_sender ON mail(sender_id)`,
+		`CREATE INDEX IF NOT EXISTS idx_mail_items_mail ON mail_items(mail_id)`,
 	}
 
 	// Run safe migrations for new columns (ignore errors if columns already exist)

@@ -38,6 +38,7 @@ npcs:
       - "The tower looms ever upward... infinite floors, infinite danger, infinite glory."
       - "I've guided hundreds of adventurers in my day. Some came back heroes. Others... well."
       - "Remember: the bard saves your story, the priestess saves your soul, and your wits save your life!"
+      - "See that mailbox by the fountain? You can send letters and even gold to other adventurers. Type 'mail' to check for messages!"
     locations:
       - "town_square"
     respawn_median: 0

@@ -13,7 +13,9 @@ import (
 	"github.com/lawnchairsociety/opentowermud/server/internal/config"
 	"github.com/lawnchairsociety/opentowermud/server/internal/crafting"
 	"github.com/lawnchairsociety/opentowermud/server/internal/database"
+	"github.com/lawnchairsociety/opentowermud/server/internal/help"
 	"github.com/lawnchairsociety/opentowermud/server/internal/items"
+	"github.com/lawnchairsociety/opentowermud/server/internal/text"
 	"github.com/lawnchairsociety/opentowermud/server/internal/logger"
 	"github.com/lawnchairsociety/opentowermud/server/internal/namefilter"
 	"github.com/lawnchairsociety/opentowermud/server/internal/npc"
@@ -39,6 +41,8 @@ func main() {
 	spellsFile := flag.String("spells", "data/spells.yaml", "Path to spells YAML file")
 	recipesFile := flag.String("recipes", "data/recipes.yaml", "Path to crafting recipes YAML file")
 	questsFile := flag.String("quests", "data/quests.yaml", "Path to quests YAML file")
+	helpFile := flag.String("help", "data/help.yaml", "Path to help YAML file")
+	textFile := flag.String("text", "data/text.yaml", "Path to text YAML file")
 	loggingConfig := flag.String("logging", "data/logging.yaml", "Path to logging config YAML file")
 	chatFilterConfig := flag.String("chatfilter", "data/chat_filter.yaml", "Path to chat filter config YAML file")
 	nameFilterConfig := flag.String("namefilter", "data/name_filter.yaml", "Path to name filter config YAML file")
@@ -138,6 +142,20 @@ func main() {
 		logger.Warning("Failed to load quests config, quests disabled", "path", *questsFile, "error", err)
 	} else {
 		logger.Info("Quests loaded", "count", questRegistry.Count())
+	}
+
+	// Load help system
+	if err := help.Initialize(*helpFile); err != nil {
+		logger.Warning("Failed to load help config, help system disabled", "path", *helpFile, "error", err)
+	} else {
+		logger.Info("Help system loaded", "path", *helpFile)
+	}
+
+	// Load text system
+	if err := text.Initialize(*textFile); err != nil {
+		logger.Warning("Failed to load text config, using fallback text", "path", *textFile, "error", err)
+	} else {
+		logger.Info("Text system loaded", "path", *textFile)
 	}
 
 	// Initialize player database

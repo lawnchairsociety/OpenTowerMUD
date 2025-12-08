@@ -11,17 +11,17 @@ logging:
 
   # Console logging (stdout)
   console_enabled: true
-  console_format: text  # text or json
+  console_format: text # text or json
 
   # File logging (with automatic rotation)
-  file_enabled: false
+  file_enabled: true
   file_path: logs/server.log
-  file_format: text  # text or json
+  file_format: text # text or json
 
   # Log rotation settings (when file_enabled: true)
-  file_max_size_mb: 10    # Rotate when log file reaches 10MB
-  file_max_backups: 5      # Keep 5 old log files
-  file_max_age_days: 30    # Delete logs older than 30 days
+  file_max_size_mb: 10 # Rotate when log file reaches 10MB
+  file_max_backups: 5 # Keep 5 old log files
+  file_max_age_days: 30 # Delete logs older than 30 days
 
 # Environment Variable Overrides:
 # - LOG_LEVEL: Override log level (DEBUG, INFO, WARNING, ERROR)

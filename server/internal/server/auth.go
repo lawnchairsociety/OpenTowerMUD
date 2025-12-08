@@ -13,6 +13,7 @@ import (
 	"github.com/lawnchairsociety/opentowermud/server/internal/logger"
 	"github.com/lawnchairsociety/opentowermud/server/internal/race"
 	"github.com/lawnchairsociety/opentowermud/server/internal/stats"
+	"github.com/lawnchairsociety/opentowermud/server/internal/text"
 )
 
 // isValidCharacterName checks if a character name contains only allowed characters.
@@ -61,14 +62,22 @@ type AuthResult struct {
 // Returns the authenticated account and selected character, or an error.
 func (s *Server) handleAuth(client Client) (*AuthResult, error) {
 	// Welcome screen
-	client.WriteLine("\n")
-	client.WriteLine("=====================================\n")
-	client.WriteLine("    Welcome to Open Tower MUD!\n")
-	client.WriteLine("=====================================\n")
-	client.WriteLine("\n")
-	client.WriteLine("  [L] Login\n")
-	client.WriteLine("  [R] Register\n")
-	client.WriteLine("\n")
+	t := text.GetInstance()
+	if t != nil {
+		client.WriteLine("\n")
+		client.WriteLine(t.GetWelcomeBanner())
+		client.WriteLine("\n")
+	} else {
+		// Fallback if text not loaded
+		client.WriteLine("\n")
+		client.WriteLine("=====================================\n")
+		client.WriteLine("    Welcome to Open Tower MUD!\n")
+		client.WriteLine("=====================================\n")
+		client.WriteLine("\n")
+		client.WriteLine("  [L] Login\n")
+		client.WriteLine("  [R] Register\n")
+		client.WriteLine("\n")
+	}
 	client.WriteLine("Enter choice: ")
 
 	choice, err := client.ReadLine()
@@ -803,20 +812,9 @@ func (s *Server) IsCharacterOnline(name string) bool {
 
 // getStatRecommendation returns stat recommendations for a given class
 func getStatRecommendation(className string) string {
-	switch className {
-	case "warrior":
-		return "  Primary: STR (attack/damage) | Secondary: CON (HP)\n  Suggested: STR 15, CON 14, DEX 13"
-	case "mage":
-		return "  Primary: INT (spellcasting) | Secondary: CON (HP)\n  Suggested: INT 15, CON 14, DEX 13"
-	case "cleric":
-		return "  Primary: WIS (spellcasting) | Secondary: CON (HP)\n  Suggested: WIS 15, CON 14, STR 13"
-	case "rogue":
-		return "  Primary: DEX (attack/damage) | Secondary: CON (HP)\n  Suggested: DEX 15, CON 14, INT 13"
-	case "ranger":
-		return "  Primary: DEX (attack) | Secondary: WIS (spells), CON (HP)\n  Suggested: DEX 15, WIS 14, CON 13"
-	case "paladin":
-		return "  Primary: STR (attack) | Secondary: CHA (spells), CON (HP)\n  Suggested: STR 15, CHA 14, CON 13"
-	default:
-		return "  No specific recommendations."
+	t := text.GetInstance()
+	if t != nil {
+		return t.GetStatRecommendation(className)
 	}
+	return "  No specific recommendations."
 }

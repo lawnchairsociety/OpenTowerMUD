@@ -369,6 +369,27 @@ func getClassStartingItems(className string) []string {
 	}
 }
 
+// notifyUnreadMail sends a notification if the player has unread mail
+func (s *Server) notifyUnreadMail(p *player.Player) {
+	if s.db == nil {
+		return
+	}
+
+	count, err := s.db.GetUnreadMailCount(p.GetCharacterID())
+	if err != nil {
+		logger.Warning("Failed to check unread mail", "player", p.GetName(), "error", err)
+		return
+	}
+
+	if count > 0 {
+		if count == 1 {
+			p.SendMessage("\nYou have 1 unread message waiting at the mailbox.\n")
+		} else {
+			p.SendMessage(fmt.Sprintf("\nYou have %d unread messages waiting at the mailbox.\n", count))
+		}
+	}
+}
+
 // handleDisconnect handles player disconnect cleanup and auto-saves progress
 func (s *Server) handleDisconnect(p *player.Player) {
 	roomIface := p.GetCurrentRoom()

@@ -23,13 +23,14 @@
 rooms:
   town_square:
     name: "Town Square"
-    description: "The heart of the city, a bustling plaza with a grand fountain at its center. Cobblestone paths radiate outward to various districts. A shimmering portal stands near the fountain, offering quick travel to distant places. To the west, the imposing castle gate rises above the rooftops."
+    description: "The heart of the city, a bustling plaza with a grand fountain at its center. Cobblestone paths radiate outward to various districts. A shimmering portal stands near the fountain, offering quick travel to distant places. A sturdy mailbox stands beside the fountain. To the west, the imposing castle gate rises above the rooftops."
     description_day: "Sunlight sparkles on the fountain's water as merchants hawk their wares and children play."
     description_night: "Torches illuminate the quiet plaza. The fountain's water glimmers under the moonlight."
     type: city
     features:
       - portal
       - fountain
+      - mailbox
     exits:
       north: north_gate
       south: market_street

@@ -924,6 +924,9 @@ var commandRegistry = map[string]CommandHandler{
 	"turnin":   executeComplete,
 	"title":    executeTitle,
 
+	// Mail commands
+	"mail": executeMail,
+
 	// Admin commands
 	"admin": executeAdmin,
 

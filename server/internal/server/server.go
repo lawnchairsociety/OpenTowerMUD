@@ -282,6 +282,9 @@ func (s *Server) handleClient(client Client) {
 		s.sendNewPlayerWelcome(p)
 	}
 
+	// Check for unread mail
+	s.notifyUnreadMail(p)
+
 	// Handle player session
 	p.HandleSession()
 }

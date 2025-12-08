@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/lawnchairsociety/opentowermud/server/internal/class"
+	"github.com/lawnchairsociety/opentowermud/server/internal/text"
 )
 
 // executeClass handles all class-related commands
@@ -184,38 +185,17 @@ func formatWeaponProficiencies(profs []class.WeaponType) string {
 
 // getClassAbilitiesPreview returns a preview of class abilities
 func getClassAbilitiesPreview(c class.Class) string {
-	switch c {
-	case class.Warrior:
-		return `  - Melee damage bonus (+1 per 3 levels)
-  - Heavy armor AC bonus (level 10+)
-  - Second Wind: HP regen in combat (level 15+)
-  - HP bonus (+10% at level 20)`
-	case class.Mage:
-		return `  - Powerful damage spells (fireball, ice storm, meteor)
-  - INT-based spellcasting
-  - Arcane Shield: +2 AC (level 15+)
-  - Highest spell damage potential`
-	case class.Cleric:
-		return `  - Healing spells (heal, cure wounds, resurrection)
-  - WIS-based spellcasting
-  - Divine Protection: +1 AC (level 10+)
-  - Sanctuary: 25% damage reduction below 25% HP (level 20+)`
-	case class.Rogue:
-		return `  - Sneak Attack (+1d6, +1d6 every 5 levels)
-  - Finesse weapon proficiency (DEX for attack/damage)
-  - Evasion: 10% dodge chance (level 15+)
-  - Assassinate: Execute enemies below 20% HP (level 20+)`
-	case class.Ranger:
-		return `  - Ranged damage bonus (+2 base, +1 per 3 levels)
-  - Favored Enemy: +25% damage vs beasts
-  - Nature spells (hunter's mark, spike growth)
-  - Multishot: 20% chance for double attack (level 20+)`
-	case class.Paladin:
-		return `  - Smite: Extra radiant damage
-  - Holy damage bonus vs undead/demons (+2)
-  - Healing spells (lay on hands, cure wounds)
-  - Lay on Hands: HP regen out of combat (level 15+)`
-	default:
-		return "  No special abilities defined."
+	t := text.GetInstance()
+	if t != nil {
+		abilities := t.GetClassAbilities(string(c))
+		// Indent each line for consistent formatting
+		lines := strings.Split(abilities, "\n")
+		for i, line := range lines {
+			if line != "" && !strings.HasPrefix(line, "  ") {
+				lines[i] = "  " + line
+			}
+		}
+		return strings.Join(lines, "\n")
 	}
+	return "  No special abilities defined."
 }
