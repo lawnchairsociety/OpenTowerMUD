@@ -41,6 +41,7 @@ type MobSpawner struct {
 	mobConfig         *npc.NPCsConfig
 	spawnConfig       SpawnConfig
 	playerCountGetter PlayerCountGetter
+	mobTags           []string // Tower-specific mob tags for filtering
 }
 
 // NewMobSpawner creates a new mob spawner with the given configuration
@@ -49,6 +50,25 @@ func NewMobSpawner(config *npc.NPCsConfig) *MobSpawner {
 		mobConfig:   config,
 		spawnConfig: DefaultSpawnConfig(),
 	}
+}
+
+// NewMobSpawnerWithTags creates a new mob spawner with tag filtering
+func NewMobSpawnerWithTags(config *npc.NPCsConfig, tags []string) *MobSpawner {
+	return &MobSpawner{
+		mobConfig:   config,
+		spawnConfig: DefaultSpawnConfig(),
+		mobTags:     tags,
+	}
+}
+
+// SetMobTags sets the tower-specific mob tags for filtering
+func (s *MobSpawner) SetMobTags(tags []string) {
+	s.mobTags = tags
+}
+
+// GetMobTags returns the current mob tags
+func (s *MobSpawner) GetMobTags() []string {
+	return s.mobTags
 }
 
 // SetSpawnConfig sets the spawn configuration
@@ -186,7 +206,12 @@ func scaleSpawnRange(min, max int, multiplier float64) (int, int) {
 
 // spawnBossInRoom spawns a boss mob in the room
 func (s *MobSpawner) spawnBossInRoom(room *world.Room, floorNum, tier int, rng *rand.Rand) []*npc.NPC {
-	bossDef := s.mobConfig.GetRandomBossForTier(tier, rng)
+	var bossDef *npc.NPCDefinition
+	if len(s.mobTags) > 0 {
+		bossDef = s.mobConfig.GetRandomBossForTierAndTags(tier, s.mobTags, rng)
+	} else {
+		bossDef = s.mobConfig.GetRandomBossForTier(tier, rng)
+	}
 	if bossDef == nil {
 		return nil
 	}
@@ -207,7 +232,12 @@ func (s *MobSpawner) spawnGuardsInRoom(room *world.Room, floorNum, tier int, rng
 
 	var spawned []*npc.NPC
 	for i := 0; i < count; i++ {
-		mobDef := s.mobConfig.GetRandomMobForTier(tier, rng)
+		var mobDef *npc.NPCDefinition
+		if len(s.mobTags) > 0 {
+			mobDef = s.mobConfig.GetRandomMobForTierAndTags(tier, s.mobTags, rng)
+		} else {
+			mobDef = s.mobConfig.GetRandomMobForTier(tier, rng)
+		}
 		if mobDef == nil {
 			continue
 		}
@@ -229,7 +259,12 @@ func (s *MobSpawner) spawnMobsInRoom(room *world.Room, floorNum, tier int, rng *
 
 	var spawned []*npc.NPC
 	for i := 0; i < count; i++ {
-		mobDef := s.mobConfig.GetRandomMobForTier(tier, rng)
+		var mobDef *npc.NPCDefinition
+		if len(s.mobTags) > 0 {
+			mobDef = s.mobConfig.GetRandomMobForTierAndTags(tier, s.mobTags, rng)
+		} else {
+			mobDef = s.mobConfig.GetRandomMobForTier(tier, rng)
+		}
 		if mobDef == nil {
 			continue
 		}
@@ -406,7 +441,12 @@ func (s *MobSpawner) SpawnAdditionalMobs(floor *Floor, floorNum int, rng *rand.R
 		room := eligibleRooms[roomIdx]
 
 		// Spawn one mob
-		mobDef := s.mobConfig.GetRandomMobForTier(tier, rng)
+		var mobDef *npc.NPCDefinition
+		if len(s.mobTags) > 0 {
+			mobDef = s.mobConfig.GetRandomMobForTierAndTags(tier, s.mobTags, rng)
+		} else {
+			mobDef = s.mobConfig.GetRandomMobForTier(tier, rng)
+		}
 		if mobDef == nil {
 			continue
 		}

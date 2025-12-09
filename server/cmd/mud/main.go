@@ -33,7 +33,7 @@ func main() {
 	wsPort := flag.Int("wsport", 4443, "WebSocket server port")
 	seed := flag.Int64("seed", 0, "World generation seed (default: random based on current time)")
 	towerFile := flag.String("tower", "data/tower.yaml", "Path to tower save file")
-	cityFile := flag.String("city", "data/city_rooms.yaml", "Path to city rooms YAML file")
+	cityFile := flag.String("city", "data/cities/human_city.yaml", "Path to city rooms YAML file")
 	npcsFile := flag.String("npcs", "data/npcs.yaml", "Path to NPCs YAML file")
 	mobsFile := flag.String("mobs", "data/mobs.yaml", "Path to mobs YAML file")
 	itemsFile := flag.String("items", "data/items.yaml", "Path to items YAML file")

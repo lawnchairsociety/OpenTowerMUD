@@ -18,13 +18,30 @@ type TowerInterface interface {
 	GetAllRooms() map[string]*Room
 }
 
+// TowerManagerInterface defines methods for multi-tower management
+// This is optional - World can work with either a single tower or a tower manager
+// Methods use "ByString" suffix to accept string tower IDs (avoiding circular imports)
+type TowerManagerInterface interface {
+	// FindRoomByString searches all towers for a room by ID
+	FindRoomByString(roomID string) *Room
+	// GetAllCityRooms returns city rooms from all towers
+	GetAllCityRooms() map[string]*Room
+	// GetSpawnRoomByString returns the spawn room for a specific tower
+	GetSpawnRoomByString(towerID string) *Room
+	// GetFloorPortalRoomByString returns the portal room for a floor in a specific tower
+	GetFloorPortalRoomByString(towerID string, floorNum int) *Room
+	// IsInitializedByString returns true if a tower has been initialized
+	IsInitializedByString(towerID string) bool
+}
+
 type World struct {
 	Rooms         map[string]*Room
 	mu            sync.RWMutex
 	worldFilePath string
 	seed          int64
 	readOnly      bool
-	tower         TowerInterface
+	tower         TowerInterface         // Single tower (backward compatible)
+	towerManager  TowerManagerInterface  // Multi-tower support (optional)
 }
 
 func NewWorld() *World {
@@ -84,13 +101,21 @@ func (w *World) GetRoom(id string) *Room {
 	w.mu.RLock()
 	room := w.Rooms[id]
 	tower := w.tower
+	towerManager := w.towerManager
 	w.mu.RUnlock()
 
 	if room != nil {
 		return room
 	}
 
-	// Room not in city, check tower floors
+	// Room not in base Rooms, check tower manager (multi-tower) first
+	if towerManager != nil {
+		if foundRoom := towerManager.FindRoomByString(id); foundRoom != nil {
+			return foundRoom
+		}
+	}
+
+	// Fall back to single tower
 	if tower != nil {
 		return tower.FindRoom(id)
 	}
@@ -99,6 +124,20 @@ func (w *World) GetRoom(id string) *Room {
 
 func (w *World) GetStartingRoom() *Room {
 	return w.GetRoom("town_square")
+}
+
+// GetStartingRoomForTower returns the spawn room for a specific tower
+func (w *World) GetStartingRoomForTower(towerID string) *Room {
+	w.mu.RLock()
+	towerManager := w.towerManager
+	w.mu.RUnlock()
+
+	if towerManager != nil {
+		return towerManager.GetSpawnRoomByString(towerID)
+	}
+
+	// Fall back to default starting room
+	return w.GetStartingRoom()
 }
 
 func (w *World) GetAllRooms() []*Room {
@@ -155,6 +194,20 @@ func (w *World) GetTower() TowerInterface {
 	w.mu.RLock()
 	defer w.mu.RUnlock()
 	return w.tower
+}
+
+// SetTowerManager sets the tower manager for multi-tower support
+func (w *World) SetTowerManager(tm TowerManagerInterface) {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+	w.towerManager = tm
+}
+
+// GetTowerManager returns the tower manager
+func (w *World) GetTowerManager() TowerManagerInterface {
+	w.mu.RLock()
+	defer w.mu.RUnlock()
+	return w.towerManager
 }
 
 // GetFloorPortalRoom returns the portal room for a specific floor

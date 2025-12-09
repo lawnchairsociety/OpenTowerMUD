@@ -20,6 +20,7 @@ type Tower struct {
 	TowerID      string            // Tower identifier (e.g., "human", "elf")
 	DataDir      string            // Path to data directory for loading floors
 	UseStaticFloors bool           // If true, load floors from YAML instead of generating
+	maxFloors    int               // Maximum floors in this tower (for boss floor calculation)
 	mobSpawner   *MobSpawner       // Spawner for floor mobs
 	lootSpawner  *LootSpawner      // Spawner for treasure loot
 	mu           sync.RWMutex
@@ -34,7 +35,25 @@ func NewTower(seed int64) *Tower {
 		TowerID:         "human",  // Default tower ID
 		DataDir:         "data",   // Default data directory
 		UseStaticFloors: false,    // Default to WFC generation for backwards compatibility
+		maxFloors:       25,       // Default max floors (for boss floor calculation)
 	}
+}
+
+// SetMaxFloors sets the maximum floors for this tower
+func (t *Tower) SetMaxFloors(max int) {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+	t.maxFloors = max
+}
+
+// GetMaxFloors returns the maximum floors for this tower
+func (t *Tower) GetMaxFloors() int {
+	t.mu.RLock()
+	defer t.mu.RUnlock()
+	if t.maxFloors <= 0 {
+		return 25 // Default to 25 if not set
+	}
+	return t.maxFloors
 }
 
 // GetFloor returns a floor by number, generating or loading it if necessary
@@ -119,6 +138,8 @@ func (t *Tower) generateFloor(floorNum int) (*Floor, error) {
 
 	// Create floor config
 	config := wfc.DefaultFloorConfig(floorNum, t.Seed)
+	// Override IsBossFloor based on tower's max floors setting
+	config.IsBossFloor = IsBossFloorForTower(floorNum, t.maxFloors)
 
 	// Generate the floor layout
 	gen := wfc.NewGenerator(config)

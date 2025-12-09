@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/lawnchairsociety/opentowermud/server/internal/class"
 	"github.com/lawnchairsociety/opentowermud/server/internal/database"
@@ -280,9 +281,27 @@ func (s *Server) savePlayerImpl(p *player.Player) error {
 	inventoryIDs := p.GetInventoryIDs()
 	equipmentIDs := p.GetEquipmentIDs()
 
-	// Save everything in a transaction
-	if err := s.db.SaveCharacterFull(char, inventoryIDs, equipmentIDs); err != nil {
-		return fmt.Errorf("failed to save character: %w", err)
+	// Save everything in a transaction with retry logic for SQLite busy errors
+	var saveErr error
+	for attempt := 0; attempt < 3; attempt++ {
+		if attempt > 0 {
+			time.Sleep(time.Duration(attempt*100) * time.Millisecond)
+		}
+		saveErr = s.db.SaveCharacterFull(char, inventoryIDs, equipmentIDs)
+		if saveErr == nil {
+			break
+		}
+		// Check if it's a busy/locked error worth retrying
+		if !strings.Contains(saveErr.Error(), "SQLITE_BUSY") && !strings.Contains(saveErr.Error(), "database is locked") {
+			break
+		}
+		logger.Debug("Database busy, retrying save",
+			"player", p.GetName(),
+			"attempt", attempt+1,
+			"error", saveErr)
+	}
+	if saveErr != nil {
+		return fmt.Errorf("failed to save character: %w", saveErr)
 	}
 
 	logger.Debug("Player saved",

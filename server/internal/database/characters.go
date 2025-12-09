@@ -47,6 +47,8 @@ type Character struct {
 	ActiveClass  string // Which class currently gains XP
 	// Race system
 	Race string // Player's race (e.g., "human", "dwarf")
+	// Tower system
+	HomeTower string // Player's home tower (e.g., "human", "elf", "dwarf")
 	// Crafting system
 	CraftingSkills string // Comma-separated list of skill:level pairs (e.g., "blacksmithing:10,alchemy:25")
 	KnownRecipes   string // Comma-separated list of recipe IDs
@@ -78,7 +80,13 @@ func (d *Database) CreateCharacterWithClass(accountID int64, name string, primar
 }
 
 // CreateCharacterWithClassAndRace creates a new character with specified class, race, and ability scores.
+// Uses the default home tower ("human").
 func (d *Database) CreateCharacterWithClassAndRace(accountID int64, name string, primaryClass string, race string, str, dex, con, int_, wis, cha int) (*Character, error) {
+	return d.CreateCharacterFull(accountID, name, primaryClass, race, "human", str, dex, con, int_, wis, cha)
+}
+
+// CreateCharacterFull creates a new character with all customizable options including home tower.
+func (d *Database) CreateCharacterFull(accountID int64, name string, primaryClass string, race string, homeTower string, str, dex, con, int_, wis, cha int) (*Character, error) {
 	name = strings.TrimSpace(name)
 	if name == "" {
 		return nil, errors.New("character name cannot be empty")
@@ -94,6 +102,11 @@ func (d *Database) CreateCharacterWithClassAndRace(accountID int64, name string,
 		race = "human"
 	}
 
+	// Validate home tower
+	if homeTower == "" {
+		homeTower = "human"
+	}
+
 	// Build initial class levels JSON using proper marshaling to avoid injection
 	classLevelsMap := map[string]int{primaryClass: 1}
 	classLevelsBytes, _ := json.Marshal(classLevelsMap)
@@ -105,11 +118,11 @@ func (d *Database) CreateCharacterWithClassAndRace(accountID int64, name string,
 	result, err := d.db.Exec(
 		`INSERT INTO characters (account_id, name, health, max_health, mana, max_mana,
 		                         strength, dexterity, constitution, intelligence, wisdom, charisma,
-		                         primary_class, class_levels, active_class, race, learned_spells)
-		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+		                         primary_class, class_levels, active_class, race, home_tower, learned_spells)
+		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 		accountID, name, startingHP, startingHP, startingMana, startingMana,
 		str, dex, con, int_, wis, cha,
-		primaryClass, classLevels, primaryClass, race, "",
+		primaryClass, classLevels, primaryClass, race, homeTower, "",
 	)
 	if err != nil {
 		if strings.Contains(err.Error(), "UNIQUE constraint failed") {
@@ -127,7 +140,7 @@ func (d *Database) CreateCharacterWithClassAndRace(accountID int64, name string,
 		ID:             id,
 		AccountID:      accountID,
 		Name:           name,
-		RoomID:         "town_square",
+		RoomID:         "town_square", // Will be updated by server based on home_tower
 		Health:         startingHP,
 		MaxHealth:      startingHP,
 		Mana:           startingMana,
@@ -148,6 +161,7 @@ func (d *Database) CreateCharacterWithClassAndRace(accountID int64, name string,
 		ClassLevels:    classLevels,
 		ActiveClass:    primaryClass,
 		Race:           race,
+		HomeTower:      homeTower,
 		CreatedAt:      time.Now(),
 	}, nil
 }
@@ -213,6 +227,7 @@ func (d *Database) GetCharactersByAccount(accountID int64) ([]*Character, error)
 		        level, experience, state, max_carry_weight, learned_spells,
 		        discovered_portals, strength, dexterity, constitution, intelligence, wisdom, charisma,
 		        gold, key_ring, primary_class, class_levels, active_class, race,
+		        COALESCE(home_tower, 'human'),
 		        COALESCE(crafting_skills, ''), COALESCE(known_recipes, ''),
 		        COALESCE(quest_log, '{}'), COALESCE(quest_inventory, ''),
 		        COALESCE(earned_titles, ''), COALESCE(active_title, ''),
@@ -248,6 +263,7 @@ func (d *Database) GetCharacterByName(name string) (*Character, error) {
 		        level, experience, state, max_carry_weight, learned_spells,
 		        discovered_portals, strength, dexterity, constitution, intelligence, wisdom, charisma,
 		        gold, key_ring, primary_class, class_levels, active_class, race,
+		        COALESCE(home_tower, 'human'),
 		        COALESCE(crafting_skills, ''), COALESCE(known_recipes, ''),
 		        COALESCE(quest_log, '{}'), COALESCE(quest_inventory, ''),
 		        COALESCE(earned_titles, ''), COALESCE(active_title, ''),
@@ -274,6 +290,7 @@ func (d *Database) GetCharacterByID(id int64) (*Character, error) {
 		        level, experience, state, max_carry_weight, learned_spells,
 		        discovered_portals, strength, dexterity, constitution, intelligence, wisdom, charisma,
 		        gold, key_ring, primary_class, class_levels, active_class, race,
+		        COALESCE(home_tower, 'human'),
 		        COALESCE(crafting_skills, ''), COALESCE(known_recipes, ''),
 		        COALESCE(quest_log, '{}'), COALESCE(quest_inventory, ''),
 		        COALESCE(earned_titles, ''), COALESCE(active_title, ''),
@@ -320,6 +337,7 @@ func (d *Database) SaveCharacter(c *Character) error {
 			class_levels = ?,
 			active_class = ?,
 			race = ?,
+			home_tower = ?,
 			crafting_skills = ?,
 			known_recipes = ?,
 			quest_log = ?,
@@ -331,7 +349,7 @@ func (d *Database) SaveCharacter(c *Character) error {
 		c.RoomID, c.Health, c.MaxHealth, c.Mana, c.MaxMana,
 		c.Level, c.Experience, c.State, c.MaxCarryWeight, c.LearnedSpells,
 		c.DiscoveredPortals, c.Strength, c.Dexterity, c.Constitution, c.Intelligence, c.Wisdom, c.Charisma,
-		c.Gold, c.KeyRing, c.PrimaryClass, c.ClassLevels, c.ActiveClass, c.Race,
+		c.Gold, c.KeyRing, c.PrimaryClass, c.ClassLevels, c.ActiveClass, c.Race, c.HomeTower,
 		c.CraftingSkills, c.KnownRecipes,
 		c.QuestLog, c.QuestInventory, c.EarnedTitles, c.ActiveTitle,
 		c.ID,
@@ -405,6 +423,7 @@ func scanCharacter(rows *sql.Rows) (*Character, error) {
 		&c.LearnedSpells,
 		&c.DiscoveredPortals, &c.Strength, &c.Dexterity, &c.Constitution, &c.Intelligence, &c.Wisdom, &c.Charisma,
 		&c.Gold, &c.KeyRing, &c.PrimaryClass, &c.ClassLevels, &c.ActiveClass, &c.Race,
+		&c.HomeTower,
 		&c.CraftingSkills, &c.KnownRecipes,
 		&c.QuestLog, &c.QuestInventory, &c.EarnedTitles, &c.ActiveTitle,
 		&c.CreatedAt, &lastPlayed,
@@ -432,6 +451,7 @@ func scanCharacterRow(row *sql.Row) (*Character, error) {
 		&c.LearnedSpells,
 		&c.DiscoveredPortals, &c.Strength, &c.Dexterity, &c.Constitution, &c.Intelligence, &c.Wisdom, &c.Charisma,
 		&c.Gold, &c.KeyRing, &c.PrimaryClass, &c.ClassLevels, &c.ActiveClass, &c.Race,
+		&c.HomeTower,
 		&c.CraftingSkills, &c.KnownRecipes,
 		&c.QuestLog, &c.QuestInventory, &c.EarnedTitles, &c.ActiveTitle,
 		&c.CreatedAt, &lastPlayed,

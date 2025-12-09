@@ -32,7 +32,7 @@ func main() {
 
 	// Check city rooms
 	fmt.Println("\n--- Checking city rooms ---")
-	cityFloor, err := tower.LoadAndCreateCity("data/city_rooms.yaml")
+	cityFloor, err := tower.LoadAndCreateCity("data/cities/human_city.yaml")
 	if err != nil {
 		fmt.Println("Error loading city:", err)
 		return

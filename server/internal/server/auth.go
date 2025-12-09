@@ -14,6 +14,7 @@ import (
 	"github.com/lawnchairsociety/opentowermud/server/internal/race"
 	"github.com/lawnchairsociety/opentowermud/server/internal/stats"
 	"github.com/lawnchairsociety/opentowermud/server/internal/text"
+	"github.com/lawnchairsociety/opentowermud/server/internal/tower"
 )
 
 // isValidCharacterName checks if a character name contains only allowed characters.
@@ -430,6 +431,12 @@ func (s *Server) handleCharacterCreation(client Client, account *database.Accoun
 		return nil, err
 	}
 
+	// Select home city/tower
+	selectedTower, err := s.handleCitySelection(client)
+	if err != nil {
+		return nil, err
+	}
+
 	// Assign ability scores using the standard array
 	scores, err := s.handleAbilityScoreAssignment(client, selectedClass, selectedRace)
 	if err != nil {
@@ -476,8 +483,8 @@ func (s *Server) handleCharacterCreation(client Client, account *database.Accoun
 	client.WriteLine(fmt.Sprintf("  WIS: %d (%+d)\n", scores.Wisdom, stats.Modifier(scores.Wisdom)))
 	client.WriteLine(fmt.Sprintf("  CHA: %d (%+d)\n", scores.Charisma, stats.Modifier(scores.Charisma)))
 
-	// Create character with assigned ability scores, class, and race
-	character, err := s.db.CreateCharacterWithClassAndRace(account.ID, name, selectedClass, selectedRace,
+	// Create character with assigned ability scores, class, race, and home tower
+	character, err := s.db.CreateCharacterFull(account.ID, name, selectedClass, selectedRace, selectedTower,
 		scores.Strength, scores.Dexterity, scores.Constitution,
 		scores.Intelligence, scores.Wisdom, scores.Charisma)
 	if err != nil {
@@ -489,15 +496,23 @@ func (s *Server) handleCharacterCreation(client Client, account *database.Accoun
 		return nil, err
 	}
 
+	// Get theme for display name
+	theme := tower.GetTheme(tower.TowerID(selectedTower))
+	cityName := "Ironhaven"
+	if theme != nil {
+		cityName = theme.CityName
+	}
+
 	logger.Info("Character created",
 		"character", character.Name,
 		"character_id", character.ID,
 		"account_id", account.ID,
 		"class", selectedClass,
 		"race", selectedRace,
+		"home_tower", selectedTower,
 		"event", "character_create")
 
-	client.WriteLine(fmt.Sprintf("\nCharacter '%s' the %s %s created!\n", character.Name, strings.Title(selectedRace), strings.Title(selectedClass)))
+	client.WriteLine(fmt.Sprintf("\nCharacter '%s' the %s %s created in %s!\n", character.Name, strings.Title(selectedRace), strings.Title(selectedClass), cityName))
 	return character, nil
 }
 
@@ -605,6 +620,70 @@ func (s *Server) handleRaceSelection(client Client) (string, error) {
 
 		if confirm == "y" || confirm == "yes" {
 			return string(selectedRace), nil
+		}
+
+		client.WriteLine("\n")
+	}
+}
+
+// handleCitySelection guides the player through choosing their home city
+func (s *Server) handleCitySelection(client Client) (string, error) {
+	client.WriteLine("\n--- Choose Your Home City ---\n\n")
+
+	// Define available cities with their tower IDs
+	type cityOption struct {
+		ID   tower.TowerID
+		Name string
+		Desc string
+	}
+
+	cities := []cityOption{
+		{tower.TowerHuman, "Ironhaven (Human)", "A grand walled city beneath the magical Arcane Spire."},
+		{tower.TowerElf, "Sylvanthal (Elf)", "A forest sanctuary around the ancient, diseased World Tree."},
+		{tower.TowerDwarf, "Khazad-Karn (Dwarf)", "A mountain stronghold above the endless descending mines."},
+		{tower.TowerGnome, "Cogsworth (Gnome)", "A city of gears and steam beneath the Mechanical Tower."},
+		{tower.TowerOrc, "Skullgar (Orc)", "A brutal war camp around the fearsome Beast-Skull Tower."},
+	}
+
+	for i, city := range cities {
+		client.WriteLine(fmt.Sprintf("  [%d] %s\n", i+1, city.Name))
+		client.WriteLine(fmt.Sprintf("      %s\n\n", city.Desc))
+	}
+
+	client.WriteLine("This choice determines where you start and respawn.\n")
+	client.WriteLine("You can travel to other cities later in the game.\n\n")
+
+	for {
+		client.WriteLine(fmt.Sprintf("Enter city number (1-%d): ", len(cities)))
+
+		input, err := client.ReadLine()
+		if err != nil {
+			return "", errors.New("connection closed")
+		}
+		input = strings.TrimSpace(input)
+
+		// Parse the input
+		choice, err := strconv.Atoi(input)
+		if err != nil || choice < 1 || choice > len(cities) {
+			client.WriteLine(fmt.Sprintf("Please enter a number from 1 to %d.\n", len(cities)))
+			continue
+		}
+
+		selectedCity := cities[choice-1]
+
+		// Confirm selection
+		client.WriteLine(fmt.Sprintf("\nYou selected: %s\n", selectedCity.Name))
+		client.WriteLine(fmt.Sprintf("  %s\n", selectedCity.Desc))
+		client.WriteLine("\nIs this correct? (Y/N): ")
+
+		confirm, err := client.ReadLine()
+		if err != nil {
+			return "", errors.New("connection closed")
+		}
+		confirm = strings.ToLower(strings.TrimSpace(confirm))
+
+		if confirm == "y" || confirm == "yes" {
+			return string(selectedCity.ID), nil
 		}
 
 		client.WriteLine("\n")

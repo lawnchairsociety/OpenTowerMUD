@@ -327,8 +327,8 @@ func TestTileTypeToRoomType(t *testing.T) {
 func TestTowerGenerateFloorAtScale(t *testing.T) {
 	tower := NewTower(12345)
 
-	// Test floors at various scales: 10, 25, 50
-	testFloors := []int{10, 25, 50}
+	// Test floors at various scales within a 25-floor tower: 5, 15, 25
+	testFloors := []int{5, 15, 25}
 
 	for _, floorNum := range testFloors {
 		floor, err := tower.GetFloor(floorNum)
@@ -355,7 +355,7 @@ func TestTowerGenerateFloorAtScale(t *testing.T) {
 			t.Errorf("Floor %d should have StairsDownRoom set", floorNum)
 		}
 
-		// Verify boss floors have boss rooms
+		// Verify boss floors have boss rooms (only floor 25 for 25-floor tower)
 		if IsBossFloor(floorNum) {
 			foundBoss := false
 			for _, room := range floor.GetRooms() {
@@ -382,8 +382,8 @@ func TestTowerGenerateFloorAtScale(t *testing.T) {
 	}
 
 	// Verify highest floor tracking
-	if tower.HighestFloor != 50 {
-		t.Errorf("HighestFloor = %d, want 50", tower.HighestFloor)
+	if tower.HighestFloor != 25 {
+		t.Errorf("HighestFloor = %d, want 25", tower.HighestFloor)
 	}
 
 	// Verify floor count
@@ -444,6 +444,7 @@ func TestTowerFloorConnectivity(t *testing.T) {
 }
 
 // TestTowerScalingFormulas tests the scaling formulas at various floor levels
+// Uses default 25-floor tower scaling
 func TestTowerScalingFormulas(t *testing.T) {
 	tests := []struct {
 		floor        int
@@ -453,14 +454,15 @@ func TestTowerScalingFormulas(t *testing.T) {
 	}{
 		{1, 1, 1, false},
 		{5, 1, 1, false},
-		{6, 2, 2, false},
-		{10, 2, 2, true},
-		{11, 3, 3, false},
-		{20, 3, 3, true},
-		{21, 4, 4, false},
-		{30, 4, 4, true},
-		{31, 4, 5, false},
-		{50, 4, 5, true},
+		{6, 1, 2, false},   // Tier 1 (1-6), Loot 2 (6-10)
+		{10, 2, 2, false},  // Tier 2 (7-12), Loot 2 (6-10)
+		{11, 2, 3, false},  // Tier 2 (7-12), Loot 3 (11-18)
+		{12, 2, 3, false},  // Tier 2 (7-12), Loot 3 (11-18)
+		{13, 3, 3, false},  // Tier 3 (13-18), Loot 3 (11-18)
+		{18, 3, 3, false},  // Tier 3 (13-18), Loot 3 (11-18)
+		{19, 4, 4, false},  // Tier 4 (19+), Loot 4 (19-24)
+		{24, 4, 4, false},  // Tier 4 (19+), Loot 4 (19-24)
+		{25, 4, 5, true},   // Boss floor - only floor 25
 	}
 
 	for _, tc := range tests {
@@ -571,15 +573,15 @@ func TestTowerManyFloors(t *testing.T) {
 func TestBossFloorLockedStairs(t *testing.T) {
 	tower := NewTower(12345)
 
-	// Floor 10 is a boss floor
-	floor, err := tower.GetFloor(10)
+	// Floor 25 is the boss floor for a 25-floor tower
+	floor, err := tower.GetFloor(25)
 	if err != nil {
-		t.Fatalf("GetFloor(10) failed: %v", err)
+		t.Fatalf("GetFloor(25) failed: %v", err)
 	}
 
-	// Verify floor 10 is indeed a boss floor
-	if !IsBossFloor(10) {
-		t.Fatal("Floor 10 should be a boss floor")
+	// Verify floor 25 is indeed a boss floor
+	if !IsBossFloor(25) {
+		t.Fatal("Floor 25 should be a boss floor")
 	}
 
 	// Get the stairs room
@@ -594,7 +596,7 @@ func TestBossFloorLockedStairs(t *testing.T) {
 	}
 
 	// Verify the correct key is required
-	expectedKeyID := GetBossKeyID(10)
+	expectedKeyID := GetBossKeyID(25)
 	actualKeyID := stairsRoom.GetExitKeyRequired("up")
 	if actualKeyID != expectedKeyID {
 		t.Errorf("Expected key %s, got %s", expectedKeyID, actualKeyID)
@@ -654,32 +656,32 @@ func TestGetBossKeyID(t *testing.T) {
 	}
 }
 
-// TestMultipleBossFloorsLocked tests that all boss floors have locked stairs
+// TestMultipleBossFloorsLocked tests that the final boss floor has locked stairs
+// In 25-floor tower, only floor 25 is the boss floor
 func TestMultipleBossFloorsLocked(t *testing.T) {
 	tower := NewTower(99999)
 
-	bossFloors := []int{10, 20, 30}
+	// Only test the boss floor (floor 25 for a 25-floor tower)
+	bossFloor := 25
 
-	for _, floorNum := range bossFloors {
-		floor, err := tower.GetFloor(floorNum)
-		if err != nil {
-			t.Fatalf("GetFloor(%d) failed: %v", floorNum, err)
-		}
+	floor, err := tower.GetFloor(bossFloor)
+	if err != nil {
+		t.Fatalf("GetFloor(%d) failed: %v", bossFloor, err)
+	}
 
-		stairsRoom := floor.GetStairsUp()
-		if stairsRoom == nil {
-			t.Fatalf("Floor %d: Missing stairs room", floorNum)
-		}
+	stairsRoom := floor.GetStairsUp()
+	if stairsRoom == nil {
+		t.Fatalf("Floor %d: Missing stairs room", bossFloor)
+	}
 
-		if !stairsRoom.IsExitLocked("up") {
-			t.Errorf("Floor %d: Stairs 'up' should be locked", floorNum)
-		}
+	if !stairsRoom.IsExitLocked("up") {
+		t.Errorf("Floor %d: Stairs 'up' should be locked", bossFloor)
+	}
 
-		expectedKeyID := GetBossKeyID(floorNum)
-		actualKeyID := stairsRoom.GetExitKeyRequired("up")
-		if actualKeyID != expectedKeyID {
-			t.Errorf("Floor %d: Expected key %s, got %s", floorNum, expectedKeyID, actualKeyID)
-		}
+	expectedKeyID := GetBossKeyID(bossFloor)
+	actualKeyID := stairsRoom.GetExitKeyRequired("up")
+	if actualKeyID != expectedKeyID {
+		t.Errorf("Floor %d: Expected key %s, got %s", bossFloor, expectedKeyID, actualKeyID)
 	}
 }
 
@@ -867,8 +869,8 @@ func TestFloorConnectivityMultipleSeeds(t *testing.T) {
 	for _, seed := range seeds {
 		tower := NewTower(seed)
 
-		// Test floors 1, 5, and 10 (regular, mid, and boss)
-		for _, floorNum := range []int{1, 5, 10} {
+		// Test floors 1, 5, and 25 (regular, mid, and boss)
+		for _, floorNum := range []int{1, 5, 25} {
 			floor, err := tower.GetFloor(floorNum)
 			if err != nil {
 				t.Fatalf("Seed %d, Floor %d: GetFloor failed: %v", seed, floorNum, err)
@@ -918,15 +920,15 @@ func TestAllRoomsReachableFromEntrance(t *testing.T) {
 func TestSpecialRoomsReachable(t *testing.T) {
 	tower := NewTower(88888)
 
-	// Test a boss floor (10)
-	floor, err := tower.GetFloor(10)
+	// Test the boss floor (25 for 25-floor tower)
+	floor, err := tower.GetFloor(25)
 	if err != nil {
-		t.Fatalf("GetFloor(10) failed: %v", err)
+		t.Fatalf("GetFloor(25) failed: %v", err)
 	}
 
 	entrance := floor.GetStairsDown()
 	if entrance == nil {
-		t.Fatal("Floor 10: No entrance room")
+		t.Fatal("Floor 25: No entrance room")
 	}
 
 	visited := bfsTraverseFloor(entrance, floor.Number)

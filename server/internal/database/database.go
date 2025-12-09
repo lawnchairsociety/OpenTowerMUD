@@ -169,6 +169,8 @@ func (d *Database) migrate() error {
 		`ALTER TABLE characters ADD COLUMN quest_inventory TEXT NOT NULL DEFAULT ''`,
 		`ALTER TABLE characters ADD COLUMN earned_titles TEXT NOT NULL DEFAULT ''`,
 		`ALTER TABLE characters ADD COLUMN active_title TEXT NOT NULL DEFAULT ''`,
+		// Multi-tower system
+		`ALTER TABLE characters ADD COLUMN home_tower TEXT NOT NULL DEFAULT 'human'`,
 	}
 
 	for _, m := range migrations {

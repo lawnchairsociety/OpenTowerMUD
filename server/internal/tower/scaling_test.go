@@ -74,18 +74,19 @@ func TestScaleGold(t *testing.T) {
 }
 
 func TestGetMobTier(t *testing.T) {
+	// Test with default 25-floor tower scaling
 	tests := []struct {
 		floor, want int
 	}{
 		{0, 0},   // City - safe
 		{1, 1},   // Easy
-		{5, 1},   // Easy
-		{6, 2},   // Medium
-		{10, 2},  // Medium
-		{11, 3},  // Hard
-		{20, 3},  // Hard
-		{21, 4},  // Elite
-		{50, 4},  // Elite
+		{6, 1},   // Easy (last)
+		{7, 2},   // Medium
+		{12, 2},  // Medium (last)
+		{13, 3},  // Hard
+		{18, 3},  // Hard (last)
+		{19, 4},  // Elite
+		{25, 4},  // Elite (boss floor)
 	}
 
 	for _, tc := range tests {
@@ -96,21 +97,47 @@ func TestGetMobTier(t *testing.T) {
 	}
 }
 
+func TestGetMobTierFor100FloorTower(t *testing.T) {
+	// Test with 100-floor unified tower scaling
+	tests := []struct {
+		floor, want int
+	}{
+		{0, 0},   // City - safe
+		{1, 1},   // Easy
+		{10, 1},  // Easy (last)
+		{11, 2},  // Medium
+		{25, 2},  // Medium (last)
+		{26, 3},  // Hard
+		{50, 3},  // Hard (last)
+		{51, 4},  // Elite
+		{75, 4},  // Elite (last)
+		{76, 5},  // Legendary
+		{100, 5}, // Legendary (boss floor)
+	}
+
+	for _, tc := range tests {
+		got := GetMobTierForFloor(tc.floor, 100)
+		if got != tc.want {
+			t.Errorf("GetMobTierForFloor(%d, 100) = %d, want %d", tc.floor, got, tc.want)
+		}
+	}
+}
+
 func TestGetLootTier(t *testing.T) {
+	// Test with default 25-floor tower scaling
 	tests := []struct {
 		floor, want int
 	}{
 		{0, 0},   // City - none
 		{1, 1},   // Common
-		{5, 1},   // Common
+		{5, 1},   // Common (last)
 		{6, 2},   // Uncommon
-		{10, 2},  // Uncommon
+		{10, 2},  // Uncommon (last)
 		{11, 3},  // Rare
-		{20, 3},  // Rare
-		{21, 4},  // Epic
-		{30, 4},  // Epic
-		{31, 5},  // Legendary
-		{50, 5},  // Legendary
+		{18, 3},  // Rare (last)
+		{19, 4},  // Epic
+		{24, 4},  // Epic (last)
+		{25, 5},  // Legendary (boss floor)
 	}
 
 	for _, tc := range tests {
@@ -122,23 +149,45 @@ func TestGetLootTier(t *testing.T) {
 }
 
 func TestIsBossFloor(t *testing.T) {
+	// Test with default 25-floor tower - only floor 25 is the boss floor
 	tests := []struct {
 		floor  int
 		isBoss bool
 	}{
 		{0, false},
 		{1, false},
-		{9, false},
-		{10, true},
-		{11, false},
-		{20, true},
-		{100, true},
+		{10, false},  // Not a boss floor in 25-floor tower
+		{24, false},
+		{25, true},   // Final boss floor
+		{26, false},  // Beyond max floors
 	}
 
 	for _, tc := range tests {
 		got := IsBossFloor(tc.floor)
 		if got != tc.isBoss {
 			t.Errorf("IsBossFloor(%d) = %v, want %v", tc.floor, got, tc.isBoss)
+		}
+	}
+}
+
+func TestIsBossFloorFor100FloorTower(t *testing.T) {
+	// Test with 100-floor unified tower - only floor 100 is the boss floor
+	tests := []struct {
+		floor  int
+		isBoss bool
+	}{
+		{0, false},
+		{10, false},
+		{50, false},
+		{99, false},
+		{100, true},  // Final boss floor
+		{101, false},
+	}
+
+	for _, tc := range tests {
+		got := IsBossFloorForTower(tc.floor, 100)
+		if got != tc.isBoss {
+			t.Errorf("IsBossFloorForTower(%d, 100) = %v, want %v", tc.floor, got, tc.isBoss)
 		}
 	}
 }

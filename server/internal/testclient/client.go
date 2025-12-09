@@ -161,6 +161,20 @@ func newTestClientInternal(name string, address string) (*TestClient, error) {
 	}
 	time.Sleep(150 * time.Millisecond)
 
+	// Select starting city (1 = Ironhaven/human tower for tests)
+	if err := client.SendCommand("1"); err != nil {
+		client.Close()
+		return nil, fmt.Errorf("failed to select city: %w", err)
+	}
+	time.Sleep(150 * time.Millisecond)
+
+	// Confirm city selection (Y/N prompt)
+	if err := client.SendCommand("Y"); err != nil {
+		client.Close()
+		return nil, fmt.Errorf("failed to confirm city: %w", err)
+	}
+	time.Sleep(150 * time.Millisecond)
+
 	// Send ability scores (standard array: 15, 14, 13, 12, 10, 8)
 	// Assign in order: Strength, Dexterity, Constitution, Intelligence, Wisdom, Charisma
 	abilityScores := []string{"15", "14", "13", "12", "10", "8"}

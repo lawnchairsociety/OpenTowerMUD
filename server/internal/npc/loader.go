@@ -49,6 +49,7 @@ type NPCDefinition struct {
 	Locations        []string        `yaml:"locations"`         // Room IDs where this NPC spawns
 	RespawnMedian    int             `yaml:"respawn_median"`    // Median respawn time in seconds
 	RespawnVariation int             `yaml:"respawn_variation"` // Variation in respawn time (+/- seconds)
+	TowerTags        []string        `yaml:"tower_tags"`        // Tower tags for themed spawning (e.g., "shared", "human", "arcane")
 }
 
 // NPCsConfig represents the structure of the npcs.yaml file
@@ -262,6 +263,79 @@ func (config *NPCsConfig) GetRandomMobForTier(tier int, rng *rand.Rand) *NPCDefi
 func (config *NPCsConfig) GetRandomBossForTier(tier int, rng *rand.Rand) *NPCDefinition {
 	for t := tier; t >= 1; t-- {
 		bosses := config.GetBossesByTier(t)
+		if len(bosses) > 0 {
+			boss := bosses[rng.Intn(len(bosses))]
+			return &boss
+		}
+	}
+	return nil
+}
+
+// mobMatchesTags returns true if a mob definition matches any of the given tags.
+// Mobs with empty TowerTags spawn everywhere (backward compatible).
+func mobMatchesTags(def NPCDefinition, tags []string) bool {
+	// Empty tower_tags = spawns everywhere (backward compatible)
+	if len(def.TowerTags) == 0 {
+		return true
+	}
+	// Empty filter tags = match nothing specific
+	if len(tags) == 0 {
+		return false
+	}
+	for _, mobTag := range def.TowerTags {
+		for _, filterTag := range tags {
+			if mobTag == filterTag {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+// GetMobsByTierAndTags returns all non-boss mob definitions for a given tier
+// that match at least one of the provided tags.
+func (config *NPCsConfig) GetMobsByTierAndTags(tier int, tags []string) []NPCDefinition {
+	var mobs []NPCDefinition
+	for _, def := range config.NPCs {
+		if def.Tier == tier && !def.Boss && def.Attackable && mobMatchesTags(def, tags) {
+			mobs = append(mobs, def)
+		}
+	}
+	return mobs
+}
+
+// GetBossesByTierAndTags returns all boss mob definitions for a given tier
+// that match at least one of the provided tags.
+func (config *NPCsConfig) GetBossesByTierAndTags(tier int, tags []string) []NPCDefinition {
+	var bosses []NPCDefinition
+	for _, def := range config.NPCs {
+		if def.Tier == tier && def.Boss && mobMatchesTags(def, tags) {
+			bosses = append(bosses, def)
+		}
+	}
+	return bosses
+}
+
+// GetRandomMobForTierAndTags returns a random non-boss mob definition for the given tier
+// that matches at least one of the provided tags.
+// If no mobs exist for the tier, returns a mob from the closest lower tier.
+func (config *NPCsConfig) GetRandomMobForTierAndTags(tier int, tags []string, rng *rand.Rand) *NPCDefinition {
+	for t := tier; t >= 1; t-- {
+		mobs := config.GetMobsByTierAndTags(t, tags)
+		if len(mobs) > 0 {
+			mob := mobs[rng.Intn(len(mobs))]
+			return &mob
+		}
+	}
+	return nil
+}
+
+// GetRandomBossForTierAndTags returns a random boss mob definition for the given tier
+// that matches at least one of the provided tags.
+// If no bosses exist for the tier, returns a boss from the closest lower tier.
+func (config *NPCsConfig) GetRandomBossForTierAndTags(tier int, tags []string, rng *rand.Rand) *NPCDefinition {
+	for t := tier; t >= 1; t-- {
+		bosses := config.GetBossesByTierAndTags(t, tags)
 		if len(bosses) > 0 {
 			boss := bosses[rng.Intn(len(bosses))]
 			return &boss

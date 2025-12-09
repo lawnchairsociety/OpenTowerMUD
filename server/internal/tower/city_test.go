@@ -13,7 +13,7 @@ func TestLoadCityFromYAML(t *testing.T) {
 		t.Skip("Could not find data directory")
 	}
 
-	cityFile := filepath.Join(dataDir, "city_rooms.yaml")
+	cityFile := filepath.Join(dataDir, "cities", "human_city.yaml")
 	config, err := LoadCityFromYAML(cityFile)
 	if err != nil {
 		t.Fatalf("LoadCityFromYAML failed: %v", err)
@@ -66,7 +66,7 @@ func TestCreateCityFloor(t *testing.T) {
 		t.Skip("Could not find data directory")
 	}
 
-	cityFile := filepath.Join(dataDir, "city_rooms.yaml")
+	cityFile := filepath.Join(dataDir, "cities", "human_city.yaml")
 	config, err := LoadCityFromYAML(cityFile)
 	if err != nil {
 		t.Fatalf("LoadCityFromYAML failed: %v", err)
@@ -99,7 +99,7 @@ func TestCityFloorRoomConnections(t *testing.T) {
 		t.Skip("Could not find data directory")
 	}
 
-	floor, err := LoadAndCreateCity(filepath.Join(dataDir, "city_rooms.yaml"))
+	floor, err := LoadAndCreateCity(filepath.Join(dataDir, "cities", "human_city.yaml"))
 	if err != nil {
 		t.Fatalf("LoadAndCreateCity failed: %v", err)
 	}
@@ -131,7 +131,7 @@ func TestCityFloorFeatures(t *testing.T) {
 		t.Skip("Could not find data directory")
 	}
 
-	floor, err := LoadAndCreateCity(filepath.Join(dataDir, "city_rooms.yaml"))
+	floor, err := LoadAndCreateCity(filepath.Join(dataDir, "cities", "human_city.yaml"))
 	if err != nil {
 		t.Fatalf("LoadAndCreateCity failed: %v", err)
 	}
@@ -161,7 +161,7 @@ func TestCityFloorPortalAndStairs(t *testing.T) {
 		t.Skip("Could not find data directory")
 	}
 
-	floor, err := LoadAndCreateCity(filepath.Join(dataDir, "city_rooms.yaml"))
+	floor, err := LoadAndCreateCity(filepath.Join(dataDir, "cities", "human_city.yaml"))
 	if err != nil {
 		t.Fatalf("LoadAndCreateCity failed: %v", err)
 	}
@@ -199,7 +199,7 @@ func TestValidateCityFloor(t *testing.T) {
 		t.Skip("Could not find data directory")
 	}
 
-	floor, err := LoadAndCreateCity(filepath.Join(dataDir, "city_rooms.yaml"))
+	floor, err := LoadAndCreateCity(filepath.Join(dataDir, "cities", "human_city.yaml"))
 	if err != nil {
 		t.Fatalf("LoadAndCreateCity failed: %v", err)
 	}
@@ -289,7 +289,7 @@ func findDataDir() string {
 	}
 
 	for _, candidate := range candidates {
-		if _, err := os.Stat(filepath.Join(candidate, "city_rooms.yaml")); err == nil {
+		if _, err := os.Stat(filepath.Join(candidate, "cities", "human_city.yaml")); err == nil {
 			return candidate
 		}
 	}

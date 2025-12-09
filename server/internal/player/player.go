@@ -2,6 +2,7 @@ package player
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 	"time"
 
@@ -15,6 +16,7 @@ import (
 	"github.com/lawnchairsociety/opentowermud/server/internal/quest"
 	"github.com/lawnchairsociety/opentowermud/server/internal/race"
 	"github.com/lawnchairsociety/opentowermud/server/internal/stats"
+	"github.com/lawnchairsociety/opentowermud/server/internal/tower"
 	"github.com/lawnchairsociety/opentowermud/server/internal/world"
 )
 
@@ -98,8 +100,10 @@ type Player struct {
 	CharacterID int64 // Database character ID
 	// Admin fields
 	isAdmin bool // Cached admin status (set on login)
-	// Tower portal system - discovered floors
-	discoveredPortals map[int]bool // Set of floor numbers with discovered portals
+	// Tower system
+	homeTower tower.TowerID // Player's home tower (where they spawn/respawn)
+	// Tower portal system - discovered floors per tower
+	discoveredPortals map[tower.TowerID]map[int]bool // tower -> floor -> discovered
 	// Magic system
 	learnedSpells  map[string]bool      // spell_id -> learned
 	spellCooldowns map[string]time.Time // spell_id -> cooldown expires at
@@ -159,7 +163,10 @@ func NewPlayer(name string, client Client, world *world.World, server ServerInte
 		InCombat:       false,
 		CombatTarget:   "",
 		CurrentRoom:    world.GetStartingRoom(),
-		discoveredPortals: map[int]bool{0: true}, // Ground floor always available
+		homeTower:      tower.TowerHuman, // Default home tower
+		discoveredPortals: map[tower.TowerID]map[int]bool{
+			tower.TowerHuman: {0: true}, // Home city always available
+		},
 		learnedSpells:  make(map[string]bool),
 		spellCooldowns: make(map[string]time.Time),
 		// Default ability scores (all 10s)
@@ -1280,61 +1287,206 @@ func (p *Player) GetRemoteAddr() string {
 	return ""
 }
 
+// ==================== TOWER METHODS ====================
+
+// GetHomeTower returns the player's home tower ID
+func (p *Player) GetHomeTower() tower.TowerID {
+	if p.homeTower == "" {
+		return tower.TowerHuman
+	}
+	return p.homeTower
+}
+
+// SetHomeTower sets the player's home tower
+func (p *Player) SetHomeTower(id tower.TowerID) {
+	p.homeTower = id
+}
+
+// GetHomeTowerString returns the home tower as a string (for persistence)
+func (p *Player) GetHomeTowerString() string {
+	return string(p.GetHomeTower())
+}
+
 // ==================== PORTAL METHODS ====================
 
-// DiscoverPortal marks a floor's portal as discovered
+// DiscoverPortal marks a floor's portal as discovered in the player's home tower
 func (p *Player) DiscoverPortal(floorNum int) {
-	if p.discoveredPortals == nil {
-		p.discoveredPortals = make(map[int]bool)
-		p.discoveredPortals[0] = true // Ground floor always available
-	}
-	p.discoveredPortals[floorNum] = true
+	p.DiscoverPortalInTower(p.GetHomeTower(), floorNum)
 }
 
-// HasDiscoveredPortal returns true if the player has discovered the portal on a floor
+// DiscoverPortalInTower marks a floor's portal as discovered in a specific tower
+func (p *Player) DiscoverPortalInTower(towerID tower.TowerID, floorNum int) {
+	if p.discoveredPortals == nil {
+		p.discoveredPortals = make(map[tower.TowerID]map[int]bool)
+	}
+	if p.discoveredPortals[towerID] == nil {
+		p.discoveredPortals[towerID] = make(map[int]bool)
+		p.discoveredPortals[towerID][0] = true // City floor always available
+	}
+	p.discoveredPortals[towerID][floorNum] = true
+}
+
+// HasDiscoveredPortal returns true if the player has discovered the portal in their home tower
 func (p *Player) HasDiscoveredPortal(floorNum int) bool {
-	if p.discoveredPortals == nil {
-		return floorNum == 0 // Ground floor always available
-	}
-	return p.discoveredPortals[floorNum]
+	return p.HasDiscoveredPortalInTower(p.GetHomeTower(), floorNum)
 }
 
-// GetDiscoveredPortals returns a sorted list of floor numbers with discovered portals
+// HasDiscoveredPortalInTower returns true if the player has discovered a portal in a specific tower
+func (p *Player) HasDiscoveredPortalInTower(towerID tower.TowerID, floorNum int) bool {
+	if p.discoveredPortals == nil {
+		return floorNum == 0 // City floor always available
+	}
+	towerPortals := p.discoveredPortals[towerID]
+	if towerPortals == nil {
+		return floorNum == 0
+	}
+	return towerPortals[floorNum]
+}
+
+// GetDiscoveredPortals returns a sorted list of floor numbers with discovered portals in home tower
 func (p *Player) GetDiscoveredPortals() []int {
+	return p.GetDiscoveredPortalsInTower(p.GetHomeTower())
+}
+
+// GetDiscoveredPortalsInTower returns a sorted list of floor numbers for a specific tower
+func (p *Player) GetDiscoveredPortalsInTower(towerID tower.TowerID) []int {
 	if p.discoveredPortals == nil {
 		return []int{0}
 	}
-	floors := make([]int, 0, len(p.discoveredPortals))
-	for floor := range p.discoveredPortals {
+	towerPortals := p.discoveredPortals[towerID]
+	if towerPortals == nil {
+		return []int{0}
+	}
+	floors := make([]int, 0, len(towerPortals))
+	for floor := range towerPortals {
 		floors = append(floors, floor)
 	}
-	// Sort floors
-	for i := 0; i < len(floors)-1; i++ {
-		for j := i + 1; j < len(floors); j++ {
-			if floors[i] > floors[j] {
-				floors[i], floors[j] = floors[j], floors[i]
-			}
-		}
-	}
+	sort.Ints(floors)
 	return floors
 }
 
-// GetDiscoveredPortalsString returns discovered portals as a comma-separated string (for persistence)
-func (p *Player) GetDiscoveredPortalsString() string {
-	floors := p.GetDiscoveredPortals()
-	strs := make([]string, len(floors))
-	for i, f := range floors {
-		strs[i] = fmt.Sprintf("%d", f)
+// GetAllDiscoveredPortals returns all discovered portals across all towers
+func (p *Player) GetAllDiscoveredPortals() map[tower.TowerID][]int {
+	result := make(map[tower.TowerID][]int)
+	if p.discoveredPortals == nil {
+		result[p.GetHomeTower()] = []int{0}
+		return result
 	}
-	return strings.Join(strs, ",")
+	for towerID, floors := range p.discoveredPortals {
+		floorList := make([]int, 0, len(floors))
+		for floor := range floors {
+			floorList = append(floorList, floor)
+		}
+		sort.Ints(floorList)
+		result[towerID] = floorList
+	}
+	return result
+}
+
+// GetDiscoveredPortalsString returns discovered portals as a comma-separated string (for persistence)
+// Format: "human:0,1,5;elf:0,3" or just "0,1,5" for backward compatibility (home tower only)
+func (p *Player) GetDiscoveredPortalsString() string {
+	if p.discoveredPortals == nil {
+		return "0"
+	}
+
+	// Check if we only have portals in home tower (for backward compatibility)
+	if len(p.discoveredPortals) == 1 {
+		if floors, ok := p.discoveredPortals[p.GetHomeTower()]; ok {
+			floorList := make([]int, 0, len(floors))
+			for floor := range floors {
+				floorList = append(floorList, floor)
+			}
+			sort.Ints(floorList)
+			strs := make([]string, len(floorList))
+			for i, f := range floorList {
+				strs[i] = fmt.Sprintf("%d", f)
+			}
+			return strings.Join(strs, ",")
+		}
+	}
+
+	// Multi-tower format: "human:0,1,5;elf:0,3"
+	var parts []string
+	for towerID, floors := range p.discoveredPortals {
+		floorList := make([]int, 0, len(floors))
+		for floor := range floors {
+			floorList = append(floorList, floor)
+		}
+		sort.Ints(floorList)
+		strs := make([]string, len(floorList))
+		for i, f := range floorList {
+			strs[i] = fmt.Sprintf("%d", f)
+		}
+		parts = append(parts, fmt.Sprintf("%s:%s", towerID, strings.Join(strs, ",")))
+	}
+	sort.Strings(parts) // Consistent ordering
+	return strings.Join(parts, ";")
 }
 
 // SetDiscoveredPortals sets the discovered portals from a list (used when loading from database)
+// Supports both old format "0,1,5" (assumes home tower) and new format "human:0,1,5;elf:0,3"
 func (p *Player) SetDiscoveredPortals(floors []int) {
-	p.discoveredPortals = make(map[int]bool)
-	p.discoveredPortals[0] = true // Ground floor always available
+	p.discoveredPortals = make(map[tower.TowerID]map[int]bool)
+	homeTower := p.GetHomeTower()
+	p.discoveredPortals[homeTower] = make(map[int]bool)
+	p.discoveredPortals[homeTower][0] = true // City floor always available
 	for _, floor := range floors {
-		p.discoveredPortals[floor] = true
+		p.discoveredPortals[homeTower][floor] = true
+	}
+}
+
+// SetDiscoveredPortalsFromString parses a portal string and sets discovered portals
+// Supports both old format "0,1,5" and new format "human:0,1,5;elf:0,3"
+func (p *Player) SetDiscoveredPortalsFromString(portalStr string) {
+	p.discoveredPortals = make(map[tower.TowerID]map[int]bool)
+	homeTower := p.GetHomeTower()
+
+	if portalStr == "" {
+		p.discoveredPortals[homeTower] = map[int]bool{0: true}
+		return
+	}
+
+	// Check if it's multi-tower format (contains ":")
+	if strings.Contains(portalStr, ":") {
+		// Multi-tower format: "human:0,1,5;elf:0,3"
+		towerParts := strings.Split(portalStr, ";")
+		for _, part := range towerParts {
+			colonIdx := strings.Index(part, ":")
+			if colonIdx < 0 {
+				continue
+			}
+			towerIDStr := part[:colonIdx]
+			floorsStr := part[colonIdx+1:]
+
+			towerID := tower.TowerID(towerIDStr)
+			if p.discoveredPortals[towerID] == nil {
+				p.discoveredPortals[towerID] = make(map[int]bool)
+			}
+			p.discoveredPortals[towerID][0] = true // City always available
+
+			for _, floorStr := range strings.Split(floorsStr, ",") {
+				var floor int
+				if _, err := fmt.Sscanf(floorStr, "%d", &floor); err == nil {
+					p.discoveredPortals[towerID][floor] = true
+				}
+			}
+		}
+	} else {
+		// Old format: "0,1,5" - assume home tower
+		p.discoveredPortals[homeTower] = make(map[int]bool)
+		p.discoveredPortals[homeTower][0] = true
+		for _, floorStr := range strings.Split(portalStr, ",") {
+			var floor int
+			if _, err := fmt.Sscanf(floorStr, "%d", &floor); err == nil {
+				p.discoveredPortals[homeTower][floor] = true
+			}
+		}
+	}
+
+	// Ensure home tower has at least floor 0
+	if p.discoveredPortals[homeTower] == nil {
+		p.discoveredPortals[homeTower] = map[int]bool{0: true}
 	}
 }
 
