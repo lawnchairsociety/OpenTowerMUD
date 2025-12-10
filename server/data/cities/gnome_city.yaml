@@ -1,0 +1,191 @@
+# Gnome City - Cogsworth
+# A mechanical marvel built inside a massive clockwork tower, with gears and steam pipes everywhere
+#
+# Layout:
+#                        [Observatory]
+#                             |
+#            [Chem Lab]---[Central Gear]---[Steam Works]
+#            (alchemy)    (spawn, portal,     (rogue)
+#                 |        mailbox)              |
+#        [Workshop]---[Market Floor]---[Gizmo Emporium]
+#                     (shop, workbench)     (bookshelf)
+#                          |
+#        [Power Core]---[Great Engine]---[Guild Hub]
+#        (altar,         (forge,          (warrior)
+#        cleric+paladin) blacksmith)          |
+#                             |          [Training Floor]
+#                             |          (training_dummy, ranger)
+#                    [Calibration Chamber]---[Inventor's Den]
+#                    (enchanting, mage)
+#                             |
+#                    [Containment Gate] (tower entrance - ascends)
+
+rooms:
+  gnome_central_gear:
+    name: "The Central Gear"
+    description: "The heart of Cogsworth, a vast chamber dominated by an enormous brass gear that slowly rotates, driving the machinery of the entire city. Smaller gears mesh and spin in hypnotic patterns along the walls. A shimmering portal hovers near the main axle, its surface crackling with arcane static. A brass mailbox shaped like a tiny automaton stands at attention nearby."
+    description_day: "Steam vents hiss rhythmically, and gnomes scurry about adjusting dials and checking gauges. The air smells of oil and ozone."
+    description_night: "The great gear continues its eternal rotation. Glowing crystals embedded in the machinery cast everything in warm amber light."
+    type: city
+    features:
+      - portal
+      - fountain
+      - mailbox
+    exits:
+      north: gnome_observatory
+      south: gnome_market_floor
+      east: gnome_steam_works
+      west: gnome_chem_lab
+
+  gnome_observatory:
+    name: "The Observatory"
+    description: "A domed chamber at the highest point of Cogsworth, fitted with an enormous brass telescope that can peer into distant realms. Clockwork orreries track the movements of celestial bodies, their gears clicking softly. Charts and star maps cover every surface."
+    description_day: "Lenses and mirrors adjust automatically to filter the daylight, projecting star patterns onto the walls."
+    description_night: "The dome opens to reveal the night sky, and gnome astronomers record their observations in cramped notebooks."
+    type: city
+    features: []
+    exits:
+      south: gnome_central_gear
+
+  gnome_chem_lab:
+    name: "The Chemical Laboratory"
+    description: "A cluttered laboratory filled with bubbling beakers, coiled tubing, and mysterious apparatus. Colored liquids flow through glass pipes that wind around the room like transparent serpents. An alchemy station of polished copper and crystal dominates the center."
+    description_day: "Gnome chemists carefully measure reagents, their goggles reflecting the glow of volatile mixtures."
+    description_night: "Luminescent compounds provide eerie illumination as overnight experiments bubble away unattended."
+    type: city
+    features:
+      - alchemy_lab
+    exits:
+      east: gnome_central_gear
+      south: gnome_workshop
+
+  gnome_steam_works:
+    name: "The Steam Works"
+    description: "A maze of pipes, valves, and pressure gauges that control the steam distribution throughout Cogsworth. The constant hiss of escaping steam creates a white noise that masks footsteps and whispered conversations. Perfect for those who prefer discretion."
+    description_day: "Engineers monitor pressure levels and clear condensation from gauges. The humidity makes everything slick."
+    description_night: "The steam creates a perpetual fog. Shadows move between the pipes, their business their own."
+    type: city
+    features: []
+    exits:
+      west: gnome_central_gear
+      south: gnome_gizmo_emporium
+
+  gnome_workshop:
+    name: "The Tinker's Workshop"
+    description: "A sprawling workshop where gnome inventors create their mechanical marvels. Half-finished automatons stand frozen mid-gesture, awaiting completion. Tools of every description hang from pegboards, and the floor is littered with gears, springs, and mysterious components."
+    description_day: "The workshop buzzes with activity as inventors compete to create the next great innovation."
+    description_night: "A few obsessive tinkers work through the night, too engrossed in their projects to sleep."
+    type: city
+    features: []
+    exits:
+      north: gnome_chem_lab
+      east: gnome_market_floor
+
+  gnome_market_floor:
+    name: "The Market Floor"
+    description: "A busy trading area where gnomes buy and sell mechanical components, finished goods, and rare materials. Conveyor belts carry goods between stalls, and pneumatic tubes whoosh overhead delivering messages and small packages. Sturdy workbenches allow for on-the-spot repairs and demonstrations."
+    description_day: "The market clatters with commerce - haggling voices compete with the whir of demonstration models."
+    description_night: "A skeleton crew of merchants remains, their stalls illuminated by softly glowing gas lamps."
+    type: city
+    features:
+      - shop
+      - workbench
+    exits:
+      north: gnome_central_gear
+      south: gnome_great_engine
+      east: gnome_gizmo_emporium
+      west: gnome_workshop
+
+  gnome_gizmo_emporium:
+    name: "The Gizmo Emporium"
+    description: "A shop specializing in exotic devices and arcane machinery. Shelves are packed with whirring gadgets, glowing crystals, and mysterious contraptions of unknown purpose. A massive bookshelf holds technical manuals and arcane schematics."
+    description_day: "Customers examine devices with magnifying glasses while the proprietor explains complex mechanisms with animated gestures."
+    description_night: "Various gadgets hum and click in the darkness, their indicator lights blinking like mechanical fireflies."
+    type: city
+    features:
+      - bookshelf
+    exits:
+      north: gnome_steam_works
+      west: gnome_market_floor
+
+  gnome_power_core:
+    name: "The Power Core"
+    description: "The energy heart of Cogsworth, where massive crystals pulse with contained lightning. The air crackles with static electricity, and hair stands on end. An altar of copper and quartz serves as a focus for those who channel divine energy - the power here amplifies their connection."
+    description_day: "Technicians in insulated suits monitor energy levels while priests commune with the divine through the crystal matrix."
+    description_night: "The crystals glow brighter, pulsing like a heartbeat. The boundary between technology and magic blurs here."
+    type: city
+    features:
+      - altar
+    exits:
+      east: gnome_great_engine
+
+  gnome_great_engine:
+    name: "The Great Engine"
+    description: "A massive chamber housing the primary drive mechanism of Cogsworth. Enormous pistons pump eternally, and the heat from the furnaces rivals any forge. Gnome smiths have adapted this industrial heat for metalworking, creating some of the finest precision instruments in the world."
+    description_day: "The rhythm of the engine is deafening. Smiths work in protective gear, timing their hammer strikes to the mechanical pulse."
+    description_night: "The engine never stops. Night shift workers maintain the eternal rhythm that keeps Cogsworth alive."
+    type: city
+    features:
+      - forge
+    exits:
+      north: gnome_market_floor
+      south: gnome_calibration_chamber
+      east: gnome_guild_hub
+      west: gnome_power_core
+
+  gnome_guild_hub:
+    name: "The Guild Hub"
+    description: "The headquarters of the Cogsworth Defense Corps, where gnome warriors train in mechanical combat techniques. Armored suits of powered armor line the walls, and training diagrams show weak points in various automatons. A reinforced door leads to the training facilities."
+    description_day: "Recruits practice formations while veterans maintain their gear with mechanical precision."
+    description_night: "Guards patrol in shifts, their powered armor humming softly in the quiet corridors."
+    type: city
+    features: []
+    exits:
+      south: gnome_training_floor
+      west: gnome_great_engine
+
+  gnome_training_floor:
+    name: "The Training Floor"
+    description: "A state-of-the-art training facility featuring mechanical training dummies that fight back. Target ranges with moving objectives test marksmanship, and obstacle courses challenge agility. The floor itself can reconfigure for different training scenarios."
+    description_day: "The clash of weapons against metal echoes as gnomes of all disciplines hone their combat skills."
+    description_night: "Advanced trainees practice in low-light conditions, preparing for the darkness of the corrupted tower above."
+    type: city
+    features:
+      - training_dummy
+    exits:
+      north: gnome_guild_hub
+
+  gnome_calibration_chamber:
+    name: "The Calibration Chamber"
+    description: "A precision workshop where magical energies are measured and focused. Delicate instruments detect the slightest magical fluctuation, and an enchanting station of mithril and crystal allows for the most precise magical work. Runic equations cover the walls."
+    description_day: "Enchanters work in absolute silence, the slightest disturbance potentially ruining hours of careful calibration."
+    description_night: "The magical instruments glow softly, self-calibrating through the night."
+    type: city
+    features:
+      - enchanting_table
+    exits:
+      north: gnome_great_engine
+      south: gnome_containment_gate
+      east: gnome_inventors_den
+
+  gnome_inventors_den:
+    name: "The Inventor's Den"
+    description: "A private workshop reserved for Cogsworth's most brilliant minds. Failed experiments and successful prototypes alike crowd the shelves. A chalkboard covered in equations dominates one wall, half-erased ideas competing for space."
+    description_day: "Senior inventors debate theories while junior members take furious notes."
+    description_night: "A lone genius works through the night, driven by inspiration that cannot wait for morning."
+    type: city
+    features: []
+    exits:
+      west: gnome_calibration_chamber
+
+  gnome_containment_gate:
+    name: "The Containment Gate"
+    description: "A massive reinforced door that leads upward into the Mechanical Spire - a section of Cogsworth that became corrupted when gnome inventors delved too deep into forbidden machinery. Warning signs in multiple languages surround the entrance. The metal here is warped and stained, and strange sounds echo from above."
+    description_day: "Guards stand eternal watch, their weapons ready. The containment seals are checked hourly."
+    description_night: "The corrupted machinery above seems more active at night. Strange lights flicker behind the sealed door."
+    type: city
+    features:
+      - stairs_up
+    exits:
+      north: gnome_calibration_chamber
+      up: ""

@@ -18,17 +18,17 @@ func TestSaveAndLoadTower(t *testing.T) {
 
 	// Create floor 0 (city) manually
 	cityFloor := NewFloor(0)
-	townSquare := world.NewRoom("town_square", "Town Square", "A bustling plaza", world.RoomTypeCity)
+	townSquare := world.NewRoom("human_town_square", "Town Square", "A bustling plaza", world.RoomTypeCity)
 	townSquare.Floor = 0
 	townSquare.AddFeature("portal")
 	cityFloor.AddRoom(townSquare)
-	cityFloor.SetPortalRoom("town_square")
+	cityFloor.SetPortalRoom("human_town_square")
 
-	towerEntrance := world.NewRoom("tower_entrance", "Tower Entrance", "The entrance to the endless tower", world.RoomTypeCity)
+	towerEntrance := world.NewRoom("human_tower_entrance", "Tower Entrance", "The entrance to the endless tower", world.RoomTypeCity)
 	towerEntrance.Floor = 0
 	towerEntrance.AddFeature("stairs")
 	cityFloor.AddRoom(towerEntrance)
-	cityFloor.SetStairsUp("tower_entrance")
+	cityFloor.SetStairsUp("human_tower_entrance")
 
 	// Connect rooms
 	townSquare.AddExit("south", towerEntrance)
@@ -80,15 +80,15 @@ func TestSaveAndLoadTower(t *testing.T) {
 		t.Fatal("City floor should exist")
 	}
 
-	loadedTownSquare := loadedCity.GetRoom("town_square")
+	loadedTownSquare := loadedCity.GetRoom("human_town_square")
 	if loadedTownSquare == nil {
-		t.Error("town_square should exist")
+		t.Error("human_town_square should exist")
 	} else {
 		if loadedTownSquare.Name != "Town Square" {
-			t.Errorf("town_square name = %s, want Town Square", loadedTownSquare.Name)
+			t.Errorf("human_town_square name = %s, want Town Square", loadedTownSquare.Name)
 		}
 		if !loadedTownSquare.HasFeature("portal") {
-			t.Error("town_square should have portal feature")
+			t.Error("human_town_square should have portal feature")
 		}
 	}
 

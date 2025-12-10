@@ -167,7 +167,7 @@ func TestTowerConnectFloorToCity(t *testing.T) {
 	}
 
 	// Create city entrance
-	entrance := world.NewRoom("tower_entrance", "Tower Entrance", "The entrance to the tower", world.RoomTypeCity)
+	entrance := world.NewRoom("human_tower_entrance", "Tower Entrance", "The entrance to the tower", world.RoomTypeCity)
 
 	// Connect
 	err = tower.ConnectFloorToCity(entrance)

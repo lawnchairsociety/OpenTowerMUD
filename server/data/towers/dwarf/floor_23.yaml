@@ -1,0 +1,370 @@
+# Floor 23 - dwarf tower
+# Generated with seed: 65
+# Room count: 50
+
+floor: 23
+tower: dwarf
+generated_seed: 65
+stairs_up: dwarf_f23_r8_7
+stairs_down: dwarf_f23_r3_8
+portal_room: dwarf_f23_r3_8
+rooms:
+  dwarf_f23_r10_6:
+    name: Excavated Cavern (Mine Level 23)
+    description: An excavated cavern with rough-hewn walls. Mining equipment lies abandoned, and ore carts rust in the corners.
+    type: room
+    exits:
+      south: dwarf_f23_r10_7
+      east: dwarf_f23_r11_6
+  dwarf_f23_r10_7:
+    name: Excavated Cavern (Mine Level 23)
+    description: An excavated cavern with rough-hewn walls. Mining equipment lies abandoned, and ore carts rust in the corners.
+    type: room
+    exits:
+      north: dwarf_f23_r10_6
+      south: dwarf_f23_r10_8
+      east: dwarf_f23_r11_7
+      west: dwarf_f23_r9_7
+  dwarf_f23_r10_8:
+    name: Excavated Cavern (Mine Level 23)
+    description: An excavated cavern with rough-hewn walls. Mining equipment lies abandoned, and ore carts rust in the corners.
+    type: room
+    exits:
+      north: dwarf_f23_r10_7
+      south: dwarf_f23_r10_9
+  dwarf_f23_r10_9:
+    name: Excavated Cavern (Mine Level 23)
+    description: An excavated cavern with rough-hewn walls. Mining equipment lies abandoned, and ore carts rust in the corners.
+    type: room
+    exits:
+      north: dwarf_f23_r10_8
+  dwarf_f23_r11_6:
+    name: Excavated Cavern (Mine Level 23)
+    description: An excavated cavern with rough-hewn walls. Mining equipment lies abandoned, and ore carts rust in the corners.
+    type: room
+    exits:
+      east: dwarf_f23_r12_6
+      west: dwarf_f23_r10_6
+  dwarf_f23_r11_7:
+    name: Mine Shaft (Mine Level 23)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      west: dwarf_f23_r10_7
+  dwarf_f23_r12_6:
+    name: Excavated Cavern (Mine Level 23)
+    description: An excavated cavern with rough-hewn walls. Mining equipment lies abandoned, and ore carts rust in the corners.
+    type: room
+    exits:
+      west: dwarf_f23_r11_6
+  dwarf_f23_r2_7:
+    name: Excavated Cavern (Mine Level 23)
+    description: An excavated cavern with rough-hewn walls. Mining equipment lies abandoned, and ore carts rust in the corners.
+    type: room
+    exits:
+      east: dwarf_f23_r3_7
+  dwarf_f23_r3_10:
+    name: Excavated Cavern (Mine Level 23)
+    description: An excavated cavern with rough-hewn walls. Mining equipment lies abandoned, and ore carts rust in the corners.
+    type: room
+    exits:
+      east: dwarf_f23_r4_10
+  dwarf_f23_r3_6:
+    name: Excavated Cavern (Mine Level 23)
+    description: An excavated cavern with rough-hewn walls. Mining equipment lies abandoned, and ore carts rust in the corners.
+    type: room
+    exits:
+      east: dwarf_f23_r4_6
+  dwarf_f23_r3_7:
+    name: Mine Shaft (Mine Level 23)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      east: dwarf_f23_r4_7
+      west: dwarf_f23_r2_7
+  dwarf_f23_r3_8:
+    name: Shaft to Depths (Mine Level 23)
+    description: A deep shaft descending into the darkness below. A shimmering portal offers quick travel to levels you've explored.
+    type: stairs_down
+    features:
+      - stairs_down
+      - portal
+    exits:
+      east: dwarf_f23_r4_8
+  dwarf_f23_r4_10:
+    name: Excavated Cavern (Mine Level 23)
+    description: An excavated cavern with rough-hewn walls. Mining equipment lies abandoned, and ore carts rust in the corners.
+    type: room
+    exits:
+      east: dwarf_f23_r5_10
+      west: dwarf_f23_r3_10
+  dwarf_f23_r4_11:
+    name: Excavated Cavern (Mine Level 23)
+    description: An excavated cavern with rough-hewn walls. Mining equipment lies abandoned, and ore carts rust in the corners.
+    type: room
+    exits:
+      south: dwarf_f23_r4_12
+      east: dwarf_f23_r5_11
+  dwarf_f23_r4_12:
+    name: Mine Shaft (Mine Level 23)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      north: dwarf_f23_r4_11
+  dwarf_f23_r4_5:
+    name: Mine Shaft (Mine Level 23)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      south: dwarf_f23_r4_6
+  dwarf_f23_r4_6:
+    name: Excavated Cavern (Mine Level 23)
+    description: An excavated cavern with rough-hewn walls. Mining equipment lies abandoned, and ore carts rust in the corners.
+    type: room
+    exits:
+      north: dwarf_f23_r4_5
+      east: dwarf_f23_r5_6
+      west: dwarf_f23_r3_6
+  dwarf_f23_r4_7:
+    name: Mine Shaft (Mine Level 23)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      east: dwarf_f23_r5_7
+      west: dwarf_f23_r3_7
+  dwarf_f23_r4_8:
+    name: Mine Shaft (Mine Level 23)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      south: dwarf_f23_r4_9
+      east: dwarf_f23_r5_8
+      west: dwarf_f23_r3_8
+  dwarf_f23_r4_9:
+    name: Mine Shaft (Mine Level 23)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      north: dwarf_f23_r4_8
+  dwarf_f23_r5_10:
+    name: Mine Shaft (Mine Level 23)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      north: dwarf_f23_r5_9
+      south: dwarf_f23_r5_11
+      west: dwarf_f23_r4_10
+  dwarf_f23_r5_11:
+    name: Mine Shaft (Mine Level 23)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      north: dwarf_f23_r5_10
+      south: dwarf_f23_r5_12
+      east: dwarf_f23_r6_11
+      west: dwarf_f23_r4_11
+  dwarf_f23_r5_12:
+    name: Mine Shaft (Mine Level 23)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      north: dwarf_f23_r5_11
+      south: dwarf_f23_r5_13
+  dwarf_f23_r5_13:
+    name: Mine Shaft (Mine Level 23)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      north: dwarf_f23_r5_12
+  dwarf_f23_r5_4:
+    name: Excavated Cavern (Mine Level 23)
+    description: An excavated cavern with rough-hewn walls. Mining equipment lies abandoned, and ore carts rust in the corners.
+    type: room
+    exits:
+      south: dwarf_f23_r5_5
+  dwarf_f23_r5_5:
+    name: Excavated Cavern (Mine Level 23)
+    description: An excavated cavern with rough-hewn walls. Mining equipment lies abandoned, and ore carts rust in the corners.
+    type: room
+    exits:
+      north: dwarf_f23_r5_4
+      south: dwarf_f23_r5_6
+  dwarf_f23_r5_6:
+    name: Mine Shaft (Mine Level 23)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      north: dwarf_f23_r5_5
+      east: dwarf_f23_r6_6
+      west: dwarf_f23_r4_6
+  dwarf_f23_r5_7:
+    name: Excavated Cavern (Mine Level 23)
+    description: An excavated cavern with rough-hewn walls. Mining equipment lies abandoned, and ore carts rust in the corners.
+    type: room
+    exits:
+      south: dwarf_f23_r5_8
+      east: dwarf_f23_r6_7
+      west: dwarf_f23_r4_7
+  dwarf_f23_r5_8:
+    name: Mine Shaft (Mine Level 23)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      north: dwarf_f23_r5_7
+      south: dwarf_f23_r5_9
+      east: dwarf_f23_r6_8
+      west: dwarf_f23_r4_8
+  dwarf_f23_r5_9:
+    name: Excavated Cavern (Mine Level 23)
+    description: An excavated cavern with rough-hewn walls. Mining equipment lies abandoned, and ore carts rust in the corners.
+    type: room
+    exits:
+      north: dwarf_f23_r5_8
+      south: dwarf_f23_r5_10
+  dwarf_f23_r6_10:
+    name: Excavated Cavern (Mine Level 23)
+    description: An excavated cavern with rough-hewn walls. Mining equipment lies abandoned, and ore carts rust in the corners.
+    type: room
+    exits:
+      north: dwarf_f23_r6_9
+      east: dwarf_f23_r7_10
+  dwarf_f23_r6_11:
+    name: Excavated Cavern (Mine Level 23)
+    description: An excavated cavern with rough-hewn walls. Mining equipment lies abandoned, and ore carts rust in the corners.
+    type: room
+    exits:
+      west: dwarf_f23_r5_11
+  dwarf_f23_r6_5:
+    name: Mine Shaft (Mine Level 23)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      south: dwarf_f23_r6_6
+  dwarf_f23_r6_6:
+    name: Excavated Cavern (Mine Level 23)
+    description: An excavated cavern with rough-hewn walls. Mining equipment lies abandoned, and ore carts rust in the corners.
+    type: room
+    exits:
+      north: dwarf_f23_r6_5
+      east: dwarf_f23_r7_6
+      west: dwarf_f23_r5_6
+  dwarf_f23_r6_7:
+    name: Ore Vein Chamber (Mine Level 23)
+    description: An ore vein chamber where precious metals gleam in the torchlight. The richest deposits are guarded by something.
+    type: treasure
+    features:
+      - treasure
+    exits:
+      east: dwarf_f23_r7_7
+      west: dwarf_f23_r5_7
+  dwarf_f23_r6_8:
+    name: Mine Shaft (Mine Level 23)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      south: dwarf_f23_r6_9
+      west: dwarf_f23_r5_8
+  dwarf_f23_r6_9:
+    name: Excavated Cavern (Mine Level 23)
+    description: An excavated cavern with rough-hewn walls. Mining equipment lies abandoned, and ore carts rust in the corners.
+    type: room
+    exits:
+      north: dwarf_f23_r6_8
+      south: dwarf_f23_r6_10
+  dwarf_f23_r7_10:
+    name: Excavated Cavern (Mine Level 23)
+    description: An excavated cavern with rough-hewn walls. Mining equipment lies abandoned, and ore carts rust in the corners.
+    type: room
+    exits:
+      west: dwarf_f23_r6_10
+  dwarf_f23_r7_4:
+    name: Ore Vein Chamber (Mine Level 23)
+    description: An ore vein chamber where precious metals gleam in the torchlight. The richest deposits are guarded by something.
+    type: treasure
+    features:
+      - treasure
+    exits:
+      south: dwarf_f23_r7_5
+  dwarf_f23_r7_5:
+    name: Excavated Cavern (Mine Level 23)
+    description: An excavated cavern with rough-hewn walls. Mining equipment lies abandoned, and ore carts rust in the corners.
+    type: room
+    exits:
+      north: dwarf_f23_r7_4
+      east: dwarf_f23_r8_5
+  dwarf_f23_r7_6:
+    name: Excavated Cavern (Mine Level 23)
+    description: An excavated cavern with rough-hewn walls. Mining equipment lies abandoned, and ore carts rust in the corners.
+    type: room
+    exits:
+      south: dwarf_f23_r7_7
+      east: dwarf_f23_r8_6
+      west: dwarf_f23_r6_6
+  dwarf_f23_r7_7:
+    name: Mine Shaft (Mine Level 23)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      north: dwarf_f23_r7_6
+      south: dwarf_f23_r7_8
+      east: dwarf_f23_r8_7
+      west: dwarf_f23_r6_7
+  dwarf_f23_r7_8:
+    name: Mine Shaft (Mine Level 23)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      north: dwarf_f23_r7_7
+      east: dwarf_f23_r8_8
+  dwarf_f23_r8_5:
+    name: Mine Shaft (Mine Level 23)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      south: dwarf_f23_r8_6
+      west: dwarf_f23_r7_5
+  dwarf_f23_r8_6:
+    name: Ore Vein Chamber (Mine Level 23)
+    description: An ore vein chamber where precious metals gleam in the torchlight. The richest deposits are guarded by something.
+    type: treasure
+    features:
+      - treasure
+    exits:
+      north: dwarf_f23_r8_5
+      east: dwarf_f23_r9_6
+      west: dwarf_f23_r7_6
+  dwarf_f23_r8_7:
+    name: Shaft to Surface (Mine Level 23)
+    description: A carved shaft leading back toward the surface. The air grows slightly fresher as you ascend.
+    type: stairs_up
+    features:
+      - stairs_up
+    exits:
+      west: dwarf_f23_r7_7
+  dwarf_f23_r8_8:
+    name: Excavated Cavern (Mine Level 23)
+    description: An excavated cavern with rough-hewn walls. Mining equipment lies abandoned, and ore carts rust in the corners.
+    type: room
+    exits:
+      west: dwarf_f23_r7_8
+  dwarf_f23_r9_6:
+    name: Mine Shaft (Mine Level 23)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      south: dwarf_f23_r9_7
+      west: dwarf_f23_r8_6
+  dwarf_f23_r9_7:
+    name: Excavated Cavern (Mine Level 23)
+    description: An excavated cavern with rough-hewn walls. Mining equipment lies abandoned, and ore carts rust in the corners.
+    type: room
+    exits:
+      north: dwarf_f23_r9_6
+      south: dwarf_f23_r9_8
+      east: dwarf_f23_r10_7
+  dwarf_f23_r9_8:
+    name: Excavated Cavern (Mine Level 23)
+    description: An excavated cavern with rough-hewn walls. Mining equipment lies abandoned, and ore carts rust in the corners.
+    type: room
+    exits:
+      north: dwarf_f23_r9_7

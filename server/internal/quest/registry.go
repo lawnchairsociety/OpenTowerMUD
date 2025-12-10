@@ -176,3 +176,13 @@ func (r *QuestRegistry) LoadFromYAML(filename string) error {
 	r.LoadFromConfig(config)
 	return nil
 }
+
+// LoadFromDirectory loads quests from all YAML files in a directory
+func (r *QuestRegistry) LoadFromDirectory(dir string) error {
+	config, err := LoadQuestsFromDirectory(dir)
+	if err != nil {
+		return err
+	}
+	r.LoadFromConfig(config)
+	return nil
+}

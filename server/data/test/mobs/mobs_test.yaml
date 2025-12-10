@@ -21,7 +21,7 @@ npcs:
     respawn_median: 5
     respawn_variation: 1
     locations:
-      - "training_hall"
+      - "human_training_hall"
 
   # ===================
   # Training dummy (from production npcs.yaml)
@@ -39,7 +39,7 @@ npcs:
     attackable: true
     dialogue: []
     locations:
-      - "training_hall"
+      - "human_training_hall"
     respawn_median: 10
     respawn_variation: 2
 

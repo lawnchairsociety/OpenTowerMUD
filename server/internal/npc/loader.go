@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/lawnchairsociety/opentowermud/server/internal/logger"
 	"gopkg.in/yaml.v3"
@@ -216,6 +218,58 @@ func LoadMultipleNPCFiles(filenames ...string) (*NPCsConfig, error) {
 		config, err := LoadNPCsFromYAML(filename)
 		if err != nil {
 			return nil, fmt.Errorf("failed to load %s: %w", filename, err)
+		}
+		merged.Merge(config)
+	}
+
+	return merged, nil
+}
+
+// LoadNPCsFromDirectory loads and merges all YAML files from a directory
+func LoadNPCsFromDirectory(dir string) (*NPCsConfig, error) {
+	merged := &NPCsConfig{
+		NPCs: make(map[string]NPCDefinition),
+	}
+
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read directory %s: %w", dir, err)
+	}
+
+	fileCount := 0
+	for _, entry := range entries {
+		if entry.IsDir() {
+			continue
+		}
+		name := entry.Name()
+		if !strings.HasSuffix(name, ".yaml") && !strings.HasSuffix(name, ".yml") {
+			continue
+		}
+
+		filePath := filepath.Join(dir, name)
+		config, err := LoadNPCsFromYAML(filePath)
+		if err != nil {
+			return nil, fmt.Errorf("failed to load %s: %w", filePath, err)
+		}
+		merged.Merge(config)
+		fileCount++
+		logger.Info("Loaded NPC file", "path", filePath, "npcs", len(config.NPCs))
+	}
+
+	logger.Info("Loaded NPCs from directory", "dir", dir, "files", fileCount, "total_npcs", len(merged.NPCs))
+	return merged, nil
+}
+
+// LoadNPCsFromDirectories loads and merges all YAML files from multiple directories
+func LoadNPCsFromDirectories(dirs ...string) (*NPCsConfig, error) {
+	merged := &NPCsConfig{
+		NPCs: make(map[string]NPCDefinition),
+	}
+
+	for _, dir := range dirs {
+		config, err := LoadNPCsFromDirectory(dir)
+		if err != nil {
+			return nil, err
 		}
 		merged.Merge(config)
 	}

@@ -1,0 +1,185 @@
+# Orc City - Skullgar
+# A brutal war camp built on an ancient battlefield, where strength is law
+#
+# Layout:
+#                    [Skull Gate] (tower entrance - ascends to corrupted battlefield)
+#                          |
+#        [Blood Pit]---[War Camp]---[Trophy Hall]
+#        (training,    (spawn, portal,  (quest giver)
+#        warrior)       mailbox)             |
+#             |             |            [Arena]
+#    [Shaman's Hut]---[Bazaar]---[Beast Pens]
+#    (altar, cleric,  (shop,      (ranger)
+#    paladin)         workbench)
+#          |              |
+#    [Brew Tent]---[Forge Pits]---[Shadow Tent]
+#    (alchemy)     (forge,         (rogue)
+#                  blacksmith)         |
+#                      |          [Warchief's Throne]
+#              [Rune Carvers]
+#              (enchanting, mage, bookshelf)
+
+rooms:
+  orc_war_camp:
+    name: "The War Camp"
+    description: "The heart of Skullgar, a sprawling encampment of hide tents and crude wooden structures built on blood-soaked ground. Massive bonfires burn day and night, and the air reeks of smoke, sweat, and old blood. A shimmering portal crackles near the largest fire, its surface dark and turbulent. A crude mailbox made from a hollowed skull stands nearby."
+    description_day: "Warriors spar and boast while drums pound an endless rhythm. The strong survive here, the weak serve."
+    description_night: "The fires burn brighter, and war chants echo across the camp. This is when the orcs truly come alive."
+    type: city
+    features:
+      - portal
+      - fountain
+      - mailbox
+    exits:
+      north: orc_skull_gate
+      south: orc_bazaar
+      east: orc_trophy_hall
+      west: orc_blood_pit
+
+  orc_skull_gate:
+    name: "The Skull Gate"
+    description: "A massive gate built from the bones of fallen giants, their skulls stacked to form an archway of death. Beyond lies the Eternal Battlefield - a corrupted realm where the spirits of fallen warriors rise again and again, driven mad by dark magic. Only the strongest dare enter."
+    description_day: "Even in daylight, dark mist seeps through the gate. The skulls seem to watch with empty sockets."
+    description_night: "Ghostly lights flicker beyond the gate, and the moans of the restless dead carry on the wind."
+    type: city
+    features:
+      - stairs_up
+    exits:
+      south: orc_war_camp
+      up: ""
+
+  orc_blood_pit:
+    name: "The Blood Pit"
+    description: "A sunken arena where orc warriors train through brutal combat. The sand is permanently stained red, and the walls are decorated with the weapons of those who fell here. Training posts made from petrified troll bones stand at the edges."
+    description_day: "The crack of bone and the roar of victory echo constantly. Every orc must prove themselves here."
+    description_night: "Torchlight casts dancing shadows as warriors test themselves against the darkness."
+    type: city
+    features:
+      - training_dummy
+    exits:
+      east: orc_war_camp
+      south: orc_shamans_hut
+
+  orc_trophy_hall:
+    name: "The Trophy Hall"
+    description: "A longhouse filled with the trophies of countless victories - skulls, weapons, banners, and the preserved heads of legendary foes. Each trophy tells a story of conquest, and young orcs come here to learn of their ancestors' glory."
+    description_day: "Veterans point to trophies and recount battles, inspiring the next generation of warriors."
+    description_night: "The trophies seem to come alive in the firelight, their dead eyes following visitors."
+    type: city
+    features:
+      - throne
+    exits:
+      west: orc_war_camp
+      south: orc_arena
+
+  orc_arena:
+    name: "The Arena"
+    description: "A grand fighting pit where disputes are settled and champions are made. Stone seats rise in tiers around the blood-stained sand, and the roar of the crowd can be heard throughout Skullgar when matches are underway."
+    description_day: "Scheduled bouts draw crowds, with betting and bloodshed in equal measure."
+    description_night: "The arena is reserved for death matches - no quarter asked, none given."
+    type: city
+    features: []
+    exits:
+      north: orc_trophy_hall
+      west: orc_beast_pens
+
+  orc_shamans_hut:
+    name: "The Shaman's Hut"
+    description: "A tent draped in fetishes and totems, where orc shamans commune with the spirits of war and nature. An altar of stacked skulls serves as a focus for divine rituals, and the smoke from sacred herbs fills the air."
+    description_day: "Shamans perform rituals of blessing and curse, their chants rising with the smoke."
+    description_night: "The spirits are closer at night. Strange lights dance in the smoke, and prophecies flow freely."
+    type: city
+    features:
+      - altar
+    exits:
+      north: orc_blood_pit
+      east: orc_bazaar
+      south: orc_brew_tent
+
+  orc_bazaar:
+    name: "The Bazaar"
+    description: "A chaotic marketplace where orcs trade loot, slaves, and supplies. There are no fixed prices - everything is negotiated through intimidation and cunning. Crude workbenches allow for on-the-spot repairs and modifications."
+    description_day: "The bazaar is a cacophony of shouting merchants, clanging metal, and the occasional fight over prices."
+    description_night: "Shadier deals happen after dark, when the weak have retreated to their tents."
+    type: city
+    features:
+      - shop
+      - workbench
+    exits:
+      north: orc_war_camp
+      south: orc_forge_pits
+      east: orc_beast_pens
+      west: orc_shamans_hut
+
+  orc_beast_pens:
+    name: "The Beast Pens"
+    description: "Crude enclosures holding war beasts - wolves, boars, and more exotic creatures captured from the wild. Beast masters train these animals for war, breaking them through dominance and dark rituals."
+    description_day: "Handlers work with their beasts, teaching them to kill on command. The smell is overwhelming."
+    description_night: "The beasts grow restless in darkness, their growls and howls filling the night."
+    type: city
+    features: []
+    exits:
+      north: orc_war_camp
+      south: orc_shadow_tent
+      east: orc_arena
+      west: orc_bazaar
+
+  orc_brew_tent:
+    name: "The Brew Tent"
+    description: "A reeking tent where orc brewers concoct potions, poisons, and the infamous orcish grog. Bubbling cauldrons of questionable substances fill the space, and the fumes alone can knock out the unwary."
+    description_day: "Brewers test their latest concoctions on willing - and unwilling - subjects."
+    description_night: "The most potent brews are made under moonlight, when certain ingredients are at their strongest."
+    type: city
+    features:
+      - alchemy_lab
+    exits:
+      north: orc_shamans_hut
+      east: orc_forge_pits
+
+  orc_forge_pits:
+    name: "The Forge Pits"
+    description: "Open-air forges where orc smiths pound out brutal weapons and crude but effective armor. The heat is intense, and the constant ring of hammer on metal creates a relentless rhythm. Quality matters less than quantity here."
+    description_day: "Smiths work stripped to the waist, their green skin gleaming with sweat as they arm the horde."
+    description_night: "The forges burn through the night. War waits for no one, and weapons are always needed."
+    type: city
+    features:
+      - forge
+    exits:
+      north: orc_bazaar
+      south: orc_rune_carvers
+      east: orc_shadow_tent
+      west: orc_brew_tent
+
+  orc_shadow_tent:
+    name: "The Shadow Tent"
+    description: "A dark tent on the edge of camp, home to the orcs who fight without honor - assassins, poisoners, and spies. Other orcs view them with contempt, but even they admit the value of a knife in the dark."
+    description_day: "The tent seems empty, but watchful eyes track every visitor from the shadows."
+    description_night: "This is when the shadow orcs do their real work, slipping away to fulfill contracts of death."
+    type: city
+    features: []
+    exits:
+      north: orc_beast_pens
+      south: orc_warchiefs_throne
+      west: orc_forge_pits
+
+  orc_warchiefs_throne:
+    name: "The Warchief's Throne"
+    description: "A massive tent dominated by a throne made from the fused bones of defeated chieftains. Here the Warchief rules with iron fist, settling disputes and planning campaigns of conquest. Challenge the Warchief, and you'll sit on the throne - or become part of it."
+    description_day: "Petitioners bring tribute and grievances before the throne. Justice is swift and brutal."
+    description_night: "The Warchief plans war in the darkness, studying maps and receiving reports from scouts."
+    type: city
+    features: []
+    exits:
+      north: orc_shadow_tent
+
+  orc_rune_carvers:
+    name: "The Rune Carvers' Den"
+    description: "A smoky cave where orc mystics carve runes of power into weapons and flesh alike. Shelves hold scrolls of dark knowledge stolen from other races, and the walls are covered in glowing symbols. An enchanting table made from a massive flat skull serves as their workspace."
+    description_day: "Rune carvers work in near-darkness, preferring shadow even when the sun is high."
+    description_night: "The runes glow brighter, and the carvers enter trances to commune with spirits of war."
+    type: city
+    features:
+      - enchanting_table
+      - bookshelf
+    exits:
+      north: orc_forge_pits

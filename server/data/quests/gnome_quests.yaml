@@ -1,0 +1,333 @@
+# Gnome Tower Quest Definitions
+# These quests are given by NPCs in the gnome city of Cogsworth
+
+quests:
+  # =========================================
+  # TUTORIAL / INTRODUCTION QUESTS (Main)
+  # =========================================
+  gnome_tower_introduction:
+    name: "Field Test Protocol"
+    description: "Chief Engineer Mainspring has authorized you for field testing. Access the tower's Floor 1 portal room to begin data collection."
+    category: main
+    giver_npc: "Chief Engineer Mainspring"
+    turn_in_npc: "Chief Engineer Mainspring"
+    objectives:
+      - type: explore
+        target: "gen_f1_portal"
+        target_name: "Floor 1 Portal Room"
+        required: 1
+    rewards:
+      gold: 25
+      experience: 50
+      title: "Field Tester"
+    min_level: 1
+
+  gnome_first_elimination:
+    name: "Pest Elimination Protocol"
+    description: "Test your combat systems by eliminating a hostile specimen in the tower."
+    category: main
+    giver_npc: "Sergeant Sprocket"
+    turn_in_npc: "Sergeant Sprocket"
+    objectives:
+      - type: kill
+        target: "giant_rat"
+        target_name: "Giant Rat"
+        required: 1
+    rewards:
+      gold: 15
+      experience: 30
+    min_level: 1
+    prereqs:
+      - gnome_tower_introduction
+
+  # =========================================
+  # SIDE QUESTS - Scout Gearstalker
+  # =========================================
+  gnome_vermin_clearance:
+    name: "Vermin Clearance Operation"
+    description: "Organic pests are interfering with our sensor arrays. Eliminate them."
+    category: side
+    giver_npc: "Scout Gearstalker"
+    turn_in_npc: "Scout Gearstalker"
+    objectives:
+      - type: kill
+        target: "giant_rat"
+        target_name: "Giant Rat"
+        required: 5
+    rewards:
+      gold: 30
+      experience: 75
+    min_level: 1
+    repeatable: true
+
+  gnome_bat_disruption:
+    name: "Echolocation Interference"
+    description: "Bat populations are disrupting our acoustic sensors. Reduce their numbers."
+    category: side
+    giver_npc: "Scout Gearstalker"
+    turn_in_npc: "Scout Gearstalker"
+    objectives:
+      - type: kill
+        target: "bat"
+        target_name: "Bat"
+        required: 8
+    rewards:
+      gold: 40
+      experience: 100
+    min_level: 2
+    repeatable: true
+
+  gnome_goblin_saboteurs:
+    name: "Saboteur Suppression"
+    description: "Goblins have been tampering with our equipment caches. Neutralize them."
+    category: side
+    giver_npc: "Scout Gearstalker"
+    turn_in_npc: "Scout Gearstalker"
+    objectives:
+      - type: kill
+        target: "goblin"
+        target_name: "Goblin"
+        required: 10
+    rewards:
+      gold: 75
+      experience: 200
+      title: "Saboteur Hunter"
+    min_level: 3
+
+  gnome_skeleton_anomalies:
+    name: "Anomalous Undead"
+    description: "Our sensors have detected reanimated constructs. Disassemble them for analysis."
+    category: side
+    giver_npc: "Scout Gearstalker"
+    turn_in_npc: "Scout Gearstalker"
+    objectives:
+      - type: kill
+        target: "skeleton"
+        target_name: "Skeleton"
+        required: 8
+    rewards:
+      gold: 100
+      experience: 250
+    min_level: 4
+    repeatable: true
+
+  # =========================================
+  # SIDE QUESTS - Guardian Brightcoil
+  # =========================================
+  gnome_power_core_blessing:
+    name: "Core Attunement"
+    description: "Visit the Power Core and attune yourself to the city's energy matrix."
+    category: side
+    giver_npc: "Guardian Brightcoil"
+    turn_in_npc: "Guardian Brightcoil"
+    objectives:
+      - type: explore
+        target: "gnome_power_core"
+        target_name: "Power Core"
+        required: 1
+    rewards:
+      gold: 10
+      experience: 25
+    min_level: 1
+
+  gnome_undead_malfunction:
+    name: "Undead Malfunction Report"
+    description: "The undead are malfunctioning organic constructs. Decommission them permanently."
+    category: side
+    giver_npc: "Guardian Brightcoil"
+    turn_in_npc: "Guardian Brightcoil"
+    objectives:
+      - type: kill
+        target: "skeleton"
+        target_name: "Skeleton"
+        required: 5
+      - type: kill
+        target: "ghoul"
+        target_name: "Ghoul"
+        required: 3
+    rewards:
+      gold: 150
+      experience: 350
+      title: "Malfunction Specialist"
+    min_level: 5
+
+  # =========================================
+  # SIDE QUESTS - Forgemaster Anvilia
+  # =========================================
+  gnome_metal_requisition:
+    name: "Metal Requisition"
+    description: "The workshop needs raw iron for component fabrication. Acquire samples from the tower."
+    category: side
+    giver_npc: "Forgemaster Anvilia"
+    turn_in_npc: "Forgemaster Anvilia"
+    objectives:
+      - type: fetch
+        target: "iron_ore"
+        target_name: "Iron Ore"
+        required: 5
+    rewards:
+      gold: 40
+      experience: 80
+      items:
+        - iron_dagger
+    min_level: 2
+    repeatable: true
+
+  gnome_precision_crafting:
+    name: "Precision Crafting Test"
+    description: "Demonstrate your fabrication skills by producing a precision iron dagger."
+    category: crafting
+    giver_npc: "Forgemaster Anvilia"
+    turn_in_npc: "Forgemaster Anvilia"
+    objectives:
+      - type: craft
+        target: "iron_dagger"
+        target_name: "Iron Dagger"
+        required: 1
+    rewards:
+      gold: 50
+      experience: 100
+      recipes:
+        - clockwork_blade
+    required_crafting_skill: blacksmithing
+    required_crafting_level: 5
+
+  # =========================================
+  # SIDE QUESTS - Professor Bubblewick
+  # =========================================
+  gnome_fungal_samples:
+    name: "Fungal Sample Collection"
+    description: "The Professor needs tower fungi for chemical analysis. Gather specimens."
+    category: side
+    giver_npc: "Professor Bubblewick"
+    turn_in_npc: "Professor Bubblewick"
+    objectives:
+      - type: fetch
+        target: "mushroom"
+        target_name: "Mushroom"
+        required: 5
+    rewards:
+      gold: 35
+      experience: 60
+    min_level: 1
+    repeatable: true
+
+  gnome_volatile_compounds:
+    name: "Volatile Compound Research"
+    description: "Bubblewick's experiments require crystalline energy sources. Retrieve some from the tower."
+    category: side
+    giver_npc: "Professor Bubblewick"
+    turn_in_npc: "Professor Bubblewick"
+    objectives:
+      - type: fetch
+        target: "crystal"
+        target_name: "Crystal"
+        required: 3
+    rewards:
+      gold: 60
+      experience: 100
+    min_level: 2
+    repeatable: true
+
+  # =========================================
+  # EXPLORATION QUESTS - Chief Engineer Mainspring
+  # =========================================
+  gnome_deep_scan:
+    name: "Deep Scan Protocol"
+    description: "Extend our sensor range by reaching Floor 5 and collecting environmental data."
+    category: main
+    giver_npc: "Chief Engineer Mainspring"
+    turn_in_npc: "Chief Engineer Mainspring"
+    objectives:
+      - type: explore
+        target: "gen_f5_portal"
+        target_name: "Floor 5 Portal"
+        required: 1
+    rewards:
+      gold: 150
+      experience: 400
+      title: "Deep Scanner"
+    min_level: 5
+    prereqs:
+      - gnome_tower_introduction
+
+  gnome_boss_analysis:
+    name: "Boss Entity Analysis"
+    description: "A powerful anomaly has been detected on Floor 10. Investigate and report."
+    category: main
+    giver_npc: "Chief Engineer Mainspring"
+    turn_in_npc: "Chief Engineer Mainspring"
+    objectives:
+      - type: explore
+        target: "gen_f10_boss"
+        target_name: "Floor 10 Boss Room"
+        required: 1
+    rewards:
+      gold: 300
+      experience: 800
+      title: "Anomaly Analyst"
+    min_level: 8
+    prereqs:
+      - gnome_deep_scan
+
+  # =========================================
+  # CLASS QUESTS - Sergeant Sprocket
+  # =========================================
+  gnome_combat_calibration:
+    name: "Combat Calibration"
+    description: "Calibrate your combat systems against challenging opponents."
+    category: class
+    giver_npc: "Sergeant Sprocket"
+    turn_in_npc: "Sergeant Sprocket"
+    objectives:
+      - type: kill
+        target: "orc_warrior"
+        target_name: "Orc Warrior"
+        required: 5
+    rewards:
+      gold: 200
+      experience: 500
+      title: "Combat Engineer"
+    required_class: warrior
+    required_class_level: 5
+
+  # =========================================
+  # CLASS QUESTS - Shadow Cog
+  # =========================================
+  gnome_stealth_protocol:
+    name: "Stealth Protocol Testing"
+    description: "Test advanced stealth systems by eliminating targets undetected."
+    category: class
+    giver_npc: "Shadow Cog"
+    turn_in_npc: "Shadow Cog"
+    objectives:
+      - type: kill
+        target: "goblin"
+        target_name: "Goblin"
+        required: 8
+    rewards:
+      gold: 180
+      experience: 450
+      title: "Stealth Operative"
+    required_class: rogue
+    required_class_level: 5
+
+  # =========================================
+  # DAILY/REPEATABLE QUESTS
+  # =========================================
+  gnome_containment_patrol:
+    name: "Containment Patrol"
+    description: "The Containment Specialist reports security breaches. Help seal them."
+    category: side
+    giver_npc: "Containment Specialist"
+    turn_in_npc: "Containment Specialist"
+    objectives:
+      - type: kill
+        target: "goblin"
+        target_name: "Any Enemy"
+        required: 3
+    rewards:
+      gold: 20
+      experience: 50
+    min_level: 1
+    repeatable: true

@@ -1,0 +1,368 @@
+# Floor 5 - orc tower
+# Generated with seed: 47
+# Room count: 50
+
+floor: 5
+tower: orc
+generated_seed: 47
+stairs_up: orc_f5_r5_7
+stairs_down: orc_f5_r10_7
+portal_room: orc_f5_r10_7
+rooms:
+  orc_f5_r0_8:
+    name: Bone Passage (Floor 5)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      east: orc_f5_r1_8
+  orc_f5_r10_6:
+    name: Bone Passage (Floor 5)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      east: orc_f5_r11_6
+      west: orc_f5_r9_6
+  orc_f5_r10_7:
+    name: Blood Stair (Floor 5)
+    description: Blood-stained stairs descend from above. A shimmering portal offers quick travel to floors you've conquered.
+    type: stairs_down
+    features:
+      - stairs_down
+      - portal
+    exits:
+      south: orc_f5_r10_8
+      west: orc_f5_r9_7
+  orc_f5_r10_8:
+    name: Bone Passage (Floor 5)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      north: orc_f5_r10_7
+  orc_f5_r11_6:
+    name: Bone Passage (Floor 5)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      west: orc_f5_r10_6
+  orc_f5_r1_6:
+    name: Trophy Hall (Floor 5)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      east: orc_f5_r2_6
+  orc_f5_r1_7:
+    name: Trophy Hall (Floor 5)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      east: orc_f5_r2_7
+  orc_f5_r1_8:
+    name: Bone Passage (Floor 5)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      east: orc_f5_r2_8
+      west: orc_f5_r0_8
+  orc_f5_r2_6:
+    name: Bone Passage (Floor 5)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      south: orc_f5_r2_7
+      west: orc_f5_r1_6
+  orc_f5_r2_7:
+    name: Trophy Hall (Floor 5)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      north: orc_f5_r2_6
+      south: orc_f5_r2_8
+      west: orc_f5_r1_7
+  orc_f5_r2_8:
+    name: Trophy Hall (Floor 5)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      north: orc_f5_r2_7
+      east: orc_f5_r3_8
+      west: orc_f5_r1_8
+  orc_f5_r3_5:
+    name: Bone Passage (Floor 5)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      east: orc_f5_r4_5
+  orc_f5_r3_6:
+    name: Trophy Hall (Floor 5)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      south: orc_f5_r3_7
+      east: orc_f5_r4_6
+  orc_f5_r3_7:
+    name: Bone Passage (Floor 5)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      north: orc_f5_r3_6
+      east: orc_f5_r4_7
+  orc_f5_r3_8:
+    name: Bone Passage (Floor 5)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      south: orc_f5_r3_9
+      east: orc_f5_r4_8
+      west: orc_f5_r2_8
+  orc_f5_r3_9:
+    name: Trophy Hall (Floor 5)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      north: orc_f5_r3_8
+  orc_f5_r4_5:
+    name: Trophy Hall (Floor 5)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      east: orc_f5_r5_5
+      west: orc_f5_r3_5
+  orc_f5_r4_6:
+    name: Trophy Hall (Floor 5)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      west: orc_f5_r3_6
+  orc_f5_r4_7:
+    name: Bone Passage (Floor 5)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      south: orc_f5_r4_8
+      west: orc_f5_r3_7
+  orc_f5_r4_8:
+    name: Trophy Hall (Floor 5)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      north: orc_f5_r4_7
+      south: orc_f5_r4_9
+      east: orc_f5_r5_8
+      west: orc_f5_r3_8
+  orc_f5_r4_9:
+    name: Bone Passage (Floor 5)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      north: orc_f5_r4_8
+  orc_f5_r5_10:
+    name: Bone Passage (Floor 5)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      north: orc_f5_r5_9
+  orc_f5_r5_4:
+    name: Trophy Hall (Floor 5)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      south: orc_f5_r5_5
+  orc_f5_r5_5:
+    name: Bone Passage (Floor 5)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      north: orc_f5_r5_4
+      south: orc_f5_r5_6
+      east: orc_f5_r6_5
+      west: orc_f5_r4_5
+  orc_f5_r5_6:
+    name: War Trophy Chamber (Floor 5)
+    description: A war trophy chamber filled with plunder from countless battles. The most valued prizes are displayed prominently.
+    type: treasure
+    features:
+      - treasure
+    exits:
+      north: orc_f5_r5_5
+      east: orc_f5_r6_6
+  orc_f5_r5_7:
+    name: Warrior's Ascent (Floor 5)
+    description: A warrior's ascent marked with victory runes. Only the strong climb higher in the Beast-Skull Tower.
+    type: stairs_up
+    features:
+      - stairs_up
+    exits:
+      east: orc_f5_r6_7
+  orc_f5_r5_8:
+    name: Trophy Hall (Floor 5)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      south: orc_f5_r5_9
+      east: orc_f5_r6_8
+      west: orc_f5_r4_8
+  orc_f5_r5_9:
+    name: War Trophy Chamber (Floor 5)
+    description: A war trophy chamber filled with plunder from countless battles. The most valued prizes are displayed prominently.
+    type: treasure
+    features:
+      - treasure
+    exits:
+      north: orc_f5_r5_8
+      south: orc_f5_r5_10
+  orc_f5_r6_10:
+    name: Bone Passage (Floor 5)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      north: orc_f5_r6_9
+  orc_f5_r6_3:
+    name: Trophy Hall (Floor 5)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      south: orc_f5_r6_4
+  orc_f5_r6_4:
+    name: Trophy Hall (Floor 5)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      north: orc_f5_r6_3
+      south: orc_f5_r6_5
+  orc_f5_r6_5:
+    name: Trophy Hall (Floor 5)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      north: orc_f5_r6_4
+      west: orc_f5_r5_5
+  orc_f5_r6_6:
+    name: Bone Passage (Floor 5)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      south: orc_f5_r6_7
+      east: orc_f5_r7_6
+      west: orc_f5_r5_6
+  orc_f5_r6_7:
+    name: Bone Passage (Floor 5)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      north: orc_f5_r6_6
+      south: orc_f5_r6_8
+      east: orc_f5_r7_7
+      west: orc_f5_r5_7
+  orc_f5_r6_8:
+    name: Trophy Hall (Floor 5)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      north: orc_f5_r6_7
+      south: orc_f5_r6_9
+      west: orc_f5_r5_8
+  orc_f5_r6_9:
+    name: Trophy Hall (Floor 5)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      north: orc_f5_r6_8
+      south: orc_f5_r6_10
+  orc_f5_r7_4:
+    name: Bone Passage (Floor 5)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      south: orc_f5_r7_5
+  orc_f5_r7_5:
+    name: Bone Passage (Floor 5)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      north: orc_f5_r7_4
+      south: orc_f5_r7_6
+  orc_f5_r7_6:
+    name: Trophy Hall (Floor 5)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      north: orc_f5_r7_5
+      west: orc_f5_r6_6
+  orc_f5_r7_7:
+    name: Bone Passage (Floor 5)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      south: orc_f5_r7_8
+      east: orc_f5_r8_7
+      west: orc_f5_r6_7
+  orc_f5_r7_8:
+    name: Bone Passage (Floor 5)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      north: orc_f5_r7_7
+      south: orc_f5_r7_9
+  orc_f5_r7_9:
+    name: Bone Passage (Floor 5)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      north: orc_f5_r7_8
+      east: orc_f5_r8_9
+  orc_f5_r8_5:
+    name: Trophy Hall (Floor 5)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      south: orc_f5_r8_6
+  orc_f5_r8_6:
+    name: Trophy Hall (Floor 5)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      north: orc_f5_r8_5
+      south: orc_f5_r8_7
+      east: orc_f5_r9_6
+  orc_f5_r8_7:
+    name: Trophy Hall (Floor 5)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      north: orc_f5_r8_6
+      south: orc_f5_r8_8
+      east: orc_f5_r9_7
+      west: orc_f5_r7_7
+  orc_f5_r8_8:
+    name: Trophy Hall (Floor 5)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      north: orc_f5_r8_7
+  orc_f5_r8_9:
+    name: Trophy Hall (Floor 5)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      west: orc_f5_r7_9
+  orc_f5_r9_6:
+    name: Trophy Hall (Floor 5)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      east: orc_f5_r10_6
+      west: orc_f5_r8_6
+  orc_f5_r9_7:
+    name: Trophy Hall (Floor 5)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      south: orc_f5_r9_8
+      east: orc_f5_r10_7
+      west: orc_f5_r8_7
+  orc_f5_r9_8:
+    name: Bone Passage (Floor 5)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      north: orc_f5_r9_7

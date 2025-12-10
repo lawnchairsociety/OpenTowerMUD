@@ -1,0 +1,190 @@
+# Elf City - Sylvanthal
+# A forest canopy settlement built among ancient trees, now threatened by the blight from the World Tree
+#
+# Layout:
+#                    [World Tree Base] (tower entrance)
+#                           |
+#        [Bowyer]---[Warrior Glade]---[Moon Temple] (altar, cleric+paladin)
+#             |              |                |
+# [Hunter Lodge]---[Canopy Market]---[Grove Heart]---[Moonwell]
+#     (ranger)     (shop, workbench)  (spawn, portal,  (enchanting)
+#                        |             mailbox)              |
+#   [Herb Garden]---[Root Tunnels]---[Runekeeper]---[Ancient Library]
+#   (alchemy_lab)       (rogue)       (enchanting)       (mage)
+#                        |
+#           [Living Forge]---[Elders Council]
+#           (forge, blacksmith)
+
+rooms:
+  elf_grove_heart:
+    name: "Heart of the Grove"
+    description: "The central gathering place of Sylvanthal, where ancient oaks form a natural amphitheater. Bioluminescent moss provides soft illumination, casting the hollow in an ethereal blue-green glow. A shimmering portal stands near an ancient tree, its surface rippling like moonlit water. A carved wooden mailbox shaped like a sleeping owl rests against a moss-covered stone."
+    description_day: "Shafts of golden sunlight filter through the canopy, dappling the forest floor. Elves go about their daily tasks with quiet grace."
+    description_night: "The bioluminescent moss glows brighter, and fireflies dance among the branches. The grove feels alive with ancient magic."
+    type: city
+    features:
+      - portal
+      - fountain
+      - mailbox
+    exits:
+      north: elf_warrior_glade
+      south: elf_root_tunnels
+      east: elf_moonwell
+      west: elf_canopy_market
+
+  elf_world_tree_base:
+    name: "Base of the World Tree"
+    description: "The massive trunk of the World Tree rises before you, its bark blackened and weeping corrupted sap. A spiraling staircase carved into the living wood ascends into darkness. The blight spreads upward from here, dark veins pulsing with sickly energy. Only the brave dare climb into the diseased heart of the tree."
+    description_day: "Even in daylight, the corrupted bark seems to absorb the sun's warmth. The air feels thick and wrong."
+    description_night: "The dark veins in the bark pulse with a faint, sickly purple glow. Strange whispers seem to emanate from above."
+    type: city
+    features:
+      - stairs_up
+    exits:
+      south: elf_warrior_glade
+      up: ""
+
+  elf_warrior_glade:
+    name: "Warrior's Glade"
+    description: "A clearing where elven warriors practice their ancient combat arts. Training posts carved from living wood stand in precise formations. The grass here is worn from centuries of footwork drills, yet it never dies - the land itself honors those who defend it."
+    description_day: "Bladesingers move through graceful kata, their movements more dance than combat. Steel rings against steel in musical harmony."
+    description_night: "A few dedicated warriors practice by starlight, their blades gleaming silver in the darkness."
+    type: city
+    features:
+      - training_dummy
+    exits:
+      north: elf_world_tree_base
+      south: elf_grove_heart
+      east: elf_moon_temple
+      west: elf_bowyer
+
+  elf_moon_temple:
+    name: "Temple of the Moon"
+    description: "A sacred grove where silver-barked trees form a natural cathedral. At the center stands an altar of white stone that seems to glow with inner light. The canopy parts here, allowing moonlight to bathe the temple in silver radiance even during the day."
+    description_day: "Soft light filters through the leaves, creating an atmosphere of peaceful contemplation. Devotees meditate in quiet alcoves."
+    description_night: "The altar blazes with moonfire, and the trees themselves seem to sing in the lunar radiance."
+    type: city
+    features:
+      - altar
+    exits:
+      west: elf_warrior_glade
+      south: elf_grove_heart
+
+  elf_bowyer:
+    name: "The Bowyer's Workshop"
+    description: "A workshop where master craftsmen shape living wood into the legendary elven bows. Unstrung bows hang from the branches overhead, seasoning in the forest air. The scent of fresh-cut wood and bowstring wax fills the space."
+    description_day: "Apprentices carefully select branches while masters test the flex of completed bows with practiced hands."
+    description_night: "A single craftsman works by lantern light, humming an ancient tune as they shape a new masterpiece."
+    type: city
+    features: []
+    exits:
+      east: elf_warrior_glade
+      south: elf_hunter_lodge
+
+  elf_hunter_lodge:
+    name: "The Hunter's Lodge"
+    description: "A rustic lodge built into the hollow of an enormous tree. Trophy antlers and preserved pelts line the walls, each telling a story of the hunt. The smell of leather and wood smoke permeates the air."
+    description_day: "Rangers clean their gear and swap tales of tracking game through the endless forest."
+    description_night: "Hunters gather around a small fire, planning tomorrow's expeditions and sharing knowledge of the wild."
+    type: city
+    features: []
+    exits:
+      north: elf_bowyer
+      east: elf_canopy_market
+
+  elf_canopy_market:
+    name: "Canopy Market"
+    description: "A marketplace built on interwoven branches high above the forest floor. Rope bridges connect merchant platforms where elves trade in herbs, crafted goods, and forest treasures. Sturdy workbenches allow artisans to demonstrate their craft."
+    description_day: "The market bustles with activity as merchants display their wares on woven leaf mats."
+    description_night: "Lanterns sway gently in the breeze, casting dancing shadows across the quieted stalls."
+    type: city
+    features:
+      - shop
+      - workbench
+    exits:
+      north: elf_warrior_glade
+      south: elf_root_tunnels
+      east: elf_grove_heart
+      west: elf_hunter_lodge
+
+  elf_moonwell:
+    name: "The Moonwell"
+    description: "A pool of silver water that reflects the moon even during the day. Ancient runes circle the pool's edge, glowing softly with accumulated power. An enchanting table of polished moonstone sits nearby, its surface inscribed with flowing elven script."
+    description_day: "The water shimmers with captured starlight, and the runes pulse in slow, hypnotic patterns."
+    description_night: "The pool blazes with reflected moonlight, and motes of magical energy drift upward like reverse rain."
+    type: city
+    features:
+      - enchanting_table
+    exits:
+      west: elf_grove_heart
+      south: elf_ancient_library
+
+  elf_herb_garden:
+    name: "The Herb Garden"
+    description: "A terraced garden where rare medicinal plants grow in carefully tended beds. The air is thick with the scent of healing herbs and magical flowers. An alchemy lab of living wood and crystal vessels occupies the garden's heart."
+    description_day: "Herbalists move between the beds, harvesting leaves and petals at their peak potency."
+    description_night: "Moonflowers bloom in the darkness, their petals glowing with soft bioluminescence."
+    type: city
+    features:
+      - alchemy_lab
+    exits:
+      east: elf_root_tunnels
+
+  elf_root_tunnels:
+    name: "The Root Tunnels"
+    description: "A network of passages formed by the intertwining roots of ancient trees. The tunnels are surprisingly spacious, lit by glowing fungi. Those who know the secret paths can move unseen throughout Sylvanthal."
+    description_day: "The tunnels remain dim regardless of the hour, perfect for those who prefer shadow to light."
+    description_night: "The fungi glow brighter in the darkness, creating an otherworldly underground realm."
+    type: city
+    features: []
+    exits:
+      north: elf_canopy_market
+      south: elf_living_forge
+      east: elf_runekeeper
+      west: elf_herb_garden
+
+  elf_runekeeper:
+    name: "The Runekeeper's Sanctum"
+    description: "A chamber where ancient elven runes are studied and preserved. Glowing symbols drift through the air, echoes of spells cast centuries ago. The walls themselves are covered in inscribed knowledge."
+    description_day: "Scholars trace the floating runes with careful fingers, committing their wisdom to memory."
+    description_night: "The runes glow brighter in the darkness, illuminating the sanctum with arcane light."
+    type: city
+    features: []
+    exits:
+      west: elf_root_tunnels
+      east: elf_ancient_library
+
+  elf_ancient_library:
+    name: "The Ancient Library"
+    description: "A vast collection of knowledge housed in the hollow of a tree older than memory. Scrolls and tomes fill shelves carved from living wood, their contents preserved by gentle magic. The scent of ancient paper and tree sap mingles in the air."
+    description_day: "Soft light filters through gaps in the bark, illuminating scholars bent over ancient texts."
+    description_night: "Floating wisps of light drift between the shelves, guided by readers seeking knowledge."
+    type: city
+    features:
+      - bookshelf
+    exits:
+      north: elf_moonwell
+      west: elf_runekeeper
+
+  elf_living_forge:
+    name: "The Living Forge"
+    description: "A unique smithy where elven crafters shape metal using controlled fire and living wood. The forge burns with a magical white flame that does not harm the surrounding trees. Weapons and armor of legendary craftsmanship hang from the branches."
+    description_day: "The white flames dance and crackle, responding to the smith's will rather than to bellows or fuel."
+    description_night: "The forge's glow provides the only light, casting long shadows through the surrounding trees."
+    type: city
+    features:
+      - forge
+    exits:
+      north: elf_root_tunnels
+      east: elf_elders_council
+
+  elf_elders_council:
+    name: "The Elders' Council"
+    description: "A circular chamber formed by seven ancient trees that have grown together over millennia. Stone seats ring a central speaking stone, worn smooth by countless gatherings. The air here feels heavy with the weight of history and decision."
+    description_day: "Elders debate in measured tones, their wisdom shaped by centuries of experience."
+    description_night: "The council chamber is empty but for whispered echoes of decisions past."
+    type: city
+    features:
+      - throne
+    exits:
+      west: elf_living_forge

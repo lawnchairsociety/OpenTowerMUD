@@ -69,8 +69,8 @@ func (g *FloorGenerator) convertToYAML(floorNum int, generated *wfc.GeneratedFlo
 	for _, tile := range generated.Tiles {
 		roomID := g.getRoomID(floorNum, tile.X, tile.Y)
 		room := &RoomYAML{
-			Name:        generateRoomName(tile.Type, floorNum),
-			Description: generateRoomDescription(tile.Type),
+			Name:        generateRoomName(g.TowerID, tile.Type, floorNum),
+			Description: generateRoomDescription(g.TowerID, tile.Type),
 			Type:        tile.Type.String(),
 			Features:    g.getFeaturesForTile(tile),
 			Exits:       make(map[string]string),
@@ -139,30 +139,280 @@ func (g *FloorGenerator) getFeaturesForTile(tile *wfc.Tile) []string {
 	return features
 }
 
-// generateRoomName creates a name for a room based on its type
-func generateRoomName(tt wfc.TileType, floor int) string {
-	switch tt {
-	case wfc.TileCorridor:
-		return fmt.Sprintf("Tower Corridor (Floor %d)", floor)
-	case wfc.TileRoom:
-		return fmt.Sprintf("Tower Chamber (Floor %d)", floor)
-	case wfc.TileDeadEnd:
-		return fmt.Sprintf("Dead End (Floor %d)", floor)
-	case wfc.TileStairsUp:
-		return fmt.Sprintf("Ascending Stairway (Floor %d)", floor)
-	case wfc.TileStairsDown:
-		return fmt.Sprintf("Descending Stairway (Floor %d)", floor)
-	case wfc.TileTreasure:
-		return fmt.Sprintf("Treasure Room (Floor %d)", floor)
-	case wfc.TileBoss:
-		return fmt.Sprintf("Boss Chamber (Floor %d)", floor)
+// generateRoomName creates a name for a room based on tower theme and tile type
+func generateRoomName(tower string, tt wfc.TileType, floor int) string {
+	// Dwarf tower uses "Level" instead of "Floor" and descending terminology
+	floorLabel := fmt.Sprintf("Floor %d", floor)
+	if tower == "dwarf" {
+		floorLabel = fmt.Sprintf("Mine Level %d", floor)
+	}
+
+	switch tower {
+	case "human":
+		return generateHumanRoomName(tt, floorLabel)
+	case "elf":
+		return generateElfRoomName(tt, floorLabel)
+	case "dwarf":
+		return generateDwarfRoomName(tt, floorLabel)
+	case "gnome":
+		return generateGnomeRoomName(tt, floorLabel)
+	case "orc":
+		return generateOrcRoomName(tt, floorLabel)
 	default:
-		return fmt.Sprintf("Unknown Room (Floor %d)", floor)
+		return generateDefaultRoomName(tt, floorLabel)
 	}
 }
 
-// generateRoomDescription creates a description for a room based on its type
-func generateRoomDescription(tt wfc.TileType) string {
+func generateHumanRoomName(tt wfc.TileType, floorLabel string) string {
+	switch tt {
+	case wfc.TileCorridor:
+		return fmt.Sprintf("Arcane Passage (%s)", floorLabel)
+	case wfc.TileRoom:
+		return fmt.Sprintf("Enchanted Chamber (%s)", floorLabel)
+	case wfc.TileDeadEnd:
+		return fmt.Sprintf("Spell-Sealed Alcove (%s)", floorLabel)
+	case wfc.TileStairsUp:
+		return fmt.Sprintf("Ascending Stairway (%s)", floorLabel)
+	case wfc.TileStairsDown:
+		return fmt.Sprintf("Descending Stairway (%s)", floorLabel)
+	case wfc.TileTreasure:
+		return fmt.Sprintf("Arcane Treasury (%s)", floorLabel)
+	case wfc.TileBoss:
+		return fmt.Sprintf("Grand Arcanum (%s)", floorLabel)
+	default:
+		return fmt.Sprintf("Unknown Room (%s)", floorLabel)
+	}
+}
+
+func generateElfRoomName(tt wfc.TileType, floorLabel string) string {
+	switch tt {
+	case wfc.TileCorridor:
+		return fmt.Sprintf("Blighted Tunnel (%s)", floorLabel)
+	case wfc.TileRoom:
+		return fmt.Sprintf("Infected Hollow (%s)", floorLabel)
+	case wfc.TileDeadEnd:
+		return fmt.Sprintf("Diseased Alcove (%s)", floorLabel)
+	case wfc.TileStairsUp:
+		return fmt.Sprintf("Corrupted Ascent (%s)", floorLabel)
+	case wfc.TileStairsDown:
+		return fmt.Sprintf("Spiral Descent (%s)", floorLabel)
+	case wfc.TileTreasure:
+		return fmt.Sprintf("Forgotten Shrine (%s)", floorLabel)
+	case wfc.TileBoss:
+		return fmt.Sprintf("Heart of the Blight (%s)", floorLabel)
+	default:
+		return fmt.Sprintf("Unknown Room (%s)", floorLabel)
+	}
+}
+
+func generateDwarfRoomName(tt wfc.TileType, floorLabel string) string {
+	switch tt {
+	case wfc.TileCorridor:
+		return fmt.Sprintf("Mine Shaft (%s)", floorLabel)
+	case wfc.TileRoom:
+		return fmt.Sprintf("Excavated Cavern (%s)", floorLabel)
+	case wfc.TileDeadEnd:
+		return fmt.Sprintf("Collapsed Tunnel (%s)", floorLabel)
+	case wfc.TileStairsUp:
+		return fmt.Sprintf("Shaft to Surface (%s)", floorLabel)
+	case wfc.TileStairsDown:
+		return fmt.Sprintf("Shaft to Depths (%s)", floorLabel)
+	case wfc.TileTreasure:
+		return fmt.Sprintf("Ore Vein Chamber (%s)", floorLabel)
+	case wfc.TileBoss:
+		return fmt.Sprintf("Deep Guardian's Lair (%s)", floorLabel)
+	default:
+		return fmt.Sprintf("Unknown Room (%s)", floorLabel)
+	}
+}
+
+func generateGnomeRoomName(tt wfc.TileType, floorLabel string) string {
+	switch tt {
+	case wfc.TileCorridor:
+		return fmt.Sprintf("Maintenance Corridor (%s)", floorLabel)
+	case wfc.TileRoom:
+		return fmt.Sprintf("Machine Chamber (%s)", floorLabel)
+	case wfc.TileDeadEnd:
+		return fmt.Sprintf("Service Alcove (%s)", floorLabel)
+	case wfc.TileStairsUp:
+		return fmt.Sprintf("Elevator Shaft Up (%s)", floorLabel)
+	case wfc.TileStairsDown:
+		return fmt.Sprintf("Elevator Shaft Down (%s)", floorLabel)
+	case wfc.TileTreasure:
+		return fmt.Sprintf("Component Storage (%s)", floorLabel)
+	case wfc.TileBoss:
+		return fmt.Sprintf("Central Processing (%s)", floorLabel)
+	default:
+		return fmt.Sprintf("Unknown Room (%s)", floorLabel)
+	}
+}
+
+func generateOrcRoomName(tt wfc.TileType, floorLabel string) string {
+	switch tt {
+	case wfc.TileCorridor:
+		return fmt.Sprintf("Bone Passage (%s)", floorLabel)
+	case wfc.TileRoom:
+		return fmt.Sprintf("Trophy Hall (%s)", floorLabel)
+	case wfc.TileDeadEnd:
+		return fmt.Sprintf("Skull Alcove (%s)", floorLabel)
+	case wfc.TileStairsUp:
+		return fmt.Sprintf("Warrior's Ascent (%s)", floorLabel)
+	case wfc.TileStairsDown:
+		return fmt.Sprintf("Blood Stair (%s)", floorLabel)
+	case wfc.TileTreasure:
+		return fmt.Sprintf("War Trophy Chamber (%s)", floorLabel)
+	case wfc.TileBoss:
+		return fmt.Sprintf("Warchief's Arena (%s)", floorLabel)
+	default:
+		return fmt.Sprintf("Unknown Room (%s)", floorLabel)
+	}
+}
+
+func generateDefaultRoomName(tt wfc.TileType, floorLabel string) string {
+	switch tt {
+	case wfc.TileCorridor:
+		return fmt.Sprintf("Tower Corridor (%s)", floorLabel)
+	case wfc.TileRoom:
+		return fmt.Sprintf("Tower Chamber (%s)", floorLabel)
+	case wfc.TileDeadEnd:
+		return fmt.Sprintf("Dead End (%s)", floorLabel)
+	case wfc.TileStairsUp:
+		return fmt.Sprintf("Ascending Stairway (%s)", floorLabel)
+	case wfc.TileStairsDown:
+		return fmt.Sprintf("Descending Stairway (%s)", floorLabel)
+	case wfc.TileTreasure:
+		return fmt.Sprintf("Treasure Room (%s)", floorLabel)
+	case wfc.TileBoss:
+		return fmt.Sprintf("Boss Chamber (%s)", floorLabel)
+	default:
+		return fmt.Sprintf("Unknown Room (%s)", floorLabel)
+	}
+}
+
+// generateRoomDescription creates a description for a room based on tower theme
+func generateRoomDescription(tower string, tt wfc.TileType) string {
+	switch tower {
+	case "human":
+		return generateHumanDescription(tt)
+	case "elf":
+		return generateElfDescription(tt)
+	case "dwarf":
+		return generateDwarfDescription(tt)
+	case "gnome":
+		return generateGnomeDescription(tt)
+	case "orc":
+		return generateOrcDescription(tt)
+	default:
+		return generateDefaultDescription(tt)
+	}
+}
+
+func generateHumanDescription(tt wfc.TileType) string {
+	switch tt {
+	case wfc.TileCorridor:
+		return "An arcane passage lined with glowing runes. The air crackles with residual magic, and strange symbols pulse with inner light."
+	case wfc.TileRoom:
+		return "An enchanted chamber where magical experiments once took place. Crystal formations grow from the walls, humming with stored energy."
+	case wfc.TileDeadEnd:
+		return "A spell-sealed alcove containing ancient magical inscriptions. The air feels thick with dormant enchantments."
+	case wfc.TileStairsUp:
+		return "A spiraling staircase of pure crystal ascends into crackling magical energy. The steps glow beneath your feet."
+	case wfc.TileStairsDown:
+		return "A crystalline staircase descends from above. A shimmering portal offers quick travel to floors you've visited."
+	case wfc.TileTreasure:
+		return "An arcane treasury filled with magical artifacts and glowing crystals. Wards shimmer around the most valuable items."
+	case wfc.TileBoss:
+		return "A grand arcanum where raw magical power swirls in visible currents. Something powerful lurks here."
+	default:
+		return "You are in a room within the Arcane Spire."
+	}
+}
+
+func generateElfDescription(tt wfc.TileType) string {
+	switch tt {
+	case wfc.TileCorridor:
+		return "A tunnel through diseased wood, the walls weeping corrupted sap. Bioluminescent fungus provides sickly illumination."
+	case wfc.TileRoom:
+		return "A hollow within the corrupted World Tree. The bark is blackened and twisted, and the air reeks of decay."
+	case wfc.TileDeadEnd:
+		return "A diseased alcove where the corruption has pooled. Strange growths cover the walls, pulsing with malevolent life."
+	case wfc.TileStairsUp:
+		return "A spiraling path carved into the living wood ascends higher into the blighted tree. Dark veins pulse in the bark."
+	case wfc.TileStairsDown:
+		return "A winding descent through corrupted wood. A shimmering portal offers quick travel to floors you've visited."
+	case wfc.TileTreasure:
+		return "A forgotten shrine now overgrown with corruption. Treasures of the old world lie buried beneath diseased roots."
+	case wfc.TileBoss:
+		return "The heart of the blight beats here, a chamber pulsing with corruption. The source of the World Tree's disease awaits."
+	default:
+		return "You are within the Diseased World Tree."
+	}
+}
+
+func generateDwarfDescription(tt wfc.TileType) string {
+	switch tt {
+	case wfc.TileCorridor:
+		return "A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins."
+	case wfc.TileRoom:
+		return "An excavated cavern with rough-hewn walls. Mining equipment lies abandoned, and ore carts rust in the corners."
+	case wfc.TileDeadEnd:
+		return "A collapsed tunnel blocked by fallen stone. Pick marks on the walls show where miners once worked."
+	case wfc.TileStairsUp:
+		return "A carved shaft leading back toward the surface. The air grows slightly fresher as you ascend."
+	case wfc.TileStairsDown:
+		return "A deep shaft descending into the darkness below. A shimmering portal offers quick travel to levels you've explored."
+	case wfc.TileTreasure:
+		return "An ore vein chamber where precious metals gleam in the torchlight. The richest deposits are guarded by something."
+	case wfc.TileBoss:
+		return "The deepest excavation, where dwarves dug too deep. Ancient and terrible things lurk in this darkness."
+	default:
+		return "You are in the Descending Mines."
+	}
+}
+
+func generateGnomeDescription(tt wfc.TileType) string {
+	switch tt {
+	case wfc.TileCorridor:
+		return "A maintenance corridor lined with pipes and conduits. Steam hisses from joints, and gears spin in exposed mechanisms."
+	case wfc.TileRoom:
+		return "A machine chamber filled with whirring contraptions. Conveyor belts move endlessly, and indicator lights blink in patterns."
+	case wfc.TileDeadEnd:
+		return "A service alcove packed with spare parts and maintenance tools. Abandoned automatons stand frozen mid-repair."
+	case wfc.TileStairsUp:
+		return "An elevator shaft with a rickety mechanical lift. Gears grind as the platform ascends through the tower."
+	case wfc.TileStairsDown:
+		return "An elevator platform descends from above. A shimmering portal offers quick travel to floors you've visited."
+	case wfc.TileTreasure:
+		return "A component storage room filled with rare parts and valuable materials. Some machines here still function."
+	case wfc.TileBoss:
+		return "Central processing - the core of the corrupted machine intelligence. Cables snake across every surface, pulsing with power."
+	default:
+		return "You are in the Mechanical Tower."
+	}
+}
+
+func generateOrcDescription(tt wfc.TileType) string {
+	switch tt {
+	case wfc.TileCorridor:
+		return "A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood."
+	case wfc.TileRoom:
+		return "A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls."
+	case wfc.TileDeadEnd:
+		return "A skull alcove containing a shrine of bones. Offerings of blood and meat rot at its base."
+	case wfc.TileStairsUp:
+		return "A warrior's ascent marked with victory runes. Only the strong climb higher in the Beast-Skull Tower."
+	case wfc.TileStairsDown:
+		return "Blood-stained stairs descend from above. A shimmering portal offers quick travel to floors you've conquered."
+	case wfc.TileTreasure:
+		return "A war trophy chamber filled with plunder from countless battles. The most valued prizes are displayed prominently."
+	case wfc.TileBoss:
+		return "The warchief's arena, where only the mightiest survive. Bones of challengers litter the blood-soaked floor."
+	default:
+		return "You are in the Beast-Skull Tower."
+	}
+}
+
+func generateDefaultDescription(tt wfc.TileType) string {
 	switch tt {
 	case wfc.TileCorridor:
 		return "A narrow stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows."

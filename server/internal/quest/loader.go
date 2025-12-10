@@ -3,7 +3,10 @@ package quest
 import (
 	"fmt"
 	"os"
+	"path/filepath"
+	"strings"
 
+	"github.com/lawnchairsociety/opentowermud/server/internal/logger"
 	"gopkg.in/yaml.v3"
 )
 
@@ -176,4 +179,49 @@ func parseQuestCategory(s string) QuestCategory {
 	default:
 		return QuestCategorySide // Default fallback
 	}
+}
+
+// Merge combines another QuestsConfig into this one
+func (config *QuestsConfig) Merge(other *QuestsConfig) {
+	if other == nil {
+		return
+	}
+	for id, def := range other.Quests {
+		config.Quests[id] = def
+	}
+}
+
+// LoadQuestsFromDirectory loads and merges all YAML files from a directory
+func LoadQuestsFromDirectory(dir string) (*QuestsConfig, error) {
+	merged := &QuestsConfig{
+		Quests: make(map[string]QuestDefinition),
+	}
+
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read directory %s: %w", dir, err)
+	}
+
+	fileCount := 0
+	for _, entry := range entries {
+		if entry.IsDir() {
+			continue
+		}
+		name := entry.Name()
+		if !strings.HasSuffix(name, ".yaml") && !strings.HasSuffix(name, ".yml") {
+			continue
+		}
+
+		filePath := filepath.Join(dir, name)
+		config, err := LoadQuestsFromYAML(filePath)
+		if err != nil {
+			return nil, fmt.Errorf("failed to load %s: %w", filePath, err)
+		}
+		merged.Merge(config)
+		fileCount++
+		logger.Info("Loaded quest file", "path", filePath, "quests", len(config.Quests))
+	}
+
+	logger.Info("Loaded quests from directory", "dir", dir, "files", fileCount, "total_quests", len(merged.Quests))
+	return merged, nil
 }

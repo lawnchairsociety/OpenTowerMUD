@@ -1,0 +1,621 @@
+# Gnome City NPCs - Cogsworth
+# Mechanical-themed NPCs for the clockwork gnome city
+
+npcs:
+  # === CLASS TRAINERS ===
+
+  # Warrior Trainer - Guild Hub
+  cogsworth_drill_sergeant:
+    name: "Sergeant Sprocket"
+    description: "A burly gnome in powered armor, her mechanical exoskeleton whirring with each movement. Scars mark her face from countless battles against corrupted automatons."
+    level: 20
+    health: 300
+    damage: 30
+    armor: 12
+    experience: 0
+    aggressive: false
+    attackable: false
+    trainer_class: "warrior"
+    dialogue:
+      - "Stand at attention! I'm Sergeant Sprocket, and I'll turn you into a proper soldier. The corrupted machines above don't care how clever you are - they'll crush you flat if you can't fight back."
+      - "Combat is precision engineering. Every stance, every strike, calculated for maximum efficiency. Let me show you how a real warrior operates."
+      - "Stay sharp and keep your armor oiled. Dismissed!"
+      - "Type 'train' if you wish to learn the ways of the Warrior."
+    locations:
+      - "gnome_guild_hub"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Mage Trainer - Calibration Chamber
+  cogsworth_arcane_engineer:
+    name: "Archmechanic Fizzlewatt"
+    description: "An elderly gnome surrounded by floating equations and glowing runes. Her robes are covered in chalk dust and burn marks from magical experiments."
+    level: 20
+    health: 150
+    damage: 0
+    armor: 5
+    experience: 0
+    aggressive: false
+    attackable: false
+    trainer_class: "mage"
+    dialogue:
+      - "Ah, a new variable in my equations! I'm Archmechanic Fizzlewatt. Magic isn't mysticism - it's the universe's programming language, and I can teach you to write it."
+      - "Magic follows rules, just like any machine. Learn the formulas, understand the energy flows, and you can reshape reality itself."
+      - "Remember: a mage who doesn't understand their own spells is a bomb waiting to detonate."
+      - "Type 'train' if you wish to learn the ways of the Mage."
+    locations:
+      - "gnome_calibration_chamber"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Rogue Trainer - Steam Works
+  cogsworth_saboteur:
+    name: "Shadow Cog"
+    description: "A gnome who seems to fade into the steam and shadows. Her tools are silent, her movements imperceptible, and her smile unsettling."
+    level: 20
+    health: 120
+    damage: 25
+    armor: 4
+    experience: 0
+    aggressive: false
+    attackable: false
+    trainer_class: "rogue"
+    dialogue:
+      - "Didn't hear me coming, did you? That's lesson one. I'm Shadow Cog, and I specialize in... unconventional solutions."
+      - "Every machine has an off switch. Every lock has a key. Every guard has a blind spot. I'll teach you to find them all."
+      - "Keep to the shadows, and remember - the best conflict is the one your enemy never knows happened."
+      - "Type 'train' if you wish to learn the ways of the Rogue."
+    locations:
+      - "gnome_steam_works"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Cleric Trainer - Power Core
+  cogsworth_crystal_priest:
+    name: "Conduit Sparkgem"
+    description: "A gnome whose eyes glow with inner light, channeling divine energy through the crystal matrix of the Power Core. Her robes shimmer with contained electricity."
+    level: 20
+    health: 200
+    damage: 15
+    armor: 8
+    experience: 0
+    aggressive: false
+    attackable: false
+    trainer_class: "cleric"
+    dialogue:
+      - "The divine flows through all things, even our machines. I am Conduit Sparkgem, and I bridge the gap between faith and physics."
+      - "Healing is energy transfer. Protection is field generation. Divine magic follows laws we're only beginning to understand."
+      - "May the divine current flow through you, and may your circuits never short."
+      - "Type 'train' if you wish to learn the ways of the Cleric."
+    locations:
+      - "gnome_power_core"
+    respawn_median: 0
+    respawn_variation: 0
+    quest_giver: true
+    gives_quests:
+      - blessing_of_light
+      - cleanse_the_undead
+    turn_in_quests:
+      - blessing_of_light
+      - cleanse_the_undead
+
+  # Paladin Trainer - Power Core
+  cogsworth_holy_guardian:
+    name: "Guardian Brightcoil"
+    description: "A gnome in gleaming powered armor inscribed with holy symbols. Lightning crackles between the sacred runes etched into the metal."
+    level: 20
+    health: 250
+    damage: 25
+    armor: 10
+    experience: 0
+    aggressive: false
+    attackable: false
+    trainer_class: "paladin"
+    dialogue:
+      - "I am Guardian Brightcoil, sworn to protect Cogsworth from the corruption above. A paladin's duty is sacred - we are the shield between the innocent and the darkness."
+      - "Righteousness is your power source. Faith charges your strikes. Let me show you how to channel both through steel and spell."
+      - "Stand firm, keep faith, and never let the corruption take root in your heart."
+      - "Type 'train' if you wish to learn the ways of the Paladin."
+    locations:
+      - "gnome_power_core"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Ranger Trainer - Training Floor
+  cogsworth_automaton_hunter:
+    name: "Scout Gearstalker"
+    description: "A gnome with mechanical augmentations replacing lost limbs, each one a trophy from battles with corrupted machines. Her crossbow is a marvel of engineering."
+    level: 20
+    health: 180
+    damage: 22
+    armor: 6
+    experience: 0
+    aggressive: false
+    attackable: false
+    trainer_class: "ranger"
+    dialogue:
+      - "Name's Gearstalker. I hunt the corrupted automatons that escape from the Spire. If you want to survive up there, you'll need to learn their patterns."
+      - "Track the oil trails. Listen for servo whines. Learn where the weak joints are. Machines are predictable once you understand them."
+      - "Stay alert up there. The corrupted ones don't tire, don't hunger, don't hesitate. Neither should you."
+      - "Type 'train' if you wish to learn the ways of the Ranger."
+    locations:
+      - "gnome_training_floor"
+    respawn_median: 0
+    respawn_variation: 0
+    quest_giver: true
+    gives_quests:
+      - warrior_trial
+    turn_in_quests:
+      - warrior_trial
+
+  # === CRAFTING TRAINERS ===
+
+  # Blacksmith Trainer - Great Engine
+  cogsworth_master_smith:
+    name: "Forgemaster Anvilia"
+    description: "A soot-covered gnome working in rhythm with the Great Engine's pistons. Her mechanical arm can withstand temperatures that would melt flesh."
+    level: 15
+    health: 180
+    damage: 25
+    armor: 8
+    experience: 0
+    aggressive: false
+    attackable: false
+    shop_inventory:
+      - item: "iron_ore"
+        price: 10
+      - item: "steel_ingot"
+        price: 50
+      - item: "leather_strip"
+        price: 3
+      - item: "wooden_shaft"
+        price: 5
+    crafting_trainer: "blacksmithing"
+    teaches_recipes:
+      - "iron_dagger"
+      - "iron_mace"
+      - "iron_shield"
+      - "iron_sword"
+      - "chainmail_armor"
+      - "steel_dagger"
+      - "steel_sword"
+      - "plate_armor"
+    dialogue:
+      - "The Engine's heat is perfect for metalwork! I'm Forgemaster Anvilia. I can teach you to craft weapons and armor that would make a dwarf jealous."
+      - "Timing is everything. Strike when the Engine pulses, and your metal will be stronger. Work against the rhythm, and you'll shatter your work."
+      - "Keep the forge hot and your hammer true!"
+      - "Type 'learn' to see what recipes I can teach you."
+      - "Use 'craft' at the forge to practice your smithing."
+      - "I sell smithing materials too. Type 'shop' to see what I have."
+    locations:
+      - "gnome_great_engine"
+    respawn_median: 0
+    respawn_variation: 0
+    quest_giver: true
+    gives_quests:
+      - iron_collection
+      - forging_ahead
+    turn_in_quests:
+      - iron_collection
+      - forging_ahead
+
+  # Alchemy Trainer - Chem Lab
+  cogsworth_chemist:
+    name: "Professor Bubblewick"
+    description: "A wild-haired gnome surrounded by bubbling apparatus and multicolored fumes. Safety goggles are permanently fused to his face from an 'incident.'"
+    level: 12
+    health: 60
+    damage: 5
+    armor: 2
+    experience: 0
+    aggressive: false
+    attackable: false
+    shop_inventory:
+      - item: "red_herb"
+        price: 5
+      - item: "blue_herb"
+        price: 8
+      - item: "green_herb"
+        price: 6
+      - item: "empty_vial"
+        price: 3
+      - item: "monster_blood"
+        price: 15
+    crafting_trainer: "alchemy"
+    teaches_recipes:
+      - "minor_healing_potion"
+      - "minor_mana_potion"
+      - "antidote"
+      - "healing_potion"
+      - "mana_potion"
+      - "strength_elixir"
+      - "greater_healing_potion"
+      - "invisibility_potion"
+    dialogue:
+      - "Careful with that flask! Oh, a student! I'm Professor Bubblewick. Alchemy is just chemistry with a pinch of magic - emphasis on the chemistry."
+      - "Measure twice, pour once. Label everything. And for the love of gears, never mix the blue bottle with the purple one."
+      - "Remember: if it's smoking, it's probably too late to run!"
+      - "Type 'learn' to see the recipes I can teach."
+      - "Use 'craft' at the alchemy lab to brew your concoctions."
+      - "Need ingredients? Type 'shop' to see what I have for sale."
+    locations:
+      - "gnome_chem_lab"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Enchanting Trainer - Calibration Chamber
+  cogsworth_runecoder:
+    name: "Inscriber Glyphwright"
+    description: "A gnome whose fingers leave trails of fading light as she works. Her spectacles have multiple lenses that flip down for examining microscopic runes."
+    level: 18
+    health: 100
+    damage: 0
+    armor: 5
+    experience: 0
+    aggressive: false
+    attackable: false
+    shop_inventory:
+      - item: "blank_scroll"
+        price: 10
+      - item: "arcane_dust"
+        price: 20
+      - item: "rough_gem"
+        price: 25
+      - item: "silver_chain"
+        price: 30
+    crafting_trainer: "enchanting"
+    teaches_recipes:
+      - "minor_fire_scroll"
+      - "glow_stone"
+      - "protection_amulet"
+      - "ring_of_strength"
+      - "enchanted_blade"
+      - "mana_crystal"
+    dialogue:
+      - "Every enchantment is a program written in magical code. I'm Inscriber Glyphwright, and I can teach you to write magic into metal."
+      - "Runes are circuits. Energy flows along the paths you inscribe. One wrong stroke and the whole thing shorts out - or explodes."
+      - "Precision in all things. A careless inscriber is a dead inscriber."
+      - "Type 'learn' to see what secrets I can share with you."
+      - "Use 'craft' at the enchanting table to practice your enchantments."
+      - "I sell basic enchanting materials. Type 'shop' to see my wares."
+    locations:
+      - "gnome_calibration_chamber"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Cooking Trainer - Market Floor
+  cogsworth_chef:
+    name: "Chef Steamkettle"
+    description: "A portly gnome operating a cooking station powered by diverted steam from the city's pipes. Mechanical arms help him manage multiple dishes simultaneously."
+    level: 10
+    health: 80
+    damage: 10
+    armor: 4
+    experience: 0
+    aggressive: false
+    attackable: false
+    shop_inventory:
+      - item: "bread"
+        price: 2
+      - item: "roasted_meat"
+        price: 10
+      - item: "apple"
+        price: 1
+      - item: "water"
+        price: 2
+    crafting_trainer: "cooking"
+    dialogue:
+      - "Hungry? Of course you are! I'm Chef Steamkettle. My automated kitchen can prepare meals in half the time with twice the flavor!"
+      - "Cooking is engineering for the stomach. Temperature, timing, ingredient ratios - get them right and you create perfection."
+      - "Never adventure on an empty stomach! That's just poor planning."
+      - "Type 'shop' to see what's on the menu."
+    locations:
+      - "gnome_market_floor"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # === SHOPKEEPERS ===
+
+  # General Merchant - Market Floor
+  cogsworth_merchant:
+    name: "Vendor Clicksworth"
+    description: "A gnome merchant whose inventory management system involves pneumatic tubes, conveyor belts, and a complex cataloging automaton."
+    level: 5
+    health: 60
+    damage: 8
+    armor: 3
+    experience: 0
+    aggressive: false
+    attackable: false
+    shop_inventory:
+      - item: "treasure_key"
+        price: 50
+      - item: "healing_potion"
+        price: 50
+      - item: "mana_potion"
+        price: 50
+      - item: "bandage"
+        price: 5
+      - item: "bread"
+        price: 2
+      - item: "apple"
+        price: 1
+      - item: "water"
+        price: 2
+      - item: "iron_dagger"
+        price: 30
+      - item: "leather_armor"
+        price: 50
+      - item: "leather_cap"
+        price: 15
+      - item: "iron_ore"
+        price: 10
+      - item: "leather"
+        price: 8
+      - item: "leather_strip"
+        price: 3
+      - item: "thread"
+        price: 2
+      - item: "wooden_shaft"
+        price: 5
+      - item: "empty_vial"
+        price: 5
+    dialogue:
+      - "Welcome to Clicksworth's Comprehensive Components! If I don't have it, it hasn't been invented yet. Probably."
+      - "Browse the catalog! Type 'shop' to see what I have."
+      - "I buy items too. Just use 'sell' if you have something to offer."
+      - "Thank you for your patronage! Tell your friends - organic and mechanical alike!"
+    locations:
+      - "gnome_market_floor"
+    respawn_median: 0
+    respawn_variation: 0
+    quest_giver: true
+    gives_quests:
+      - crystal_hunt
+      - mushroom_gathering
+    turn_in_quests:
+      - crystal_hunt
+      - mushroom_gathering
+
+  # Magic Shop - Gizmo Emporium
+  cogsworth_gadget_dealer:
+    name: "Proprietor Widgetmaster"
+    description: "An eccentric gnome whose shop is filled with devices that defy easy categorization. Some float. Some glow. Some do both while making rude noises."
+    level: 8
+    health: 50
+    damage: 5
+    armor: 2
+    experience: 0
+    aggressive: false
+    attackable: false
+    shop_inventory:
+      - item: "mana_potion"
+        price: 50
+      - item: "blank_scroll"
+        price: 10
+      - item: "arcane_dust"
+        price: 20
+      - item: "rough_gem"
+        price: 25
+    dialogue:
+      - "Ah, a connoisseur! I'm Widgetmaster. Everything in here does something. The trick is figuring out what before it does it to you."
+      - "Go ahead, pick something up. Just be ready to duck if it starts vibrating."
+      - "Type 'shop' to browse my collection."
+      - "No refunds on items that achieve sentience!"
+    locations:
+      - "gnome_gizmo_emporium"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # === QUEST GIVERS ===
+
+  # Main Quest Giver - Central Gear
+  cogsworth_chief_engineer:
+    name: "Chief Engineer Mainspring"
+    description: "The leader of Cogsworth's engineering corps, a gnome whose mechanical eye can analyze any device. She carries the weight of the city's survival on her shoulders."
+    level: 15
+    health: 120
+    damage: 0
+    armor: 6
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "Another brave soul willing to venture into the Spire? I'm Chief Engineer Mainspring. The corruption spreads through our machinery, and we need heroes to stop it at the source."
+      - "The Master Control Unit at the top of the Spire has been corrupted. Until it's destroyed, our machines will keep turning against us. Will you help?"
+      - "Cogsworth's gears keep turning because of people like you. Don't let us down."
+      - "Check your mail at the box near the portal. Even underground, messages find their way."
+      - "The portal can take you to other cities, should you need allies from distant lands."
+    locations:
+      - "gnome_central_gear"
+    respawn_median: 0
+    respawn_variation: 0
+    quest_giver: true
+    gives_quests:
+      - tower_introduction
+      - floor_five
+      - floor_ten
+    turn_in_quests:
+      - tower_introduction
+      - floor_five
+      - floor_ten
+
+  # Secondary Quest Giver - Observatory
+  cogsworth_astronomer:
+    name: "Stargazer Orbitron"
+    description: "An aged gnome who has spent centuries mapping the stars. His clockwork orreries are legendary for their precision."
+    level: 12
+    health: 80
+    damage: 0
+    armor: 2
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "The stars speak, if you know how to listen. I am Stargazer Orbitron. The corruption in the Spire... it's spreading faster than my models predicted."
+      - "I've tracked anomalies in the celestial patterns. Something in the Spire is affecting the very fabric of reality. This is most troubling."
+      - "Look to the stars, young one. They remember when there was no corruption, and perhaps they know how to end it."
+    locations:
+      - "gnome_observatory"
+    respawn_median: 0
+    respawn_variation: 0
+    quest_giver: true
+    gives_quests:
+      - first_blood
+      - pest_control
+    turn_in_quests:
+      - first_blood
+      - pest_control
+
+  # === CITY GUARDS ===
+
+  cogsworth_guard:
+    name: "Cogsworth Sentinel"
+    description: "A gnome in powered armor patrolling the city. The suit's eyes glow with vigilant light, and its weapons hum with readiness."
+    level: 8
+    health: 100
+    damage: 15
+    armor: 8
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "Halt! State your... oh, you're organic. Carry on, citizen. I'm watching for corrupted machines, not visitors."
+      - "Stay away from the Containment Gate unless you're ready to fight what's up there."
+    locations:
+      - "gnome_central_gear"
+      - "gnome_market_floor"
+      - "gnome_containment_gate"
+    respawn_median: 0
+    respawn_variation: 0
+
+  cogsworth_containment_guard:
+    name: "Containment Specialist"
+    description: "A heavily armored gnome standing watch at the gate to the corrupted Spire. Her armor bears the scorch marks and dents of many battles."
+    level: 12
+    health: 150
+    damage: 20
+    armor: 10
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "Turn back unless you're here to fight. The Containment Gate leads to the corrupted Mechanical Spire. Things come down from there... things that used to be our machines."
+      - "If you're going up, make peace with your gears first."
+    locations:
+      - "gnome_containment_gate"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # === FLAVOR NPCS ===
+
+  cogsworth_tinkerer:
+    name: "Fidgety Tinkerer"
+    description: "A young gnome surrounded by scattered parts, trying to assemble something that keeps falling apart."
+    level: 2
+    health: 25
+    damage: 3
+    armor: 0
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "Just need to attach this to that and... oh no, not again!"
+      - "Maybe if I use more glue..."
+    locations:
+      - "gnome_workshop"
+    respawn_median: 0
+    respawn_variation: 0
+
+  cogsworth_pipe_inspector:
+    name: "Steam Inspector"
+    description: "A gnome with a clipboard, checking pressure gauges and noting readings with obsessive detail."
+    level: 4
+    health: 40
+    damage: 5
+    armor: 2
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "Pressure nominal... flow rate acceptable... oh, hello. Don't touch anything."
+      - "Hmm, that gauge is off by 0.003 percent..."
+    locations:
+      - "gnome_steam_works"
+      - "gnome_great_engine"
+      - "gnome_power_core"
+    respawn_median: 0
+    respawn_variation: 0
+
+  cogsworth_inventor:
+    name: "Eccentric Inventor"
+    description: "A wild-eyed gnome scribbling equations on every available surface, occasionally shouting 'Eureka!' for no apparent reason."
+    level: 5
+    health: 40
+    damage: 0
+    armor: 1
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "Yes, yes, yes! If I reverse the polarity and triple the gear ratio... what? Oh, visitors. I'm on the verge of a breakthrough, I can feel it!"
+      - "Don't step on that! It's either my greatest invention or a very expensive paperweight."
+    locations:
+      - "gnome_inventors_den"
+    respawn_median: 0
+    respawn_variation: 0
+
+  cogsworth_power_tech:
+    name: "Crystal Technician"
+    description: "A gnome in an insulated suit, carefully adjusting the crystals in the Power Core with rubber-tipped tools."
+    level: 6
+    health: 50
+    damage: 8
+    armor: 3
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "Keep your distance - these crystals are charged to lethal levels. Beautiful, aren't they? Pure energy, waiting to be directed."
+      - "Remember: never touch the crystals directly. The last gnome who did is now a scorch mark on the ceiling."
+    locations:
+      - "gnome_power_core"
+    respawn_median: 0
+    respawn_variation: 0
+
+  cogsworth_calibrator:
+    name: "Precision Calibrator"
+    description: "A gnome working in absolute silence, making microscopic adjustments to enchanting equipment with steady hands."
+    level: 5
+    health: 35
+    damage: 0
+    armor: 1
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "*holds up a 'quiet please' sign*"
+      - "*nods silently*"
+    locations:
+      - "gnome_calibration_chamber"
+    respawn_median: 0
+    respawn_variation: 0
+
+  cogsworth_market_crier:
+    name: "Automated Town Crier"
+    description: "A small automaton that rolls through the market, announcing news and advertisements through a brass megaphone."
+    level: 1
+    health: 20
+    damage: 0
+    armor: 5
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "ATTENTION CITIZENS! Today's specials include gears, springs, and a limited quantity of definitely-not-haunted pocket watches!"
+      - "THAT IS ALL FOR NOW! This announcement brought to you by Cogsworth Commerce Committee!"
+    locations:
+      - "gnome_market_floor"
+      - "gnome_central_gear"
+    respawn_median: 0
+    respawn_variation: 0

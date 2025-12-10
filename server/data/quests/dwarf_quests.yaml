@@ -1,0 +1,336 @@
+# Dwarf Tower Quest Definitions
+# These quests are given by NPCs in the dwarven city of Irondeep
+
+quests:
+  # =========================================
+  # TUTORIAL / INTRODUCTION QUESTS (Main)
+  # =========================================
+  dwarf_tower_introduction:
+    name: "Into the Deep"
+    description: "Chronicler Dain believes you're ready to delve into the ancient tower. Prove your worth by reaching Floor 1's portal room."
+    category: main
+    giver_npc: "Chronicler Dain"
+    turn_in_npc: "Chronicler Dain"
+    objectives:
+      - type: explore
+        target: "gen_f1_portal"
+        target_name: "Floor 1 Portal Room"
+        required: 1
+    rewards:
+      gold: 25
+      experience: 50
+      title: "Delver Initiate"
+    min_level: 1
+
+  dwarf_first_strike:
+    name: "First Strike"
+    description: "A true dwarf earns their place through battle. Fell your first foe in the tower depths."
+    category: main
+    giver_npc: "Axemaster Thrain"
+    turn_in_npc: "Axemaster Thrain"
+    objectives:
+      - type: kill
+        target: "giant_rat"
+        target_name: "Giant Rat"
+        required: 1
+    rewards:
+      gold: 15
+      experience: 30
+    min_level: 1
+    prereqs:
+      - dwarf_tower_introduction
+
+  # =========================================
+  # SIDE QUESTS - Deep Hunter Kargrim
+  # =========================================
+  dwarf_tunnel_vermin:
+    name: "Tunnel Vermin"
+    description: "Rats have infested the upper tunnels. Clear them out before they spread to the mines."
+    category: side
+    giver_npc: "Deep Hunter Kargrim"
+    turn_in_npc: "Deep Hunter Kargrim"
+    objectives:
+      - type: kill
+        target: "giant_rat"
+        target_name: "Giant Rat"
+        required: 5
+    rewards:
+      gold: 30
+      experience: 75
+    min_level: 1
+    repeatable: true
+
+  dwarf_cave_bats:
+    name: "Cave Bats"
+    description: "Bats are disrupting mining operations. Hunt them down."
+    category: side
+    giver_npc: "Deep Hunter Kargrim"
+    turn_in_npc: "Deep Hunter Kargrim"
+    objectives:
+      - type: kill
+        target: "bat"
+        target_name: "Bat"
+        required: 8
+    rewards:
+      gold: 40
+      experience: 100
+    min_level: 2
+    repeatable: true
+
+  dwarf_goblin_raiders:
+    name: "Goblin Raiders"
+    description: "Goblins have been stealing supplies from our mining carts. End their thievery permanently."
+    category: side
+    giver_npc: "Deep Hunter Kargrim"
+    turn_in_npc: "Deep Hunter Kargrim"
+    objectives:
+      - type: kill
+        target: "goblin"
+        target_name: "Goblin"
+        required: 10
+    rewards:
+      gold: 75
+      experience: 200
+      title: "Goblin Crusher"
+    min_level: 3
+
+  dwarf_deep_bones:
+    name: "Deep Bones"
+    description: "Ancient skeletons have risen from forgotten tombs. Send them back to their rest."
+    category: side
+    giver_npc: "Deep Hunter Kargrim"
+    turn_in_npc: "Deep Hunter Kargrim"
+    objectives:
+      - type: kill
+        target: "skeleton"
+        target_name: "Skeleton"
+        required: 8
+    rewards:
+      gold: 100
+      experience: 250
+    min_level: 4
+    repeatable: true
+
+  # =========================================
+  # SIDE QUESTS - Stone-Speaker Balin
+  # =========================================
+  dwarf_ancestor_blessing:
+    name: "Ancestor's Blessing"
+    description: "Visit the Ancestor Hall and pay respects to receive the blessing of your forebears."
+    category: side
+    giver_npc: "Stone-Speaker Balin"
+    turn_in_npc: "Stone-Speaker Balin"
+    objectives:
+      - type: explore
+        target: "dwarf_ancestor_hall"
+        target_name: "Ancestor Hall"
+        required: 1
+    rewards:
+      gold: 10
+      experience: 25
+    min_level: 1
+
+  dwarf_cleanse_the_dead:
+    name: "Honor the Fallen"
+    description: "The undead are a mockery of our ancestors. Destroy them and restore their honor."
+    category: side
+    giver_npc: "Stone-Speaker Balin"
+    turn_in_npc: "Stone-Speaker Balin"
+    objectives:
+      - type: kill
+        target: "skeleton"
+        target_name: "Skeleton"
+        required: 5
+      - type: kill
+        target: "ghoul"
+        target_name: "Ghoul"
+        required: 3
+    rewards:
+      gold: 150
+      experience: 350
+      title: "Ancestor's Champion"
+    min_level: 5
+
+  # =========================================
+  # SIDE QUESTS - Mastersmith Bronzebeard
+  # =========================================
+  dwarf_iron_ore_hunt:
+    name: "Iron Ore Hunt"
+    description: "The forge needs iron ore. Collect some from creatures in the tower."
+    category: side
+    giver_npc: "Mastersmith Bronzebeard"
+    turn_in_npc: "Mastersmith Bronzebeard"
+    objectives:
+      - type: fetch
+        target: "iron_ore"
+        target_name: "Iron Ore"
+        required: 5
+    rewards:
+      gold: 40
+      experience: 80
+      items:
+        - iron_dagger
+    min_level: 2
+    repeatable: true
+
+  dwarf_forgefire_trial:
+    name: "Forgefire Trial"
+    description: "Prove your smithing skill by crafting an iron dagger at the Great Forge."
+    category: crafting
+    giver_npc: "Mastersmith Bronzebeard"
+    turn_in_npc: "Mastersmith Bronzebeard"
+    objectives:
+      - type: craft
+        target: "iron_dagger"
+        target_name: "Iron Dagger"
+        required: 1
+    rewards:
+      gold: 50
+      experience: 100
+      recipes:
+        - dwarven_axe
+    required_crafting_skill: blacksmithing
+    required_crafting_level: 5
+
+  # =========================================
+  # SIDE QUESTS - Merchant Goldvein
+  # =========================================
+  dwarf_gem_collection:
+    name: "Gem Collection"
+    description: "Goldvein needs crystals for his jewelry work. Bring him some from the tower."
+    category: side
+    giver_npc: "Merchant Goldvein"
+    turn_in_npc: "Merchant Goldvein"
+    objectives:
+      - type: fetch
+        target: "crystal"
+        target_name: "Crystal"
+        required: 3
+    rewards:
+      gold: 60
+      experience: 100
+    min_level: 2
+    repeatable: true
+
+  # =========================================
+  # SIDE QUESTS - Mushroom Sage Fungi
+  # =========================================
+  dwarf_mushroom_harvest:
+    name: "Mushroom Harvest"
+    description: "The Mushroom Sage needs specimens from the tower depths for research."
+    category: side
+    giver_npc: "Mushroom Sage Fungi"
+    turn_in_npc: "Mushroom Sage Fungi"
+    objectives:
+      - type: fetch
+        target: "mushroom"
+        target_name: "Mushroom"
+        required: 5
+    rewards:
+      gold: 35
+      experience: 60
+    min_level: 1
+    repeatable: true
+
+  # =========================================
+  # EXPLORATION QUESTS - Chronicler Dain
+  # =========================================
+  dwarf_deeper_delving:
+    name: "Deeper Delving"
+    description: "The tower's secrets lie far below. Reach Floor 5 to uncover ancient dwarven records."
+    category: main
+    giver_npc: "Chronicler Dain"
+    turn_in_npc: "Chronicler Dain"
+    objectives:
+      - type: explore
+        target: "gen_f5_portal"
+        target_name: "Floor 5 Portal"
+        required: 1
+    rewards:
+      gold: 150
+      experience: 400
+      title: "Deep Delver"
+    min_level: 5
+    prereqs:
+      - dwarf_tower_introduction
+
+  dwarf_ancient_guardian:
+    name: "The Forgelord"
+    description: "An ancient construct guards the tenth floor. Face it and claim glory for the dwarven clans."
+    category: main
+    giver_npc: "Chronicler Dain"
+    turn_in_npc: "Chronicler Dain"
+    objectives:
+      - type: explore
+        target: "gen_f10_boss"
+        target_name: "Floor 10 Boss Room"
+        required: 1
+    rewards:
+      gold: 300
+      experience: 800
+      title: "Forgelord Slayer"
+    min_level: 8
+    prereqs:
+      - dwarf_deeper_delving
+
+  # =========================================
+  # CLASS QUESTS - Axemaster Thrain
+  # =========================================
+  dwarf_warrior_trial:
+    name: "Trial by Steel"
+    description: "A true dwarven warrior proves themselves in battle. Defeat worthy opponents."
+    category: class
+    giver_npc: "Axemaster Thrain"
+    turn_in_npc: "Axemaster Thrain"
+    objectives:
+      - type: kill
+        target: "orc_warrior"
+        target_name: "Orc Warrior"
+        required: 5
+    rewards:
+      gold: 200
+      experience: 500
+      title: "Axe Brother"
+    required_class: warrior
+    required_class_level: 5
+
+  # =========================================
+  # CLASS QUESTS - Royal Thane Grimjaw
+  # =========================================
+  dwarf_thane_trial:
+    name: "Thane's Trial"
+    description: "Those who would serve as royal guards must prove their valor against the darkness."
+    category: class
+    giver_npc: "Royal Thane Grimjaw"
+    turn_in_npc: "Royal Thane Grimjaw"
+    objectives:
+      - type: kill
+        target: "skeleton"
+        target_name: "Skeleton"
+        required: 10
+    rewards:
+      gold: 220
+      experience: 550
+      title: "Royal Guard"
+    required_class: paladin
+    required_class_level: 5
+
+  # =========================================
+  # DAILY/REPEATABLE QUESTS
+  # =========================================
+  dwarf_breach_patrol:
+    name: "Breach Patrol"
+    description: "The Breach Warden reports threats emerging from the tower. Help defend the city."
+    category: side
+    giver_npc: "Breach Warden Stormshard"
+    turn_in_npc: "Breach Warden Stormshard"
+    objectives:
+      - type: kill
+        target: "goblin"
+        target_name: "Any Enemy"
+        required: 3
+    rewards:
+      gold: 20
+      experience: 50
+    min_level: 1
+    repeatable: true

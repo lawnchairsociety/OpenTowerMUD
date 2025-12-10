@@ -106,16 +106,6 @@ func LoadAndCreateCity(filename string) (*Floor, error) {
 	return CreateCityFloor(config)
 }
 
-// GetSpawnRoom returns the room ID where new players should spawn
-func GetSpawnRoom() string {
-	return "town_square"
-}
-
-// GetTowerEntranceRoom returns the room ID of the tower entrance
-func GetTowerEntranceRoom() string {
-	return "tower_entrance"
-}
-
 // hasFeature checks if a feature list contains a specific feature
 func hasFeature(features []string, target string) bool {
 	for _, f := range features {
@@ -127,9 +117,13 @@ func hasFeature(features []string, target string) bool {
 }
 
 // ValidateCityFloor checks that the city floor has required rooms and features
-func ValidateCityFloor(floor *Floor) error {
+func ValidateCityFloor(floor *Floor, theme *TowerTheme) error {
 	if floor == nil {
 		return fmt.Errorf("floor is nil")
+	}
+
+	if theme == nil {
+		return fmt.Errorf("theme is nil")
 	}
 
 	if floor.Number != 0 {
@@ -137,9 +131,9 @@ func ValidateCityFloor(floor *Floor) error {
 	}
 
 	// Check for spawn room
-	spawnRoom := floor.GetRoom(GetSpawnRoom())
+	spawnRoom := floor.GetRoom(theme.SpawnRoom)
 	if spawnRoom == nil {
-		return fmt.Errorf("missing spawn room: %s", GetSpawnRoom())
+		return fmt.Errorf("missing spawn room: %s", theme.SpawnRoom)
 	}
 
 	// Check for portal in spawn room
@@ -148,9 +142,9 @@ func ValidateCityFloor(floor *Floor) error {
 	}
 
 	// Check for tower entrance
-	entranceRoom := floor.GetRoom(GetTowerEntranceRoom())
+	entranceRoom := floor.GetRoom(theme.TowerEntrance)
 	if entranceRoom == nil {
-		return fmt.Errorf("missing tower entrance room: %s", GetTowerEntranceRoom())
+		return fmt.Errorf("missing tower entrance room: %s", theme.TowerEntrance)
 	}
 
 	// Check for stairs in tower entrance

@@ -1,0 +1,370 @@
+# Floor 22 - elf tower
+# Generated with seed: 64
+# Room count: 50
+
+floor: 22
+tower: elf
+generated_seed: 64
+stairs_up: elf_f22_r7_12
+stairs_down: elf_f22_r7_6
+portal_room: elf_f22_r7_6
+rooms:
+  elf_f22_r10_10:
+    name: Infected Hollow (Floor 22)
+    description: A hollow within the corrupted World Tree. The bark is blackened and twisted, and the air reeks of decay.
+    type: room
+    exits:
+      north: elf_f22_r10_9
+      south: elf_f22_r10_11
+      east: elf_f22_r11_10
+  elf_f22_r10_11:
+    name: Infected Hollow (Floor 22)
+    description: A hollow within the corrupted World Tree. The bark is blackened and twisted, and the air reeks of decay.
+    type: room
+    exits:
+      north: elf_f22_r10_10
+  elf_f22_r10_5:
+    name: Blighted Tunnel (Floor 22)
+    description: A tunnel through diseased wood, the walls weeping corrupted sap. Bioluminescent fungus provides sickly illumination.
+    type: corridor
+    exits:
+      south: elf_f22_r10_6
+  elf_f22_r10_6:
+    name: Blighted Tunnel (Floor 22)
+    description: A tunnel through diseased wood, the walls weeping corrupted sap. Bioluminescent fungus provides sickly illumination.
+    type: corridor
+    exits:
+      north: elf_f22_r10_5
+      south: elf_f22_r10_7
+      east: elf_f22_r11_6
+  elf_f22_r10_7:
+    name: Blighted Tunnel (Floor 22)
+    description: A tunnel through diseased wood, the walls weeping corrupted sap. Bioluminescent fungus provides sickly illumination.
+    type: corridor
+    exits:
+      north: elf_f22_r10_6
+      south: elf_f22_r10_8
+      east: elf_f22_r11_7
+      west: elf_f22_r9_7
+  elf_f22_r10_8:
+    name: Blighted Tunnel (Floor 22)
+    description: A tunnel through diseased wood, the walls weeping corrupted sap. Bioluminescent fungus provides sickly illumination.
+    type: corridor
+    exits:
+      north: elf_f22_r10_7
+      east: elf_f22_r11_8
+  elf_f22_r10_9:
+    name: Infected Hollow (Floor 22)
+    description: A hollow within the corrupted World Tree. The bark is blackened and twisted, and the air reeks of decay.
+    type: room
+    exits:
+      south: elf_f22_r10_10
+      east: elf_f22_r11_9
+      west: elf_f22_r9_9
+  elf_f22_r11_10:
+    name: Blighted Tunnel (Floor 22)
+    description: A tunnel through diseased wood, the walls weeping corrupted sap. Bioluminescent fungus provides sickly illumination.
+    type: corridor
+    exits:
+      west: elf_f22_r10_10
+  elf_f22_r11_6:
+    name: Blighted Tunnel (Floor 22)
+    description: A tunnel through diseased wood, the walls weeping corrupted sap. Bioluminescent fungus provides sickly illumination.
+    type: corridor
+    exits:
+      east: elf_f22_r12_6
+      west: elf_f22_r10_6
+  elf_f22_r11_7:
+    name: Infected Hollow (Floor 22)
+    description: A hollow within the corrupted World Tree. The bark is blackened and twisted, and the air reeks of decay.
+    type: room
+    exits:
+      west: elf_f22_r10_7
+  elf_f22_r11_8:
+    name: Blighted Tunnel (Floor 22)
+    description: A tunnel through diseased wood, the walls weeping corrupted sap. Bioluminescent fungus provides sickly illumination.
+    type: corridor
+    exits:
+      east: elf_f22_r12_8
+      west: elf_f22_r10_8
+  elf_f22_r11_9:
+    name: Blighted Tunnel (Floor 22)
+    description: A tunnel through diseased wood, the walls weeping corrupted sap. Bioluminescent fungus provides sickly illumination.
+    type: corridor
+    exits:
+      west: elf_f22_r10_9
+  elf_f22_r12_6:
+    name: Blighted Tunnel (Floor 22)
+    description: A tunnel through diseased wood, the walls weeping corrupted sap. Bioluminescent fungus provides sickly illumination.
+    type: corridor
+    exits:
+      west: elf_f22_r11_6
+  elf_f22_r12_8:
+    name: Forgotten Shrine (Floor 22)
+    description: A forgotten shrine now overgrown with corruption. Treasures of the old world lie buried beneath diseased roots.
+    type: treasure
+    features:
+      - treasure
+    exits:
+      west: elf_f22_r11_8
+  elf_f22_r2_9:
+    name: Forgotten Shrine (Floor 22)
+    description: A forgotten shrine now overgrown with corruption. Treasures of the old world lie buried beneath diseased roots.
+    type: treasure
+    features:
+      - treasure
+    exits:
+      east: elf_f22_r3_9
+  elf_f22_r3_9:
+    name: Blighted Tunnel (Floor 22)
+    description: A tunnel through diseased wood, the walls weeping corrupted sap. Bioluminescent fungus provides sickly illumination.
+    type: corridor
+    exits:
+      east: elf_f22_r4_9
+      west: elf_f22_r2_9
+  elf_f22_r4_6:
+    name: Blighted Tunnel (Floor 22)
+    description: A tunnel through diseased wood, the walls weeping corrupted sap. Bioluminescent fungus provides sickly illumination.
+    type: corridor
+    exits:
+      south: elf_f22_r4_7
+  elf_f22_r4_7:
+    name: Infected Hollow (Floor 22)
+    description: A hollow within the corrupted World Tree. The bark is blackened and twisted, and the air reeks of decay.
+    type: room
+    exits:
+      north: elf_f22_r4_6
+      east: elf_f22_r5_7
+  elf_f22_r4_9:
+    name: Blighted Tunnel (Floor 22)
+    description: A tunnel through diseased wood, the walls weeping corrupted sap. Bioluminescent fungus provides sickly illumination.
+    type: corridor
+    exits:
+      east: elf_f22_r5_9
+      west: elf_f22_r3_9
+  elf_f22_r5_10:
+    name: Infected Hollow (Floor 22)
+    description: A hollow within the corrupted World Tree. The bark is blackened and twisted, and the air reeks of decay.
+    type: room
+    exits:
+      north: elf_f22_r5_9
+  elf_f22_r5_5:
+    name: Blighted Tunnel (Floor 22)
+    description: A tunnel through diseased wood, the walls weeping corrupted sap. Bioluminescent fungus provides sickly illumination.
+    type: corridor
+    exits:
+      south: elf_f22_r5_6
+  elf_f22_r5_6:
+    name: Blighted Tunnel (Floor 22)
+    description: A tunnel through diseased wood, the walls weeping corrupted sap. Bioluminescent fungus provides sickly illumination.
+    type: corridor
+    exits:
+      north: elf_f22_r5_5
+      east: elf_f22_r6_6
+  elf_f22_r5_7:
+    name: Blighted Tunnel (Floor 22)
+    description: A tunnel through diseased wood, the walls weeping corrupted sap. Bioluminescent fungus provides sickly illumination.
+    type: corridor
+    exits:
+      south: elf_f22_r5_8
+      west: elf_f22_r4_7
+  elf_f22_r5_8:
+    name: Blighted Tunnel (Floor 22)
+    description: A tunnel through diseased wood, the walls weeping corrupted sap. Bioluminescent fungus provides sickly illumination.
+    type: corridor
+    exits:
+      north: elf_f22_r5_7
+      south: elf_f22_r5_9
+      east: elf_f22_r6_8
+  elf_f22_r5_9:
+    name: Blighted Tunnel (Floor 22)
+    description: A tunnel through diseased wood, the walls weeping corrupted sap. Bioluminescent fungus provides sickly illumination.
+    type: corridor
+    exits:
+      north: elf_f22_r5_8
+      south: elf_f22_r5_10
+      west: elf_f22_r4_9
+  elf_f22_r6_10:
+    name: Blighted Tunnel (Floor 22)
+    description: A tunnel through diseased wood, the walls weeping corrupted sap. Bioluminescent fungus provides sickly illumination.
+    type: corridor
+    exits:
+      north: elf_f22_r6_9
+  elf_f22_r6_6:
+    name: Blighted Tunnel (Floor 22)
+    description: A tunnel through diseased wood, the walls weeping corrupted sap. Bioluminescent fungus provides sickly illumination.
+    type: corridor
+    exits:
+      south: elf_f22_r6_7
+      west: elf_f22_r5_6
+  elf_f22_r6_7:
+    name: Blighted Tunnel (Floor 22)
+    description: A tunnel through diseased wood, the walls weeping corrupted sap. Bioluminescent fungus provides sickly illumination.
+    type: corridor
+    exits:
+      north: elf_f22_r6_6
+      east: elf_f22_r7_7
+  elf_f22_r6_8:
+    name: Blighted Tunnel (Floor 22)
+    description: A tunnel through diseased wood, the walls weeping corrupted sap. Bioluminescent fungus provides sickly illumination.
+    type: corridor
+    exits:
+      south: elf_f22_r6_9
+      east: elf_f22_r7_8
+      west: elf_f22_r5_8
+  elf_f22_r6_9:
+    name: Infected Hollow (Floor 22)
+    description: A hollow within the corrupted World Tree. The bark is blackened and twisted, and the air reeks of decay.
+    type: room
+    exits:
+      north: elf_f22_r6_8
+      south: elf_f22_r6_10
+  elf_f22_r7_10:
+    name: Blighted Tunnel (Floor 22)
+    description: A tunnel through diseased wood, the walls weeping corrupted sap. Bioluminescent fungus provides sickly illumination.
+    type: corridor
+    exits:
+      north: elf_f22_r7_9
+      south: elf_f22_r7_11
+  elf_f22_r7_11:
+    name: Infected Hollow (Floor 22)
+    description: A hollow within the corrupted World Tree. The bark is blackened and twisted, and the air reeks of decay.
+    type: room
+    exits:
+      north: elf_f22_r7_10
+      south: elf_f22_r7_12
+  elf_f22_r7_12:
+    name: Corrupted Ascent (Floor 22)
+    description: A spiraling path carved into the living wood ascends higher into the blighted tree. Dark veins pulse in the bark.
+    type: stairs_up
+    features:
+      - stairs_up
+    exits:
+      north: elf_f22_r7_11
+  elf_f22_r7_6:
+    name: Spiral Descent (Floor 22)
+    description: A winding descent through corrupted wood. A shimmering portal offers quick travel to floors you've visited.
+    type: stairs_down
+    features:
+      - stairs_down
+      - portal
+    exits:
+      south: elf_f22_r7_7
+  elf_f22_r7_7:
+    name: Blighted Tunnel (Floor 22)
+    description: A tunnel through diseased wood, the walls weeping corrupted sap. Bioluminescent fungus provides sickly illumination.
+    type: corridor
+    exits:
+      north: elf_f22_r7_6
+      south: elf_f22_r7_8
+      east: elf_f22_r8_7
+      west: elf_f22_r6_7
+  elf_f22_r7_8:
+    name: Infected Hollow (Floor 22)
+    description: A hollow within the corrupted World Tree. The bark is blackened and twisted, and the air reeks of decay.
+    type: room
+    exits:
+      north: elf_f22_r7_7
+      south: elf_f22_r7_9
+      east: elf_f22_r8_8
+      west: elf_f22_r6_8
+  elf_f22_r7_9:
+    name: Blighted Tunnel (Floor 22)
+    description: A tunnel through diseased wood, the walls weeping corrupted sap. Bioluminescent fungus provides sickly illumination.
+    type: corridor
+    exits:
+      north: elf_f22_r7_8
+      south: elf_f22_r7_10
+  elf_f22_r8_10:
+    name: Infected Hollow (Floor 22)
+    description: A hollow within the corrupted World Tree. The bark is blackened and twisted, and the air reeks of decay.
+    type: room
+    exits:
+      north: elf_f22_r8_9
+      south: elf_f22_r8_11
+      east: elf_f22_r9_10
+  elf_f22_r8_11:
+    name: Infected Hollow (Floor 22)
+    description: A hollow within the corrupted World Tree. The bark is blackened and twisted, and the air reeks of decay.
+    type: room
+    exits:
+      north: elf_f22_r8_10
+      east: elf_f22_r9_11
+  elf_f22_r8_5:
+    name: Forgotten Shrine (Floor 22)
+    description: A forgotten shrine now overgrown with corruption. Treasures of the old world lie buried beneath diseased roots.
+    type: treasure
+    features:
+      - treasure
+    exits:
+      south: elf_f22_r8_6
+  elf_f22_r8_6:
+    name: Infected Hollow (Floor 22)
+    description: A hollow within the corrupted World Tree. The bark is blackened and twisted, and the air reeks of decay.
+    type: room
+    exits:
+      north: elf_f22_r8_5
+      south: elf_f22_r8_7
+      east: elf_f22_r9_6
+  elf_f22_r8_7:
+    name: Infected Hollow (Floor 22)
+    description: A hollow within the corrupted World Tree. The bark is blackened and twisted, and the air reeks of decay.
+    type: room
+    exits:
+      north: elf_f22_r8_6
+      east: elf_f22_r9_7
+      west: elf_f22_r7_7
+  elf_f22_r8_8:
+    name: Infected Hollow (Floor 22)
+    description: A hollow within the corrupted World Tree. The bark is blackened and twisted, and the air reeks of decay.
+    type: room
+    exits:
+      south: elf_f22_r8_9
+      east: elf_f22_r9_8
+      west: elf_f22_r7_8
+  elf_f22_r8_9:
+    name: Infected Hollow (Floor 22)
+    description: A hollow within the corrupted World Tree. The bark is blackened and twisted, and the air reeks of decay.
+    type: room
+    exits:
+      north: elf_f22_r8_8
+      south: elf_f22_r8_10
+      east: elf_f22_r9_9
+  elf_f22_r9_10:
+    name: Infected Hollow (Floor 22)
+    description: A hollow within the corrupted World Tree. The bark is blackened and twisted, and the air reeks of decay.
+    type: room
+    exits:
+      west: elf_f22_r8_10
+  elf_f22_r9_11:
+    name: Blighted Tunnel (Floor 22)
+    description: A tunnel through diseased wood, the walls weeping corrupted sap. Bioluminescent fungus provides sickly illumination.
+    type: corridor
+    exits:
+      west: elf_f22_r8_11
+  elf_f22_r9_6:
+    name: Infected Hollow (Floor 22)
+    description: A hollow within the corrupted World Tree. The bark is blackened and twisted, and the air reeks of decay.
+    type: room
+    exits:
+      west: elf_f22_r8_6
+  elf_f22_r9_7:
+    name: Infected Hollow (Floor 22)
+    description: A hollow within the corrupted World Tree. The bark is blackened and twisted, and the air reeks of decay.
+    type: room
+    exits:
+      east: elf_f22_r10_7
+      west: elf_f22_r8_7
+  elf_f22_r9_8:
+    name: Blighted Tunnel (Floor 22)
+    description: A tunnel through diseased wood, the walls weeping corrupted sap. Bioluminescent fungus provides sickly illumination.
+    type: corridor
+    exits:
+      west: elf_f22_r8_8
+  elf_f22_r9_9:
+    name: Infected Hollow (Floor 22)
+    description: A hollow within the corrupted World Tree. The bark is blackened and twisted, and the air reeks of decay.
+    type: room
+    exits:
+      east: elf_f22_r10_9
+      west: elf_f22_r8_9

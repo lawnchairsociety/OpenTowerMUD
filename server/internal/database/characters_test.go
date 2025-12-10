@@ -29,8 +29,8 @@ func TestCreateCharacter(t *testing.T) {
 	if char.AccountID != account.ID {
 		t.Errorf("Expected account ID %d, got %d", account.ID, char.AccountID)
 	}
-	if char.RoomID != "town_square" {
-		t.Errorf("Expected room 'town_square', got '%s'", char.RoomID)
+	if char.RoomID != "human_town_square" {
+		t.Errorf("Expected room 'human_town_square', got '%s'", char.RoomID)
 	}
 	if char.Level != 1 {
 		t.Errorf("Expected level 1, got %d", char.Level)

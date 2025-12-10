@@ -1,4 +1,4 @@
-# City Rooms for OpenTowerMUD
+# City Rooms for OpenTowerMUD - Ironhaven (Human City)
 # The walled city that serves as the ground floor (floor 0)
 #
 # Layout:
@@ -21,23 +21,23 @@
 # The city is walled - only exit is up into the tower
 
 rooms:
-  town_square:
-    name: "Town Square"
-    description: "The heart of the city, a bustling plaza with a grand fountain at its center. Cobblestone paths radiate outward to various districts. A shimmering portal stands near the fountain, offering quick travel to distant places. A sturdy mailbox stands beside the fountain. To the west, the imposing castle gate rises above the rooftops."
-    description_day: "Sunlight sparkles on the fountain's water as merchants hawk their wares and children play."
-    description_night: "Torches illuminate the quiet plaza. The fountain's water glimmers under the moonlight."
+  human_town_square:
+    name: "Town Square of Ironhaven"
+    description: "The bustling heart of Ironhaven. A grand fountain enchanted with ever-flowing crystal water stands at the center. The Arcane Spire looms in the distance, its peak crackling with magical energy. A shimmering portal stands near the fountain, offering quick travel to distant places. A sturdy mailbox stands beside the fountain. To the west, the imposing castle gate rises above the rooftops."
+    description_day: "Merchants hawk enchanted wares while mages in flowing robes hurry past. Sunlight sparkles on the fountain's water."
+    description_night: "Magical lanterns cast a soft blue glow. The spire pulses with arcane light. The fountain's water glimmers under the moonlight."
     type: city
     features:
       - portal
       - fountain
       - mailbox
     exits:
-      north: north_gate
-      south: market_street
-      east: temple
-      west: castle_gate
+      north: human_north_gate
+      south: human_market_street
+      east: human_temple
+      west: human_castle_gate
 
-  north_gate:
+  human_north_gate:
     name: "North Gate"
     description: "Massive iron-reinforced gates seal off the city from the outside. The walls here are thick and imposing, clearly meant to keep something out... or in."
     description_day: "Guards patrol the walls above, their armor glinting in the sun."
@@ -46,9 +46,9 @@ rooms:
     features:
       - gate
     exits:
-      south: town_square
+      south: human_town_square
 
-  temple:
+  human_temple:
     name: "Temple of Light"
     description: "A serene sanctuary filled with the soft glow of candles. A stone altar stands at the center, radiating a gentle warmth. Stained glass windows depict scenes of ancient heroes."
     description_day: "Colored light streams through the windows, painting the floor in brilliant hues."
@@ -57,10 +57,10 @@ rooms:
     features:
       - altar
     exits:
-      west: town_square
-      east: mage_tower
+      west: human_town_square
+      east: human_mage_tower
 
-  market_street:
+  human_market_street:
     name: "Market Street"
     description: "A wide avenue lined with merchant stalls and shops. The air is filled with the sounds of haggling and the aroma of exotic goods."
     description_day: "Merchants call out their wares as crowds browse the colorful displays."
@@ -68,12 +68,12 @@ rooms:
     type: city
     features: []
     exits:
-      north: town_square
-      south: artisan_market
-      east: general_store
-      west: tavern
+      north: human_town_square
+      south: human_artisan_market
+      east: human_general_store
+      west: human_tavern
 
-  general_store:
+  human_general_store:
     name: "Ye Olde General Store"
     description: "Shelves packed floor to ceiling with supplies of every kind. Ropes, rations, torches, and tools fill every corner. The shopkeeper watches customers with a keen eye. Type 'shop' to see what's for sale."
     description_day: "Adventurers stock up on supplies before heading into the tower."
@@ -82,9 +82,9 @@ rooms:
     features:
       - shop
     exits:
-      west: market_street
+      west: human_market_street
 
-  tavern:
+  human_tavern:
     name: "The Weary Wanderer Tavern"
     description: "A warm and welcoming establishment filled with the smell of roasting meat and fresh ale. Adventurers swap tales of glory and woe at well-worn tables."
     description_day: "A few regulars nurse their drinks while the staff prepares for the evening rush."
@@ -93,9 +93,9 @@ rooms:
     features:
       - bar
     exits:
-      east: market_street
+      east: human_market_street
 
-  artisan_market:
+  human_artisan_market:
     name: "Artisan's Market"
     description: "A workshop district where skilled craftsmen ply their trades. The air is filled with the sounds of hammering, sawing, and the crackle of small forges. Sturdy workbenches line one side, while material racks hold leather, wood, and metal supplies."
     description_day: "Apprentices bustle about, carrying materials while masters demonstrate their craft to eager onlookers."
@@ -104,16 +104,16 @@ rooms:
     features:
       - workbench
     exits:
-      north: market_street
-      south: military_district
-      east: armory
-      west: alchemist_shop
+      north: human_market_street
+      south: human_military_district
+      east: human_armory
+      west: human_alchemist_shop
 
   # =====================
   # Military District
   # =====================
 
-  military_district:
+  human_military_district:
     name: "Military District"
     description: "The heart of the city's defense forces. Soldiers march in formation down the wide central avenue. Barracks, training facilities, and armories surround the plaza. The clang of steel and shouts of drill sergeants echo off the stone buildings."
     description_day: "Recruits run drills under the watchful eyes of veteran soldiers. Supply wagons rumble past."
@@ -121,12 +121,12 @@ rooms:
     type: city
     features: []
     exits:
-      north: artisan_market
-      south: tower_entrance
-      east: military_district_east
-      west: barracks
+      north: human_artisan_market
+      south: human_tower_entrance
+      east: human_military_district_east
+      west: human_barracks
 
-  military_district_east:
+  human_military_district_east:
     name: "Military District East"
     description: "The eastern section of the military district, where the serious combat training takes place. The smell of sweat and iron hangs heavy in the air. Weapon racks and armor stands line the walls of nearby buildings."
     description_day: "Soldiers spar with real weapons under the supervision of arms masters."
@@ -134,11 +134,11 @@ rooms:
     type: city
     features: []
     exits:
-      north: armory
-      south: training_hall
-      west: military_district
+      north: human_armory
+      south: human_training_hall
+      west: human_military_district
 
-  barracks:
+  human_barracks:
     name: "City Barracks"
     description: "The quarters of the city guard. Weapon racks line the walls, and training dummies show signs of heavy use. The smell of leather and steel fills the air."
     description_day: "Guards drill in formation while officers bark commands."
@@ -146,9 +146,9 @@ rooms:
     type: city
     features: []
     exits:
-      east: military_district
+      east: human_military_district
 
-  armory:
+  human_armory:
     name: "The Iron Forge Armory"
     description: "Heat radiates from the back where smiths work the forge. Weapons and armor of all types hang on display. The ring of hammer on anvil echoes constantly."
     description_day: "Apprentices stoke the fires while the master smith examines his latest creation."
@@ -157,10 +157,10 @@ rooms:
     features:
       - forge
     exits:
-      south: military_district_east
-      west: artisan_market
+      south: human_military_district_east
+      west: human_artisan_market
 
-  training_hall:
+  human_training_hall:
     name: "Combat Training Hall"
     description: "A large open hall with padded floors and practice weapons. Veterans instruct newcomers in the art of combat. The walls display trophies from legendary battles."
     description_day: "The sounds of wooden swords clashing fill the air as students spar."
@@ -169,9 +169,9 @@ rooms:
     features:
       - training_dummy
     exits:
-      north: military_district_east
+      north: human_military_district_east
 
-  tower_entrance:
+  human_tower_entrance:
     name: "Tower Entrance"
     description: "An ancient archway marks the entrance to the endless tower. Strange runes glow faintly on the stone frame. Beyond, a spiral staircase ascends into darkness. Only the brave... or foolish... venture within."
     description_day: "The runes pulse with a soft blue light, beckoning adventurers upward."
@@ -180,14 +180,14 @@ rooms:
     features:
       - stairs_up
     exits:
-      north: military_district
+      north: human_military_district
       up: ""
 
   # =====================
   # Castle District
   # =====================
 
-  castle_gate:
+  human_castle_gate:
     name: "Castle Gate"
     description: "An imposing gatehouse marks the entrance to the castle grounds. Twin towers flank heavy oaken doors reinforced with iron bands. The royal banner flies overhead, snapping in the wind."
     description_day: "Royal guards in polished armor stand at attention, inspecting all who seek entry."
@@ -196,10 +196,10 @@ rooms:
     features:
       - gate
     exits:
-      east: town_square
-      south: guard_post
+      east: human_town_square
+      south: human_guard_post
 
-  guard_post:
+  human_guard_post:
     name: "Castle Guard Post"
     description: "A fortified guardhouse where the castle's elite soldiers rest between shifts. Weapon racks hold well-maintained halberds and swords. A notice board displays wanted posters and duty rosters."
     description_day: "Off-duty guards play dice while others sharpen their blades."
@@ -208,10 +208,10 @@ rooms:
     features:
       - notice_board
     exits:
-      north: castle_gate
-      south: castle_hall
+      north: human_castle_gate
+      south: human_castle_hall
 
-  castle_hall:
+  human_castle_hall:
     name: "Castle Great Hall"
     description: "A magnificent hall with vaulted ceilings and grand stone pillars. Tapestries depicting the kingdom's history line the walls. A red carpet leads from the entrance toward the throne room. Suits of armor stand as silent sentinels along the walls."
     description_day: "Sunlight streams through tall windows, illuminating dust motes dancing in the air. Servants bustle about their duties."
@@ -220,11 +220,11 @@ rooms:
     features:
       - tapestry
     exits:
-      north: guard_post
-      east: royal_library
-      west: throne_room
+      north: human_guard_post
+      east: human_royal_library
+      west: human_throne_room
 
-  throne_room:
+  human_throne_room:
     name: "Throne Room"
     description: "The seat of royal power. An ornate throne carved from a single massive stone sits atop a raised dais. The walls are adorned with portraits of past rulers, their stern gazes following all who enter. Ancient runes are carved into the floor, forming a protective circle around the throne."
     description_day: "Light from high windows creates an almost divine glow around the throne. Petitioners wait along the sides."
@@ -233,10 +233,10 @@ rooms:
     features:
       - throne
     exits:
-      east: castle_hall
-      south: castle_courtyard
+      east: human_castle_hall
+      south: human_castle_courtyard
 
-  royal_library:
+  human_royal_library:
     name: "Royal Library"
     description: "Towering bookshelves reach toward the ceiling, crammed with ancient tomes and scrolls. The smell of old parchment fills the air. Reading tables are scattered throughout, some piled high with research materials. A locked section contains forbidden knowledge about the tower."
     description_day: "Scholars pore over dusty manuscripts, seeking forgotten wisdom."
@@ -245,9 +245,9 @@ rooms:
     features:
       - bookshelf
     exits:
-      west: castle_hall
+      west: human_castle_hall
 
-  castle_courtyard:
+  human_castle_courtyard:
     name: "Castle Courtyard"
     description: "An enclosed garden courtyard at the heart of the castle, surrounded by high walls. A marble fountain depicting a knight slaying a dragon stands at the center. Well-tended gardens provide splashes of color against the grey stone. This is where the royal family holds private ceremonies."
     description_day: "Birds sing in the garden trees. Servants tend the flowerbeds while nobles take leisurely strolls."
@@ -257,13 +257,13 @@ rooms:
       - fountain
       - garden
     exits:
-      north: throne_room
+      north: human_throne_room
 
   # =====================
   # Crafting District
   # =====================
 
-  alchemist_shop:
+  human_alchemist_shop:
     name: "Zara's Alchemy Emporium"
     description: "A cluttered shop filled with bubbling cauldrons, strange specimens in jars, and the pungent smell of various concoctions. Shelves overflow with herbs, crystals, and mysterious powders. An elaborate alchemy lab dominates the back of the room, its brass tubes and glass vessels gleaming."
     description_day: "Colorful fumes rise from various experiments, catching the light streaming through dusty windows."
@@ -273,9 +273,9 @@ rooms:
       - alchemy_lab
       - shop
     exits:
-      east: artisan_market
+      east: human_artisan_market
 
-  mage_tower:
+  human_mage_tower:
     name: "The Arcane Spire"
     description: "A tower dedicated to the study and practice of the magical arts. Arcane symbols are etched into every surface, some glowing faintly with residual power. An enchanting table sits at the center of the main floor, its surface covered in mystical runes. Ancient tomes line the walls."
     description_day: "Motes of magical energy drift through the air, catching sunlight and creating prismatic displays."
@@ -285,4 +285,4 @@ rooms:
       - enchanting_table
       - bookshelf
     exits:
-      west: temple
+      west: human_temple

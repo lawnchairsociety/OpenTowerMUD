@@ -1,0 +1,317 @@
+# Elf Tower Quest Definitions
+# These quests are given by NPCs in the elven city of Silvanneth
+
+quests:
+  # =========================================
+  # TUTORIAL / INTRODUCTION QUESTS (Main)
+  # =========================================
+  elf_tower_introduction:
+    name: "The World Tree's Call"
+    description: "Elder Thandril senses you are ready to climb the ancient tower. Visit the portal room on Floor 1 to begin your journey."
+    category: main
+    giver_npc: "Elder Thandril"
+    turn_in_npc: "Elder Thandril"
+    objectives:
+      - type: explore
+        target: "gen_f1_portal"
+        target_name: "Floor 1 Portal Room"
+        required: 1
+    rewards:
+      gold: 25
+      experience: 50
+      title: "Grove Walker"
+    min_level: 1
+
+  elf_first_hunt:
+    name: "First Hunt"
+    description: "The forest teaches through action. Prove your hunting skills by felling your first prey within the tower."
+    category: main
+    giver_npc: "Grove Keeper Thalion"
+    turn_in_npc: "Grove Keeper Thalion"
+    objectives:
+      - type: kill
+        target: "giant_rat"
+        target_name: "Giant Rat"
+        required: 1
+    rewards:
+      gold: 15
+      experience: 30
+    min_level: 1
+    prereqs:
+      - elf_tower_introduction
+
+  # =========================================
+  # SIDE QUESTS - Grove Keeper Thalion (Ranger)
+  # =========================================
+  elf_vermin_cull:
+    name: "Vermin Cull"
+    description: "Creatures of shadow have infested the lower tower. Track them and restore balance."
+    category: side
+    giver_npc: "Grove Keeper Thalion"
+    turn_in_npc: "Grove Keeper Thalion"
+    objectives:
+      - type: kill
+        target: "giant_rat"
+        target_name: "Giant Rat"
+        required: 5
+    rewards:
+      gold: 30
+      experience: 75
+    min_level: 1
+    repeatable: true
+
+  elf_shadow_wings:
+    name: "Shadow Wings"
+    description: "Bats have grown bold in the tower depths. Thin their numbers before they spread further."
+    category: side
+    giver_npc: "Grove Keeper Thalion"
+    turn_in_npc: "Grove Keeper Thalion"
+    objectives:
+      - type: kill
+        target: "bat"
+        target_name: "Bat"
+        required: 8
+    rewards:
+      gold: 40
+      experience: 100
+    min_level: 2
+    repeatable: true
+
+  elf_spider_silk:
+    name: "Silken Harvest"
+    description: "The weavers need spider silk for their craft. Gather it from the tower's eight-legged inhabitants."
+    category: side
+    giver_npc: "Grove Keeper Thalion"
+    turn_in_npc: "Grove Keeper Thalion"
+    objectives:
+      - type: kill
+        target: "giant_spider"
+        target_name: "Giant Spider"
+        required: 6
+    rewards:
+      gold: 60
+      experience: 150
+    min_level: 3
+    repeatable: true
+
+  # =========================================
+  # SIDE QUESTS - Moonpriest Elara
+  # =========================================
+  elf_moonwell_blessing:
+    name: "Moonwell Blessing"
+    description: "Bathe in the light of the moonwell to receive the blessing of the Moon Mother."
+    category: side
+    giver_npc: "Moonpriest Elara"
+    turn_in_npc: "Moonpriest Elara"
+    objectives:
+      - type: explore
+        target: "elf_moonwell"
+        target_name: "Moonwell"
+        required: 1
+    rewards:
+      gold: 10
+      experience: 25
+    min_level: 1
+
+  elf_cleanse_corruption:
+    name: "Cleanse the Corruption"
+    description: "Undeath is an affront to the natural cycle. Return these lost souls to the embrace of nature."
+    category: side
+    giver_npc: "Moonpriest Elara"
+    turn_in_npc: "Moonpriest Elara"
+    objectives:
+      - type: kill
+        target: "skeleton"
+        target_name: "Skeleton"
+        required: 5
+      - type: kill
+        target: "ghoul"
+        target_name: "Ghoul"
+        required: 3
+    rewards:
+      gold: 150
+      experience: 350
+      title: "Nature's Avenger"
+    min_level: 5
+
+  # =========================================
+  # SIDE QUESTS - Herb-Singer Moonleaf
+  # =========================================
+  elf_herb_gathering:
+    name: "Herb Gathering"
+    description: "The healers need medicinal herbs from the tower. Gather what you can find."
+    category: side
+    giver_npc: "Herb-Singer Moonleaf"
+    turn_in_npc: "Herb-Singer Moonleaf"
+    objectives:
+      - type: fetch
+        target: "healing_herb"
+        target_name: "Healing Herb"
+        required: 5
+    rewards:
+      gold: 35
+      experience: 60
+    min_level: 1
+    repeatable: true
+
+  elf_moonpetal_search:
+    name: "Moonpetal Search"
+    description: "Rare moonpetals grow in the darker reaches of the tower. Their essence is vital for our potions."
+    category: side
+    giver_npc: "Herb-Singer Moonleaf"
+    turn_in_npc: "Herb-Singer Moonleaf"
+    objectives:
+      - type: fetch
+        target: "mushroom"
+        target_name: "Glowing Mushroom"
+        required: 8
+    rewards:
+      gold: 75
+      experience: 120
+    min_level: 3
+    repeatable: true
+
+  # =========================================
+  # SIDE QUESTS - Leaf-Weaver Silvara
+  # =========================================
+  elf_crystal_resonance:
+    name: "Crystal Resonance"
+    description: "Silvara needs tower crystals that resonate with natural energy. Retrieve some for her work."
+    category: side
+    giver_npc: "Leaf-Weaver Silvara"
+    turn_in_npc: "Leaf-Weaver Silvara"
+    objectives:
+      - type: fetch
+        target: "crystal"
+        target_name: "Crystal"
+        required: 3
+    rewards:
+      gold: 60
+      experience: 100
+    min_level: 2
+    repeatable: true
+
+  # =========================================
+  # CRAFTING QUESTS - Woodshaper Elanor
+  # =========================================
+  elf_woodshaping_basics:
+    name: "Woodshaping Basics"
+    description: "Prove your skill with living wood by crafting a basic wooden staff."
+    category: crafting
+    giver_npc: "Woodshaper Elanor"
+    turn_in_npc: "Woodshaper Elanor"
+    objectives:
+      - type: craft
+        target: "wooden_staff"
+        target_name: "Wooden Staff"
+        required: 1
+    rewards:
+      gold: 50
+      experience: 100
+      recipes:
+        - elven_bow
+    required_crafting_skill: woodworking
+    required_crafting_level: 5
+
+  # =========================================
+  # EXPLORATION QUESTS - Elder Thandril
+  # =========================================
+  elf_deeper_roots:
+    name: "Deeper Roots"
+    description: "The tower's mysteries extend far beyond the first floors. Reach Floor 5 to uncover more secrets."
+    category: main
+    giver_npc: "Elder Thandril"
+    turn_in_npc: "Elder Thandril"
+    objectives:
+      - type: explore
+        target: "gen_f5_portal"
+        target_name: "Floor 5 Portal"
+        required: 1
+    rewards:
+      gold: 150
+      experience: 400
+      title: "Deep Wanderer"
+    min_level: 5
+    prereqs:
+      - elf_tower_introduction
+
+  elf_ancient_guardian:
+    name: "The Ancient Guardian"
+    description: "A powerful entity guards the tenth floor. Face it and prove your worthiness to the elders."
+    category: main
+    giver_npc: "Elder Thandril"
+    turn_in_npc: "Elder Thandril"
+    objectives:
+      - type: explore
+        target: "gen_f10_boss"
+        target_name: "Floor 10 Boss Room"
+        required: 1
+    rewards:
+      gold: 300
+      experience: 800
+      title: "Guardian Seeker"
+    min_level: 8
+    prereqs:
+      - elf_deeper_roots
+
+  # =========================================
+  # CLASS QUESTS - Bladesinger Aelindra
+  # =========================================
+  elf_bladesong_trial:
+    name: "Bladesong Trial"
+    description: "The way of the bladesinger requires mastery of both sword and sorcery. Prove yourself against worthy foes."
+    category: class
+    giver_npc: "Bladesinger Aelindra"
+    turn_in_npc: "Bladesinger Aelindra"
+    objectives:
+      - type: kill
+        target: "orc_warrior"
+        target_name: "Orc Warrior"
+        required: 5
+    rewards:
+      gold: 200
+      experience: 500
+      title: "Bladesinger Initiate"
+    required_class: warrior
+    required_class_level: 5
+
+  # =========================================
+  # CLASS QUESTS - Shadowdancer Nyx
+  # =========================================
+  elf_shadow_walk:
+    name: "Shadow Walk"
+    description: "Move unseen through the tower and eliminate threats before they know you're there."
+    category: class
+    giver_npc: "Shadowdancer Nyx"
+    turn_in_npc: "Shadowdancer Nyx"
+    objectives:
+      - type: kill
+        target: "goblin"
+        target_name: "Goblin"
+        required: 8
+    rewards:
+      gold: 180
+      experience: 450
+      title: "Shadow Walker"
+    required_class: rogue
+    required_class_level: 5
+
+  # =========================================
+  # DAILY/REPEATABLE QUESTS
+  # =========================================
+  elf_grove_defense:
+    name: "Grove Defense"
+    description: "The glade sentinels report increasing threats from the tower. Help thin their numbers."
+    category: side
+    giver_npc: "glade sentinel"
+    turn_in_npc: "glade sentinel"
+    objectives:
+      - type: kill
+        target: "goblin"
+        target_name: "Any Enemy"
+        required: 3
+    rewards:
+      gold: 20
+      experience: 50
+    min_level: 1
+    repeatable: true

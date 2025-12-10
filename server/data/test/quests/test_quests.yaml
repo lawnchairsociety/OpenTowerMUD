@@ -1,0 +1,36 @@
+# Test Quest Definitions
+# Minimal quests for integration testing
+
+quests:
+  test_introduction:
+    name: "Test Introduction"
+    description: "A simple test quest for the integration test framework."
+    category: main
+    giver_npc: "Aldric the old guide"
+    turn_in_npc: "Aldric the old guide"
+    objectives:
+      - type: explore
+        target: "gen_f1_portal"
+        target_name: "Floor 1 Portal Room"
+        required: 1
+    rewards:
+      gold: 10
+      experience: 20
+    min_level: 1
+
+  test_combat:
+    name: "Test Combat"
+    description: "Kill something for testing purposes."
+    category: side
+    giver_npc: "Guard Captain Marcus"
+    turn_in_npc: "Guard Captain Marcus"
+    objectives:
+      - type: kill
+        target: "giant_rat"
+        target_name: "Giant Rat"
+        required: 1
+    rewards:
+      gold: 15
+      experience: 30
+    min_level: 1
+    repeatable: true

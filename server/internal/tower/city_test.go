@@ -28,29 +28,29 @@ func TestLoadCityFromYAML(t *testing.T) {
 		t.Errorf("Expected 21 rooms, got %d", len(config.Rooms))
 	}
 
-	// Check for required rooms
+	// Check for required rooms (all prefixed with human_)
 	requiredRooms := []string{
-		"town_square",
-		"north_gate",
-		"temple",
-		"barracks",
-		"market_street",
-		"armory",
-		"general_store",
-		"training_hall",
-		"tavern",
-		"tower_entrance",
-		"castle_gate",
-		"guard_post",
-		"castle_hall",
-		"throne_room",
-		"royal_library",
-		"castle_courtyard",
-		"artisan_market",
-		"military_district",
-		"military_district_east",
-		"alchemist_shop",
-		"mage_tower",
+		"human_town_square",
+		"human_north_gate",
+		"human_temple",
+		"human_barracks",
+		"human_market_street",
+		"human_armory",
+		"human_general_store",
+		"human_training_hall",
+		"human_tavern",
+		"human_tower_entrance",
+		"human_castle_gate",
+		"human_guard_post",
+		"human_castle_hall",
+		"human_throne_room",
+		"human_royal_library",
+		"human_castle_courtyard",
+		"human_artisan_market",
+		"human_military_district",
+		"human_military_district_east",
+		"human_alchemist_shop",
+		"human_mage_tower",
 	}
 
 	for _, roomID := range requiredRooms {
@@ -105,7 +105,7 @@ func TestCityFloorRoomConnections(t *testing.T) {
 	}
 
 	// Check town square has correct exits
-	townSquare := floor.GetRoom("town_square")
+	townSquare := floor.GetRoom("human_town_square")
 	if townSquare == nil {
 		t.Fatal("Town square not found")
 	}
@@ -137,19 +137,19 @@ func TestCityFloorFeatures(t *testing.T) {
 	}
 
 	// Town square should have portal
-	townSquare := floor.GetRoom("town_square")
+	townSquare := floor.GetRoom("human_town_square")
 	if !townSquare.HasFeature("portal") {
 		t.Error("Town square should have portal feature")
 	}
 
 	// Temple should have altar
-	temple := floor.GetRoom("temple")
+	temple := floor.GetRoom("human_temple")
 	if !temple.HasFeature("altar") {
 		t.Error("Temple should have altar feature")
 	}
 
 	// Tower entrance should have stairs_up
-	entrance := floor.GetRoom("tower_entrance")
+	entrance := floor.GetRoom("human_tower_entrance")
 	if !entrance.HasFeature("stairs_up") {
 		t.Error("Tower entrance should have stairs_up feature")
 	}
@@ -167,29 +167,29 @@ func TestCityFloorPortalAndStairs(t *testing.T) {
 	}
 
 	// Portal room should be set
-	if floor.PortalRoom != "town_square" {
-		t.Errorf("PortalRoom = %q, want %q", floor.PortalRoom, "town_square")
+	if floor.PortalRoom != "human_town_square" {
+		t.Errorf("PortalRoom = %q, want %q", floor.PortalRoom, "human_town_square")
 	}
 
 	// Stairs up should be set
-	if floor.StairsUpRoom != "tower_entrance" {
-		t.Errorf("StairsUpRoom = %q, want %q", floor.StairsUpRoom, "tower_entrance")
+	if floor.StairsUpRoom != "human_tower_entrance" {
+		t.Errorf("StairsUpRoom = %q, want %q", floor.StairsUpRoom, "human_tower_entrance")
 	}
 
 	// GetPortalRoom should return the room
 	portalRoom := floor.GetPortalRoom()
 	if portalRoom == nil {
 		t.Error("GetPortalRoom returned nil")
-	} else if portalRoom.ID != "town_square" {
-		t.Errorf("Portal room ID = %q, want %q", portalRoom.ID, "town_square")
+	} else if portalRoom.ID != "human_town_square" {
+		t.Errorf("Portal room ID = %q, want %q", portalRoom.ID, "human_town_square")
 	}
 
 	// GetStairsUp should return the room
 	stairsRoom := floor.GetStairsUp()
 	if stairsRoom == nil {
 		t.Error("GetStairsUp returned nil")
-	} else if stairsRoom.ID != "tower_entrance" {
-		t.Errorf("Stairs room ID = %q, want %q", stairsRoom.ID, "tower_entrance")
+	} else if stairsRoom.ID != "human_tower_entrance" {
+		t.Errorf("Stairs room ID = %q, want %q", stairsRoom.ID, "human_tower_entrance")
 	}
 }
 
@@ -204,36 +204,33 @@ func TestValidateCityFloor(t *testing.T) {
 		t.Fatalf("LoadAndCreateCity failed: %v", err)
 	}
 
-	err = ValidateCityFloor(floor)
+	theme := GetTheme(TowerHuman)
+	err = ValidateCityFloor(floor, theme)
 	if err != nil {
 		t.Errorf("ValidateCityFloor failed: %v", err)
 	}
 }
 
 func TestValidateCityFloorErrors(t *testing.T) {
+	theme := GetTheme(TowerHuman)
+
 	// Test nil floor
-	err := ValidateCityFloor(nil)
+	err := ValidateCityFloor(nil, theme)
 	if err == nil {
 		t.Error("ValidateCityFloor should fail for nil floor")
 	}
 
+	// Test nil theme
+	err = ValidateCityFloor(NewFloor(0), nil)
+	if err == nil {
+		t.Error("ValidateCityFloor should fail for nil theme")
+	}
+
 	// Test wrong floor number
 	wrongFloor := NewFloor(5)
-	err = ValidateCityFloor(wrongFloor)
+	err = ValidateCityFloor(wrongFloor, theme)
 	if err == nil {
 		t.Error("ValidateCityFloor should fail for non-zero floor")
-	}
-}
-
-func TestGetSpawnRoom(t *testing.T) {
-	if GetSpawnRoom() != "town_square" {
-		t.Errorf("GetSpawnRoom() = %q, want %q", GetSpawnRoom(), "town_square")
-	}
-}
-
-func TestGetTowerEntranceRoom(t *testing.T) {
-	if GetTowerEntranceRoom() != "tower_entrance" {
-		t.Errorf("GetTowerEntranceRoom() = %q, want %q", GetTowerEntranceRoom(), "tower_entrance")
 	}
 }
 

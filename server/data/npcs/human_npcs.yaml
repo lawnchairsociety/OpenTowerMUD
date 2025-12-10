@@ -1,25 +1,5 @@
-# NPC Dictionary for OpenTowerMUD
-# These are non-hostile NPCs that spawn in city/town areas
-#
-# Format:
-#   npc_id:
-#     name: Display name of the NPC
-#     description: Detailed description shown when examining
-#     level: NPC level (1-10)
-#     health: Max health points
-#     damage: Base damage per attack
-#     armor: Damage reduction
-#     experience: XP awarded on death (0 for non-combat NPCs)
-#     aggressive: true/false (auto-attack players?)
-#     attackable: true/false (can players attack this NPC?)
-#     loot_table: List of items with drop chances (percentage 0-100)
-#       - item: item_id (from items.yaml)
-#         chance: percentage (e.g., 50 = 50% chance)
-#     locations: List of room IDs where this NPC spawns
-#     respawn_median: Median respawn time in seconds (0 = no respawn)
-#     respawn_variation: Variation in respawn time (+/- seconds)
-#
-# For hostile mobs/enemies, see mobs.yaml
+# Human City NPCs for Ironhaven
+# These are non-hostile NPCs that spawn in the human city (floor 0)
 
 npcs:
   # Town Square NPCs
@@ -40,7 +20,7 @@ npcs:
       - "Remember: the bard saves your story, the priestess saves your soul, and your wits save your life!"
       - "See that mailbox by the fountain? You can send letters and even gold to other adventurers. Type 'mail' to check for messages!"
     locations:
-      - "town_square"
+      - "human_town_square"
     respawn_median: 0
     respawn_variation: 0
     quest_giver: true
@@ -69,7 +49,7 @@ npcs:
       - "I've traveled the world, but nowhere is as strange as this place."
       - "Business is good when adventurers are brave. And foolish."
     locations:
-      - "town_square"
+      - "human_town_square"
     respawn_median: 0
     respawn_variation: 0
 
@@ -89,7 +69,7 @@ npcs:
       - "Remember to pray at the temple before venturing forth!"
       - "The general store has fresh supplies! Stock up before you climb!"
     locations:
-      - "town_square"
+      - "human_town_square"
     respawn_median: 0
     respawn_variation: 0
 
@@ -110,7 +90,7 @@ npcs:
       - "I sense a great destiny within you. Do not let fear hold you back."
       - "The tower was not always filled with such evil. Something awakened it long ago."
     locations:
-      - "temple"
+      - "human_temple"
     respawn_median: 0
     respawn_variation: 0
     quest_giver: true
@@ -136,7 +116,7 @@ npcs:
       - "Would you like to make an offering? The temple always needs support."
       - "I hope to venture into the tower someday... when I'm ready."
     locations:
-      - "temple"
+      - "human_temple"
     respawn_median: 0
     respawn_variation: 0
 
@@ -157,7 +137,7 @@ npcs:
       - "If you see anything unusual, report back to me immediately."
       - "We guard the city, but the tower... the tower guards itself."
     locations:
-      - "barracks"
+      - "human_barracks"
     respawn_median: 0
     respawn_variation: 0
     quest_giver: true
@@ -190,9 +170,9 @@ npcs:
       - "Nothing to report. Move along."
       - "The Captain's in the barracks if you need anything."
     locations:
-      - "barracks"
-      - "north_gate"
-      - "tower_entrance"
+      - "human_barracks"
+      - "human_north_gate"
+      - "human_tower_entrance"
     respawn_median: 0
     respawn_variation: 0
 
@@ -213,7 +193,7 @@ npcs:
       - "The monsters in the tower... their hides get tougher the higher you go. You'll need better steel."
       - "Bring me rare materials from the tower, and I might forge something special for you."
     locations:
-      - "armory"
+      - "human_armory"
     respawn_median: 0
     respawn_variation: 0
     quest_giver: true
@@ -239,7 +219,7 @@ npcs:
       - "Careful near the forge - it's hot!"
       - "Someday I'll be as good as the master. Someday."
     locations:
-      - "armory"
+      - "human_armory"
     respawn_median: 0
     respawn_variation: 0
 
@@ -275,7 +255,6 @@ npcs:
         price: 50
       - item: "leather_cap"
         price: 15
-      # Basic crafting materials
       - item: "iron_ore"
         price: 10
       - item: "leather"
@@ -294,7 +273,7 @@ npcs:
       - "Good supplies keep adventurers alive. Don't skimp on healing potions!"
       - "Everything in here is fairly priced. I don't gouge my customers."
     locations:
-      - "general_store"
+      - "human_general_store"
     respawn_median: 0
     respawn_variation: 0
     quest_giver: true
@@ -322,7 +301,7 @@ npcs:
       - "I've trained hundreds of adventurers. Most didn't come back. Don't be like them."
       - "Practice your attacks on the dummy. Type 'attack dummy' to begin."
     locations:
-      - "training_hall"
+      - "human_training_hall"
     respawn_median: 0
     respawn_variation: 0
     quest_giver: true
@@ -343,7 +322,7 @@ npcs:
     attackable: true
     dialogue: []
     locations:
-      - "training_hall"
+      - "human_training_hall"
     respawn_median: 30
     respawn_variation: 10
 
@@ -373,7 +352,7 @@ npcs:
       - "Stay for a drink. The tower will still be there tomorrow."
       - "The bard's got some new songs. Stick around if you want to hear 'em."
     locations:
-      - "tavern"
+      - "human_tavern"
     respawn_median: 0
     respawn_variation: 0
 
@@ -393,7 +372,7 @@ npcs:
       - "The best stories come from those who return from the tower. Care to share yours?"
       - "~ Gold and glory await the bold, but death awaits the foolish... ~"
     locations:
-      - "tavern"
+      - "human_tavern"
     respawn_median: 0
     respawn_variation: 0
     quest_giver: true
@@ -418,7 +397,7 @@ npcs:
       - "Best prices in the market! You won't find better!"
       - "Buy something, friend? I've got just what you need!"
     locations:
-      - "market_street"
+      - "human_market_street"
     respawn_median: 0
     respawn_variation: 0
 
@@ -442,7 +421,7 @@ npcs:
       - "I don't know nothing about nothing, understand?"
       - "Got any coin to spare? No? Then get lost."
     locations:
-      - "market_street"
+      - "human_market_street"
     respawn_median: 300
     respawn_variation: 60
 
@@ -450,7 +429,6 @@ npcs:
   # Castle NPCs
   # =====================
 
-  # Castle Gate NPCs
   royal_guard:
     name: "royal guard"
     description: "An elite soldier clad in gleaming plate armor bearing the royal crest. They stand at perfect attention, eyes scanning for any threat to the crown."
@@ -467,12 +445,11 @@ npcs:
       - "Move along. No loitering at the gate."
       - "The kingdom has stood for a thousand years. We intend to keep it that way."
     locations:
-      - "castle_gate"
-      - "guard_post"
+      - "human_castle_gate"
+      - "human_guard_post"
     respawn_median: 0
     respawn_variation: 0
 
-  # Throne Room NPCs
   king_galdren:
     name: "King Galdren the Wise"
     description: "An aging but dignified monarch seated upon the stone throne. His crown sits heavy on his silver hair, and his eyes hold the weight of countless difficult decisions. Despite his years, his voice still carries the authority of absolute rule."
@@ -490,7 +467,7 @@ npcs:
       - "The higher floors hold secrets my scholars have sought for generations. Perhaps you will succeed where they failed."
       - "I was once a warrior myself, you know. These old bones remember the thrill of battle."
     locations:
-      - "throne_room"
+      - "human_throne_room"
     respawn_median: 0
     respawn_variation: 0
 
@@ -511,11 +488,10 @@ npcs:
       - "I have studied the tower's mysteries for decades. Each answer only raises more questions."
       - "The creatures within grow stronger with each passing year. Time is not on our side."
     locations:
-      - "throne_room"
+      - "human_throne_room"
     respawn_median: 0
     respawn_variation: 0
 
-  # Castle Hall NPCs
   castle_servant:
     name: "castle servant"
     description: "A humble servant in simple livery, hurrying about their duties with quiet efficiency."
@@ -532,8 +508,8 @@ npcs:
       - "If you need directions, the guards can help you."
       - "I've worked here all my life. Wouldn't have it any other way."
     locations:
-      - "castle_hall"
-      - "castle_courtyard"
+      - "human_castle_hall"
+      - "human_castle_courtyard"
     respawn_median: 0
     respawn_variation: 0
 
@@ -553,12 +529,11 @@ npcs:
       - "My family has served the crown for twelve generations. What's your lineage?"
       - "Gold from the tower has made many a fortune. And ruined just as many."
     locations:
-      - "castle_hall"
-      - "throne_room"
+      - "human_castle_hall"
+      - "human_throne_room"
     respawn_median: 0
     respawn_variation: 0
 
-  # Royal Library NPCs
   royal_archivist:
     name: "Royal Archivist Elara"
     description: "An elderly woman surrounded by towers of books and scrolls. Her spectacles are perpetually perched on her nose, and ink stains cover her fingers. She is said to have read every book in the library twice."
@@ -576,7 +551,7 @@ npcs:
       - "Books hold more power than any sword. Knowledge is the true treasure."
       - "I've catalogued over forty thousand volumes. The tower alone fills three hundred."
     locations:
-      - "royal_library"
+      - "human_royal_library"
     respawn_median: 0
     respawn_variation: 0
 
@@ -596,11 +571,10 @@ npcs:
       - "The creatures inside seem to regenerate endlessly. How? Why? I must know!"
       - "Oh, sorry, did you say something? I was lost in thought."
     locations:
-      - "royal_library"
+      - "human_royal_library"
     respawn_median: 0
     respawn_variation: 0
 
-  # Castle Courtyard NPCs
   court_gardener:
     name: "court gardener"
     description: "A weathered old man with soil-stained hands, lovingly tending to the royal gardens. He seems more comfortable with plants than people."
@@ -617,15 +591,13 @@ npcs:
       - "Plants don't lie, don't scheme, don't betray. That's why I prefer their company."
       - "I've seen kings come and go. The garden remains."
     locations:
-      - "castle_courtyard"
+      - "human_castle_courtyard"
     respawn_median: 0
     respawn_variation: 0
 
   # =====================
   # Class Trainers
   # =====================
-  # These NPCs can teach players new classes (multiclassing)
-  # Use 'train' to learn a new class from them
 
   warrior_trainer:
     name: "Battlemaster Korg"
@@ -645,7 +617,7 @@ npcs:
       - "The sword doesn't care about your fancy spells or prayers. It only cares about the arm that swings it."
       - "Type 'train' if you wish to learn the ways of the Warrior."
     locations:
-      - "training_hall"
+      - "human_training_hall"
     respawn_median: 0
     respawn_variation: 0
 
@@ -667,7 +639,7 @@ npcs:
       - "Fireballs and lightning are flashy, but true mastery lies in understanding the underlying theory."
       - "Type 'train' if you wish to learn the ways of the Mage."
     locations:
-      - "royal_library"
+      - "human_royal_library"
     respawn_median: 0
     respawn_variation: 0
 
@@ -689,7 +661,7 @@ npcs:
       - "The undead are an abomination. Clerics have a sacred duty to return them to rest."
       - "Type 'train' if you wish to learn the ways of the Cleric."
     locations:
-      - "temple"
+      - "human_temple"
     respawn_median: 0
     respawn_variation: 0
 
@@ -711,7 +683,7 @@ npcs:
       - "Why fight fair when you can fight smart? Leave honor to the paladins."
       - "Type 'train' if you wish to learn the ways of the Rogue."
     locations:
-      - "tavern"
+      - "human_tavern"
     respawn_median: 0
     respawn_variation: 0
 
@@ -733,7 +705,7 @@ npcs:
       - "I've hunted creatures most wouldn't believe existed. The tower breeds horrors."
       - "Type 'train' if you wish to learn the ways of the Ranger."
     locations:
-      - "north_gate"
+      - "human_north_gate"
     respawn_median: 0
     respawn_variation: 0
 
@@ -755,15 +727,13 @@ npcs:
       - "Strength and Charisma form the pillars of a paladin's power. Lead by example."
       - "Type 'train' if you wish to learn the ways of the Paladin."
     locations:
-      - "castle_hall"
+      - "human_castle_hall"
     respawn_median: 0
     respawn_variation: 0
 
   # =====================
   # Crafting Trainers
   # =====================
-  # These NPCs teach crafting recipes
-  # Use 'learn' to see available recipes and learn new ones
 
   blacksmithing_trainer:
     name: "Forge Master Tormund"
@@ -776,7 +746,6 @@ npcs:
     aggressive: false
     attackable: false
     shop_inventory:
-      # Blacksmithing materials
       - item: "iron_ore"
         price: 10
       - item: "steel_ingot"
@@ -803,7 +772,7 @@ npcs:
       - "Use 'craft' at the forge to practice your smithing."
       - "I sell smithing materials too. Type 'shop' to see what I have."
     locations:
-      - "armory"
+      - "human_armory"
     respawn_median: 0
     respawn_variation: 0
 
@@ -818,7 +787,6 @@ npcs:
     aggressive: false
     attackable: false
     shop_inventory:
-      # Leatherworking materials
       - item: "leather"
         price: 8
       - item: "leather_strip"
@@ -844,7 +812,7 @@ npcs:
       - "A well-made pack will carry far more than a hastily stitched one."
       - "I have materials for sale too. Type 'shop' to browse."
     locations:
-      - "artisans_market"
+      - "human_artisan_market"
     respawn_median: 0
     respawn_variation: 0
 
@@ -859,7 +827,6 @@ npcs:
     aggressive: false
     attackable: false
     shop_inventory:
-      # Alchemy ingredients
       - item: "red_herb"
         price: 5
       - item: "blue_herb"
@@ -888,7 +855,7 @@ npcs:
       - "A healing potion at the right moment is worth more than any weapon!"
       - "Need ingredients? Type 'shop' to see what I have for sale."
     locations:
-      - "alchemist_shop"
+      - "human_alchemist_shop"
     respawn_median: 0
     respawn_variation: 0
 
@@ -903,7 +870,6 @@ npcs:
     aggressive: false
     attackable: false
     shop_inventory:
-      # Enchanting materials
       - item: "blank_scroll"
         price: 10
       - item: "arcane_dust"
@@ -928,6 +894,6 @@ npcs:
       - "Arcane dust from magical creatures is essential for enchanting. The tower provides... abundantly."
       - "I sell basic enchanting materials. Type 'shop' to see my wares."
     locations:
-      - "mage_tower"
+      - "human_mage_tower"
     respawn_median: 0
     respawn_variation: 0

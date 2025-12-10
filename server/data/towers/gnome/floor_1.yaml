@@ -1,0 +1,366 @@
+# Floor 1 - gnome tower
+# Generated with seed: 43
+# Room count: 50
+
+floor: 1
+tower: gnome
+generated_seed: 43
+stairs_up: gnome_f1_r10_4
+stairs_down: gnome_f1_r13_6
+portal_room: gnome_f1_r13_6
+rooms:
+  gnome_f1_r10_10:
+    name: Maintenance Corridor (Floor 1)
+    description: A maintenance corridor lined with pipes and conduits. Steam hisses from joints, and gears spin in exposed mechanisms.
+    type: corridor
+    exits:
+      north: gnome_f1_r10_9
+  gnome_f1_r10_4:
+    name: Elevator Shaft Up (Floor 1)
+    description: An elevator shaft with a rickety mechanical lift. Gears grind as the platform ascends through the tower.
+    type: stairs_up
+    features:
+      - stairs_up
+    exits:
+      west: gnome_f1_r9_4
+  gnome_f1_r10_5:
+    name: Machine Chamber (Floor 1)
+    description: A machine chamber filled with whirring contraptions. Conveyor belts move endlessly, and indicator lights blink in patterns.
+    type: room
+    exits:
+      west: gnome_f1_r9_5
+  gnome_f1_r10_6:
+    name: Machine Chamber (Floor 1)
+    description: A machine chamber filled with whirring contraptions. Conveyor belts move endlessly, and indicator lights blink in patterns.
+    type: room
+    exits:
+      east: gnome_f1_r11_6
+      west: gnome_f1_r9_6
+  gnome_f1_r10_7:
+    name: Maintenance Corridor (Floor 1)
+    description: A maintenance corridor lined with pipes and conduits. Steam hisses from joints, and gears spin in exposed mechanisms.
+    type: corridor
+    exits:
+      west: gnome_f1_r9_7
+  gnome_f1_r10_8:
+    name: Machine Chamber (Floor 1)
+    description: A machine chamber filled with whirring contraptions. Conveyor belts move endlessly, and indicator lights blink in patterns.
+    type: room
+    exits:
+      south: gnome_f1_r10_9
+      west: gnome_f1_r9_8
+  gnome_f1_r10_9:
+    name: Maintenance Corridor (Floor 1)
+    description: A maintenance corridor lined with pipes and conduits. Steam hisses from joints, and gears spin in exposed mechanisms.
+    type: corridor
+    exits:
+      north: gnome_f1_r10_8
+      south: gnome_f1_r10_10
+      east: gnome_f1_r11_9
+  gnome_f1_r11_3:
+    name: Maintenance Corridor (Floor 1)
+    description: A maintenance corridor lined with pipes and conduits. Steam hisses from joints, and gears spin in exposed mechanisms.
+    type: corridor
+    exits:
+      south: gnome_f1_r11_4
+  gnome_f1_r11_4:
+    name: Machine Chamber (Floor 1)
+    description: A machine chamber filled with whirring contraptions. Conveyor belts move endlessly, and indicator lights blink in patterns.
+    type: room
+    exits:
+      north: gnome_f1_r11_3
+      south: gnome_f1_r11_5
+  gnome_f1_r11_5:
+    name: Maintenance Corridor (Floor 1)
+    description: A maintenance corridor lined with pipes and conduits. Steam hisses from joints, and gears spin in exposed mechanisms.
+    type: corridor
+    exits:
+      north: gnome_f1_r11_4
+      east: gnome_f1_r12_5
+  gnome_f1_r11_6:
+    name: Machine Chamber (Floor 1)
+    description: A machine chamber filled with whirring contraptions. Conveyor belts move endlessly, and indicator lights blink in patterns.
+    type: room
+    exits:
+      south: gnome_f1_r11_7
+      east: gnome_f1_r12_6
+      west: gnome_f1_r10_6
+  gnome_f1_r11_7:
+    name: Maintenance Corridor (Floor 1)
+    description: A maintenance corridor lined with pipes and conduits. Steam hisses from joints, and gears spin in exposed mechanisms.
+    type: corridor
+    exits:
+      north: gnome_f1_r11_6
+      south: gnome_f1_r11_8
+      east: gnome_f1_r12_7
+  gnome_f1_r11_8:
+    name: Machine Chamber (Floor 1)
+    description: A machine chamber filled with whirring contraptions. Conveyor belts move endlessly, and indicator lights blink in patterns.
+    type: room
+    exits:
+      north: gnome_f1_r11_7
+      east: gnome_f1_r12_8
+  gnome_f1_r11_9:
+    name: Maintenance Corridor (Floor 1)
+    description: A maintenance corridor lined with pipes and conduits. Steam hisses from joints, and gears spin in exposed mechanisms.
+    type: corridor
+    exits:
+      west: gnome_f1_r10_9
+  gnome_f1_r12_5:
+    name: Maintenance Corridor (Floor 1)
+    description: A maintenance corridor lined with pipes and conduits. Steam hisses from joints, and gears spin in exposed mechanisms.
+    type: corridor
+    exits:
+      south: gnome_f1_r12_6
+      west: gnome_f1_r11_5
+  gnome_f1_r12_6:
+    name: Maintenance Corridor (Floor 1)
+    description: A maintenance corridor lined with pipes and conduits. Steam hisses from joints, and gears spin in exposed mechanisms.
+    type: corridor
+    exits:
+      north: gnome_f1_r12_5
+      east: gnome_f1_r13_6
+      west: gnome_f1_r11_6
+  gnome_f1_r12_7:
+    name: Machine Chamber (Floor 1)
+    description: A machine chamber filled with whirring contraptions. Conveyor belts move endlessly, and indicator lights blink in patterns.
+    type: room
+    exits:
+      east: gnome_f1_r13_7
+      west: gnome_f1_r11_7
+  gnome_f1_r12_8:
+    name: Machine Chamber (Floor 1)
+    description: A machine chamber filled with whirring contraptions. Conveyor belts move endlessly, and indicator lights blink in patterns.
+    type: room
+    exits:
+      east: gnome_f1_r13_8
+      west: gnome_f1_r11_8
+  gnome_f1_r13_6:
+    name: Elevator Shaft Down (Floor 1)
+    description: An elevator platform descends from above. A shimmering portal offers quick travel to floors you've visited.
+    type: stairs_down
+    features:
+      - stairs_down
+      - portal
+    exits:
+      west: gnome_f1_r12_6
+  gnome_f1_r13_7:
+    name: Machine Chamber (Floor 1)
+    description: A machine chamber filled with whirring contraptions. Conveyor belts move endlessly, and indicator lights blink in patterns.
+    type: room
+    exits:
+      east: gnome_f1_r14_7
+      west: gnome_f1_r12_7
+  gnome_f1_r13_8:
+    name: Machine Chamber (Floor 1)
+    description: A machine chamber filled with whirring contraptions. Conveyor belts move endlessly, and indicator lights blink in patterns.
+    type: room
+    exits:
+      west: gnome_f1_r12_8
+  gnome_f1_r14_7:
+    name: Maintenance Corridor (Floor 1)
+    description: A maintenance corridor lined with pipes and conduits. Steam hisses from joints, and gears spin in exposed mechanisms.
+    type: corridor
+    exits:
+      west: gnome_f1_r13_7
+  gnome_f1_r4_7:
+    name: Machine Chamber (Floor 1)
+    description: A machine chamber filled with whirring contraptions. Conveyor belts move endlessly, and indicator lights blink in patterns.
+    type: room
+    exits:
+      east: gnome_f1_r5_7
+  gnome_f1_r5_5:
+    name: Maintenance Corridor (Floor 1)
+    description: A maintenance corridor lined with pipes and conduits. Steam hisses from joints, and gears spin in exposed mechanisms.
+    type: corridor
+    exits:
+      south: gnome_f1_r5_6
+  gnome_f1_r5_6:
+    name: Machine Chamber (Floor 1)
+    description: A machine chamber filled with whirring contraptions. Conveyor belts move endlessly, and indicator lights blink in patterns.
+    type: room
+    exits:
+      north: gnome_f1_r5_5
+      south: gnome_f1_r5_7
+  gnome_f1_r5_7:
+    name: Maintenance Corridor (Floor 1)
+    description: A maintenance corridor lined with pipes and conduits. Steam hisses from joints, and gears spin in exposed mechanisms.
+    type: corridor
+    exits:
+      north: gnome_f1_r5_6
+      south: gnome_f1_r5_8
+      east: gnome_f1_r6_7
+      west: gnome_f1_r4_7
+  gnome_f1_r5_8:
+    name: Maintenance Corridor (Floor 1)
+    description: A maintenance corridor lined with pipes and conduits. Steam hisses from joints, and gears spin in exposed mechanisms.
+    type: corridor
+    exits:
+      north: gnome_f1_r5_7
+  gnome_f1_r6_5:
+    name: Maintenance Corridor (Floor 1)
+    description: A maintenance corridor lined with pipes and conduits. Steam hisses from joints, and gears spin in exposed mechanisms.
+    type: corridor
+    exits:
+      south: gnome_f1_r6_6
+  gnome_f1_r6_6:
+    name: Maintenance Corridor (Floor 1)
+    description: A maintenance corridor lined with pipes and conduits. Steam hisses from joints, and gears spin in exposed mechanisms.
+    type: corridor
+    exits:
+      north: gnome_f1_r6_5
+      east: gnome_f1_r7_6
+  gnome_f1_r6_7:
+    name: Maintenance Corridor (Floor 1)
+    description: A maintenance corridor lined with pipes and conduits. Steam hisses from joints, and gears spin in exposed mechanisms.
+    type: corridor
+    exits:
+      east: gnome_f1_r7_7
+      west: gnome_f1_r5_7
+  gnome_f1_r7_4:
+    name: Machine Chamber (Floor 1)
+    description: A machine chamber filled with whirring contraptions. Conveyor belts move endlessly, and indicator lights blink in patterns.
+    type: room
+    exits:
+      east: gnome_f1_r8_4
+  gnome_f1_r7_5:
+    name: Machine Chamber (Floor 1)
+    description: A machine chamber filled with whirring contraptions. Conveyor belts move endlessly, and indicator lights blink in patterns.
+    type: room
+    exits:
+      east: gnome_f1_r8_5
+  gnome_f1_r7_6:
+    name: Maintenance Corridor (Floor 1)
+    description: A maintenance corridor lined with pipes and conduits. Steam hisses from joints, and gears spin in exposed mechanisms.
+    type: corridor
+    exits:
+      south: gnome_f1_r7_7
+      west: gnome_f1_r6_6
+  gnome_f1_r7_7:
+    name: Maintenance Corridor (Floor 1)
+    description: A maintenance corridor lined with pipes and conduits. Steam hisses from joints, and gears spin in exposed mechanisms.
+    type: corridor
+    exits:
+      north: gnome_f1_r7_6
+      south: gnome_f1_r7_8
+      east: gnome_f1_r8_7
+      west: gnome_f1_r6_7
+  gnome_f1_r7_8:
+    name: Component Storage (Floor 1)
+    description: A component storage room filled with rare parts and valuable materials. Some machines here still function.
+    type: treasure
+    features:
+      - treasure
+    exits:
+      north: gnome_f1_r7_7
+  gnome_f1_r7_9:
+    name: Maintenance Corridor (Floor 1)
+    description: A maintenance corridor lined with pipes and conduits. Steam hisses from joints, and gears spin in exposed mechanisms.
+    type: corridor
+    exits:
+      east: gnome_f1_r8_9
+  gnome_f1_r8_10:
+    name: Maintenance Corridor (Floor 1)
+    description: A maintenance corridor lined with pipes and conduits. Steam hisses from joints, and gears spin in exposed mechanisms.
+    type: corridor
+    exits:
+      east: gnome_f1_r9_10
+  gnome_f1_r8_4:
+    name: Machine Chamber (Floor 1)
+    description: A machine chamber filled with whirring contraptions. Conveyor belts move endlessly, and indicator lights blink in patterns.
+    type: room
+    exits:
+      south: gnome_f1_r8_5
+      west: gnome_f1_r7_4
+  gnome_f1_r8_5:
+    name: Maintenance Corridor (Floor 1)
+    description: A maintenance corridor lined with pipes and conduits. Steam hisses from joints, and gears spin in exposed mechanisms.
+    type: corridor
+    exits:
+      north: gnome_f1_r8_4
+      east: gnome_f1_r9_5
+      west: gnome_f1_r7_5
+  gnome_f1_r8_6:
+    name: Maintenance Corridor (Floor 1)
+    description: A maintenance corridor lined with pipes and conduits. Steam hisses from joints, and gears spin in exposed mechanisms.
+    type: corridor
+    exits:
+      south: gnome_f1_r8_7
+  gnome_f1_r8_7:
+    name: Machine Chamber (Floor 1)
+    description: A machine chamber filled with whirring contraptions. Conveyor belts move endlessly, and indicator lights blink in patterns.
+    type: room
+    exits:
+      north: gnome_f1_r8_6
+      south: gnome_f1_r8_8
+      east: gnome_f1_r9_7
+      west: gnome_f1_r7_7
+  gnome_f1_r8_8:
+    name: Maintenance Corridor (Floor 1)
+    description: A maintenance corridor lined with pipes and conduits. Steam hisses from joints, and gears spin in exposed mechanisms.
+    type: corridor
+    exits:
+      north: gnome_f1_r8_7
+      south: gnome_f1_r8_9
+  gnome_f1_r8_9:
+    name: Machine Chamber (Floor 1)
+    description: A machine chamber filled with whirring contraptions. Conveyor belts move endlessly, and indicator lights blink in patterns.
+    type: room
+    exits:
+      north: gnome_f1_r8_8
+      west: gnome_f1_r7_9
+  gnome_f1_r9_10:
+    name: Machine Chamber (Floor 1)
+    description: A machine chamber filled with whirring contraptions. Conveyor belts move endlessly, and indicator lights blink in patterns.
+    type: room
+    exits:
+      north: gnome_f1_r9_9
+      west: gnome_f1_r8_10
+  gnome_f1_r9_4:
+    name: Machine Chamber (Floor 1)
+    description: A machine chamber filled with whirring contraptions. Conveyor belts move endlessly, and indicator lights blink in patterns.
+    type: room
+    exits:
+      south: gnome_f1_r9_5
+      east: gnome_f1_r10_4
+  gnome_f1_r9_5:
+    name: Maintenance Corridor (Floor 1)
+    description: A maintenance corridor lined with pipes and conduits. Steam hisses from joints, and gears spin in exposed mechanisms.
+    type: corridor
+    exits:
+      north: gnome_f1_r9_4
+      south: gnome_f1_r9_6
+      east: gnome_f1_r10_5
+      west: gnome_f1_r8_5
+  gnome_f1_r9_6:
+    name: Maintenance Corridor (Floor 1)
+    description: A maintenance corridor lined with pipes and conduits. Steam hisses from joints, and gears spin in exposed mechanisms.
+    type: corridor
+    exits:
+      north: gnome_f1_r9_5
+      south: gnome_f1_r9_7
+      east: gnome_f1_r10_6
+  gnome_f1_r9_7:
+    name: Maintenance Corridor (Floor 1)
+    description: A maintenance corridor lined with pipes and conduits. Steam hisses from joints, and gears spin in exposed mechanisms.
+    type: corridor
+    exits:
+      north: gnome_f1_r9_6
+      south: gnome_f1_r9_8
+      east: gnome_f1_r10_7
+      west: gnome_f1_r8_7
+  gnome_f1_r9_8:
+    name: Maintenance Corridor (Floor 1)
+    description: A maintenance corridor lined with pipes and conduits. Steam hisses from joints, and gears spin in exposed mechanisms.
+    type: corridor
+    exits:
+      north: gnome_f1_r9_7
+      south: gnome_f1_r9_9
+      east: gnome_f1_r10_8
+  gnome_f1_r9_9:
+    name: Machine Chamber (Floor 1)
+    description: A machine chamber filled with whirring contraptions. Conveyor belts move endlessly, and indicator lights blink in patterns.
+    type: room
+    exits:
+      north: gnome_f1_r9_8
+      south: gnome_f1_r9_10

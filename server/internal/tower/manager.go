@@ -2,6 +2,8 @@ package tower
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 	"sync"
 
 	"github.com/lawnchairsociety/opentowermud/server/internal/items"
@@ -11,11 +13,12 @@ import (
 
 // TowerManager manages multiple towers in the game world.
 type TowerManager struct {
-	towers    map[TowerID]*Tower
-	dataDir   string
-	mobConfig *npc.NPCsConfig
+	towers     map[TowerID]*Tower
+	dataDir    string
+	worldDir   string
+	mobConfig  *npc.NPCsConfig
 	itemConfig *items.ItemsConfig
-	mu        sync.RWMutex
+	mu         sync.RWMutex
 }
 
 // NewTowerManager creates a new tower manager.
@@ -38,6 +41,13 @@ func (m *TowerManager) SetItemConfig(config *items.ItemsConfig) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 	m.itemConfig = config
+}
+
+// SetWorldDir sets the directory for world state persistence.
+func (m *TowerManager) SetWorldDir(worldDir string) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	m.worldDir = worldDir
 }
 
 // InitializeTower initializes a specific tower by loading its city and floors.
@@ -253,4 +263,111 @@ func (m *TowerManager) GetFloorPortalRoomByString(towerID string, floorNum int) 
 // IsInitializedByString returns true if a tower is initialized (implements TowerManagerInterface)
 func (m *TowerManager) IsInitializedByString(towerID string) bool {
 	return m.IsInitialized(TowerID(towerID))
+}
+
+// ==================== World State Persistence ====================
+
+// getTowerStateFile returns the file path for a tower's world state file.
+func (m *TowerManager) getTowerStateFile(id TowerID) string {
+	return filepath.Join(m.worldDir, string(id)+"_world.yaml")
+}
+
+// SaveAllTowers saves the world state of all towers to the world directory.
+// Returns the number of towers saved and any error encountered.
+func (m *TowerManager) SaveAllTowers() (int, error) {
+	m.mu.RLock()
+	defer m.mu.RUnlock()
+
+	if m.worldDir == "" {
+		return 0, fmt.Errorf("world directory not configured")
+	}
+
+	// Ensure world directory exists
+	if err := os.MkdirAll(m.worldDir, 0755); err != nil {
+		return 0, fmt.Errorf("failed to create world directory: %w", err)
+	}
+
+	saved := 0
+	for id, t := range m.towers {
+		stateFile := m.getTowerStateFile(id)
+		if err := SaveTower(t, stateFile); err != nil {
+			return saved, fmt.Errorf("failed to save tower %s: %w", id, err)
+		}
+		saved++
+	}
+	return saved, nil
+}
+
+// SaveTowerState saves a single tower's world state.
+func (m *TowerManager) SaveTowerState(id TowerID) error {
+	m.mu.RLock()
+	t := m.towers[id]
+	worldDir := m.worldDir
+	m.mu.RUnlock()
+
+	if t == nil {
+		return fmt.Errorf("tower %s not initialized", id)
+	}
+	if worldDir == "" {
+		return fmt.Errorf("world directory not configured")
+	}
+
+	// Ensure world directory exists
+	if err := os.MkdirAll(worldDir, 0755); err != nil {
+		return fmt.Errorf("failed to create world directory: %w", err)
+	}
+
+	stateFile := filepath.Join(worldDir, string(id)+"_world.yaml")
+	return SaveTower(t, stateFile)
+}
+
+// LoadTowerState loads a tower's world state from the world directory.
+// Returns true if state was loaded, false if no state file exists.
+func (m *TowerManager) LoadTowerState(id TowerID) (bool, error) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
+	if m.worldDir == "" {
+		return false, nil // No world dir configured, nothing to load
+	}
+
+	stateFile := m.getTowerStateFile(id)
+	if !TowerFileExists(stateFile) {
+		return false, nil // No saved state exists
+	}
+
+	loadedTower, err := LoadTower(stateFile)
+	if err != nil {
+		return false, fmt.Errorf("failed to load tower state from %s: %w", stateFile, err)
+	}
+
+	// Merge loaded state into existing tower (preserving city and config)
+	if existingTower, exists := m.towers[id]; exists {
+		// Copy loaded floor data (except floor 0 which is the city)
+		for floorNum, floor := range loadedTower.Floors {
+			if floorNum > 0 {
+				existingTower.SetFloor(floorNum, floor)
+			}
+		}
+		if loadedTower.HighestFloor > existingTower.HighestFloor {
+			existingTower.HighestFloor = loadedTower.HighestFloor
+		}
+	} else {
+		// No existing tower, use loaded tower directly
+		m.towers[id] = loadedTower
+	}
+
+	return true, nil
+}
+
+// HasSavedState returns true if a tower has a saved world state file.
+func (m *TowerManager) HasSavedState(id TowerID) bool {
+	m.mu.RLock()
+	worldDir := m.worldDir
+	m.mu.RUnlock()
+
+	if worldDir == "" {
+		return false
+	}
+	return TowerFileExists(filepath.Join(worldDir, string(id)+"_world.yaml"))
 }

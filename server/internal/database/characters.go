@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"strings"
 	"time"
+
+	"github.com/lawnchairsociety/opentowermud/server/internal/tower"
 )
 
 // ErrCharacterNotFound is returned when a character lookup fails.
@@ -136,11 +138,17 @@ func (d *Database) CreateCharacterFull(accountID int64, name string, primaryClas
 		return nil, fmt.Errorf("failed to get character ID: %w", err)
 	}
 
+	// Get spawn room from the tower theme
+	spawnRoom := "town_square" // fallback
+	if theme := tower.GetTheme(tower.TowerID(homeTower)); theme != nil {
+		spawnRoom = theme.SpawnRoom
+	}
+
 	return &Character{
 		ID:             id,
 		AccountID:      accountID,
 		Name:           name,
-		RoomID:         "town_square", // Will be updated by server based on home_tower
+		RoomID:         spawnRoom,
 		Health:         startingHP,
 		MaxHealth:      startingHP,
 		Mana:           startingMana,

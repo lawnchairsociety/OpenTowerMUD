@@ -1,0 +1,356 @@
+# Orc Tower Quest Definitions
+# These quests are given by NPCs in the orc war camp of Skullgar
+
+quests:
+  # =========================================
+  # TUTORIAL / INTRODUCTION QUESTS (Main)
+  # =========================================
+  orc_tower_introduction:
+    name: "Prove Your Worth"
+    description: "Warchief Bloodfist demands proof of your strength. Enter the tower and reach Floor 1's portal room."
+    category: main
+    giver_npc: "Warchief Bloodfist"
+    turn_in_npc: "Warchief Bloodfist"
+    objectives:
+      - type: explore
+        target: "gen_f1_portal"
+        target_name: "Floor 1 Portal Room"
+        required: 1
+    rewards:
+      gold: 25
+      experience: 50
+      title: "Blood Initiate"
+    min_level: 1
+
+  orc_first_kill:
+    name: "First Blood"
+    description: "No orc is worthy without blood on their blade. Kill your first enemy in the tower."
+    category: main
+    giver_npc: "Pit Master Gorehowl"
+    turn_in_npc: "Pit Master Gorehowl"
+    objectives:
+      - type: kill
+        target: "giant_rat"
+        target_name: "Giant Rat"
+        required: 1
+    rewards:
+      gold: 15
+      experience: 30
+    min_level: 1
+    prereqs:
+      - orc_tower_introduction
+
+  # =========================================
+  # SIDE QUESTS - Pit Master Gorehowl
+  # =========================================
+  orc_rat_slaughter:
+    name: "Rat Slaughter"
+    description: "The pit needs more practice targets. Bring back rat corpses for the training grounds."
+    category: side
+    giver_npc: "Pit Master Gorehowl"
+    turn_in_npc: "Pit Master Gorehowl"
+    objectives:
+      - type: kill
+        target: "giant_rat"
+        target_name: "Giant Rat"
+        required: 5
+    rewards:
+      gold: 30
+      experience: 75
+    min_level: 1
+    repeatable: true
+
+  orc_bat_hunt:
+    name: "Bat Hunt"
+    description: "Cave bats have been stealing meat from the camps. Teach them fear."
+    category: side
+    giver_npc: "Pit Master Gorehowl"
+    turn_in_npc: "Pit Master Gorehowl"
+    objectives:
+      - type: kill
+        target: "bat"
+        target_name: "Bat"
+        required: 8
+    rewards:
+      gold: 40
+      experience: 100
+    min_level: 2
+    repeatable: true
+
+  orc_goblin_crushing:
+    name: "Crush the Weaklings"
+    description: "Goblins think they can steal from orcs. Show them their mistake."
+    category: side
+    giver_npc: "Pit Master Gorehowl"
+    turn_in_npc: "Pit Master Gorehowl"
+    objectives:
+      - type: kill
+        target: "goblin"
+        target_name: "Goblin"
+        required: 10
+    rewards:
+      gold: 75
+      experience: 200
+      title: "Goblin Smasher"
+    min_level: 3
+
+  orc_bone_breaking:
+    name: "Bone Breaking"
+    description: "Skeletons walk where they shouldn't. Break their bones again."
+    category: side
+    giver_npc: "Pit Master Gorehowl"
+    turn_in_npc: "Pit Master Gorehowl"
+    objectives:
+      - type: kill
+        target: "skeleton"
+        target_name: "Skeleton"
+        required: 8
+    rewards:
+      gold: 100
+      experience: 250
+    min_level: 4
+    repeatable: true
+
+  # =========================================
+  # SIDE QUESTS - War Shaman Bonecaller
+  # =========================================
+  orc_spirit_blessing:
+    name: "Spirit's Favor"
+    description: "Visit the Shaman's Hut and receive the blessing of the ancestor spirits."
+    category: side
+    giver_npc: "War Shaman Bonecaller"
+    turn_in_npc: "War Shaman Bonecaller"
+    objectives:
+      - type: explore
+        target: "orc_shamans_hut"
+        target_name: "Shaman's Hut"
+        required: 1
+    rewards:
+      gold: 10
+      experience: 25
+    min_level: 1
+
+  orc_spirit_vengeance:
+    name: "Spirit's Vengeance"
+    description: "The undead mock our ancestors. Destroy them and free the spirits they've trapped."
+    category: side
+    giver_npc: "War Shaman Bonecaller"
+    turn_in_npc: "War Shaman Bonecaller"
+    objectives:
+      - type: kill
+        target: "skeleton"
+        target_name: "Skeleton"
+        required: 5
+      - type: kill
+        target: "ghoul"
+        target_name: "Ghoul"
+        required: 3
+    rewards:
+      gold: 150
+      experience: 350
+      title: "Spirit Avenger"
+    min_level: 5
+
+  # =========================================
+  # SIDE QUESTS - Forge Master Ironhide
+  # =========================================
+  orc_iron_scavenging:
+    name: "Iron Scavenging"
+    description: "The forge needs metal. Bring iron ore from the tower, by any means necessary."
+    category: side
+    giver_npc: "Forge Master Ironhide"
+    turn_in_npc: "Forge Master Ironhide"
+    objectives:
+      - type: fetch
+        target: "iron_ore"
+        target_name: "Iron Ore"
+        required: 5
+    rewards:
+      gold: 40
+      experience: 80
+      items:
+        - iron_dagger
+    min_level: 2
+    repeatable: true
+
+  orc_forge_trial:
+    name: "Forge Trial"
+    description: "Make a blade. If it breaks, you shame the clan."
+    category: crafting
+    giver_npc: "Forge Master Ironhide"
+    turn_in_npc: "Forge Master Ironhide"
+    objectives:
+      - type: craft
+        target: "iron_dagger"
+        target_name: "Iron Dagger"
+        required: 1
+    rewards:
+      gold: 50
+      experience: 100
+      recipes:
+        - orcish_cleaver
+    required_crafting_skill: blacksmithing
+    required_crafting_level: 5
+
+  # =========================================
+  # SIDE QUESTS - Poison Brewer Rotgut
+  # =========================================
+  orc_mushroom_gathering:
+    name: "Poison Ingredients"
+    description: "Rotgut needs fungi for poisons. Gather some from the tower depths."
+    category: side
+    giver_npc: "Poison Brewer Rotgut"
+    turn_in_npc: "Poison Brewer Rotgut"
+    objectives:
+      - type: fetch
+        target: "mushroom"
+        target_name: "Mushroom"
+        required: 5
+    rewards:
+      gold: 35
+      experience: 60
+    min_level: 1
+    repeatable: true
+
+  # =========================================
+  # SIDE QUESTS - Arms Dealer Choppa
+  # =========================================
+  orc_crystal_looting:
+    name: "Crystal Looting"
+    description: "Choppa wants crystals for weapon enchantments. Get them or else."
+    category: side
+    giver_npc: "Arms Dealer Choppa"
+    turn_in_npc: "Arms Dealer Choppa"
+    objectives:
+      - type: fetch
+        target: "crystal"
+        target_name: "Crystal"
+        required: 3
+    rewards:
+      gold: 60
+      experience: 100
+    min_level: 2
+    repeatable: true
+
+  # =========================================
+  # EXPLORATION QUESTS - Warchief Bloodfist
+  # =========================================
+  orc_deeper_conquest:
+    name: "Deeper Conquest"
+    description: "The tower has riches beyond Floor 1. Reach Floor 5 and claim glory for the clan."
+    category: main
+    giver_npc: "Warchief Bloodfist"
+    turn_in_npc: "Warchief Bloodfist"
+    objectives:
+      - type: explore
+        target: "gen_f5_portal"
+        target_name: "Floor 5 Portal"
+        required: 1
+    rewards:
+      gold: 150
+      experience: 400
+      title: "Tower Raider"
+    min_level: 5
+    prereqs:
+      - orc_tower_introduction
+
+  orc_boss_challenge:
+    name: "Challenge the Beast"
+    description: "A mighty creature guards Floor 10. Defeat it and earn eternal glory!"
+    category: main
+    giver_npc: "Warchief Bloodfist"
+    turn_in_npc: "Warchief Bloodfist"
+    objectives:
+      - type: explore
+        target: "gen_f10_boss"
+        target_name: "Floor 10 Boss Room"
+        required: 1
+    rewards:
+      gold: 300
+      experience: 800
+      title: "Beast Slayer"
+    min_level: 8
+    prereqs:
+      - orc_deeper_conquest
+
+  # =========================================
+  # CLASS QUESTS - Pit Master Gorehowl
+  # =========================================
+  orc_warrior_trial:
+    name: "Blood Trial"
+    description: "True warriors bathe in the blood of their enemies. Prove yourself in battle."
+    category: class
+    giver_npc: "Pit Master Gorehowl"
+    turn_in_npc: "Pit Master Gorehowl"
+    objectives:
+      - type: kill
+        target: "orc_warrior"
+        target_name: "Orc Warrior"
+        required: 5
+    rewards:
+      gold: 200
+      experience: 500
+      title: "Blood Champion"
+    required_class: warrior
+    required_class_level: 5
+
+  # =========================================
+  # CLASS QUESTS - Shadow Blade Vex
+  # =========================================
+  orc_shadow_kills:
+    name: "Silent Death"
+    description: "Kill without being seen. The best prey never knows death is coming."
+    category: class
+    giver_npc: "Shadow Blade Vex"
+    turn_in_npc: "Shadow Blade Vex"
+    objectives:
+      - type: kill
+        target: "goblin"
+        target_name: "Goblin"
+        required: 8
+    rewards:
+      gold: 180
+      experience: 450
+      title: "Shadow Killer"
+    required_class: rogue
+    required_class_level: 5
+
+  # =========================================
+  # DAILY/REPEATABLE QUESTS
+  # =========================================
+  orc_arena_warm_up:
+    name: "Arena Warm-Up"
+    description: "Keep your blade sharp. Kill something in the tower and return."
+    category: side
+    giver_npc: "Scarred Veteran"
+    turn_in_npc: "Scarred Veteran"
+    objectives:
+      - type: kill
+        target: "goblin"
+        target_name: "Any Enemy"
+        required: 3
+    rewards:
+      gold: 20
+      experience: 50
+    min_level: 1
+    repeatable: true
+
+  # =========================================
+  # SPECIAL QUEST - Young Beast Handler (references NPC)
+  # =========================================
+  orc_beast_taming:
+    name: "Beast Taming"
+    description: "The Beast Master needs specimens captured. Hunt spiders in the tower depths."
+    category: side
+    giver_npc: "Beast Master Fangripper"
+    turn_in_npc: "Beast Master Fangripper"
+    objectives:
+      - type: kill
+        target: "giant_spider"
+        target_name: "Giant Spider"
+        required: 5
+    rewards:
+      gold: 70
+      experience: 140
+    min_level: 3
+    repeatable: true

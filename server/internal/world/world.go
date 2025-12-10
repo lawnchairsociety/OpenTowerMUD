@@ -52,23 +52,23 @@ func NewWorld() *World {
 
 // Initialize loads or generates a world using the default paths
 func (w *World) Initialize(seed int64) {
-	w.InitializeWithPaths(seed, "data/tower.yaml", "data/npcs.yaml", "data/mobs.yaml")
+	w.InitializeWithDirs(seed, "data/tower.yaml", "data/npcs", "data/mobs")
 }
 
 // InitializeWithPath loads or generates a world using a specific world file path
 func (w *World) InitializeWithPath(seed int64, worldFilePath string) {
-	w.InitializeWithPaths(seed, worldFilePath, "data/npcs.yaml", "data/mobs.yaml")
+	w.InitializeWithDirs(seed, worldFilePath, "data/npcs", "data/mobs")
 }
 
-// InitializeWithPaths loads or generates a world using specific file paths
-func (w *World) InitializeWithPaths(seed int64, worldFilePath, npcsFilePath, mobsFilePath string) {
+// InitializeWithDirs loads or generates a world using directory paths for NPCs and mobs.
+func (w *World) InitializeWithDirs(seed int64, worldFilePath string, npcDirs ...string) {
 	w.worldFilePath = worldFilePath
 	w.seed = seed
 
 	logger.Info("Initializing world", "seed", seed)
 
-	// Load NPCs from YAML
-	npcsConfig, err := npc.LoadMultipleNPCFiles(npcsFilePath, mobsFilePath)
+	// Load NPCs from YAML directories
+	npcsConfig, err := npc.LoadNPCsFromDirectories(npcDirs...)
 	if err != nil {
 		logger.Warning("Failed to load NPCs/mobs", "error", err)
 	} else {
@@ -123,6 +123,10 @@ func (w *World) GetRoom(id string) *Room {
 }
 
 func (w *World) GetStartingRoom() *Room {
+	// Try the new prefixed human town square first, fall back to legacy name
+	if room := w.GetRoom("human_town_square"); room != nil {
+		return room
+	}
 	return w.GetRoom("town_square")
 }
 

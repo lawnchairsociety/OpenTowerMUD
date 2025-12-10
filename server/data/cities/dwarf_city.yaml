@@ -1,0 +1,203 @@
+# Dwarf City - Khazad-Karn
+# A mountain stronghold built deep within the stone, with mines descending into darkness
+#
+# Layout:
+#                [Gate House]
+#                      |
+#  [Ancestor Hall]---[Great Hall]---[King's Throne]
+#  (altar, cleric+paladin)  (spawn, portal,     (quest giver)
+#                            mailbox)                  |
+#   [Armory]---[Market Cavern]---[Tavern]---[Quarters]
+#       |       (shop, workbench)   (rogue)
+#       |              |
+#   [Great Forge]---[Guild Hall]---[Rune Chamber]
+#   (forge, blacksmith) (warrior)   (enchanting, mage)
+#                          |
+#            [Mushroom Grotto]---[Deep Mines]---[Cart Station]
+#            (alchemy, alchemy)    (ranger)
+#                          |
+#                    [The Breach] (tower entrance - descends)
+
+rooms:
+  dwarf_great_hall:
+    name: "The Great Hall of Khazad-Karn"
+    description: "A massive cavern carved from living stone, supported by pillars thick as ancient trees. Dwarven runes glow with inner fire along the walls, telling the history of the clan. A shimmering portal stands near the central pillar, and a iron-bound mailbox sits beside it."
+    description_day: "Torches and runelight illuminate the hall. Dwarves hurry about their business, their boots echoing on stone."
+    description_night: "The runes glow brighter in the darkness, casting the hall in warm amber light. The forge-fires never sleep."
+    type: city
+    features:
+      - portal
+      - fountain
+      - mailbox
+    exits:
+      north: dwarf_gate_house
+      south: dwarf_market_cavern
+      east: dwarf_kings_throne
+      west: dwarf_ancestor_hall
+
+  dwarf_gate_house:
+    name: "The Gate House"
+    description: "Massive iron doors set into the mountainside, thick enough to withstand any siege. Murder holes line the ceiling, and the stone walls are scarred from ancient battles. Beyond the gates lies the outside world - but few dwarves venture there."
+    description_day: "Light streams through arrow slits, revealing the dust of ages in the air."
+    description_night: "Braziers light the gatehouse, and guards stand eternal watch."
+    type: city
+    features:
+      - gate
+    exits:
+      south: dwarf_great_hall
+
+  dwarf_ancestor_hall:
+    name: "Hall of the Ancestors"
+    description: "A sacred chamber lined with stone effigies of legendary dwarves. An altar of polished granite stands before a wall carved with ten thousand names - every dwarf who ever lived in Khazad-Karn. The air is thick with reverence and the smoke of eternal flames."
+    description_day: "Mourners and supplicants kneel before the ancestor stones, seeking guidance from those who came before."
+    description_night: "The eternal flames cast dancing shadows across the stone faces, making them seem almost alive."
+    type: city
+    features:
+      - altar
+    exits:
+      east: dwarf_great_hall
+
+  dwarf_kings_throne:
+    name: "The King's Throne"
+    description: "The seat of dwarven power, a throne carved from a single massive ruby-veined stone. The ceiling soars overhead, covered in gold leaf and precious gems that catch the light. Here the king holds court and dispenses justice."
+    description_day: "Petitioners line the walls, waiting their turn to address the throne. Guards stand at attention."
+    description_night: "The throne room is quiet, the king's seat empty but still radiating authority."
+    type: city
+    features:
+      - throne
+    exits:
+      west: dwarf_great_hall
+      south: dwarf_tavern
+
+  dwarf_market_cavern:
+    name: "The Market Cavern"
+    description: "A vast underground bazaar where dwarven merchants trade in gems, metals, and crafted goods. Sturdy stone stalls line carved pathways, and the ring of coin on stone echoes constantly. Workbenches allow craftsmen to demonstrate their wares."
+    description_day: "The market bustles with activity, merchants shouting prices and haggling with customers."
+    description_night: "A few dedicated traders remain, their wares glinting under torchlight."
+    type: city
+    features:
+      - shop
+      - workbench
+    exits:
+      north: dwarf_great_hall
+      south: dwarf_guild_hall
+      east: dwarf_tavern
+      west: dwarf_armory
+
+  dwarf_armory:
+    name: "The Armory"
+    description: "Racks upon racks of weapons and armor fill this chamber, the finest dwarven craftsmanship on display. Every piece is battle-ready, maintained with religious devotion by the armory keepers."
+    description_day: "Soldiers collect their gear while armorers make adjustments and repairs."
+    description_night: "A lone keeper polishes weapons by lantern light, ensuring every blade is perfect."
+    type: city
+    features: []
+    exits:
+      east: dwarf_market_cavern
+      south: dwarf_great_forge
+
+  dwarf_tavern:
+    name: "The Stone Mug Tavern"
+    description: "A rowdy establishment carved into the rock, famous for its potent ales and hearty stews. Stone tables are worn smooth from centuries of use, and the walls are carved with drinking songs in dwarven runes."
+    description_day: "Off-duty miners and soldiers gather for food and drink, their laughter echoing off stone walls."
+    description_night: "The tavern is packed, songs being sung and tankards raised. This is where dwarves truly come alive."
+    type: city
+    features:
+      - bar
+    exits:
+      north: dwarf_kings_throne
+      south: dwarf_quarters
+      west: dwarf_market_cavern
+
+  dwarf_quarters:
+    name: "The Living Quarters"
+    description: "Row upon row of carved stone dwellings, each one a comfortable home for a dwarven family. The corridors are surprisingly warm, heated by the forge-fires below."
+    description_day: "Dwarven families go about their daily lives, children playing in the corridors."
+    description_night: "Lights glow behind carved doorways as families settle in for the evening."
+    type: city
+    features: []
+    exits:
+      north: dwarf_tavern
+
+  dwarf_great_forge:
+    name: "The Great Forge"
+    description: "The heart of dwarven industry, a massive forge that has burned for a thousand years. Rivers of molten metal flow through stone channels, and the heat is almost unbearable. Here the finest weapons and armor in the world are crafted."
+    description_day: "Smiths work in rotating shifts, the forge never cooling. The ring of hammer on anvil is constant."
+    description_night: "The forge burns just as bright, casting everything in orange light. Dwarves work through the night."
+    type: city
+    features:
+      - forge
+    exits:
+      north: dwarf_armory
+      east: dwarf_guild_hall
+
+  dwarf_guild_hall:
+    name: "The Guild Hall"
+    description: "The headquarters of the miners' and warriors' guilds, where dwarves come to learn their trades. Training dummies and practice areas fill one section, while the other holds meeting rooms and records."
+    description_day: "Apprentices train under watchful eyes while guild masters discuss contracts and quotas."
+    description_night: "A few dedicated trainees practice their forms, the sound of wooden weapons echoing."
+    type: city
+    features:
+      - training_dummy
+    exits:
+      north: dwarf_market_cavern
+      south: dwarf_mushroom_grotto
+      east: dwarf_rune_chamber
+      west: dwarf_great_forge
+
+  dwarf_rune_chamber:
+    name: "The Rune Chamber"
+    description: "A mystical chamber where dwarven runemasters practice their ancient art. Glowing symbols cover every surface, pulsing with contained power. An enchanting table of solid mithril dominates the center."
+    description_day: "Runemasters trace patterns in the air, testing new combinations of ancient symbols."
+    description_night: "The runes glow brighter, filling the chamber with arcane light."
+    type: city
+    features:
+      - enchanting_table
+      - bookshelf
+    exits:
+      west: dwarf_guild_hall
+
+  dwarf_mushroom_grotto:
+    name: "The Mushroom Grotto"
+    description: "A cavern filled with bioluminescent fungi of every color. Dwarven alchemists cultivate rare mushrooms and distill mineral essences here. An alchemy lab bubbles with strange concoctions, the air thick with earthy scents."
+    description_day: "Alchemists harvest glowing caps and tend to bubbling experiments."
+    description_night: "The fungi glow brighter without competition, turning the grotto into a rainbow of soft light."
+    type: city
+    features:
+      - alchemy_lab
+    exits:
+      north: dwarf_guild_hall
+      south: dwarf_the_breach
+      east: dwarf_deep_mines
+
+  dwarf_deep_mines:
+    name: "The Deep Mines"
+    description: "The working mines where dwarves extract precious ores and gems. Tracks for ore carts crisscross the tunnels, and the sound of picks on stone echoes endlessly. The air grows warmer the deeper you go."
+    description_day: "Miners work in organized teams, their headlamps bobbing in the darkness."
+    description_night: "The mines never truly sleep - shifts rotate constantly, following the veins of ore."
+    type: city
+    features: []
+    exits:
+      west: dwarf_mushroom_grotto
+      east: dwarf_cart_station
+
+  dwarf_cart_station:
+    name: "The Cart Station"
+    description: "A hub where ore carts arrive from the deeper mines, loaded with precious metals and gems. Dwarven engineers maintain the tracks and carts with meticulous care."
+    description_day: "Carts rumble in constantly, their contents sorted and catalogued."
+    description_night: "The night shift keeps the carts moving. The mountain's treasures wait for no one."
+    type: city
+    features: []
+    exits:
+      west: dwarf_deep_mines
+
+  dwarf_the_breach:
+    name: "The Breach"
+    description: "Where dwarven picks first broke through to the endless depths. The stone here is corrupted, twisting into unnatural formations that hurt to look upon. Rough-hewn stairs descend into absolute darkness, and strange sounds echo from below. Only the brave - or foolish - venture through."
+    description_day: "Even torchlight seems dimmer here. The corruption drinks the light."
+    description_night: "The darkness below seems to breathe, and the corrupted stone pulses with sickly energy."
+    type: city
+    features:
+      - stairs_up
+    exits:
+      north: dwarf_mushroom_grotto
+      up: ""

@@ -1,0 +1,370 @@
+# Floor 25 - dwarf tower
+# Generated with seed: 67
+# Room count: 50
+
+floor: 25
+tower: dwarf
+generated_seed: 67
+stairs_up: dwarf_f25_r7_6
+stairs_down: dwarf_f25_r8_3
+portal_room: dwarf_f25_r8_3
+rooms:
+  dwarf_f25_r10_10:
+    name: Mine Shaft (Mine Level 25)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      north: dwarf_f25_r10_9
+      south: dwarf_f25_r10_11
+      east: dwarf_f25_r11_10
+  dwarf_f25_r10_11:
+    name: Mine Shaft (Mine Level 25)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      north: dwarf_f25_r10_10
+  dwarf_f25_r10_5:
+    name: Mine Shaft (Mine Level 25)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      south: dwarf_f25_r10_6
+      east: dwarf_f25_r11_5
+  dwarf_f25_r10_6:
+    name: Mine Shaft (Mine Level 25)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      north: dwarf_f25_r10_5
+      south: dwarf_f25_r10_7
+      east: dwarf_f25_r11_6
+  dwarf_f25_r10_7:
+    name: Mine Shaft (Mine Level 25)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      north: dwarf_f25_r10_6
+      west: dwarf_f25_r9_7
+  dwarf_f25_r10_8:
+    name: Ore Vein Chamber (Mine Level 25)
+    description: An ore vein chamber where precious metals gleam in the torchlight. The richest deposits are guarded by something.
+    type: treasure
+    features:
+      - treasure
+    exits:
+      south: dwarf_f25_r10_9
+      east: dwarf_f25_r11_8
+      west: dwarf_f25_r9_8
+  dwarf_f25_r10_9:
+    name: Mine Shaft (Mine Level 25)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      north: dwarf_f25_r10_8
+      south: dwarf_f25_r10_10
+      west: dwarf_f25_r9_9
+  dwarf_f25_r11_10:
+    name: Mine Shaft (Mine Level 25)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      west: dwarf_f25_r10_10
+  dwarf_f25_r11_4:
+    name: Mine Shaft (Mine Level 25)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      south: dwarf_f25_r11_5
+  dwarf_f25_r11_5:
+    name: Excavated Cavern (Mine Level 25)
+    description: An excavated cavern with rough-hewn walls. Mining equipment lies abandoned, and ore carts rust in the corners.
+    type: room
+    exits:
+      north: dwarf_f25_r11_4
+      west: dwarf_f25_r10_5
+  dwarf_f25_r11_6:
+    name: Mine Shaft (Mine Level 25)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      south: dwarf_f25_r11_7
+      east: dwarf_f25_r12_6
+      west: dwarf_f25_r10_6
+  dwarf_f25_r11_7:
+    name: Excavated Cavern (Mine Level 25)
+    description: An excavated cavern with rough-hewn walls. Mining equipment lies abandoned, and ore carts rust in the corners.
+    type: room
+    exits:
+      north: dwarf_f25_r11_6
+      east: dwarf_f25_r12_7
+  dwarf_f25_r11_8:
+    name: Mine Shaft (Mine Level 25)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      south: dwarf_f25_r11_9
+      east: dwarf_f25_r12_8
+      west: dwarf_f25_r10_8
+  dwarf_f25_r11_9:
+    name: Mine Shaft (Mine Level 25)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      north: dwarf_f25_r11_8
+      east: dwarf_f25_r12_9
+  dwarf_f25_r12_6:
+    name: Mine Shaft (Mine Level 25)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      west: dwarf_f25_r11_6
+  dwarf_f25_r12_7:
+    name: Ore Vein Chamber (Mine Level 25)
+    description: An ore vein chamber where precious metals gleam in the torchlight. The richest deposits are guarded by something.
+    type: treasure
+    features:
+      - treasure
+    exits:
+      east: dwarf_f25_r13_7
+      west: dwarf_f25_r11_7
+  dwarf_f25_r12_8:
+    name: Excavated Cavern (Mine Level 25)
+    description: An excavated cavern with rough-hewn walls. Mining equipment lies abandoned, and ore carts rust in the corners.
+    type: room
+    exits:
+      east: dwarf_f25_r13_8
+      west: dwarf_f25_r11_8
+  dwarf_f25_r12_9:
+    name: Mine Shaft (Mine Level 25)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      west: dwarf_f25_r11_9
+  dwarf_f25_r13_7:
+    name: Mine Shaft (Mine Level 25)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      west: dwarf_f25_r12_7
+  dwarf_f25_r13_8:
+    name: Mine Shaft (Mine Level 25)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      south: dwarf_f25_r13_9
+      west: dwarf_f25_r12_8
+  dwarf_f25_r13_9:
+    name: Mine Shaft (Mine Level 25)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      north: dwarf_f25_r13_8
+  dwarf_f25_r4_6:
+    name: Mine Shaft (Mine Level 25)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      east: dwarf_f25_r5_6
+  dwarf_f25_r5_5:
+    name: Mine Shaft (Mine Level 25)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      east: dwarf_f25_r6_5
+  dwarf_f25_r5_6:
+    name: Mine Shaft (Mine Level 25)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      east: dwarf_f25_r6_6
+      west: dwarf_f25_r4_6
+  dwarf_f25_r6_5:
+    name: Mine Shaft (Mine Level 25)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      south: dwarf_f25_r6_6
+      west: dwarf_f25_r5_5
+  dwarf_f25_r6_6:
+    name: Mine Shaft (Mine Level 25)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      north: dwarf_f25_r6_5
+      south: dwarf_f25_r6_7
+      west: dwarf_f25_r5_6
+  dwarf_f25_r6_7:
+    name: Mine Shaft (Mine Level 25)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      north: dwarf_f25_r6_6
+      east: dwarf_f25_r7_7
+  dwarf_f25_r6_9:
+    name: Mine Shaft (Mine Level 25)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      east: dwarf_f25_r7_9
+  dwarf_f25_r7_10:
+    name: Ore Vein Chamber (Mine Level 25)
+    description: An ore vein chamber where precious metals gleam in the torchlight. The richest deposits are guarded by something.
+    type: treasure
+    features:
+      - treasure
+    exits:
+      north: dwarf_f25_r7_9
+      south: dwarf_f25_r7_11
+  dwarf_f25_r7_11:
+    name: Mine Shaft (Mine Level 25)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      north: dwarf_f25_r7_10
+  dwarf_f25_r7_4:
+    name: Mine Shaft (Mine Level 25)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      south: dwarf_f25_r7_5
+  dwarf_f25_r7_5:
+    name: Mine Shaft (Mine Level 25)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      north: dwarf_f25_r7_4
+      east: dwarf_f25_r8_5
+  dwarf_f25_r7_6:
+    name: Shaft to Surface (Mine Level 25)
+    description: A carved shaft leading back toward the surface. The air grows slightly fresher as you ascend.
+    type: stairs_up
+    features:
+      - stairs_up
+    exits:
+      south: dwarf_f25_r7_7
+  dwarf_f25_r7_7:
+    name: Mine Shaft (Mine Level 25)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      north: dwarf_f25_r7_6
+      south: dwarf_f25_r7_8
+      east: dwarf_f25_r8_7
+      west: dwarf_f25_r6_7
+  dwarf_f25_r7_8:
+    name: Mine Shaft (Mine Level 25)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      north: dwarf_f25_r7_7
+      south: dwarf_f25_r7_9
+  dwarf_f25_r7_9:
+    name: Mine Shaft (Mine Level 25)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      north: dwarf_f25_r7_8
+      south: dwarf_f25_r7_10
+      west: dwarf_f25_r6_9
+  dwarf_f25_r8_10:
+    name: Excavated Cavern (Mine Level 25)
+    description: An excavated cavern with rough-hewn walls. Mining equipment lies abandoned, and ore carts rust in the corners.
+    type: room
+    exits:
+      north: dwarf_f25_r8_9
+  dwarf_f25_r8_3:
+    name: Shaft to Depths (Mine Level 25)
+    description: A deep shaft descending into the darkness below. A shimmering portal offers quick travel to levels you've explored.
+    type: stairs_down
+    features:
+      - stairs_down
+      - portal
+    exits:
+      south: dwarf_f25_r8_4
+  dwarf_f25_r8_4:
+    name: Mine Shaft (Mine Level 25)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      north: dwarf_f25_r8_3
+      south: dwarf_f25_r8_5
+  dwarf_f25_r8_5:
+    name: Excavated Cavern (Mine Level 25)
+    description: An excavated cavern with rough-hewn walls. Mining equipment lies abandoned, and ore carts rust in the corners.
+    type: room
+    exits:
+      north: dwarf_f25_r8_4
+      south: dwarf_f25_r8_6
+      west: dwarf_f25_r7_5
+  dwarf_f25_r8_6:
+    name: Mine Shaft (Mine Level 25)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      north: dwarf_f25_r8_5
+      south: dwarf_f25_r8_7
+  dwarf_f25_r8_7:
+    name: Mine Shaft (Mine Level 25)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      north: dwarf_f25_r8_6
+      south: dwarf_f25_r8_8
+      east: dwarf_f25_r9_7
+      west: dwarf_f25_r7_7
+  dwarf_f25_r8_8:
+    name: Mine Shaft (Mine Level 25)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      north: dwarf_f25_r8_7
+      south: dwarf_f25_r8_9
+  dwarf_f25_r8_9:
+    name: Mine Shaft (Mine Level 25)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      north: dwarf_f25_r8_8
+      south: dwarf_f25_r8_10
+  dwarf_f25_r9_10:
+    name: Excavated Cavern (Mine Level 25)
+    description: An excavated cavern with rough-hewn walls. Mining equipment lies abandoned, and ore carts rust in the corners.
+    type: room
+    exits:
+      north: dwarf_f25_r9_9
+  dwarf_f25_r9_5:
+    name: Mine Shaft (Mine Level 25)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      south: dwarf_f25_r9_6
+  dwarf_f25_r9_6:
+    name: Excavated Cavern (Mine Level 25)
+    description: An excavated cavern with rough-hewn walls. Mining equipment lies abandoned, and ore carts rust in the corners.
+    type: room
+    exits:
+      north: dwarf_f25_r9_5
+      south: dwarf_f25_r9_7
+  dwarf_f25_r9_7:
+    name: Excavated Cavern (Mine Level 25)
+    description: An excavated cavern with rough-hewn walls. Mining equipment lies abandoned, and ore carts rust in the corners.
+    type: room
+    exits:
+      north: dwarf_f25_r9_6
+      south: dwarf_f25_r9_8
+      east: dwarf_f25_r10_7
+      west: dwarf_f25_r8_7
+  dwarf_f25_r9_8:
+    name: Excavated Cavern (Mine Level 25)
+    description: An excavated cavern with rough-hewn walls. Mining equipment lies abandoned, and ore carts rust in the corners.
+    type: room
+    exits:
+      north: dwarf_f25_r9_7
+      east: dwarf_f25_r10_8
+  dwarf_f25_r9_9:
+    name: Mine Shaft (Mine Level 25)
+    description: A mine shaft carved through solid rock. Rail tracks run along the floor, and the walls glitter with exposed mineral veins.
+    type: corridor
+    exits:
+      south: dwarf_f25_r9_10
+      east: dwarf_f25_r10_9

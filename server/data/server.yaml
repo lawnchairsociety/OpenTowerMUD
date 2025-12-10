@@ -61,3 +61,34 @@ session:
   # All connected players are automatically saved at this interval
   # Set to 0 to disable auto-save (players must save manually via the bard)
   auto_save_interval_minutes: 5
+
+# File and directory paths for game data
+paths:
+  data_dir: "data"
+  world_dir: "data/world"
+  cities_dir: "data/cities"
+  npcs_dir: "data/npcs"
+  mobs_dir: "data/mobs"
+  quests_dir: "data/quests"
+  items: "data/items.yaml"
+  races: "data/races.yaml"
+  spells: "data/spells.yaml"
+  recipes: "data/recipes.yaml"
+  help: "data/help.yaml"
+  text: "data/text.yaml"
+  logging: "data/logging.yaml"
+  chat_filter: "data/chat_filter.yaml"
+  name_filter: "data/name_filter.yaml"
+
+# Game-specific configuration
+game:
+  # World generation seed (0 = random based on current time)
+  seed: 0
+
+  # Towers to load on startup (human, elf, dwarf, gnome, orc, or "all")
+  # Use ["all"] to load all racial towers
+  enabled_towers:
+    - all
+
+  # Load floors from YAML files instead of generating via WFC
+  static_floors: true

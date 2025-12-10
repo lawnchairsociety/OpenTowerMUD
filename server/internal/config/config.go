@@ -15,6 +15,34 @@ type ServerConfig struct {
 	Connections ConnectionsConfig `yaml:"connections"`
 	RateLimit   RateLimitConfig   `yaml:"rate_limit"`
 	Session     SessionConfig     `yaml:"session"`
+	Paths       PathsConfig       `yaml:"paths"`
+	Game        GameConfig        `yaml:"game"`
+}
+
+// PathsConfig holds file and directory paths for game data.
+type PathsConfig struct {
+	DataDir    string `yaml:"data_dir"`
+	WorldDir   string `yaml:"world_dir"`
+	CitiesDir  string `yaml:"cities_dir"`
+	NPCsDir    string `yaml:"npcs_dir"`
+	MobsDir    string `yaml:"mobs_dir"`
+	QuestsDir  string `yaml:"quests_dir"`
+	Items      string `yaml:"items"`
+	Races      string `yaml:"races"`
+	Spells     string `yaml:"spells"`
+	Recipes    string `yaml:"recipes"`
+	Help       string `yaml:"help"`
+	Text       string `yaml:"text"`
+	Logging    string `yaml:"logging"`
+	ChatFilter string `yaml:"chat_filter"`
+	NameFilter string `yaml:"name_filter"`
+}
+
+// GameConfig holds game-specific configuration.
+type GameConfig struct {
+	Seed          int64    `yaml:"seed"`           // World generation seed (0 = random)
+	EnabledTowers []string `yaml:"enabled_towers"` // Tower identifiers to load (human, elf, dwarf, gnome, orc, or "all")
+	StaticFloors  bool     `yaml:"static_floors"`  // Load floors from YAML instead of WFC generation
 }
 
 // SessionConfig holds session management settings.
@@ -107,6 +135,28 @@ func DefaultConfig() *ServerConfig {
 		Session: SessionConfig{
 			IdleTimeoutMinutes:      30, // Default: 30 minutes idle timeout
 			AutoSaveIntervalMinutes: 5,  // Default: auto-save every 5 minutes
+		},
+		Paths: PathsConfig{
+			DataDir:    "data",
+			WorldDir:   "data/world",
+			CitiesDir:  "data/cities",
+			NPCsDir:    "data/npcs",
+			MobsDir:    "data/mobs",
+			QuestsDir:  "data/quests",
+			Items:      "data/items.yaml",
+			Races:      "data/races.yaml",
+			Spells:     "data/spells.yaml",
+			Recipes:    "data/recipes.yaml",
+			Help:       "data/help.yaml",
+			Text:       "data/text.yaml",
+			Logging:    "data/logging.yaml",
+			ChatFilter: "data/chat_filter.yaml",
+			NameFilter: "data/name_filter.yaml",
+		},
+		Game: GameConfig{
+			Seed:          0,                // 0 = random seed based on time
+			EnabledTowers: []string{"human"}, // Default to human tower only
+			StaticFloors:  true,             // Use static floors for multi-tower
 		},
 	}
 }
@@ -253,4 +303,17 @@ func itoa(n int) string {
 		n /= 10
 	}
 	return string(digits)
+}
+
+// AllRacialTowers is the list of all racial tower IDs.
+var AllRacialTowers = []string{"human", "elf", "dwarf", "gnome", "orc"}
+
+// GetEnabledTowers returns the list of enabled towers, expanding "all" if present.
+func (c *GameConfig) GetEnabledTowers() []string {
+	for _, t := range c.EnabledTowers {
+		if t == "all" {
+			return AllRacialTowers
+		}
+	}
+	return c.EnabledTowers
 }

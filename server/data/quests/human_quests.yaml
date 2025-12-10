@@ -1,12 +1,11 @@
-# Quest definitions
-# Types: kill, fetch, delivery, explore, craft, cast
-# Categories: main, side, class, crafting
+# Human Tower Quest Definitions
+# These quests are given by NPCs in the human city of Kingshaven
 
 quests:
   # =========================================
   # TUTORIAL / INTRODUCTION QUESTS (Main)
   # =========================================
-  tower_introduction:
+  human_tower_introduction:
     name: "The Tower Awaits"
     description: "Aldric believes you're ready to explore the tower. Visit the portal room on Floor 1 to prove yourself."
     category: main
@@ -23,7 +22,7 @@ quests:
       title: "Apprentice Adventurer"
     min_level: 1
 
-  first_blood:
+  human_first_blood:
     name: "First Blood"
     description: "The tower is dangerous. Prove you can handle yourself by defeating your first enemy."
     category: main
@@ -39,12 +38,12 @@ quests:
       experience: 30
     min_level: 1
     prereqs:
-      - tower_introduction
+      - human_tower_introduction
 
   # =========================================
   # SIDE QUESTS - Guard Captain Marcus
   # =========================================
-  pest_control:
+  human_pest_control:
     name: "Pest Control"
     description: "Giant rats have been spotted in the tower entrance. Clear them out to make the area safer."
     category: side
@@ -61,7 +60,7 @@ quests:
     min_level: 1
     repeatable: true
 
-  bat_infestation:
+  human_bat_infestation:
     name: "Bat Infestation"
     description: "Bats have been swarming near the tower stairs. Help reduce their numbers."
     category: side
@@ -78,7 +77,7 @@ quests:
     min_level: 2
     repeatable: true
 
-  goblin_threat:
+  human_goblin_threat:
     name: "Goblin Threat"
     description: "Goblins have been raiding travelers entering the tower. Put an end to their mischief."
     category: side
@@ -95,7 +94,7 @@ quests:
       title: "Goblin Slayer"
     min_level: 3
 
-  skeleton_patrol:
+  human_skeleton_patrol:
     name: "Skeleton Patrol"
     description: "Undead skeletons have been seen wandering the lower floors. Destroy them."
     category: side
@@ -115,7 +114,7 @@ quests:
   # =========================================
   # SIDE QUESTS - High Priestess Sera
   # =========================================
-  blessing_of_light:
+  human_blessing_of_light:
     name: "Blessing of Light"
     description: "Visit the temple and pray at the altar to receive the blessing of the light."
     category: side
@@ -123,7 +122,7 @@ quests:
     turn_in_npc: "High Priestess Sera"
     objectives:
       - type: explore
-        target: "temple"
+        target: "human_temple"
         target_name: "Temple"
         required: 1
     rewards:
@@ -131,7 +130,7 @@ quests:
       experience: 25
     min_level: 1
 
-  cleanse_the_undead:
+  human_cleanse_the_undead:
     name: "Cleanse the Undead"
     description: "The undead are an abomination. Help cleanse the tower of their corruption."
     category: side
@@ -155,7 +154,7 @@ quests:
   # =========================================
   # SIDE QUESTS - Master Smith Bron
   # =========================================
-  iron_collection:
+  human_iron_collection:
     name: "Iron Collection"
     description: "The smithy needs iron ore for new equipment. Gather some from slain creatures."
     category: side
@@ -174,7 +173,7 @@ quests:
     min_level: 2
     repeatable: true
 
-  forging_ahead:
+  human_forging_ahead:
     name: "Forging Ahead"
     description: "Prove your smithing skills by crafting an iron dagger."
     category: crafting
@@ -196,7 +195,7 @@ quests:
   # =========================================
   # SIDE QUESTS - Shopkeeper Mira
   # =========================================
-  crystal_hunt:
+  human_crystal_hunt:
     name: "Crystal Hunt"
     description: "Mira needs crystals for her shop. Bring her some from the tower."
     category: side
@@ -213,7 +212,7 @@ quests:
     min_level: 2
     repeatable: true
 
-  mushroom_gathering:
+  human_mushroom_gathering:
     name: "Mushroom Gathering"
     description: "The alchemist needs mushrooms from the tower depths. Collect some for a reward."
     category: side
@@ -233,7 +232,7 @@ quests:
   # =========================================
   # EXPLORATION QUESTS - Aldric
   # =========================================
-  floor_five:
+  human_floor_five:
     name: "Deeper Into Darkness"
     description: "The tower grows more dangerous with each floor. Reach Floor 5 to prove your worth."
     category: main
@@ -250,9 +249,9 @@ quests:
       title: "Tower Explorer"
     min_level: 5
     prereqs:
-      - tower_introduction
+      - human_tower_introduction
 
-  floor_ten:
+  human_floor_ten:
     name: "The First Boss"
     description: "A powerful boss guards Floor 10. Reach the boss floor to prove you're ready for the challenge."
     category: main
@@ -269,12 +268,12 @@ quests:
       title: "Boss Hunter"
     min_level: 8
     prereqs:
-      - floor_five
+      - human_floor_five
 
   # =========================================
   # CLASS QUESTS - Combat Instructor Vex
   # =========================================
-  warrior_trial:
+  human_warrior_trial:
     name: "Warrior's Trial"
     description: "Prove your combat prowess by defeating formidable foes."
     category: class
@@ -295,7 +294,7 @@ quests:
   # =========================================
   # DAILY/REPEATABLE QUESTS - Tavern
   # =========================================
-  tavern_tales:
+  human_tavern_tales:
     name: "Tavern Tales"
     description: "The bard wants to hear tales of your adventures. Defeat any enemies and return."
     category: side

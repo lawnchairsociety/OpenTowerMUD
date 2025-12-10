@@ -27,3 +27,28 @@ rate_limit:
 session:
   idle_timeout_minutes: 30
   auto_save_interval_minutes: 5
+
+# Test paths - use test-specific files where they exist, otherwise use real data
+paths:
+  data_dir: "data"
+  world_dir: "data/test/world"
+  cities_dir: "data/cities"
+  npcs_dir: "data/test/npcs"
+  mobs_dir: "data/test/mobs"
+  quests_dir: "data/test/quests"
+  items: "data/test/items_test.yaml"
+  races: "data/races.yaml"
+  spells: "data/spells.yaml"
+  recipes: "data/test/recipes_test.yaml"
+  help: "data/help.yaml"
+  text: "data/text.yaml"
+  logging: "data/logging.yaml"
+  chat_filter: "data/test/chat_filter_test.yaml"
+  name_filter: "data/name_filter.yaml"
+
+# Test game configuration
+game:
+  seed: 12345
+  enabled_towers:
+    - all
+  static_floors: true

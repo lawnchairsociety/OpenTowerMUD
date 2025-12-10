@@ -89,20 +89,14 @@ rm -f "$TEST_DB" "$TEST_DB-wal" "$TEST_DB-shm"
 rm -f "data/tower.yaml"
 
 # Start server with test configuration
+# Note: paths and game settings are now in data/test/server_test.yaml
 echo -e "${YELLOW}Starting server on port $SERVER_PORT with test configuration...${NC}"
 echo "Server logs: $SERVER_LOG"
 ./opentowermud \
     --readonly \
     --port "$SERVER_PORT" \
     --db "$TEST_DB" \
-    --seed 42 \
     --config data/test/server_test.yaml \
-    --npcs data/test/npcs_test.yaml \
-    --mobs data/test/mobs_test.yaml \
-    --items data/test/items_test.yaml \
-    --recipes data/test/recipes_test.yaml \
-    --chatfilter data/test/chat_filter_test.yaml \
-    --quests data/quests.yaml \
     > "$SERVER_LOG" 2>&1 &
 
 SERVER_PID=$!

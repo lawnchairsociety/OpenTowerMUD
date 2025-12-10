@@ -1,0 +1,370 @@
+# Floor 21 - orc tower
+# Generated with seed: 63
+# Room count: 50
+
+floor: 21
+tower: orc
+generated_seed: 63
+stairs_up: orc_f21_r7_3
+stairs_down: orc_f21_r3_4
+portal_room: orc_f21_r3_4
+rooms:
+  orc_f21_r10_4:
+    name: Bone Passage (Floor 21)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      south: orc_f21_r10_5
+      west: orc_f21_r9_4
+  orc_f21_r10_5:
+    name: Bone Passage (Floor 21)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      north: orc_f21_r10_4
+  orc_f21_r10_8:
+    name: War Trophy Chamber (Floor 21)
+    description: A war trophy chamber filled with plunder from countless battles. The most valued prizes are displayed prominently.
+    type: treasure
+    features:
+      - treasure
+    exits:
+      west: orc_f21_r9_8
+  orc_f21_r2_5:
+    name: War Trophy Chamber (Floor 21)
+    description: A war trophy chamber filled with plunder from countless battles. The most valued prizes are displayed prominently.
+    type: treasure
+    features:
+      - treasure
+    exits:
+      south: orc_f21_r2_6
+      east: orc_f21_r3_5
+  orc_f21_r2_6:
+    name: Bone Passage (Floor 21)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      north: orc_f21_r2_5
+  orc_f21_r2_7:
+    name: Trophy Hall (Floor 21)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      east: orc_f21_r3_7
+  orc_f21_r3_4:
+    name: Blood Stair (Floor 21)
+    description: Blood-stained stairs descend from above. A shimmering portal offers quick travel to floors you've conquered.
+    type: stairs_down
+    features:
+      - stairs_down
+      - portal
+    exits:
+      east: orc_f21_r4_4
+  orc_f21_r3_5:
+    name: Bone Passage (Floor 21)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      east: orc_f21_r4_5
+      west: orc_f21_r2_5
+  orc_f21_r3_6:
+    name: Trophy Hall (Floor 21)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      east: orc_f21_r4_6
+  orc_f21_r3_7:
+    name: Bone Passage (Floor 21)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      south: orc_f21_r3_8
+      east: orc_f21_r4_7
+      west: orc_f21_r2_7
+  orc_f21_r3_8:
+    name: Trophy Hall (Floor 21)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      north: orc_f21_r3_7
+  orc_f21_r4_2:
+    name: Bone Passage (Floor 21)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      south: orc_f21_r4_3
+  orc_f21_r4_3:
+    name: Bone Passage (Floor 21)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      north: orc_f21_r4_2
+      east: orc_f21_r5_3
+  orc_f21_r4_4:
+    name: Trophy Hall (Floor 21)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      south: orc_f21_r4_5
+      west: orc_f21_r3_4
+  orc_f21_r4_5:
+    name: Trophy Hall (Floor 21)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      north: orc_f21_r4_4
+      east: orc_f21_r5_5
+      west: orc_f21_r3_5
+  orc_f21_r4_6:
+    name: Bone Passage (Floor 21)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      south: orc_f21_r4_7
+      west: orc_f21_r3_6
+  orc_f21_r4_7:
+    name: Trophy Hall (Floor 21)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      north: orc_f21_r4_6
+      east: orc_f21_r5_7
+      west: orc_f21_r3_7
+  orc_f21_r5_3:
+    name: Trophy Hall (Floor 21)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      east: orc_f21_r6_3
+      west: orc_f21_r4_3
+  orc_f21_r5_4:
+    name: Bone Passage (Floor 21)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      east: orc_f21_r6_4
+  orc_f21_r5_5:
+    name: Trophy Hall (Floor 21)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      east: orc_f21_r6_5
+      west: orc_f21_r4_5
+  orc_f21_r5_6:
+    name: Trophy Hall (Floor 21)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      east: orc_f21_r6_6
+  orc_f21_r5_7:
+    name: Bone Passage (Floor 21)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      east: orc_f21_r6_7
+      west: orc_f21_r4_7
+  orc_f21_r5_8:
+    name: Trophy Hall (Floor 21)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      east: orc_f21_r6_8
+  orc_f21_r5_9:
+    name: Bone Passage (Floor 21)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      east: orc_f21_r6_9
+  orc_f21_r6_10:
+    name: Trophy Hall (Floor 21)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      north: orc_f21_r6_9
+  orc_f21_r6_2:
+    name: Bone Passage (Floor 21)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      south: orc_f21_r6_3
+  orc_f21_r6_3:
+    name: Bone Passage (Floor 21)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      north: orc_f21_r6_2
+      south: orc_f21_r6_4
+      west: orc_f21_r5_3
+  orc_f21_r6_4:
+    name: Bone Passage (Floor 21)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      north: orc_f21_r6_3
+      east: orc_f21_r7_4
+      west: orc_f21_r5_4
+  orc_f21_r6_5:
+    name: Trophy Hall (Floor 21)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      east: orc_f21_r7_5
+      west: orc_f21_r5_5
+  orc_f21_r6_6:
+    name: Bone Passage (Floor 21)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      south: orc_f21_r6_7
+      west: orc_f21_r5_6
+  orc_f21_r6_7:
+    name: Trophy Hall (Floor 21)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      north: orc_f21_r6_6
+      east: orc_f21_r7_7
+      west: orc_f21_r5_7
+  orc_f21_r6_8:
+    name: Bone Passage (Floor 21)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      east: orc_f21_r7_8
+      west: orc_f21_r5_8
+  orc_f21_r6_9:
+    name: Trophy Hall (Floor 21)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      south: orc_f21_r6_10
+      east: orc_f21_r7_9
+      west: orc_f21_r5_9
+  orc_f21_r7_3:
+    name: Warrior's Ascent (Floor 21)
+    description: A warrior's ascent marked with victory runes. Only the strong climb higher in the Beast-Skull Tower.
+    type: stairs_up
+    features:
+      - stairs_up
+    exits:
+      south: orc_f21_r7_4
+  orc_f21_r7_4:
+    name: Trophy Hall (Floor 21)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      north: orc_f21_r7_3
+      south: orc_f21_r7_5
+      west: orc_f21_r6_4
+  orc_f21_r7_5:
+    name: Bone Passage (Floor 21)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      north: orc_f21_r7_4
+      south: orc_f21_r7_6
+      east: orc_f21_r8_5
+      west: orc_f21_r6_5
+  orc_f21_r7_6:
+    name: Trophy Hall (Floor 21)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      north: orc_f21_r7_5
+      south: orc_f21_r7_7
+  orc_f21_r7_7:
+    name: Bone Passage (Floor 21)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      north: orc_f21_r7_6
+      south: orc_f21_r7_8
+      west: orc_f21_r6_7
+  orc_f21_r7_8:
+    name: Bone Passage (Floor 21)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      north: orc_f21_r7_7
+      south: orc_f21_r7_9
+      east: orc_f21_r8_8
+      west: orc_f21_r6_8
+  orc_f21_r7_9:
+    name: Bone Passage (Floor 21)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      north: orc_f21_r7_8
+      west: orc_f21_r6_9
+  orc_f21_r8_4:
+    name: Bone Passage (Floor 21)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      south: orc_f21_r8_5
+      east: orc_f21_r9_4
+  orc_f21_r8_5:
+    name: Bone Passage (Floor 21)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      north: orc_f21_r8_4
+      south: orc_f21_r8_6
+      west: orc_f21_r7_5
+  orc_f21_r8_6:
+    name: Trophy Hall (Floor 21)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      north: orc_f21_r8_5
+      east: orc_f21_r9_6
+  orc_f21_r8_8:
+    name: Bone Passage (Floor 21)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      east: orc_f21_r9_8
+      west: orc_f21_r7_8
+  orc_f21_r9_2:
+    name: Trophy Hall (Floor 21)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      south: orc_f21_r9_3
+  orc_f21_r9_3:
+    name: Bone Passage (Floor 21)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      north: orc_f21_r9_2
+      south: orc_f21_r9_4
+  orc_f21_r9_4:
+    name: Bone Passage (Floor 21)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      north: orc_f21_r9_3
+      east: orc_f21_r10_4
+      west: orc_f21_r8_4
+  orc_f21_r9_6:
+    name: Bone Passage (Floor 21)
+    description: A passage decorated with bones and skulls. War trophies hang from hooks, and the floor is stained with old blood.
+    type: corridor
+    exits:
+      south: orc_f21_r9_7
+      west: orc_f21_r8_6
+  orc_f21_r9_7:
+    name: War Trophy Chamber (Floor 21)
+    description: A war trophy chamber filled with plunder from countless battles. The most valued prizes are displayed prominently.
+    type: treasure
+    features:
+      - treasure
+    exits:
+      north: orc_f21_r9_6
+  orc_f21_r9_8:
+    name: Trophy Hall (Floor 21)
+    description: A trophy hall lined with the remains of fallen enemies. Weapons and armor of the conquered adorn the walls.
+    type: room
+    exits:
+      east: orc_f21_r10_8
+      west: orc_f21_r8_8

@@ -1,0 +1,1919 @@
+# Mob (Enemy) Dictionary for OpenTowerMUD
+# These are hostile creatures that spawn in the tower
+#
+# Format:
+#   mob_id:
+#     name: Display name of the mob
+#     description: Detailed description shown when examining
+#     level: Mob level (1-10)
+#     health: Max health points
+#     damage: Base damage per attack
+#     armor: Damage reduction
+#     experience: XP awarded on death
+#     aggressive: true/false (auto-attack players?)
+#     attackable: true/false (can players attack this mob?)
+#     gold_min: Minimum gold dropped on death
+#     gold_max: Maximum gold dropped on death
+#     loot_table: List of items with drop chances (percentage 0-100)
+#       - item: item_id (from items.yaml)
+#         chance: percentage (e.g., 50 = 50% chance)
+#     tier: Mob tier (1=easy, 2=medium, 3=hard, 4=elite)
+#     boss: true/false (is this a boss mob? - bosses drop ALL loot at 100%)
+#     mob_type: Creature type for class bonuses (beast, humanoid, undead, demon, construct, giant)
+#     tower_tags: List of towers where this mob can spawn ["shared", "human", "elf", "dwarf", "gnome", "orc", "unified"]
+#     locations: List of room types where this mob spawns (legacy, for city spawns)
+#     respawn_median: Median respawn time in seconds
+#     respawn_variation: Variation in respawn time (+/- seconds)
+
+npcs:
+  # ===================
+  # Tier 1: Easy Mobs (Floors 1-5)
+  # ===================
+
+  # --- SHARED MOBS (All Towers) ---
+
+  goblin:
+    name: "goblin"
+    description: "A small, green goblin with sharp teeth and beady eyes"
+    level: 1
+    health: 20
+    damage: 3
+    armor: 0
+    experience: 10
+    aggressive: true
+    attackable: true
+    tier: 1
+    mob_type: "humanoid"
+    tower_tags: ["shared"]
+    gold_min: 1
+    gold_max: 3
+    loot_table:
+      - item: "bread"
+        chance: 25
+      - item: "leather_strip"
+        chance: 30
+      - item: "thread"
+        chance: 20
+    respawn_median: 120
+    respawn_variation: 30
+
+  giant_rat:
+    name: "giant rat"
+    description: "A massive rat with glowing red eyes and matted fur"
+    level: 1
+    health: 15
+    damage: 2
+    armor: 0
+    experience: 8
+    aggressive: true
+    attackable: true
+    tier: 1
+    mob_type: "beast"
+    tower_tags: ["shared"]
+    gold_min: 0
+    gold_max: 2
+    loot_table:
+      - item: "mushroom"
+        chance: 40
+      - item: "leather"
+        chance: 25
+      - item: "beast_fang"
+        chance: 15
+    respawn_median: 120
+    respawn_variation: 30
+
+  bat:
+    name: "bat"
+    description: "A large bat with leathery wings and sharp fangs"
+    level: 2
+    health: 12
+    damage: 4
+    armor: 0
+    experience: 12
+    aggressive: true
+    attackable: true
+    tier: 1
+    mob_type: "beast"
+    tower_tags: ["shared"]
+    gold_min: 1
+    gold_max: 3
+    loot_table:
+      - item: "leather"
+        chance: 30
+      - item: "beast_fang"
+        chance: 20
+    respawn_median: 120
+    respawn_variation: 30
+
+  skeleton:
+    name: "skeleton"
+    description: "An animated skeleton wielding a rusty blade"
+    level: 2
+    health: 18
+    damage: 4
+    armor: 1
+    experience: 15
+    aggressive: true
+    attackable: true
+    tier: 1
+    mob_type: "undead"
+    tower_tags: ["shared"]
+    gold_min: 2
+    gold_max: 4
+    loot_table:
+      - item: "bone"
+        chance: 50
+      - item: "rusty_sword"
+        chance: 15
+      - item: "arcane_dust"
+        chance: 15
+    respawn_median: 120
+    respawn_variation: 30
+
+  kobold:
+    name: "kobold"
+    description: "A small, reptilian humanoid with cunning eyes and a makeshift spear"
+    level: 1
+    health: 12
+    damage: 3
+    armor: 0
+    experience: 8
+    aggressive: true
+    attackable: true
+    tier: 1
+    mob_type: "humanoid"
+    tower_tags: ["shared"]
+    gold_min: 1
+    gold_max: 3
+    loot_table:
+      - item: "bandage"
+        chance: 30
+      - item: "wooden_shaft"
+        chance: 35
+      - item: "iron_ore"
+        chance: 15
+    respawn_median: 120
+    respawn_variation: 30
+
+  wild_boar:
+    name: "wild boar"
+    description: "A tusked boar with bristly fur and a foul temper"
+    level: 2
+    health: 22
+    damage: 5
+    armor: 1
+    experience: 14
+    aggressive: true
+    attackable: true
+    tier: 1
+    mob_type: "beast"
+    tower_tags: ["shared"]
+    gold_min: 0
+    gold_max: 1
+    loot_table:
+      - item: "roasted_meat"
+        chance: 40
+      - item: "leather"
+        chance: 35
+      - item: "beast_fang"
+        chance: 25
+    respawn_median: 120
+    respawn_variation: 30
+
+  # --- HUMAN/ARCANE TOWER MOBS (Tier 1) ---
+
+  arcane_sprite:
+    name: "arcane sprite"
+    description: "A swirling manifestation of raw magical energy, crackling with unstable power"
+    level: 1
+    health: 10
+    damage: 4
+    armor: 0
+    experience: 10
+    aggressive: true
+    attackable: true
+    tier: 1
+    mob_type: "construct"
+    tower_tags: ["human"]
+    gold_min: 1
+    gold_max: 3
+    loot_table:
+      - item: "arcane_dust"
+        chance: 40
+      - item: "mana_potion"
+        chance: 15
+    respawn_median: 120
+    respawn_variation: 30
+
+  # --- ELF/DISEASED TREE TOWER MOBS (Tier 1) ---
+
+  blighted_sapling:
+    name: "blighted sapling"
+    description: "A small tree animated by corruption, its roots writhing like tentacles"
+    level: 1
+    health: 18
+    damage: 3
+    armor: 1
+    experience: 10
+    aggressive: true
+    attackable: true
+    tier: 1
+    mob_type: "construct"
+    tower_tags: ["elf"]
+    gold_min: 0
+    gold_max: 2
+    loot_table:
+      - item: "wooden_shaft"
+        chance: 40
+      - item: "mushroom"
+        chance: 30
+    respawn_median: 120
+    respawn_variation: 30
+
+  rot_sprite:
+    name: "rot sprite"
+    description: "A fairy twisted by disease, trailing toxic spores in its wake"
+    level: 2
+    health: 12
+    damage: 4
+    armor: 0
+    experience: 12
+    aggressive: true
+    attackable: true
+    tier: 1
+    mob_type: "beast"
+    tower_tags: ["elf"]
+    gold_min: 1
+    gold_max: 3
+    loot_table:
+      - item: "mushroom"
+        chance: 45
+      - item: "monster_blood"
+        chance: 20
+    respawn_median: 120
+    respawn_variation: 30
+
+  # --- DWARF/MINING TOWER MOBS (Tier 1) ---
+
+  cave_beetle:
+    name: "cave beetle"
+    description: "A large insect with mandibles that can crush stone"
+    level: 1
+    health: 16
+    damage: 3
+    armor: 2
+    experience: 10
+    aggressive: true
+    attackable: true
+    tier: 1
+    mob_type: "beast"
+    tower_tags: ["dwarf"]
+    gold_min: 0
+    gold_max: 2
+    loot_table:
+      - item: "leather"
+        chance: 30
+      - item: "stone_shard"
+        chance: 25
+    respawn_median: 120
+    respawn_variation: 30
+
+  rockworm:
+    name: "rockworm"
+    description: "A burrowing creature that tunnels through solid rock, its segmented body glistening with mineral deposits"
+    level: 2
+    health: 20
+    damage: 4
+    armor: 1
+    experience: 12
+    aggressive: true
+    attackable: true
+    tier: 1
+    mob_type: "beast"
+    tower_tags: ["dwarf"]
+    gold_min: 1
+    gold_max: 3
+    loot_table:
+      - item: "stone_shard"
+        chance: 35
+      - item: "iron_ore"
+        chance: 20
+    respawn_median: 120
+    respawn_variation: 30
+
+  # --- GNOME/MECHANICAL TOWER MOBS (Tier 1) ---
+
+  clockwork_mouse:
+    name: "clockwork mouse"
+    description: "A tiny mechanical rodent with razor-sharp gears for teeth"
+    level: 1
+    health: 10
+    damage: 3
+    armor: 1
+    experience: 8
+    aggressive: true
+    attackable: true
+    tier: 1
+    mob_type: "construct"
+    tower_tags: ["gnome"]
+    gold_min: 1
+    gold_max: 3
+    loot_table:
+      - item: "iron_ore"
+        chance: 30
+      - item: "thread"
+        chance: 25
+    respawn_median: 120
+    respawn_variation: 30
+
+  gear_goblin:
+    name: "gear goblin"
+    description: "A goblin fused with mechanical parts, its limbs replaced with crude pistons and gears"
+    level: 2
+    health: 18
+    damage: 4
+    armor: 1
+    experience: 12
+    aggressive: true
+    attackable: true
+    tier: 1
+    mob_type: "humanoid"
+    tower_tags: ["gnome"]
+    gold_min: 2
+    gold_max: 4
+    loot_table:
+      - item: "iron_ore"
+        chance: 35
+      - item: "leather_strip"
+        chance: 25
+      - item: "thread"
+        chance: 20
+    respawn_median: 120
+    respawn_variation: 30
+
+  # --- ORC/BEAST-SKULL TOWER MOBS (Tier 1) ---
+
+  war_dog:
+    name: "war dog"
+    description: "A vicious hound bred for combat, its hide scarred from countless battles"
+    level: 1
+    health: 16
+    damage: 4
+    armor: 0
+    experience: 10
+    aggressive: true
+    attackable: true
+    tier: 1
+    mob_type: "beast"
+    tower_tags: ["orc"]
+    gold_min: 0
+    gold_max: 2
+    loot_table:
+      - item: "leather"
+        chance: 35
+      - item: "beast_fang"
+        chance: 25
+      - item: "roasted_meat"
+        chance: 30
+    respawn_median: 120
+    respawn_variation: 30
+
+  orc_grunt:
+    name: "orc grunt"
+    description: "A young orc eager to prove himself in battle, wielding a crude club"
+    level: 2
+    health: 22
+    damage: 4
+    armor: 1
+    experience: 12
+    aggressive: true
+    attackable: true
+    tier: 1
+    mob_type: "humanoid"
+    tower_tags: ["orc"]
+    gold_min: 1
+    gold_max: 4
+    loot_table:
+      - item: "roasted_meat"
+        chance: 35
+      - item: "leather_strip"
+        chance: 30
+      - item: "wooden_shaft"
+        chance: 25
+    respawn_median: 120
+    respawn_variation: 30
+
+  # ===================
+  # Tier 2: Medium Mobs (Floors 6-10)
+  # ===================
+
+  orc_warrior:
+    name: "orc warrior"
+    description: "A brutish orc wielding a crude axe"
+    level: 3
+    health: 40
+    damage: 8
+    armor: 2
+    experience: 30
+    aggressive: true
+    attackable: true
+    tier: 2
+    mob_type: "humanoid"
+    tower_tags: ["shared", "orc"]
+    gold_min: 3
+    gold_max: 7
+    loot_table:
+      - item: "rusty_sword"
+        chance: 20
+      - item: "roasted_meat"
+        chance: 35
+      - item: "iron_ore"
+        chance: 25
+      - item: "leather_strip"
+        chance: 20
+    respawn_median: 180
+    respawn_variation: 30
+
+  cave_spider:
+    name: "cave spider"
+    description: "A giant spider with eight hairy legs and venomous fangs"
+    level: 4
+    health: 35
+    damage: 10
+    armor: 1
+    experience: 40
+    aggressive: true
+    attackable: true
+    tier: 2
+    mob_type: "beast"
+    tower_tags: ["shared", "dwarf"]
+    gold_min: 4
+    gold_max: 8
+    loot_table:
+      - item: "healing_potion"
+        chance: 25
+      - item: "rope"
+        chance: 30
+      - item: "thread"
+        chance: 35
+      - item: "monster_blood"
+        chance: 20
+    respawn_median: 180
+    respawn_variation: 30
+
+  wraith:
+    name: "wraith"
+    description: "A ghostly apparition with hollow eyes and wispy form"
+    level: 4
+    health: 30
+    damage: 12
+    armor: 0
+    experience: 45
+    aggressive: true
+    attackable: true
+    tier: 2
+    mob_type: "undead"
+    tower_tags: ["shared", "human", "unified"]
+    gold_min: 4
+    gold_max: 9
+    loot_table:
+      - item: "mana_potion"
+        chance: 30
+      - item: "ectoplasm"
+        chance: 20
+      - item: "ghost_essence"
+        chance: 25
+      - item: "arcane_dust"
+        chance: 20
+    respawn_median: 180
+    respawn_variation: 30
+
+  lizardman:
+    name: "lizardman"
+    description: "A reptilian humanoid with sharp claws and a scaly hide"
+    level: 5
+    health: 50
+    damage: 11
+    armor: 3
+    experience: 55
+    aggressive: true
+    attackable: true
+    tier: 2
+    mob_type: "humanoid"
+    tower_tags: ["shared"]
+    gold_min: 5
+    gold_max: 11
+    loot_table:
+      - item: "leather_armor"
+        chance: 10
+      - item: "leather"
+        chance: 30
+      - item: "beast_fang"
+        chance: 25
+    respawn_median: 180
+    respawn_variation: 30
+
+  dire_wolf:
+    name: "dire wolf"
+    description: "A massive wolf with intelligent, predatory eyes and razor-sharp fangs"
+    level: 4
+    health: 45
+    damage: 12
+    armor: 2
+    experience: 50
+    aggressive: true
+    attackable: true
+    tier: 2
+    mob_type: "beast"
+    tower_tags: ["elf", "orc"]
+    gold_min: 2
+    gold_max: 5
+    loot_table:
+      - item: "roasted_meat"
+        chance: 50
+      - item: "leather"
+        chance: 35
+      - item: "beast_fang"
+        chance: 30
+    respawn_median: 180
+    respawn_variation: 30
+
+  ghoul:
+    name: "ghoul"
+    description: "A hunched, rotting creature with long claws and an insatiable hunger for flesh"
+    level: 4
+    health: 38
+    damage: 9
+    armor: 1
+    experience: 42
+    aggressive: true
+    attackable: true
+    tier: 2
+    mob_type: "undead"
+    tower_tags: ["shared"]
+    gold_min: 3
+    gold_max: 7
+    loot_table:
+      - item: "bone"
+        chance: 40
+      - item: "healing_potion"
+        chance: 15
+      - item: "ghost_essence"
+        chance: 20
+      - item: "monster_blood"
+        chance: 15
+    respawn_median: 180
+    respawn_variation: 30
+
+  animated_armor:
+    name: "animated armor"
+    description: "An empty suit of armor brought to life by dark magic, clanking as it patrols"
+    level: 5
+    health: 55
+    damage: 10
+    armor: 5
+    experience: 60
+    aggressive: true
+    attackable: true
+    tier: 2
+    mob_type: "construct"
+    tower_tags: ["human", "gnome"]
+    gold_min: 6
+    gold_max: 12
+    loot_table:
+      - item: "chainmail_vest"
+        chance: 8
+      - item: "stone_shard"
+        chance: 15
+      - item: "iron_ore"
+        chance: 30
+      - item: "arcane_dust"
+        chance: 25
+    respawn_median: 180
+    respawn_variation: 30
+
+  # --- HUMAN/ARCANE TOWER MOBS (Tier 2) ---
+
+  spell_wraith:
+    name: "spell wraith"
+    description: "The ghostly remains of a mage consumed by their own magic, arcane symbols swirling around it"
+    level: 4
+    health: 35
+    damage: 14
+    armor: 0
+    experience: 50
+    aggressive: true
+    attackable: true
+    tier: 2
+    mob_type: "undead"
+    tower_tags: ["human"]
+    gold_min: 5
+    gold_max: 10
+    loot_table:
+      - item: "arcane_dust"
+        chance: 45
+      - item: "mana_potion"
+        chance: 30
+      - item: "ghost_essence"
+        chance: 25
+    respawn_median: 180
+    respawn_variation: 30
+
+  mana_elemental:
+    name: "mana elemental"
+    description: "Pure magical energy given form and malevolent will, pulsing with unstable power"
+    level: 5
+    health: 40
+    damage: 13
+    armor: 2
+    experience: 55
+    aggressive: true
+    attackable: true
+    tier: 2
+    mob_type: "construct"
+    tower_tags: ["human"]
+    gold_min: 6
+    gold_max: 11
+    loot_table:
+      - item: "arcane_dust"
+        chance: 50
+      - item: "mana_potion"
+        chance: 35
+      - item: "rough_gem"
+        chance: 15
+    respawn_median: 180
+    respawn_variation: 30
+
+  # --- ELF/DISEASED TREE TOWER MOBS (Tier 2) ---
+
+  plague_bear:
+    name: "plague bear"
+    description: "A massive bear covered in festering sores, its breath toxic and labored"
+    level: 4
+    health: 55
+    damage: 11
+    armor: 3
+    experience: 50
+    aggressive: true
+    attackable: true
+    tier: 2
+    mob_type: "beast"
+    tower_tags: ["elf"]
+    gold_min: 3
+    gold_max: 7
+    loot_table:
+      - item: "leather"
+        chance: 40
+      - item: "beast_fang"
+        chance: 30
+      - item: "monster_blood"
+        chance: 25
+    respawn_median: 180
+    respawn_variation: 30
+
+  corrupted_dryad:
+    name: "corrupted dryad"
+    description: "Once a forest guardian, now a vessel of blight with bark-like skin weeping dark sap"
+    level: 5
+    health: 42
+    damage: 12
+    armor: 2
+    experience: 55
+    aggressive: true
+    attackable: true
+    tier: 2
+    mob_type: "humanoid"
+    tower_tags: ["elf"]
+    gold_min: 5
+    gold_max: 10
+    loot_table:
+      - item: "wooden_shaft"
+        chance: 35
+      - item: "mushroom"
+        chance: 30
+      - item: "monster_blood"
+        chance: 25
+      - item: "moonpetal"
+        chance: 10
+    respawn_median: 180
+    respawn_variation: 30
+
+  # --- DWARF/MINING TOWER MOBS (Tier 2) ---
+
+  ore_golem:
+    name: "ore golem"
+    description: "A crude construct of raw ore, animated by deep magic and hungry for intruders"
+    level: 5
+    health: 60
+    damage: 10
+    armor: 5
+    experience: 55
+    aggressive: true
+    attackable: true
+    tier: 2
+    mob_type: "construct"
+    tower_tags: ["dwarf"]
+    gold_min: 6
+    gold_max: 12
+    loot_table:
+      - item: "iron_ore"
+        chance: 45
+      - item: "stone_shard"
+        chance: 35
+      - item: "rough_gem"
+        chance: 15
+    respawn_median: 180
+    respawn_variation: 30
+
+  deep_spider:
+    name: "deep spider"
+    description: "A pale spider adapted to the lightless depths, its eyes milky white but senses razor-sharp"
+    level: 4
+    health: 38
+    damage: 11
+    armor: 1
+    experience: 45
+    aggressive: true
+    attackable: true
+    tier: 2
+    mob_type: "beast"
+    tower_tags: ["dwarf"]
+    gold_min: 4
+    gold_max: 9
+    loot_table:
+      - item: "thread"
+        chance: 40
+      - item: "monster_blood"
+        chance: 25
+      - item: "rope"
+        chance: 20
+    respawn_median: 180
+    respawn_variation: 30
+
+  # --- GNOME/MECHANICAL TOWER MOBS (Tier 2) ---
+
+  cogwork_soldier:
+    name: "cogwork soldier"
+    description: "A basic automaton built for combat, its movements jerky but relentless"
+    level: 5
+    health: 50
+    damage: 10
+    armor: 4
+    experience: 55
+    aggressive: true
+    attackable: true
+    tier: 2
+    mob_type: "construct"
+    tower_tags: ["gnome"]
+    gold_min: 6
+    gold_max: 12
+    loot_table:
+      - item: "iron_ore"
+        chance: 40
+      - item: "steel_ingot"
+        chance: 20
+      - item: "arcane_dust"
+        chance: 20
+    respawn_median: 180
+    respawn_variation: 30
+
+  tesla_sprite:
+    name: "tesla sprite"
+    description: "A being of pure electricity crackling between copper coils, leaving scorch marks in its wake"
+    level: 4
+    health: 28
+    damage: 14
+    armor: 0
+    experience: 50
+    aggressive: true
+    attackable: true
+    tier: 2
+    mob_type: "construct"
+    tower_tags: ["gnome"]
+    gold_min: 5
+    gold_max: 10
+    loot_table:
+      - item: "arcane_dust"
+        chance: 40
+      - item: "mana_potion"
+        chance: 25
+      - item: "rough_gem"
+        chance: 15
+    respawn_median: 180
+    respawn_variation: 30
+
+  # --- ORC/BEAST-SKULL TOWER MOBS (Tier 2) ---
+
+  orc_berserker:
+    name: "orc berserker"
+    description: "An orc consumed by battle rage, foam flecking from its tusked maw"
+    level: 4
+    health: 45
+    damage: 14
+    armor: 1
+    experience: 50
+    aggressive: true
+    attackable: true
+    tier: 2
+    mob_type: "humanoid"
+    tower_tags: ["orc"]
+    gold_min: 4
+    gold_max: 9
+    loot_table:
+      - item: "roasted_meat"
+        chance: 40
+      - item: "leather"
+        chance: 30
+      - item: "iron_ore"
+        chance: 25
+    respawn_median: 180
+    respawn_variation: 30
+
+  war_boar:
+    name: "war boar"
+    description: "A massive boar armored for battle, trained to charge and gore enemies"
+    level: 5
+    health: 55
+    damage: 12
+    armor: 3
+    experience: 55
+    aggressive: true
+    attackable: true
+    tier: 2
+    mob_type: "beast"
+    tower_tags: ["orc"]
+    gold_min: 3
+    gold_max: 7
+    loot_table:
+      - item: "roasted_meat"
+        chance: 50
+      - item: "leather"
+        chance: 40
+      - item: "beast_fang"
+        chance: 30
+    respawn_median: 180
+    respawn_variation: 30
+
+  # ===================
+  # Tier 3: Hard Mobs (Floors 11-20)
+  # ===================
+
+  dark_knight:
+    name: "dark knight"
+    description: "A fearsome knight clad in black armor, wielding a dark blade"
+    level: 6
+    health: 80
+    damage: 15
+    armor: 5
+    experience: 100
+    aggressive: true
+    attackable: true
+    tier: 3
+    mob_type: "humanoid"
+    tower_tags: ["shared"]
+    gold_min: 8
+    gold_max: 15
+    loot_table:
+      - item: "iron_dagger"
+        chance: 15
+      - item: "greater_healing_potion"
+        chance: 30
+      - item: "leather_armor"
+        chance: 8
+      - item: "ancient_key"
+        chance: 5
+      - item: "steel_ingot"
+        chance: 20
+      - item: "leather"
+        chance: 25
+    respawn_median: 300
+    respawn_variation: 60
+
+  cave_troll:
+    name: "cave troll"
+    description: "A massive troll with thick grey skin and enormous fists"
+    level: 7
+    health: 100
+    damage: 18
+    armor: 4
+    experience: 120
+    aggressive: true
+    attackable: true
+    tier: 3
+    mob_type: "giant"
+    tower_tags: ["shared", "dwarf"]
+    gold_min: 10
+    gold_max: 18
+    loot_table:
+      - item: "wooden_staff"
+        chance: 12
+      - item: "elixir"
+        chance: 10
+      - item: "roasted_meat"
+        chance: 40
+      - item: "leather"
+        chance: 30
+      - item: "wooden_shaft"
+        chance: 25
+    respawn_median: 300
+    respawn_variation: 60
+
+  gargoyle:
+    name: "gargoyle"
+    description: "A stone creature brought to life by dark magic"
+    level: 7
+    health: 90
+    damage: 16
+    armor: 6
+    experience: 110
+    aggressive: true
+    attackable: true
+    tier: 3
+    mob_type: "construct"
+    tower_tags: ["human", "dwarf"]
+    gold_min: 10
+    gold_max: 17
+    loot_table:
+      - item: "stone_shard"
+        chance: 35
+      - item: "greater_healing_potion"
+        chance: 20
+      - item: "arcane_dust"
+        chance: 30
+      - item: "rough_gem"
+        chance: 15
+      - item: "mithril_ore"
+        chance: 10
+      - item: "enchanted_gem"
+        chance: 8
+    respawn_median: 300
+    respawn_variation: 60
+
+  demon_imp:
+    name: "demon imp"
+    description: "A small demonic creature with fiery eyes and clawed hands"
+    level: 8
+    health: 70
+    damage: 20
+    armor: 2
+    experience: 130
+    aggressive: true
+    attackable: true
+    tier: 3
+    mob_type: "demon"
+    tower_tags: ["shared", "human"]
+    gold_min: 12
+    gold_max: 20
+    loot_table:
+      - item: "mana_potion"
+        chance: 30
+      - item: "demonic_essence"
+        chance: 15
+      - item: "monster_blood"
+        chance: 30
+      - item: "arcane_dust"
+        chance: 25
+      - item: "demon_heart"
+        chance: 10
+      - item: "moonpetal"
+        chance: 8
+    respawn_median: 300
+    respawn_variation: 60
+
+  warg_alpha:
+    name: "warg alpha"
+    description: "A monstrous wolf-like creature with intelligence gleaming in its yellow eyes"
+    level: 7
+    health: 85
+    damage: 17
+    armor: 3
+    experience: 115
+    aggressive: true
+    attackable: true
+    tier: 3
+    mob_type: "beast"
+    tower_tags: ["orc"]
+    gold_min: 8
+    gold_max: 14
+    loot_table:
+      - item: "roasted_meat"
+        chance: 45
+      - item: "greater_healing_potion"
+        chance: 15
+      - item: "leather"
+        chance: 40
+      - item: "beast_fang"
+        chance: 35
+      - item: "monster_blood"
+        chance: 20
+    respawn_median: 300
+    respawn_variation: 60
+
+  skeletal_champion:
+    name: "skeletal champion"
+    description: "An undead warrior clad in ancient armor, its empty eye sockets burning with malevolent fire"
+    level: 8
+    health: 95
+    damage: 18
+    armor: 5
+    experience: 135
+    aggressive: true
+    attackable: true
+    tier: 3
+    mob_type: "undead"
+    tower_tags: ["shared"]
+    gold_min: 10
+    gold_max: 18
+    loot_table:
+      - item: "bone"
+        chance: 60
+      - item: "fine_longsword"
+        chance: 8
+      - item: "ancient_key"
+        chance: 5
+      - item: "ghost_essence"
+        chance: 25
+      - item: "arcane_dust"
+        chance: 30
+      - item: "mithril_ore"
+        chance: 10
+    respawn_median: 300
+    respawn_variation: 60
+
+  ettin:
+    name: "ettin"
+    description: "A massive two-headed giant, each head bickering with the other even in battle"
+    level: 8
+    health: 120
+    damage: 20
+    armor: 4
+    experience: 140
+    aggressive: true
+    attackable: true
+    tier: 3
+    mob_type: "giant"
+    tower_tags: ["shared"]
+    gold_min: 12
+    gold_max: 22
+    loot_table:
+      - item: "greater_healing_potion"
+        chance: 35
+      - item: "roasted_meat"
+        chance: 50
+      - item: "leather"
+        chance: 35
+      - item: "wooden_shaft"
+        chance: 30
+    respawn_median: 300
+    respawn_variation: 60
+
+  # --- HUMAN/ARCANE TOWER MOBS (Tier 3) ---
+
+  archmage_specter:
+    name: "archmage specter"
+    description: "The vengeful spirit of a master mage, robes still crackling with residual spells"
+    level: 7
+    health: 75
+    damage: 22
+    armor: 2
+    experience: 125
+    aggressive: true
+    attackable: true
+    tier: 3
+    mob_type: "undead"
+    tower_tags: ["human"]
+    gold_min: 12
+    gold_max: 20
+    loot_table:
+      - item: "arcane_dust"
+        chance: 55
+      - item: "mana_potion"
+        chance: 35
+      - item: "ghost_essence"
+        chance: 30
+      - item: "blank_scroll"
+        chance: 20
+      - item: "enchanted_gem"
+        chance: 10
+    respawn_median: 300
+    respawn_variation: 60
+
+  # --- ELF/DISEASED TREE TOWER MOBS (Tier 3) ---
+
+  blight_treant:
+    name: "blight treant"
+    description: "A towering tree creature weeping toxic sap, its branches twisted into claws"
+    level: 8
+    health: 110
+    damage: 18
+    armor: 5
+    experience: 130
+    aggressive: true
+    attackable: true
+    tier: 3
+    mob_type: "giant"
+    tower_tags: ["elf"]
+    gold_min: 10
+    gold_max: 18
+    loot_table:
+      - item: "wooden_shaft"
+        chance: 50
+      - item: "leather"
+        chance: 30
+      - item: "monster_blood"
+        chance: 35
+      - item: "moonpetal"
+        chance: 15
+    respawn_median: 300
+    respawn_variation: 60
+
+  # --- DWARF/MINING TOWER MOBS (Tier 3) ---
+
+  magma_elemental:
+    name: "magma elemental"
+    description: "Living lava from the world's molten heart, leaving scorched footprints"
+    level: 7
+    health: 90
+    damage: 20
+    armor: 4
+    experience: 120
+    aggressive: true
+    attackable: true
+    tier: 3
+    mob_type: "construct"
+    tower_tags: ["dwarf"]
+    gold_min: 10
+    gold_max: 18
+    loot_table:
+      - item: "stone_shard"
+        chance: 40
+      - item: "iron_ore"
+        chance: 35
+      - item: "rough_gem"
+        chance: 20
+      - item: "mithril_ore"
+        chance: 12
+    respawn_median: 300
+    respawn_variation: 60
+
+  # --- GNOME/MECHANICAL TOWER MOBS (Tier 3) ---
+
+  siege_automaton:
+    name: "siege automaton"
+    description: "A massive war machine bristling with weapons, gears grinding with deadly purpose"
+    level: 8
+    health: 100
+    damage: 19
+    armor: 7
+    experience: 135
+    aggressive: true
+    attackable: true
+    tier: 3
+    mob_type: "construct"
+    tower_tags: ["gnome"]
+    gold_min: 12
+    gold_max: 22
+    loot_table:
+      - item: "steel_ingot"
+        chance: 40
+      - item: "iron_ore"
+        chance: 35
+      - item: "arcane_dust"
+        chance: 25
+      - item: "mithril_ore"
+        chance: 15
+    respawn_median: 300
+    respawn_variation: 60
+
+  # --- ORC/BEAST-SKULL TOWER MOBS (Tier 3) ---
+
+  orc_champion:
+    name: "orc champion"
+    description: "An elite warrior who has proven himself in countless battles, bearing trophies from the fallen"
+    level: 7
+    health: 95
+    damage: 18
+    armor: 4
+    experience: 125
+    aggressive: true
+    attackable: true
+    tier: 3
+    mob_type: "humanoid"
+    tower_tags: ["orc"]
+    gold_min: 10
+    gold_max: 18
+    loot_table:
+      - item: "roasted_meat"
+        chance: 45
+      - item: "leather"
+        chance: 40
+      - item: "iron_ore"
+        chance: 30
+      - item: "steel_ingot"
+        chance: 15
+    respawn_median: 300
+    respawn_variation: 60
+
+  # ===================
+  # Tier 4: Elite Mobs (Floors 21+)
+  # ===================
+
+  elder_vampire:
+    name: "elder vampire"
+    description: "An ancient vampire lord with pale skin and burning red eyes"
+    level: 10
+    health: 150
+    damage: 25
+    armor: 5
+    experience: 200
+    aggressive: true
+    attackable: true
+    tier: 4
+    mob_type: "undead"
+    tower_tags: ["shared"]
+    gold_min: 20
+    gold_max: 35
+    loot_table:
+      - item: "elixir"
+        chance: 15
+      - item: "vampire_fang"
+        chance: 25
+      - item: "ancient_key"
+        chance: 8
+      - item: "ghost_essence"
+        chance: 35
+      - item: "monster_blood"
+        chance: 30
+      - item: "arcane_dust"
+        chance: 25
+      - item: "ancient_essence"
+        chance: 12
+      - item: "phoenix_feather"
+        chance: 5
+    respawn_median: 600
+    respawn_variation: 120
+
+  shadow_assassin:
+    name: "shadow assassin"
+    description: "A deadly killer who moves through shadows unseen"
+    level: 10
+    health: 100
+    damage: 35
+    armor: 3
+    experience: 220
+    aggressive: true
+    attackable: true
+    tier: 4
+    mob_type: "humanoid"
+    tower_tags: ["shared"]
+    gold_min: 20
+    gold_max: 40
+    loot_table:
+      - item: "iron_dagger"
+        chance: 20
+      - item: "shadow_cloak"
+        chance: 10
+      - item: "greater_healing_potion"
+        chance: 25
+      - item: "steel_ingot"
+        chance: 30
+      - item: "leather"
+        chance: 35
+      - item: "silver_chain"
+        chance: 15
+    respawn_median: 600
+    respawn_variation: 120
+
+  stone_golem:
+    name: "stone golem"
+    description: "A massive construct of living stone, animated by ancient runes"
+    level: 12
+    health: 200
+    damage: 22
+    armor: 10
+    experience: 250
+    aggressive: true
+    attackable: true
+    tier: 4
+    mob_type: "construct"
+    tower_tags: ["shared"]
+    gold_min: 25
+    gold_max: 50
+    loot_table:
+      - item: "stone_shard"
+        chance: 40
+      - item: "golem_core"
+        chance: 12
+      - item: "elixir"
+        chance: 10
+      - item: "steel_ingot"
+        chance: 25
+      - item: "arcane_dust"
+        chance: 40
+      - item: "rough_gem"
+        chance: 20
+      - item: "adamantine_shard"
+        chance: 8
+      - item: "void_crystal"
+        chance: 6
+    respawn_median: 600
+    respawn_variation: 120
+
+  pit_fiend:
+    name: "pit fiend"
+    description: "A towering demon with massive wings, wreathed in hellfire and malice"
+    level: 12
+    health: 180
+    damage: 30
+    armor: 6
+    experience: 280
+    aggressive: true
+    attackable: true
+    tier: 4
+    mob_type: "demon"
+    tower_tags: ["shared", "human"]
+    gold_min: 25
+    gold_max: 45
+    loot_table:
+      - item: "demonic_essence"
+        chance: 40
+      - item: "flaming_sword"
+        chance: 5
+      - item: "elixir"
+        chance: 15
+      - item: "monster_blood"
+        chance: 40
+      - item: "arcane_dust"
+        chance: 35
+      - item: "rough_gem"
+        chance: 15
+      - item: "demon_heart"
+        chance: 20
+      - item: "phoenix_feather"
+        chance: 8
+    respawn_median: 600
+    respawn_variation: 120
+
+  death_knight:
+    name: "death knight"
+    description: "A fallen paladin risen as undead, radiating an aura of despair and wielding a cursed blade"
+    level: 11
+    health: 170
+    damage: 28
+    armor: 8
+    experience: 260
+    aggressive: true
+    attackable: true
+    tier: 4
+    mob_type: "undead"
+    tower_tags: ["shared"]
+    gold_min: 22
+    gold_max: 40
+    loot_table:
+      - item: "greater_healing_potion"
+        chance: 30
+      - item: "plate_armor"
+        chance: 5
+      - item: "ancient_key"
+        chance: 10
+      - item: "ghost_essence"
+        chance: 35
+      - item: "steel_ingot"
+        chance: 30
+      - item: "arcane_dust"
+        chance: 25
+    respawn_median: 600
+    respawn_variation: 120
+
+  frost_giant:
+    name: "frost giant"
+    description: "A massive blue-skinned giant, icy breath misting from its snarling mouth"
+    level: 12
+    health: 220
+    damage: 26
+    armor: 7
+    experience: 270
+    aggressive: true
+    attackable: true
+    tier: 4
+    mob_type: "giant"
+    tower_tags: ["shared"]
+    gold_min: 28
+    gold_max: 55
+    loot_table:
+      - item: "elixir"
+        chance: 20
+      - item: "greater_healing_potion"
+        chance: 35
+      - item: "leather"
+        chance: 40
+      - item: "wooden_shaft"
+        chance: 35
+      - item: "rough_gem"
+        chance: 20
+    respawn_median: 600
+    respawn_variation: 120
+
+  manticore:
+    name: "manticore"
+    description: "A terrifying beast with the body of a lion, bat wings, and a tail bristling with deadly spikes"
+    level: 11
+    health: 160
+    damage: 32
+    armor: 5
+    experience: 255
+    aggressive: true
+    attackable: true
+    tier: 4
+    mob_type: "beast"
+    tower_tags: ["shared"]
+    gold_min: 20
+    gold_max: 38
+    loot_table:
+      - item: "dragon_scale"
+        chance: 8
+      - item: "greater_healing_potion"
+        chance: 25
+      - item: "leather"
+        chance: 45
+      - item: "beast_fang"
+        chance: 40
+      - item: "monster_blood"
+        chance: 30
+      - item: "dragonhide_scrap"
+        chance: 12
+      - item: "phoenix_feather"
+        chance: 5
+    respawn_median: 600
+    respawn_variation: 120
+
+  # --- HUMAN/ARCANE TOWER MOBS (Tier 4) ---
+
+  void_sorcerer:
+    name: "void sorcerer"
+    description: "A mage who gazed too long into the void, their eyes replaced by swirling darkness"
+    level: 11
+    health: 130
+    damage: 35
+    armor: 3
+    experience: 240
+    aggressive: true
+    attackable: true
+    tier: 4
+    mob_type: "humanoid"
+    tower_tags: ["human"]
+    gold_min: 22
+    gold_max: 40
+    loot_table:
+      - item: "arcane_dust"
+        chance: 55
+      - item: "void_crystal"
+        chance: 15
+      - item: "mana_potion"
+        chance: 35
+      - item: "ancient_essence"
+        chance: 12
+      - item: "enchanted_gem"
+        chance: 18
+    respawn_median: 600
+    respawn_variation: 120
+
+  # --- ELF/DISEASED TREE TOWER MOBS (Tier 4) ---
+
+  plague_dragon:
+    name: "plague dragon"
+    description: "A wyrm whose breath spreads disease and decay, its scales mottled with corruption"
+    level: 12
+    health: 200
+    damage: 30
+    armor: 6
+    experience: 280
+    aggressive: true
+    attackable: true
+    tier: 4
+    mob_type: "beast"
+    tower_tags: ["elf"]
+    gold_min: 25
+    gold_max: 50
+    loot_table:
+      - item: "dragon_scale"
+        chance: 20
+      - item: "monster_blood"
+        chance: 45
+      - item: "beast_fang"
+        chance: 35
+      - item: "dragonhide_scrap"
+        chance: 18
+      - item: "ancient_essence"
+        chance: 10
+    respawn_median: 600
+    respawn_variation: 120
+
+  # --- DWARF/MINING TOWER MOBS (Tier 4) ---
+
+  adamantine_golem:
+    name: "adamantine golem"
+    description: "An ancient construct of unbreakable metal, forged in the deep places of the world"
+    level: 12
+    health: 250
+    damage: 24
+    armor: 12
+    experience: 280
+    aggressive: true
+    attackable: true
+    tier: 4
+    mob_type: "construct"
+    tower_tags: ["dwarf"]
+    gold_min: 30
+    gold_max: 55
+    loot_table:
+      - item: "adamantine_shard"
+        chance: 25
+      - item: "mithril_ore"
+        chance: 30
+      - item: "steel_ingot"
+        chance: 35
+      - item: "golem_core"
+        chance: 15
+      - item: "rough_gem"
+        chance: 25
+    respawn_median: 600
+    respawn_variation: 120
+
+  # --- GNOME/MECHANICAL TOWER MOBS (Tier 4) ---
+
+  quantum_golem:
+    name: "quantum golem"
+    description: "A construct that exists in multiple states simultaneously, flickering in and out of reality"
+    level: 11
+    health: 140
+    damage: 28
+    armor: 6
+    experience: 260
+    aggressive: true
+    attackable: true
+    tier: 4
+    mob_type: "construct"
+    tower_tags: ["gnome"]
+    gold_min: 25
+    gold_max: 45
+    loot_table:
+      - item: "void_crystal"
+        chance: 18
+      - item: "arcane_dust"
+        chance: 45
+      - item: "steel_ingot"
+        chance: 35
+      - item: "golem_core"
+        chance: 12
+      - item: "enchanted_gem"
+        chance: 15
+    respawn_median: 600
+    respawn_variation: 120
+
+  # --- ORC/BEAST-SKULL TOWER MOBS (Tier 4) ---
+
+  orc_warlord:
+    name: "orc warlord"
+    description: "A battle-scarred veteran who commands through strength, adorned with the skulls of fallen champions"
+    level: 11
+    health: 180
+    damage: 28
+    armor: 6
+    experience: 260
+    aggressive: true
+    attackable: true
+    tier: 4
+    mob_type: "humanoid"
+    tower_tags: ["orc"]
+    gold_min: 25
+    gold_max: 45
+    loot_table:
+      - item: "steel_ingot"
+        chance: 35
+      - item: "leather"
+        chance: 45
+      - item: "roasted_meat"
+        chance: 40
+      - item: "beast_fang"
+        chance: 30
+      - item: "ancient_key"
+        chance: 10
+    respawn_median: 600
+    respawn_variation: 120
+
+  # ===================
+  # Boss Mobs (Every 10th floor)
+  # ===================
+
+  goblin_king:
+    name: "Goblin King"
+    description: "The massive ruler of the goblin horde, wearing a crude crown and wielding a spiked club"
+    level: 5
+    health: 150
+    damage: 12
+    armor: 3
+    experience: 150
+    aggressive: true
+    attackable: true
+    tier: 1
+    boss: true
+    mob_type: "humanoid"
+    tower_tags: ["shared"]
+    gold_min: 50
+    gold_max: 75
+    loot_table:  # Bosses drop ALL loot at 100% - chances ignored
+      - item: "crown_of_the_goblin_king"
+        chance: 100
+      - item: "greater_healing_potion"
+        chance: 100
+      - item: "ancient_key"
+        chance: 100
+      - item: "iron_ore"
+        chance: 100
+      - item: "leather"
+        chance: 100
+      - item: "thread"
+        chance: 100
+    respawn_median: 900
+    respawn_variation: 180
+
+  spider_queen:
+    name: "Spider Queen"
+    description: "A colossal arachnid with countless offspring crawling across her abdomen"
+    level: 8
+    health: 200
+    damage: 18
+    armor: 4
+    experience: 250
+    aggressive: true
+    attackable: true
+    tier: 2
+    boss: true
+    mob_type: "beast"
+    tower_tags: ["shared"]
+    gold_min: 75
+    gold_max: 125
+    loot_table:  # Bosses drop ALL loot at 100% - chances ignored
+      - item: "spider_queens_fang"
+        chance: 100
+      - item: "elixir"
+        chance: 100
+      - item: "ancient_key"
+        chance: 100
+      - item: "leather"
+        chance: 100
+      - item: "beast_fang"
+        chance: 100
+      - item: "monster_blood"
+        chance: 100
+      - item: "thread"
+        chance: 100
+    respawn_median: 900
+    respawn_variation: 180
+
+  shadow_lord:
+    name: "Shadow Lord"
+    description: "A towering figure of pure darkness, its form constantly shifting"
+    level: 12
+    health: 300
+    damage: 25
+    armor: 6
+    experience: 400
+    aggressive: true
+    attackable: true
+    tier: 3
+    boss: true
+    mob_type: "undead"
+    tower_tags: ["shared"]
+    gold_min: 100
+    gold_max: 175
+    loot_table:  # Bosses drop ALL loot at 100% - chances ignored
+      - item: "shadow_orb"
+        chance: 100
+      - item: "elixir"
+        chance: 100
+      - item: "ancient_key"
+        chance: 100
+      - item: "ghost_essence"
+        chance: 100
+      - item: "arcane_dust"
+        chance: 100
+      - item: "blank_scroll"
+        chance: 100
+      - item: "mithril_ore"
+        chance: 100
+      - item: "enchanted_gem"
+        chance: 100
+      - item: "moonpetal"
+        chance: 100
+    respawn_median: 900
+    respawn_variation: 180
+
+  tower_guardian:
+    name: "Tower Guardian"
+    description: "An ancient construct created to protect the tower's deepest secrets"
+    level: 15
+    health: 500
+    damage: 35
+    armor: 12
+    experience: 750
+    aggressive: true
+    attackable: true
+    tier: 4
+    boss: true
+    mob_type: "construct"
+    tower_tags: ["shared"]
+    gold_min: 150
+    gold_max: 250
+    loot_table:  # Bosses drop ALL loot at 100% - chances ignored
+      - item: "guardians_core"
+        chance: 100
+      - item: "legendary_key"
+        chance: 100
+      - item: "elixir"
+        chance: 100
+      - item: "steel_ingot"
+        chance: 100
+      - item: "arcane_dust"
+        chance: 100
+      - item: "rough_gem"
+        chance: 100
+      - item: "silver_chain"
+        chance: 100
+      - item: "adamantine_shard"
+        chance: 100
+      - item: "void_crystal"
+        chance: 100
+      - item: "ancient_essence"
+        chance: 100
+      - item: "dragonhide_scrap"
+        chance: 100
+    respawn_median: 1800
+    respawn_variation: 300
+
+  # ===================
+  # Tower-Specific Final Bosses (Floor 25)
+  # ===================
+
+  archmage_lich:
+    name: "Archmage Lich"
+    description: "An ancient mage who traded mortality for eternal unlife, arcane power crackling around its skeletal form"
+    level: 15
+    health: 450
+    damage: 40
+    armor: 8
+    experience: 800
+    aggressive: true
+    attackable: true
+    tier: 4
+    boss: true
+    mob_type: "undead"
+    tower_tags: ["human"]
+    gold_min: 150
+    gold_max: 250
+    loot_table:
+      - item: "elixir"
+        chance: 100
+      - item: "arcane_dust"
+        chance: 100
+      - item: "ghost_essence"
+        chance: 100
+      - item: "void_crystal"
+        chance: 100
+      - item: "ancient_essence"
+        chance: 100
+      - item: "enchanted_gem"
+        chance: 100
+      - item: "legendary_key"
+        chance: 100
+    respawn_median: 1800
+    respawn_variation: 300
+
+  heart_of_corruption:
+    name: "Heart of Corruption"
+    description: "The living source of the blight consuming the World Tree, a pulsing mass of diseased matter"
+    level: 15
+    health: 500
+    damage: 35
+    armor: 10
+    experience: 800
+    aggressive: true
+    attackable: true
+    tier: 4
+    boss: true
+    mob_type: "construct"
+    tower_tags: ["elf"]
+    gold_min: 150
+    gold_max: 250
+    loot_table:
+      - item: "elixir"
+        chance: 100
+      - item: "monster_blood"
+        chance: 100
+      - item: "moonpetal"
+        chance: 100
+      - item: "ancient_essence"
+        chance: 100
+      - item: "dragonhide_scrap"
+        chance: 100
+      - item: "legendary_key"
+        chance: 100
+    respawn_median: 1800
+    respawn_variation: 300
+
+  deep_guardian:
+    name: "The Deep Guardian"
+    description: "An ancient dwarven construct gone mad in the depths, its runes burning with corrupted fire"
+    level: 15
+    health: 550
+    damage: 32
+    armor: 14
+    experience: 800
+    aggressive: true
+    attackable: true
+    tier: 4
+    boss: true
+    mob_type: "construct"
+    tower_tags: ["dwarf"]
+    gold_min: 150
+    gold_max: 250
+    loot_table:
+      - item: "elixir"
+        chance: 100
+      - item: "adamantine_shard"
+        chance: 100
+      - item: "mithril_ore"
+        chance: 100
+      - item: "golem_core"
+        chance: 100
+      - item: "rough_gem"
+        chance: 100
+      - item: "legendary_key"
+        chance: 100
+    respawn_median: 1800
+    respawn_variation: 300
+
+  great_machine:
+    name: "The Great Machine"
+    description: "The central AI that once ran Cogsworth, now seeking to 'optimize' all life into mechanical perfection"
+    level: 15
+    health: 480
+    damage: 38
+    armor: 10
+    experience: 800
+    aggressive: true
+    attackable: true
+    tier: 4
+    boss: true
+    mob_type: "construct"
+    tower_tags: ["gnome"]
+    gold_min: 150
+    gold_max: 250
+    loot_table:
+      - item: "elixir"
+        chance: 100
+      - item: "steel_ingot"
+        chance: 100
+      - item: "golem_core"
+        chance: 100
+      - item: "void_crystal"
+        chance: 100
+      - item: "arcane_dust"
+        chance: 100
+      - item: "legendary_key"
+        chance: 100
+    respawn_median: 1800
+    respawn_variation: 300
+
+  beast_god:
+    name: "The Beast God"
+    description: "A primal deity of savage creatures, worshipped by the orcs, towering over all with feral majesty"
+    level: 15
+    health: 520
+    damage: 42
+    armor: 8
+    experience: 800
+    aggressive: true
+    attackable: true
+    tier: 4
+    boss: true
+    mob_type: "beast"
+    tower_tags: ["orc"]
+    gold_min: 150
+    gold_max: 250
+    loot_table:
+      - item: "elixir"
+        chance: 100
+      - item: "beast_fang"
+        chance: 100
+      - item: "leather"
+        chance: 100
+      - item: "dragonhide_scrap"
+        chance: 100
+      - item: "ancient_essence"
+        chance: 100
+      - item: "legendary_key"
+        chance: 100
+    respawn_median: 1800
+    respawn_variation: 300

@@ -1,0 +1,561 @@
+# Elf City NPCs for Sylvanthal
+# Forest-dwelling elves facing the corruption of their World Tree
+
+npcs:
+  # Grove Heart NPCs (spawn point)
+  elder_thandril:
+    name: "Elder Thandril"
+    description: "An ancient elf whose silver hair flows like moonlight. His eyes hold the wisdom of millennia, yet also a deep sadness for the blight consuming the World Tree. He guides newcomers with patience born of centuries."
+    level: 15
+    health: 150
+    damage: 0
+    armor: 5
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "Welcome to Sylvanthal, young one. The forest recognizes those who come with pure intent."
+      - "The World Tree sickens. The blight spreads higher each day. We need heroes willing to climb into the corruption."
+      - "Our ancestors planted these groves ten thousand years ago. We will not abandon them now."
+      - "The portal will carry you to other cities, should you wish to seek allies elsewhere."
+    locations:
+      - "elf_grove_heart"
+    respawn_median: 0
+    respawn_variation: 0
+    quest_giver: true
+    gives_quests:
+      - tower_introduction
+      - floor_five
+      - floor_ten
+    turn_in_quests:
+      - tower_introduction
+      - floor_five
+      - floor_ten
+
+  grove_keeper:
+    name: "grove keeper"
+    description: "A young elf tending to the plants and paths of the grove, their hands perpetually stained with rich soil."
+    level: 3
+    health: 40
+    damage: 5
+    armor: 1
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "The grove heart is the soul of Sylvanthal. I tend it with love."
+      - "Even with the blight above, life persists here. We must protect it."
+      - "Have you seen the moonwell? Its waters still run pure."
+    locations:
+      - "elf_grove_heart"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Moon Temple NPCs
+  moonpriest_elara:
+    name: "Moonpriest Elara"
+    description: "A serene elf priestess whose skin seems to glow with soft silver light. She tends the altar and offers blessings to those who fight the corruption above."
+    level: 12
+    health: 100
+    damage: 15
+    armor: 5
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "The moon still watches over us. Her light cleanses what the blight corrupts."
+      - "Pray at the altar, and her blessing will restore your strength."
+      - "The darkness above fears the light. Carry it with you into the tree."
+    locations:
+      - "elf_moon_temple"
+    respawn_median: 0
+    respawn_variation: 0
+    quest_giver: true
+    gives_quests:
+      - blessing_of_light
+      - cleanse_the_undead
+    turn_in_quests:
+      - blessing_of_light
+      - cleanse_the_undead
+
+  temple_attendant:
+    name: "temple attendant"
+    description: "A devoted young elf in simple white robes, maintaining the sacred grove with quiet reverence."
+    level: 2
+    health: 25
+    damage: 3
+    armor: 0
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "Moonpriest Elara has served the temple for three centuries. Her wisdom runs deep."
+      - "The altar's light seems dimmer lately. The blight affects even sacred things."
+      - "We pray each night for the tree's healing. Perhaps you can do what prayers cannot."
+    locations:
+      - "elf_moon_temple"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Warrior Glade NPCs
+  bladesinger_aelindra:
+    name: "Bladesinger Aelindra"
+    description: "A lithe elf warrior whose movements blur between dance and deadly combat. Her twin blades sing through the air, leaving trails of silver light."
+    level: 15
+    health: 180
+    damage: 25
+    armor: 8
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "The bladesong is more than combat - it is art, meditation, and death woven together."
+      - "The corrupted creatures in the tree have no grace. Cut them down without mercy."
+      - "Speed and precision over brute strength. That is the elven way."
+    locations:
+      - "elf_warrior_glade"
+    respawn_median: 0
+    respawn_variation: 0
+    quest_giver: true
+    gives_quests:
+      - warrior_trial
+    turn_in_quests:
+      - warrior_trial
+
+  glade_sentinel:
+    name: "glade sentinel"
+    description: "An elven guard in living leaf armor, their bow never far from hand. They watch the paths with keen eyes."
+    level: 6
+    health: 80
+    damage: 15
+    armor: 4
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "The World Tree entrance is just north. Steel yourself before you enter."
+      - "We guard Sylvanthal day and night. The blight will not reach the grove."
+      - "Train well before you climb. The creatures above show no mercy."
+    locations:
+      - "elf_warrior_glade"
+      - "elf_world_tree_base"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Hunter Lodge NPCs
+  grove_keeper_thalion:
+    name: "Grove Keeper Thalion"
+    description: "A weathered ranger whose bond with the forest runs deeper than most. A great hawk rests on his shoulder, and a wolf lies at his feet. He knows every path, every creature, every secret of the woods."
+    level: 18
+    health: 200
+    damage: 22
+    armor: 6
+    experience: 0
+    aggressive: false
+    attackable: false
+    trainer_class: "ranger"
+    dialogue:
+      - "The forest speaks to those who listen. Let me teach you its language."
+      - "Track your prey with patience. Strike when the moment is perfect."
+      - "The beasts in the tree are corrupted but still follow their instincts. Use that against them."
+      - "Type 'train' if you wish to learn the ways of the Ranger."
+    locations:
+      - "elf_hunter_lodge"
+    respawn_median: 0
+    respawn_variation: 0
+
+  young_hunter:
+    name: "young hunter"
+    description: "An eager elf learning the ways of the forest, their quiver full of practice arrows."
+    level: 3
+    health: 35
+    damage: 8
+    armor: 2
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "Grove Keeper Thalion is the greatest tracker in the forest. I hope to be half as skilled someday."
+      - "Did you see the hawk? It's been his companion for over a century."
+      - "I've been practicing my archery. The blight-creatures make good targets."
+    locations:
+      - "elf_hunter_lodge"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Canopy Market NPCs
+  bowmaster_faelyn:
+    name: "Bowmaster Faelyn"
+    description: "A master craftsman whose bows are prized throughout the realm. She examines each piece of wood with an artist's eye before beginning her work."
+    level: 8
+    health: 60
+    damage: 12
+    armor: 3
+    experience: 0
+    aggressive: false
+    attackable: false
+    shop_inventory:
+      - item: "treasure_key"
+        price: 50
+      - item: "healing_potion"
+        price: 50
+      - item: "mana_potion"
+        price: 50
+      - item: "bandage"
+        price: 5
+      - item: "bread"
+        price: 2
+      - item: "apple"
+        price: 1
+      - item: "water"
+        price: 2
+      - item: "leather_armor"
+        price: 50
+      - item: "leather_cap"
+        price: 15
+      - item: "leather"
+        price: 8
+      - item: "leather_strip"
+        price: 3
+      - item: "thread"
+        price: 2
+    dialogue:
+      - "Welcome to the Canopy Market. Type 'shop' to see my wares."
+      - "Elven craftsmanship is unmatched. Our bows sing in the hands of true archers."
+      - "I buy items as well. Use 'sell' if you have goods to trade."
+    locations:
+      - "elf_canopy_market"
+    respawn_median: 0
+    respawn_variation: 0
+    quest_giver: true
+    gives_quests:
+      - crystal_hunt
+      - mushroom_gathering
+    turn_in_quests:
+      - crystal_hunt
+      - mushroom_gathering
+
+  leaf_weaver_silvara:
+    name: "Leaf-Weaver Silvara"
+    description: "An artisan who works leather with almost magical skill, her fingers dancing as she stitches. Her goods seem to breathe with the forest itself."
+    level: 10
+    health: 70
+    damage: 8
+    armor: 4
+    experience: 0
+    aggressive: false
+    attackable: false
+    shop_inventory:
+      - item: "leather"
+        price: 8
+      - item: "leather_strip"
+        price: 3
+      - item: "thread"
+        price: 2
+      - item: "beast_fang"
+        price: 12
+    crafting_trainer: "leatherworking"
+    teaches_recipes:
+      - "leather_strips"
+      - "leather_cap"
+      - "leather_gloves"
+      - "leather_armor"
+      - "leather_boots"
+      - "adventurer_pack"
+      - "studded_leather"
+    dialogue:
+      - "Elven leather breathes with the wearer. I can teach you to craft it properly."
+      - "Type 'learn' to see the patterns I can share with you."
+      - "Use 'craft' at the workbench to practice your leatherworking."
+      - "I have materials for sale too. Type 'shop' to browse."
+    locations:
+      - "elf_canopy_market"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Herb Garden NPCs
+  herb_singer_moonleaf:
+    name: "Herb-Singer Moonleaf"
+    description: "An elderly elf who literally sings to her plants, coaxing them to grow with ancient melodies. Her potions are said to contain the essence of the forest itself."
+    level: 12
+    health: 55
+    damage: 5
+    armor: 2
+    experience: 0
+    aggressive: false
+    attackable: false
+    shop_inventory:
+      - item: "red_herb"
+        price: 5
+      - item: "blue_herb"
+        price: 8
+      - item: "green_herb"
+        price: 6
+      - item: "empty_vial"
+        price: 3
+      - item: "monster_blood"
+        price: 15
+    crafting_trainer: "alchemy"
+    teaches_recipes:
+      - "minor_healing_potion"
+      - "minor_mana_potion"
+      - "antidote"
+      - "healing_potion"
+      - "mana_potion"
+      - "strength_elixir"
+      - "greater_healing_potion"
+      - "invisibility_potion"
+    dialogue:
+      - "The forest provides all we need for healing, if you know how to ask."
+      - "Type 'learn' to discover the recipes I can teach."
+      - "Use 'craft' at the alchemy lab to brew your concoctions."
+      - "Herbs from the corrupted tree have... unusual properties. Handle with care."
+    locations:
+      - "elf_herb_garden"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Root Tunnels NPCs
+  shadowdancer_nyx:
+    name: "Shadowdancer Nyx"
+    description: "A figure that seems to exist half in shadow, their features difficult to focus on. When they move, they seem to step between the spaces of reality itself."
+    level: 18
+    health: 110
+    damage: 28
+    armor: 4
+    experience: 0
+    aggressive: false
+    attackable: false
+    trainer_class: "rogue"
+    dialogue:
+      - "The shadows between the roots are deep. I can teach you to walk within them."
+      - "Stealth is survival. In the corrupted tree, what you cannot see cannot kill you."
+      - "Strike from darkness, vanish before they fall. This is the way."
+      - "Type 'train' if you wish to learn the ways of the Rogue."
+    locations:
+      - "elf_root_tunnels"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Runekeeper NPCs
+  runeweaver_aethon:
+    name: "Runeweaver Aethon"
+    description: "An ancient elf whose skin is tattooed with glowing runes. The symbols shift and change as he speaks, responding to his thoughts. His knowledge of enchantment spans millennia."
+    level: 16
+    health: 90
+    damage: 0
+    armor: 5
+    experience: 0
+    aggressive: false
+    attackable: false
+    shop_inventory:
+      - item: "blank_scroll"
+        price: 10
+      - item: "arcane_dust"
+        price: 20
+      - item: "rough_gem"
+        price: 25
+      - item: "silver_chain"
+        price: 30
+    crafting_trainer: "enchanting"
+    teaches_recipes:
+      - "minor_fire_scroll"
+      - "glow_stone"
+      - "protection_amulet"
+      - "ring_of_strength"
+      - "enchanted_blade"
+      - "mana_crystal"
+    dialogue:
+      - "Runes are the language of magic given form. I can teach you to write it."
+      - "Type 'learn' to see what enchantments I can share."
+      - "Use 'craft' at the enchanting table to practice your runework."
+      - "The blight has a runic signature. Understanding it may be key to curing the tree."
+    locations:
+      - "elf_runekeeper"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Ancient Library NPCs
+  starweaver_ithilwen:
+    name: "Starweaver Ithilwen"
+    description: "A mage of incredible power whose eyes contain swirling galaxies. She has studied the arcane arts since before human kingdoms existed, and her knowledge seems limitless."
+    level: 20
+    health: 140
+    damage: 0
+    armor: 5
+    experience: 0
+    aggressive: false
+    attackable: false
+    trainer_class: "mage"
+    dialogue:
+      - "Magic flows through all living things, but especially through the great trees. Learning their secrets takes centuries."
+      - "The blight is magical in nature. Understanding magic is key to fighting it."
+      - "Intelligence shapes the weave. A focused mind can reshape reality itself."
+      - "Type 'train' if you wish to learn the ways of the Mage."
+    locations:
+      - "elf_ancient_library"
+    respawn_median: 0
+    respawn_variation: 0
+
+  lore_keeper:
+    name: "lore keeper"
+    description: "A studious elf surrounded by floating books, their quill scratching notes even as they speak. They catalog all knowledge of the World Tree and its corruption."
+    level: 5
+    health: 40
+    damage: 0
+    armor: 0
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "The library holds ten thousand years of history. The blight is mentioned in prophecy, you know."
+      - "Each floor of the corrupted tree is documented here. Study before you climb."
+      - "Starweaver Ithilwen has forgotten more magic than most will ever learn."
+    locations:
+      - "elf_ancient_library"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Moonwell NPCs
+  moonwell_guardian:
+    name: "moonwell guardian"
+    description: "A silent elf who has dedicated their life to protecting the sacred pool. They rarely speak but see all."
+    level: 10
+    health: 100
+    damage: 18
+    armor: 6
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "The moonwell's waters remain pure. They must be protected at all costs."
+      - "Touch the water with respect. It responds to intention."
+      - "The enchanting table draws power from the well. Use it wisely."
+    locations:
+      - "elf_moonwell"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Living Forge NPCs
+  woodshaper_elanor:
+    name: "Woodshaper Elanor"
+    description: "A smith unlike any other, she shapes metal and living wood together into weapons of incredible beauty. The white flames of her forge respond to her will rather than bellows."
+    level: 14
+    health: 130
+    damage: 20
+    armor: 7
+    experience: 0
+    aggressive: false
+    attackable: false
+    shop_inventory:
+      - item: "iron_ore"
+        price: 10
+      - item: "steel_ingot"
+        price: 50
+      - item: "leather_strip"
+        price: 3
+      - item: "wooden_shaft"
+        price: 5
+    crafting_trainer: "blacksmithing"
+    teaches_recipes:
+      - "iron_dagger"
+      - "iron_mace"
+      - "iron_shield"
+      - "iron_sword"
+      - "chainmail_armor"
+      - "steel_dagger"
+      - "steel_sword"
+      - "plate_armor"
+    dialogue:
+      - "Elven smithing combines metal and living wood. The results are stronger than either alone."
+      - "Type 'learn' to see the forging techniques I can teach."
+      - "Use 'craft' at the forge to practice your smithing."
+      - "I have materials for sale as well. Type 'shop' to browse."
+    locations:
+      - "elf_living_forge"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Elders Council NPCs
+  council_elder:
+    name: "council elder"
+    description: "One of the ancient elves who govern Sylvanthal, their silver eyes holding the weight of millennia. They speak rarely but their words carry the authority of ages."
+    level: 20
+    health: 150
+    damage: 0
+    armor: 8
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "The council has debated the blight for decades. We have no solution, only hope in heroes like you."
+      - "Our people have lived in harmony with the World Tree for ten thousand years. We will not abandon it now."
+      - "If you can cleanse the corruption... the gratitude of the elven people would be eternal."
+    locations:
+      - "elf_elders_council"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Class Trainers
+  sunblade_caelindra:
+    name: "Sunblade Caelindra"
+    description: "A paladin whose armor seems woven from captured sunlight. She radiates warmth and righteous conviction, a beacon against the darkness of the blight."
+    level: 20
+    health: 240
+    damage: 25
+    armor: 10
+    experience: 0
+    aggressive: false
+    attackable: false
+    trainer_class: "paladin"
+    dialogue:
+      - "The light persists even in the deepest corruption. Let me teach you to carry it."
+      - "A paladin's conviction is their greatest weapon. Doubt is the enemy."
+      - "The undead things in the tree fear holy power. Wield it without mercy."
+      - "Type 'train' if you wish to learn the ways of the Paladin."
+    locations:
+      - "elf_moon_temple"
+    respawn_median: 0
+    respawn_variation: 0
+
+  father_oakheart:
+    name: "Father Oakheart"
+    description: "An elderly priest whose connection to the forest is so deep that small plants bloom in his footsteps. He channels the forest's healing power through ancient prayers."
+    level: 20
+    health: 180
+    damage: 12
+    armor: 6
+    experience: 0
+    aggressive: false
+    attackable: false
+    trainer_class: "cleric"
+    dialogue:
+      - "The forest itself is divine. We do not worship gods - we commune with the living world."
+      - "Healing flows from understanding. Know the wound before you mend it."
+      - "The blight is a sickness. Perhaps it can be healed rather than destroyed."
+      - "Type 'train' if you wish to learn the ways of the Cleric."
+    locations:
+      - "elf_moon_temple"
+    respawn_median: 0
+    respawn_variation: 0
+
+  bladesinger_instructor:
+    name: "Bladesinger Kireth"
+    description: "A warrior-mage who combines spell and sword into a deadly dance. His movements are too fast to follow, leaving trails of arcane light."
+    level: 20
+    health: 200
+    damage: 28
+    armor: 8
+    experience: 0
+    aggressive: false
+    attackable: false
+    trainer_class: "warrior"
+    dialogue:
+      - "The bladesong requires strength and grace in equal measure. I can teach you both."
+      - "We do not simply fight - we perform. Every battle is a deadly dance."
+      - "The creatures in the tree are fast. You must be faster."
+      - "Type 'train' if you wish to learn the ways of the Warrior."
+    locations:
+      - "elf_warrior_glade"
+    respawn_median: 0
+    respawn_variation: 0

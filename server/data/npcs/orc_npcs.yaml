@@ -1,0 +1,634 @@
+# Orc City NPCs - Skullgar
+# Brutal, war-focused NPCs for the orc war camp
+
+npcs:
+  # === CLASS TRAINERS ===
+
+  # Warrior Trainer - Blood Pit
+  skullgar_pit_master:
+    name: "Pit Master Gorehowl"
+    description: "A massive orc covered in ritual scars, each one a victory mark. His tusks are capped with iron, and his eyes burn with battle fury."
+    level: 20
+    health: 300
+    damage: 35
+    armor: 12
+    experience: 0
+    aggressive: false
+    attackable: false
+    trainer_class: "warrior"
+    dialogue:
+      - "You want to learn to fight? Then bleed for it! I am Gorehowl, and I've killed more enemies than you've seen summers. Step into the pit and prove yourself!"
+      - "Fighting isn't about technique - it's about wanting to kill more than your enemy wants to kill you. Feel the rage, embrace it, let it fuel your strikes!"
+      - "Return when you've tasted more blood. The pit is always waiting."
+      - "Type 'train' if you wish to learn the ways of the Warrior."
+    locations:
+      - "orc_blood_pit"
+    respawn_median: 0
+    respawn_variation: 0
+    quest_giver: true
+    gives_quests:
+      - warrior_trial
+      - first_blood
+      - pest_control
+    turn_in_quests:
+      - warrior_trial
+      - first_blood
+      - pest_control
+
+  # Mage Trainer - Rune Carvers
+  skullgar_rune_witch:
+    name: "Rune Witch Ashara"
+    description: "A hunched orc woman with glowing runes carved into her skin. Her eyes are milky white, but she sees more than most."
+    level: 20
+    health: 150
+    damage: 0
+    armor: 5
+    experience: 0
+    aggressive: false
+    attackable: false
+    trainer_class: "mage"
+    dialogue:
+      - "The spirits whisper your name... I am Ashara, keeper of the old ways. Magic flows through blood and bone - I can teach you to channel it."
+      - "Feel the power in your veins. The ancestors knew magic before the soft races gave it fancy names. Let me show you the old ways."
+      - "The spirits watch you now. Do not disappoint them."
+      - "Type 'train' if you wish to learn the ways of the Mage."
+    locations:
+      - "orc_rune_carvers"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Rogue Trainer - Shadow Tent
+  skullgar_shadow_blade:
+    name: "Shadow Blade Vex"
+    description: "An orc who moves without sound, his presence more felt than seen. His armor is dark and formless, and blades are hidden everywhere on his person."
+    level: 20
+    health: 120
+    damage: 25
+    armor: 4
+    experience: 0
+    aggressive: false
+    attackable: false
+    trainer_class: "rogue"
+    dialogue:
+      - "Most orcs think honor means facing your enemy head-on. They die surprised. I am Vex, and I teach the practical approach to killing."
+      - "Strike from shadow, strike without warning, strike to kill. There's no glory in a fair fight - only in victory."
+      - "Remember: your enemy's back is just as vulnerable as their front. Usually more so."
+      - "Type 'train' if you wish to learn the ways of the Rogue."
+    locations:
+      - "orc_shadow_tent"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Cleric Trainer - Shaman's Hut
+  skullgar_war_shaman:
+    name: "War Shaman Bonecaller"
+    description: "An aged orc draped in fetishes and totems, communing with spirits only he can see. His staff is topped with a skull that whispers dark prophecies."
+    level: 20
+    health: 200
+    damage: 15
+    armor: 8
+    experience: 0
+    aggressive: false
+    attackable: false
+    trainer_class: "cleric"
+    dialogue:
+      - "The spirits of fallen warriors surround us! I am Bonecaller, voice of the ancestors. They can grant you power - if you're worthy."
+      - "The ancestors watch from beyond death. Honor them with blood, and they will mend your wounds. Shame them, and they will turn away."
+      - "The spirits follow you now. Make them proud."
+      - "Type 'train' if you wish to learn the ways of the Cleric."
+    locations:
+      - "orc_shamans_hut"
+    respawn_median: 0
+    respawn_variation: 0
+    quest_giver: true
+    gives_quests:
+      - blessing_of_light
+      - cleanse_the_undead
+    turn_in_quests:
+      - blessing_of_light
+      - cleanse_the_undead
+
+  # Paladin Trainer - Shaman's Hut
+  skullgar_blood_guard:
+    name: "Blood Guard Ironfang"
+    description: "A massive orc in crude but effective plate armor, covered in holy symbols of the war god. His presence radiates divine fury."
+    level: 20
+    health: 280
+    damage: 25
+    armor: 12
+    experience: 0
+    aggressive: false
+    attackable: false
+    trainer_class: "paladin"
+    dialogue:
+      - "I am Ironfang, chosen of the War God! Not all who serve the divine are soft priests. Some of us carry his fury into battle!"
+      - "The War God blesses those who fight without fear. Channel his rage, let his power flow through your strikes. Be his weapon!"
+      - "Go forth and bring glory to the War God. Every enemy you slay is a prayer in his name."
+      - "Type 'train' if you wish to learn the ways of the Paladin."
+    locations:
+      - "orc_shamans_hut"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Ranger Trainer - Beast Pens
+  skullgar_beast_master:
+    name: "Beast Master Fangripper"
+    description: "A scarred orc who speaks more to beasts than to other orcs. Wolves and hunting cats follow at her heels, responding to the slightest gesture."
+    level: 20
+    health: 180
+    damage: 22
+    armor: 6
+    experience: 0
+    aggressive: false
+    attackable: false
+    trainer_class: "ranger"
+    dialogue:
+      - "Beasts are honest. They don't scheme or betray. I am Fangripper. I train them for war, and I can teach you to hunt like them."
+      - "Track your prey, learn its patterns, strike when it's vulnerable. The hunt is pure - it's life and death, nothing else."
+      - "Trust your instincts. The beast in you knows how to survive."
+      - "Type 'train' if you wish to learn the ways of the Ranger."
+    locations:
+      - "orc_beast_pens"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # === CRAFTING TRAINERS ===
+
+  # Blacksmith Trainer - Forge Pits
+  skullgar_forge_master:
+    name: "Forge Master Ironhide"
+    description: "An enormous orc with burns covering half his body - badges of honor from the forge. His hammer is nearly as large as a human."
+    level: 16
+    health: 200
+    damage: 25
+    armor: 8
+    experience: 0
+    aggressive: false
+    attackable: false
+    shop_inventory:
+      - item: "iron_ore"
+        price: 8
+      - item: "steel_ingot"
+        price: 45
+      - item: "leather_strip"
+        price: 3
+      - item: "wooden_shaft"
+        price: 5
+    crafting_trainer: "blacksmithing"
+    teaches_recipes:
+      - "iron_dagger"
+      - "iron_mace"
+      - "iron_shield"
+      - "iron_sword"
+      - "chainmail_armor"
+      - "steel_dagger"
+      - "steel_sword"
+      - "plate_armor"
+    dialogue:
+      - "You want to make weapons? Good! I'm Ironhide. Orc steel isn't pretty, but it kills just as dead as any elf blade."
+      - "Heat it hot, hit it hard, cool it fast. Don't waste time on fancy details - a weapon needs to kill, not look pretty."
+      - "Forge well, and your weapons will taste blood!"
+      - "Type 'learn' to see what forging techniques I can teach."
+      - "Use 'craft' at the forge. I sell materials too - type 'shop'."
+    locations:
+      - "orc_forge_pits"
+    respawn_median: 0
+    respawn_variation: 0
+    quest_giver: true
+    gives_quests:
+      - iron_collection
+      - forging_ahead
+    turn_in_quests:
+      - iron_collection
+      - forging_ahead
+
+  # Alchemy Trainer - Brew Tent
+  skullgar_poison_brewer:
+    name: "Poison Brewer Rotgut"
+    description: "A withered orc whose skin has turned strange colors from years of exposure to toxins. She seems immune to the fumes that make others gag."
+    level: 12
+    health: 55
+    damage: 5
+    armor: 2
+    experience: 0
+    aggressive: false
+    attackable: false
+    shop_inventory:
+      - item: "red_herb"
+        price: 5
+      - item: "blue_herb"
+        price: 8
+      - item: "green_herb"
+        price: 6
+      - item: "empty_vial"
+        price: 3
+      - item: "monster_blood"
+        price: 15
+    crafting_trainer: "alchemy"
+    teaches_recipes:
+      - "minor_healing_potion"
+      - "minor_mana_potion"
+      - "antidote"
+      - "healing_potion"
+      - "mana_potion"
+      - "strength_elixir"
+      - "greater_healing_potion"
+      - "invisibility_potion"
+    dialogue:
+      - "Heh heh... come to learn the subtle arts? I'm Rotgut. Poisons, potions, and the finest grog you'll ever taste - I brew it all."
+      - "A drop of this on your blade, and even a scratch becomes deadly. The soft races call it dishonorable. We call it efficient."
+      - "Don't drink from any cup I give you. Unless I say it's safe. Maybe not even then. Heh heh..."
+      - "Type 'learn' to see the recipes I can teach."
+      - "Use 'craft' at the alchemy lab. I sell ingredients too - type 'shop'."
+    locations:
+      - "orc_brew_tent"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Enchanting Trainer - Rune Carvers
+  skullgar_rune_carver:
+    name: "Rune Carver Skarr"
+    description: "An orc covered in glowing tattoos, each one a spell waiting to be unleashed. His tools are made from the bones of magical creatures."
+    level: 14
+    health: 80
+    damage: 0
+    armor: 4
+    experience: 0
+    aggressive: false
+    attackable: false
+    shop_inventory:
+      - item: "blank_scroll"
+        price: 10
+      - item: "arcane_dust"
+        price: 20
+      - item: "rough_gem"
+        price: 25
+      - item: "silver_chain"
+        price: 30
+    crafting_trainer: "enchanting"
+    teaches_recipes:
+      - "minor_fire_scroll"
+      - "glow_stone"
+      - "protection_amulet"
+      - "ring_of_strength"
+      - "enchanted_blade"
+      - "mana_crystal"
+    dialogue:
+      - "The old magics live in flesh and steel! I am Skarr. I carve power into weapons and warriors alike."
+      - "Runes are the language of spirits. Carve them right, and they grant power. Carve them wrong, and they consume you."
+      - "May your runes glow with stolen power."
+      - "Type 'learn' to see what runes I can teach you."
+      - "Use 'craft' at the enchanting table. I sell materials too - type 'shop'."
+    locations:
+      - "orc_rune_carvers"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Cooking Trainer - Bazaar
+  skullgar_cook:
+    name: "Gut-Stuffer Marga"
+    description: "A heavyset orc tending a massive fire pit where various meats of questionable origin sizzle and smoke. She tastes everything with a massive wooden spoon."
+    level: 8
+    health: 100
+    damage: 12
+    armor: 4
+    experience: 0
+    aggressive: false
+    attackable: false
+    shop_inventory:
+      - item: "bread"
+        price: 2
+      - item: "roasted_meat"
+        price: 8
+      - item: "ale"
+        price: 2
+      - item: "water"
+        price: 1
+    crafting_trainer: "cooking"
+    dialogue:
+      - "Hungry? Of course you are! I'm Marga, and I make sure the horde doesn't starve. Can't fight on an empty stomach!"
+      - "Kill it, cook it, eat it. Don't get fancy - an orc needs fuel, not presentation. Though a good marinade never hurt..."
+      - "Eat well, fight well. Come back when you need to fill your belly!"
+      - "Type 'shop' to see what's cooking."
+    locations:
+      - "orc_bazaar"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # === SHOPKEEPERS ===
+
+  # General Merchant - Bazaar
+  skullgar_merchant:
+    name: "Trader Grabbitz"
+    description: "A shrewd-looking orc with more scars from bad deals than from combat. His stall is piled high with looted goods from a dozen campaigns."
+    level: 5
+    health: 60
+    damage: 8
+    armor: 3
+    experience: 0
+    aggressive: false
+    attackable: false
+    shop_inventory:
+      - item: "treasure_key"
+        price: 50
+      - item: "healing_potion"
+        price: 50
+      - item: "mana_potion"
+        price: 50
+      - item: "bandage"
+        price: 5
+      - item: "bread"
+        price: 2
+      - item: "ale"
+        price: 2
+      - item: "iron_dagger"
+        price: 25
+      - item: "chainmail_armor"
+        price: 90
+      - item: "iron_ore"
+        price: 8
+      - item: "steel_ingot"
+        price: 45
+      - item: "leather_strip"
+        price: 3
+      - item: "leather"
+        price: 8
+    dialogue:
+      - "Everything's for sale at the right price! I'm Grabbitz. Loot, supplies, the occasional rare item that 'fell off a caravan' - I've got it all."
+      - "See something you like? Type 'shop' to browse. Use 'sell' if you have goods to trade."
+      - "Just don't try to cheat me - the last one who did became inventory."
+      - "Come back when you've got more gold to spend!"
+    locations:
+      - "orc_bazaar"
+    respawn_median: 0
+    respawn_variation: 0
+    quest_giver: true
+    gives_quests:
+      - crystal_hunt
+      - mushroom_gathering
+    turn_in_quests:
+      - crystal_hunt
+      - mushroom_gathering
+
+  # Weapon Merchant - Blood Pit
+  skullgar_weapon_dealer:
+    name: "Arms Dealer Choppa"
+    description: "A one-eyed orc surrounded by weapons of every brutal description. Each one has been tested in combat - usually by him."
+    level: 10
+    health: 120
+    damage: 20
+    armor: 6
+    experience: 0
+    aggressive: false
+    attackable: false
+    shop_inventory:
+      - item: "iron_dagger"
+        price: 25
+      - item: "iron_sword"
+        price: 60
+      - item: "iron_mace"
+        price: 55
+      - item: "steel_sword"
+        price: 150
+      - item: "chainmail_armor"
+        price: 90
+      - item: "plate_armor"
+        price: 200
+    dialogue:
+      - "Need something to kill with? I'm Choppa. Every weapon here has tasted blood. You won't find untested steel in my stock."
+      - "Pick it up, feel the weight. If it calls to you, type 'shop' to see my prices."
+      - "May your new blade taste enemy blood soon!"
+    locations:
+      - "orc_blood_pit"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # === QUEST GIVERS ===
+
+  # Main Quest Giver - Trophy Hall
+  skullgar_warlord:
+    name: "Warlord Skullcrusher"
+    description: "An ancient orc covered in ritual scars and tribal tattoos, his tusks inlaid with gold. He has led more campaigns than most orcs have seen winters."
+    level: 18
+    health: 250
+    damage: 0
+    armor: 10
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "I am Warlord Skullcrusher, keeper of the trophies and memory of our victories. The Eternal Battlefield calls for new champions - are you strong enough?"
+      - "Beyond the Skull Gate lies a corruption that twists even the dead. Fallen warriors rise again, but wrong - hostile to the living. We need warriors to purge this stain."
+      - "Return with glory or don't return at all. There is no middle ground."
+      - "Check your mail at the box near the portal. Even in the wastes, messages find their way."
+      - "The portal can take you to other cities, should you need allies from distant lands."
+    locations:
+      - "orc_trophy_hall"
+    respawn_median: 0
+    respawn_variation: 0
+    quest_giver: true
+    gives_quests:
+      - tower_introduction
+      - floor_five
+      - floor_ten
+    turn_in_quests:
+      - tower_introduction
+      - floor_five
+      - floor_ten
+
+  # Secondary Quest Giver - Warchief's Throne
+  skullgar_warchief:
+    name: "Warchief Bloodfist"
+    description: "The current ruler of Skullgar, a massive orc who earned his throne through countless victories. His fist is permanently stained red from the ritual that sealed his authority."
+    level: 25
+    health: 400
+    damage: 0
+    armor: 15
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "You stand before Warchief Bloodfist. I rule because I am the strongest. The Eternal Battlefield... it was once a proving ground. Now it's a threat."
+      - "Something corrupts the spirits of our fallen warriors. They should join the ancestors in glory - instead they're trapped, suffering. Find the source and destroy it."
+      - "Succeed and you will have the favor of Skullgar. Fail... well, you won't be the first."
+    locations:
+      - "orc_warchiefs_throne"
+    respawn_median: 0
+    respawn_variation: 0
+    quest_giver: true
+    gives_quests:
+      - bat_infestation
+      - goblin_threat
+    turn_in_quests:
+      - bat_infestation
+      - goblin_threat
+
+  # === CITY GUARDS ===
+
+  skullgar_guard:
+    name: "Skullgar Warrior"
+    description: "A burly orc in crude armor, patrolling the camp with a massive axe resting on one shoulder. His expression dares anyone to start trouble."
+    level: 8
+    health: 100
+    damage: 18
+    armor: 6
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "Keep the peace or answer to me. I'm the law around here, and my law is simple - don't cause problems."
+      - "Move along. I've got a camp to watch."
+    locations:
+      - "orc_war_camp"
+      - "orc_bazaar"
+      - "orc_blood_pit"
+    respawn_median: 0
+    respawn_variation: 0
+
+  skullgar_gate_guard:
+    name: "Skull Gate Sentinel"
+    description: "An elite orc warrior standing watch at the gate to the Eternal Battlefield. Her armor bears the marks of many expeditions beyond the gate."
+    level: 12
+    health: 150
+    damage: 22
+    armor: 10
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "The Skull Gate leads to the Eternal Battlefield. Many go up. Few come back sane. You've been warned."
+      - "Your death is your own choice. I won't mourn you."
+    locations:
+      - "orc_skull_gate"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # === FLAVOR NPCS ===
+
+  skullgar_drummer:
+    name: "War Drummer"
+    description: "An orc pounding an enormous drum made from stretched hide, maintaining the eternal rhythm that keeps Skullgar's heart beating."
+    level: 4
+    health: 50
+    damage: 8
+    armor: 2
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "*BOOM BOOM BOOM* The drums never stop! *BOOM* They call the warriors! *BOOM* They frighten enemies! *BOOM BOOM*"
+      - "*BOOM BOOM*"
+    locations:
+      - "orc_war_camp"
+    respawn_median: 0
+    respawn_variation: 0
+
+  skullgar_scarred_veteran:
+    name: "Scarred Veteran"
+    description: "An old orc missing an arm and an eye, but his remaining parts are still fearsome. He watches young warriors with contempt."
+    level: 10
+    health: 120
+    damage: 15
+    armor: 5
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "In my day, we fought real enemies, not each other. These soft younglings don't know what war really is."
+      - "When you face the dead beyond the gate, you'll understand. If you survive."
+    locations:
+      - "orc_blood_pit"
+    respawn_median: 0
+    respawn_variation: 0
+
+  skullgar_slave:
+    name: "Broken Prisoner"
+    description: "A defeated warrior from some other race, now serving in chains. Their spirit is crushed, their eyes empty."
+    level: 1
+    health: 15
+    damage: 0
+    armor: 0
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "*flinches* Please... no more..."
+      - "*shuffles away fearfully*"
+    locations:
+      - "orc_bazaar"
+    respawn_median: 0
+    respawn_variation: 0
+
+  skullgar_brawler:
+    name: "Drunken Brawler"
+    description: "A massive orc reeking of grog, looking for any excuse to start a fight. His fists are scarred from countless brawls."
+    level: 5
+    health: 80
+    damage: 12
+    armor: 2
+    experience: 30
+    aggressive: false
+    attackable: true
+    gold_min: 2
+    gold_max: 8
+    dialogue:
+      - "You lookin' at me? I think you're lookin' at me! Nobody looks at me!"
+      - "Yeah, that's right, walk away. Smart move."
+    locations:
+      - "orc_bazaar"
+    respawn_median: 300
+    respawn_variation: 60
+
+  skullgar_beast_handler:
+    name: "Young Beast Handler"
+    description: "A young orc struggling to control a snarling wolf on a chain. The wolf seems more in charge than the handler."
+    level: 3
+    health: 40
+    damage: 6
+    armor: 1
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "Stay back! He bites! I mean... I've got him completely under control. Totally."
+      - "No! Down! Bad wolf! I said DOWN!"
+    locations:
+      - "orc_beast_pens"
+    respawn_median: 0
+    respawn_variation: 0
+
+  skullgar_arena_announcer:
+    name: "Arena Caller"
+    description: "A loud orc with a booming voice, announcing matches and working the crowd into a frenzy during arena fights."
+    level: 5
+    health: 60
+    damage: 10
+    armor: 3
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "WELCOME TO THE ARENA! Where the blood flows and the strong survive! You here to fight or watch?"
+      - "COME BACK FOR THE NEXT MATCH! Blood will be spilled!"
+    locations:
+      - "orc_arena"
+    respawn_median: 0
+    respawn_variation: 0
+
+  skullgar_spirit_seeker:
+    name: "Spirit Seeker"
+    description: "An orc in a trance-like state, muttering to spirits only she can see. Her eyes are rolled back, showing only whites."
+    level: 8
+    health: 50
+    damage: 0
+    armor: 2
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "The dead... so many dead... they cry for vengeance... the corruption twists them... they cannot rest..."
+      - "...blood... always blood..."
+    locations:
+      - "orc_shamans_hut"
+    respawn_median: 0
+    respawn_variation: 0

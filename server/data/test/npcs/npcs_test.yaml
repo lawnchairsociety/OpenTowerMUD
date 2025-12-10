@@ -19,7 +19,7 @@ npcs:
       - "Greetings, adventurer! New to our little city, are you? Talk to me and I'll tell you all you need to know!"
       - "The tower looms ever upward... infinite floors, infinite danger, infinite glory."
     locations:
-      - "town_square"
+      - "human_town_square"
     respawn_median: 0
     respawn_variation: 0
     quest_giver: true
@@ -46,7 +46,7 @@ npcs:
     dialogue:
       - "May the light guide your path through the darkness above."
     locations:
-      - "temple"
+      - "human_temple"
     respawn_median: 0
     respawn_variation: 0
 
@@ -64,7 +64,7 @@ npcs:
     dialogue:
       - "The divine light flows through all who believe."
     locations:
-      - "temple"
+      - "human_temple"
     respawn_median: 0
     respawn_variation: 0
 
@@ -105,7 +105,7 @@ npcs:
     dialogue:
       - "Welcome! Type 'shop' to see what's for sale."
     locations:
-      - "general_store"
+      - "human_general_store"
     respawn_median: 0
     respawn_variation: 0
 
@@ -125,7 +125,7 @@ npcs:
     dialogue:
       - "Pain is the best teacher. The dummy doesn't hit back, but the monsters will."
     locations:
-      - "training_hall"
+      - "human_training_hall"
     respawn_median: 0
     respawn_variation: 0
 
@@ -143,7 +143,7 @@ npcs:
     dialogue:
       - "Strength and steel - that's all you need to survive."
     locations:
-      - "training_hall"
+      - "human_training_hall"
     respawn_median: 0
     respawn_variation: 0
 
@@ -172,7 +172,7 @@ npcs:
     dialogue:
       - "What'll it be? We've got ale, bread, and stories aplenty."
     locations:
-      - "tavern"
+      - "human_tavern"
     respawn_median: 0
     respawn_variation: 0
 
@@ -189,7 +189,7 @@ npcs:
     dialogue:
       - "I write songs about heroes. Perhaps one day I'll write one about you!"
     locations:
-      - "tavern"
+      - "human_tavern"
     respawn_median: 0
     respawn_variation: 0
 
@@ -207,7 +207,7 @@ npcs:
     dialogue:
       - "The best fights are the ones your enemy never sees coming."
     locations:
-      - "tavern"
+      - "human_tavern"
     respawn_median: 0
     respawn_variation: 0
 
@@ -229,7 +229,7 @@ npcs:
       - "The creatures grow stronger the higher you climb. Never let your guard down."
       - "If you see anything unusual, report back to me immediately."
     locations:
-      - "barracks"
+      - "human_barracks"
     respawn_median: 0
     respawn_variation: 0
     quest_giver: true
@@ -258,9 +258,9 @@ npcs:
     dialogue:
       - "Stay out of trouble, citizen."
     locations:
-      - "barracks"
-      - "north_gate"
-      - "tower_entrance"
+      - "human_barracks"
+      - "human_north_gate"
+      - "human_tower_entrance"
     respawn_median: 0
     respawn_variation: 0
 
@@ -278,7 +278,7 @@ npcs:
     dialogue:
       - "The wilderness teaches patience. The tower demands it."
     locations:
-      - "north_gate"
+      - "human_north_gate"
     respawn_median: 0
     respawn_variation: 0
 
@@ -299,7 +299,7 @@ npcs:
     dialogue:
       - "Magic is not about power - it's about understanding."
     locations:
-      - "royal_library"
+      - "human_royal_library"
     respawn_median: 0
     respawn_variation: 0
 
@@ -320,7 +320,7 @@ npcs:
     dialogue:
       - "Honor, duty, sacrifice - these are the pillars of the paladin's path."
     locations:
-      - "castle_hall"
+      - "human_castle_hall"
     respawn_median: 0
     respawn_variation: 0
 
@@ -360,7 +360,7 @@ npcs:
       - "The forge is where raw metal becomes legend. I can teach you its secrets."
       - "Type 'learn' to see what recipes I can teach you."
     locations:
-      - "armory"
+      - "human_armory"
     respawn_median: 0
     respawn_variation: 0
 
@@ -396,7 +396,7 @@ npcs:
       - "Good leather armor can mean the difference between life and death, friend."
       - "Type 'learn' to see what recipes I can teach you."
     locations:
-      - "artisan_market"
+      - "human_artisan_market"
     respawn_median: 0
     respawn_variation: 0
 
@@ -435,7 +435,7 @@ npcs:
       - "Potions! Elixirs! The power to cheat death itself! I can teach you, yes yes!"
       - "Type 'learn' to see the recipes I can teach."
     locations:
-      - "alchemist_shop"
+      - "human_alchemist_shop"
     respawn_median: 0
     respawn_variation: 0
 
@@ -470,6 +470,6 @@ npcs:
       - "The arcane arts require patience and precision. I can guide you."
       - "Type 'learn' to see what enchantments I can teach."
     locations:
-      - "mage_tower"
+      - "human_mage_tower"
     respawn_median: 0
     respawn_variation: 0

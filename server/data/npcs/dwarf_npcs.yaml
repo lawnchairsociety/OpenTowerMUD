@@ -1,0 +1,540 @@
+# Dwarf City NPCs for Khazad-Karn
+# Mountain dwarves defending their ancestral home from the horrors beneath
+
+npcs:
+  # Great Hall NPCs (spawn point)
+  chronicler_dain:
+    name: "Chronicler Dain"
+    description: "An elderly dwarf with a beard that reaches his belt, filled with braided gold rings. He has recorded the history of Khazad-Karn for three centuries and knows every tale of glory and tragedy."
+    level: 12
+    health: 100
+    damage: 0
+    armor: 5
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "Welcome to Khazad-Karn, surface-walker. Our halls have stood for five thousand years."
+      - "The Breach opened thirty years ago. Since then, horrors climb from the depths. We need warriors."
+      - "Check your mail at the box beside the portal. Even underground, messages find their way."
+      - "The portal can take you to other cities, should you need allies from distant lands."
+    locations:
+      - "dwarf_great_hall"
+    respawn_median: 0
+    respawn_variation: 0
+    quest_giver: true
+    gives_quests:
+      - tower_introduction
+      - floor_five
+      - floor_ten
+    turn_in_quests:
+      - tower_introduction
+      - floor_five
+      - floor_ten
+
+  hall_guard:
+    name: "hall guard"
+    description: "A stout dwarf in polished plate armor, their axe always ready. They watch the hall with suspicious eyes."
+    level: 6
+    health: 90
+    damage: 15
+    armor: 8
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "Keep your weapons sheathed in the Great Hall. The king's peace rules here."
+      - "The Breach is south, through the mines. Don't go unprepared."
+      - "Khazad-Karn stands eternal. No creature from below will change that."
+    locations:
+      - "dwarf_great_hall"
+      - "dwarf_gate_house"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # King's Throne NPCs
+  high_king_thoradin:
+    name: "High King Thoradin"
+    description: "The ruler of Khazad-Karn, a dwarf of legendary strength despite his advanced years. His crown is forged from the first mithril ever mined from these halls, and his authority is absolute."
+    level: 25
+    health: 400
+    damage: 0
+    armor: 15
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "So, another warrior comes to test themselves against the depths. Good. We need every axe."
+      - "My ancestors built these halls. I will not be the king who loses them to darkness."
+      - "Prove yourself in the mines, and the crown's gratitude - and gold - will be yours."
+      - "The deeper you go, the worse it gets. But the greatest treasures lie in the deepest dark."
+    locations:
+      - "dwarf_kings_throne"
+    respawn_median: 0
+    respawn_variation: 0
+
+  royal_thane:
+    name: "Royal Thane Grimjaw"
+    description: "The king's chief advisor and war leader, a battle-scarred veteran who has fought in the depths more times than anyone can count."
+    level: 18
+    health: 250
+    damage: 30
+    armor: 12
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "The king trusts my counsel because I've earned it in blood. Mostly not my own."
+      - "We've mapped twenty-five levels of the depths. There seem to be more. Always more."
+      - "If you survive the first ten levels, come see me. I might have special work for you."
+    locations:
+      - "dwarf_kings_throne"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Ancestor Hall NPCs
+  stone_speaker_balin:
+    name: "Stone-Speaker Balin"
+    description: "A priest who communes with the spirits of fallen dwarves. His eyes are milky white, but he sees things others cannot. The ancestors speak through him."
+    level: 18
+    health: 150
+    damage: 12
+    armor: 6
+    experience: 0
+    aggressive: false
+    attackable: false
+    trainer_class: "cleric"
+    dialogue:
+      - "The ancestors watch from beyond. They guide those who honor the old ways."
+      - "Pray at the altar, and the stone itself will lend you strength."
+      - "The creatures below were once mortal. Perhaps they can find rest through your actions."
+      - "Type 'train' if you wish to learn the ways of the Cleric."
+    locations:
+      - "dwarf_ancestor_hall"
+    respawn_median: 0
+    respawn_variation: 0
+    quest_giver: true
+    gives_quests:
+      - blessing_of_light
+      - cleanse_the_undead
+    turn_in_quests:
+      - blessing_of_light
+      - cleanse_the_undead
+
+  oath_guard_thorin:
+    name: "Oath-Guard Thorin"
+    description: "A paladin sworn to protect the ancestor hall and the sacred dead. His hammer glows with holy light, and his oath binds him to service eternal."
+    level: 20
+    health: 280
+    damage: 25
+    armor: 12
+    experience: 0
+    aggressive: false
+    attackable: false
+    trainer_class: "paladin"
+    dialogue:
+      - "My oath is to the ancestors and the living alike. I can teach you to swear the same."
+      - "Holy power flows through conviction. Doubt weakens both arm and soul."
+      - "The undead things below are an abomination. Destroy them without mercy."
+      - "Type 'train' if you wish to learn the ways of the Paladin."
+    locations:
+      - "dwarf_ancestor_hall"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Market Cavern NPCs
+  merchant_goldvein:
+    name: "Merchant Goldvein"
+    description: "A prosperous dwarf merchant with a nose for value and a talent for haggling. His scales are always accurate, and his prices are fair - for a dwarf's definition of fair."
+    level: 5
+    health: 60
+    damage: 8
+    armor: 3
+    experience: 0
+    aggressive: false
+    attackable: false
+    shop_inventory:
+      - item: "treasure_key"
+        price: 50
+      - item: "healing_potion"
+        price: 50
+      - item: "mana_potion"
+        price: 50
+      - item: "bandage"
+        price: 5
+      - item: "bread"
+        price: 2
+      - item: "ale"
+        price: 3
+      - item: "iron_dagger"
+        price: 30
+      - item: "chainmail_armor"
+        price: 100
+      - item: "iron_ore"
+        price: 8
+      - item: "steel_ingot"
+        price: 45
+      - item: "leather_strip"
+        price: 3
+    dialogue:
+      - "Welcome to the market! Type 'shop' to see what I've got."
+      - "Dwarven goods are the finest in the world. You won't find better prices elsewhere."
+      - "I buy items too. Use 'sell' if you've got something worth trading."
+    locations:
+      - "dwarf_market_cavern"
+    respawn_median: 0
+    respawn_variation: 0
+    quest_giver: true
+    gives_quests:
+      - crystal_hunt
+      - mushroom_gathering
+    turn_in_quests:
+      - crystal_hunt
+      - mushroom_gathering
+
+  hide_tanner_greta:
+    name: "Hide-Tanner Greta"
+    description: "A stout dwarven woman with arms like tree trunks from years of working leather. Her goods are practical and durable, built to last generations."
+    level: 8
+    health: 70
+    damage: 10
+    armor: 4
+    experience: 0
+    aggressive: false
+    attackable: false
+    shop_inventory:
+      - item: "leather"
+        price: 8
+      - item: "leather_strip"
+        price: 3
+      - item: "thread"
+        price: 2
+      - item: "beast_fang"
+        price: 12
+    crafting_trainer: "leatherworking"
+    teaches_recipes:
+      - "leather_strips"
+      - "leather_cap"
+      - "leather_gloves"
+      - "leather_armor"
+      - "leather_boots"
+      - "adventurer_pack"
+      - "studded_leather"
+    dialogue:
+      - "Dwarven leather work is built to last. None of that flimsy surface stuff."
+      - "Type 'learn' to see what I can teach you."
+      - "Use 'craft' at the workbench to practice. I sell materials too - type 'shop'."
+    locations:
+      - "dwarf_market_cavern"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Tavern NPCs
+  brewmaster_stonebarrel:
+    name: "Brewmaster Stonebarrel"
+    description: "A jolly dwarf with a belly that speaks to his love of his own craft. His ales are legendary, brewed from mushrooms and minerals found only in the deep."
+    level: 5
+    health: 80
+    damage: 10
+    armor: 3
+    experience: 0
+    aggressive: false
+    attackable: false
+    shop_inventory:
+      - item: "ale"
+        price: 2
+      - item: "bread"
+        price: 2
+      - item: "roasted_meat"
+        price: 10
+      - item: "mushroom_stew"
+        price: 8
+    dialogue:
+      - "Best ale in the mountain! Type 'shop' to see the menu."
+      - "The mushroom stew is my wife's recipe. Been making it for two hundred years."
+      - "You look like you could use a drink. The depths take a toll on everyone."
+    locations:
+      - "dwarf_tavern"
+    respawn_median: 0
+    respawn_variation: 0
+
+  tunnel_scout_grimm:
+    name: "Tunnel Scout Grimm"
+    description: "A wiry dwarf who moves with unusual grace for his kind. His eyes are adapted to the darkness, and he knows secret paths that others cannot find."
+    level: 16
+    health: 100
+    damage: 22
+    armor: 5
+    experience: 0
+    aggressive: false
+    attackable: false
+    trainer_class: "rogue"
+    dialogue:
+      - "The tunnels have secrets. I can teach you to find them - and use them."
+      - "Stealth is survival in the depths. The creatures down there hunt by sound."
+      - "A quick knife is worth more than a heavy axe when you're behind your enemy."
+      - "Type 'train' if you wish to learn the ways of the Rogue."
+    locations:
+      - "dwarf_tavern"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Great Forge NPCs
+  mastersmith_bronzebeard:
+    name: "Mastersmith Bronzebeard"
+    description: "The greatest living dwarven smith, his beard singed short from decades at the forge. The weapons he crafts are said to have souls of their own."
+    level: 16
+    health: 150
+    damage: 22
+    armor: 8
+    experience: 0
+    aggressive: false
+    attackable: false
+    shop_inventory:
+      - item: "iron_ore"
+        price: 8
+      - item: "steel_ingot"
+        price: 45
+      - item: "leather_strip"
+        price: 3
+      - item: "wooden_shaft"
+        price: 5
+    crafting_trainer: "blacksmithing"
+    teaches_recipes:
+      - "iron_dagger"
+      - "iron_mace"
+      - "iron_shield"
+      - "iron_sword"
+      - "chainmail_armor"
+      - "steel_dagger"
+      - "steel_sword"
+      - "plate_armor"
+    dialogue:
+      - "The Great Forge has burned for a thousand years. I am merely its current keeper."
+      - "Type 'learn' to see what forging techniques I can teach."
+      - "Use 'craft' at the forge. I sell materials too - type 'shop'."
+      - "Bring me rare ores from the depths, and I'll forge you something legendary."
+    locations:
+      - "dwarf_great_forge"
+    respawn_median: 0
+    respawn_variation: 0
+    quest_giver: true
+    gives_quests:
+      - iron_collection
+      - forging_ahead
+    turn_in_quests:
+      - iron_collection
+      - forging_ahead
+
+  forge_apprentice:
+    name: "forge apprentice"
+    description: "A young dwarf learning the smith's trade, their face red from the heat and arms already showing the muscles of their craft."
+    level: 3
+    health: 50
+    damage: 8
+    armor: 2
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "The Mastersmith has been forging for three hundred years. I've got a lot to learn."
+      - "Careful near the forge - hot metal doesn't care who you are."
+      - "Someday I'll craft weapons worthy of my ancestors. Someday."
+    locations:
+      - "dwarf_great_forge"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Guild Hall NPCs
+  axemaster_thrain:
+    name: "Axemaster Thrain"
+    description: "A legendary warrior whose axe has tasted the blood of a thousand creatures from the depths. His body is a map of scars, each one a lesson learned in combat."
+    level: 20
+    health: 300
+    damage: 35
+    armor: 12
+    experience: 0
+    aggressive: false
+    attackable: false
+    trainer_class: "warrior"
+    dialogue:
+      - "In the depths, hesitation is death. I'll teach you to strike first and strike hard."
+      - "Dwarven combat is about endurance. Outlast your enemy, and victory is yours."
+      - "The creatures below don't fight fair. Neither should you."
+      - "Type 'train' if you wish to learn the ways of the Warrior."
+    locations:
+      - "dwarf_guild_hall"
+    respawn_median: 0
+    respawn_variation: 0
+    quest_giver: true
+    gives_quests:
+      - warrior_trial
+      - first_blood
+      - pest_control
+    turn_in_quests:
+      - warrior_trial
+      - first_blood
+      - pest_control
+
+  # Rune Chamber NPCs
+  runecaster_durin:
+    name: "Runecaster Durin"
+    description: "A mage whose power comes not from spoken words but from carved stone. His fingers are stained with enchanting inks, and runes glow beneath his skin."
+    level: 18
+    health: 120
+    damage: 0
+    armor: 5
+    experience: 0
+    aggressive: false
+    attackable: false
+    trainer_class: "mage"
+    dialogue:
+      - "Dwarven magic is written in stone, not spoken in air. It lasts longer that way."
+      - "The runes contain the wisdom of our ancestors. I can teach you to read them."
+      - "Magic is a tool, like a hammer or pick. Use it to build, not destroy."
+      - "Type 'train' if you wish to learn the ways of the Mage."
+    locations:
+      - "dwarf_rune_chamber"
+    respawn_median: 0
+    respawn_variation: 0
+
+  rune_carver_dwalin:
+    name: "Rune-Carver Dwalin"
+    description: "An enchanter who inscribes magical symbols into weapons and armor. His work is slow and precise, but the results are legendary."
+    level: 14
+    health: 80
+    damage: 0
+    armor: 4
+    experience: 0
+    aggressive: false
+    attackable: false
+    shop_inventory:
+      - item: "blank_scroll"
+        price: 10
+      - item: "arcane_dust"
+        price: 20
+      - item: "rough_gem"
+        price: 25
+      - item: "silver_chain"
+        price: 30
+    crafting_trainer: "enchanting"
+    teaches_recipes:
+      - "minor_fire_scroll"
+      - "glow_stone"
+      - "protection_amulet"
+      - "ring_of_strength"
+      - "enchanted_blade"
+      - "mana_crystal"
+    dialogue:
+      - "Dwarven enchantments are carved, not spoken. They last for centuries."
+      - "Type 'learn' to see what runes I can teach you."
+      - "Use 'craft' at the enchanting table. I sell materials too - type 'shop'."
+    locations:
+      - "dwarf_rune_chamber"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Mushroom Grotto NPCs
+  mushroom_sage_fungi:
+    name: "Mushroom Sage Fungi"
+    description: "An eccentric dwarf who has spent so long among the glowing mushrooms that his beard has started to phosphoresce. His potions are unusual but effective."
+    level: 10
+    health: 55
+    damage: 5
+    armor: 2
+    experience: 0
+    aggressive: false
+    attackable: false
+    shop_inventory:
+      - item: "red_herb"
+        price: 5
+      - item: "blue_herb"
+        price: 8
+      - item: "green_herb"
+        price: 6
+      - item: "empty_vial"
+        price: 3
+      - item: "monster_blood"
+        price: 15
+    crafting_trainer: "alchemy"
+    teaches_recipes:
+      - "minor_healing_potion"
+      - "minor_mana_potion"
+      - "antidote"
+      - "healing_potion"
+      - "mana_potion"
+      - "strength_elixir"
+      - "greater_healing_potion"
+      - "invisibility_potion"
+    dialogue:
+      - "The mushrooms speak to me, yes they do! They have much to teach!"
+      - "Type 'learn' to see what brews I can share with you."
+      - "Use 'craft' at the alchemy lab. I sell ingredients too - type 'shop'."
+      - "The creatures below have interesting... fluids. Bring them to me!"
+    locations:
+      - "dwarf_mushroom_grotto"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Deep Mines NPCs
+  deep_hunter_kargrim:
+    name: "Deep Hunter Kargrim"
+    description: "A ranger adapted to the underground, his senses honed to track creatures in absolute darkness. Where others see only stone, he sees trails and signs."
+    level: 18
+    health: 170
+    damage: 24
+    armor: 6
+    experience: 0
+    aggressive: false
+    attackable: false
+    trainer_class: "ranger"
+    dialogue:
+      - "The depths have their own ecology. Predator and prey, just like the surface."
+      - "I track by sound, smell, and vibration. I'll teach you to do the same."
+      - "Every creature leaves a trail. Learn to read it, and you'll never be surprised."
+      - "Type 'train' if you wish to learn the ways of the Ranger."
+    locations:
+      - "dwarf_deep_mines"
+    respawn_median: 0
+    respawn_variation: 0
+
+  mine_foreman:
+    name: "mine foreman"
+    description: "A gruff dwarf covered in rock dust, responsible for coordinating the mining operations and keeping workers safe from the creatures below."
+    level: 8
+    health: 100
+    damage: 15
+    armor: 5
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "We mine what we can, but the creatures make it dangerous. Watch yourself."
+      - "The deeper veins are richer, but so are the dangers. Risk and reward."
+      - "If you're heading through the Breach, give the lads something to cheer about when you come back."
+    locations:
+      - "dwarf_deep_mines"
+      - "dwarf_cart_station"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # The Breach NPCs
+  breach_warden:
+    name: "Breach Warden Stormshard"
+    description: "A grim dwarf who has dedicated their life to guarding the entrance to the corrupted depths. Their armor bears the marks of countless battles, and their eyes hold the weight of all they've seen emerge from below."
+    level: 15
+    health: 200
+    damage: 25
+    armor: 10
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "The Breach is the wound in our mountain. Through it, darkness bleeds upward."
+      - "I've watched that stairway for thirty years. The things that come up... you wouldn't believe."
+      - "If you go down, remember: the deeper you go, the worse it gets. But also, the richer."
+      - "Come back alive. That's an order."
+    locations:
+      - "dwarf_the_breach"
+    respawn_median: 0
+    respawn_variation: 0
