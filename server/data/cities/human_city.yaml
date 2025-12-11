@@ -39,12 +39,13 @@ rooms:
 
   human_north_gate:
     name: "North Gate"
-    description: "Massive iron-reinforced gates seal off the city from the outside. The walls here are thick and imposing, clearly meant to keep something out... or in."
-    description_day: "Guards patrol the walls above, their armor glinting in the sun."
-    description_night: "Torches line the walls, casting long shadows across the gate."
+    description: "Massive iron-reinforced gates seal off the city from the outside. The walls here are thick and imposing, clearly meant to keep something out... or in. Beyond the gate, a dark passage leads into the Great Labyrinth - ancient tunnels that connect all the cities of the realm."
+    description_day: "Guards patrol the walls above, their armor glinting in the sun. They eye the labyrinth entrance warily."
+    description_night: "Torches line the walls, casting long shadows across the gate. Strange sounds echo from the labyrinth beyond."
     type: city
     features:
       - gate
+      - labyrinth_entrance
     exits:
       south: human_town_square
 

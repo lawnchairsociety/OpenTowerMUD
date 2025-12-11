@@ -2,11 +2,14 @@ package tower
 
 import (
 	"fmt"
+	"math/rand"
 	"os"
 	"path/filepath"
 	"sync"
+	"time"
 
 	"github.com/lawnchairsociety/opentowermud/server/internal/items"
+	"github.com/lawnchairsociety/opentowermud/server/internal/labyrinth"
 	"github.com/lawnchairsociety/opentowermud/server/internal/npc"
 	"github.com/lawnchairsociety/opentowermud/server/internal/world"
 )
@@ -14,6 +17,7 @@ import (
 // TowerManager manages multiple towers in the game world.
 type TowerManager struct {
 	towers     map[TowerID]*Tower
+	labyrinth  *labyrinth.Labyrinth
 	dataDir    string
 	worldDir   string
 	mobConfig  *npc.NPCsConfig
@@ -114,17 +118,27 @@ func (m *TowerManager) GetTheme(id TowerID) *TowerTheme {
 	return GetTheme(id)
 }
 
-// FindRoom searches all towers for a room by ID.
+// FindRoom searches all towers and the labyrinth for a room by ID.
 // Returns the room and its tower ID, or nil if not found.
+// For labyrinth rooms, returns TowerID("labyrinth").
 func (m *TowerManager) FindRoom(roomID string) (*world.Room, TowerID) {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
 
+	// Search towers first
 	for id, t := range m.towers {
 		if room := t.FindRoom(roomID); room != nil {
 			return room, id
 		}
 	}
+
+	// Search labyrinth
+	if m.labyrinth != nil {
+		if room := m.labyrinth.FindRoom(roomID); room != nil {
+			return room, TowerID("labyrinth")
+		}
+	}
+
 	return nil, ""
 }
 
@@ -239,6 +253,140 @@ func (m *TowerManager) GetMobSpawner(id TowerID) *MobSpawner {
 		return nil
 	}
 	return t.GetMobSpawner()
+}
+
+// ==================== Labyrinth Management ====================
+
+// InitializeLabyrinth loads and initializes the labyrinth, spawning mobs if configured.
+func (m *TowerManager) InitializeLabyrinth(labyrinthFile string) error {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
+	lab, err := labyrinth.LoadFromYAML(labyrinthFile)
+	if err != nil {
+		return fmt.Errorf("failed to load labyrinth: %w", err)
+	}
+
+	m.labyrinth = lab
+
+	// Spawn mobs in the labyrinth if mob config is available
+	if m.mobConfig != nil {
+		rng := rand.New(rand.NewSource(time.Now().UnixNano()))
+		spawnedCount := lab.SpawnMobs(m.mobConfig, rng)
+		if spawnedCount > 0 {
+			// Log happens at initialization, so this is informational
+			_ = spawnedCount // mobs spawned: spawnedCount
+		}
+	}
+
+	return nil
+}
+
+// ConnectLabyrinthGates connects all labyrinth gates to their respective city gate rooms.
+// This should be called after all towers and the labyrinth are initialized.
+func (m *TowerManager) ConnectLabyrinthGates() error {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
+	if m.labyrinth == nil {
+		return fmt.Errorf("labyrinth not initialized")
+	}
+
+	// Gate configuration: city room ID and directions
+	gateConfig := map[string]struct {
+		cityGateRoomID string // Room ID in the city
+		labDir         string // Direction from labyrinth gate to city
+		cityDir        string // Direction from city back to labyrinth
+	}{
+		"human": {cityGateRoomID: "human_north_gate", labDir: "north", cityDir: "north"},
+		"elf":   {cityGateRoomID: "elf_east_gate", labDir: "east", cityDir: "east"},
+		"dwarf": {cityGateRoomID: "dwarf_south_gate", labDir: "south", cityDir: "south"},
+		"gnome": {cityGateRoomID: "gnome_west_gate", labDir: "west", cityDir: "west"},
+		"orc":   {cityGateRoomID: "orc_north_gate", labDir: "north", cityDir: "north"},
+	}
+
+	for _, gate := range m.labyrinth.GetAllGates() {
+		// Get the labyrinth gate room
+		labGateRoom := m.labyrinth.GetRoom(gate.RoomID)
+		if labGateRoom == nil {
+			return fmt.Errorf("labyrinth gate room not found: %s", gate.RoomID)
+		}
+
+		// Get the tower for this city
+		towerID := TowerID(gate.CityID)
+		tower := m.towers[towerID]
+		if tower == nil {
+			// Tower not initialized, skip
+			continue
+		}
+
+		// Get the city floor (floor 0)
+		cityFloor := tower.GetFloorIfExists(0)
+		if cityFloor == nil {
+			continue
+		}
+
+		// Get gate config for this city
+		config, ok := gateConfig[gate.CityID]
+		if !ok {
+			continue
+		}
+
+		// Find the city's gate room
+		cityGateRoom := cityFloor.GetRoom(config.cityGateRoomID)
+		if cityGateRoom == nil {
+			// City doesn't have the expected gate room, skip
+			continue
+		}
+
+		// Connect the rooms
+		labyrinth.ConnectGateToCity(labGateRoom, cityGateRoom, config.labDir, config.cityDir)
+	}
+
+	return nil
+}
+
+// GetLabyrinth returns the labyrinth instance.
+func (m *TowerManager) GetLabyrinth() *labyrinth.Labyrinth {
+	m.mu.RLock()
+	defer m.mu.RUnlock()
+	return m.labyrinth
+}
+
+// FindRoomInLabyrinth searches the labyrinth for a room by ID.
+func (m *TowerManager) FindRoomInLabyrinth(roomID string) *world.Room {
+	m.mu.RLock()
+	lab := m.labyrinth
+	m.mu.RUnlock()
+
+	if lab == nil {
+		return nil
+	}
+	return lab.FindRoom(roomID)
+}
+
+// IsLabyrinthRoom returns true if the room ID belongs to the labyrinth.
+func (m *TowerManager) IsLabyrinthRoom(roomID string) bool {
+	m.mu.RLock()
+	lab := m.labyrinth
+	m.mu.RUnlock()
+
+	if lab == nil {
+		return false
+	}
+	return lab.IsLabyrinthRoom(roomID)
+}
+
+// GetLabyrinthRooms returns all rooms in the labyrinth.
+func (m *TowerManager) GetLabyrinthRooms() map[string]*world.Room {
+	m.mu.RLock()
+	lab := m.labyrinth
+	m.mu.RUnlock()
+
+	if lab == nil {
+		return nil
+	}
+	return lab.GetRooms()
 }
 
 // ==================== world.TowerManagerInterface implementation ====================

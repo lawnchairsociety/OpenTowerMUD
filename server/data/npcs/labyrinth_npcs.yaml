@@ -1,0 +1,151 @@
+# Labyrinth NPCs for the Great Labyrinth
+# These are non-hostile NPCs that spawn in the labyrinth
+# Lore NPCs are special - talking to all of them grants the "Keeper of Forgotten Lore" title
+
+npcs:
+  # Lore NPCs - Scholars who have made the labyrinth their home
+  ancient_scholar:
+    name: "Ancient Scholar"
+    description: "A wizened figure in tattered robes, surrounded by scrolls and ancient tomes. Their eyes gleam with centuries of accumulated knowledge. They seem to have been down here for a very, very long time."
+    level: 15
+    health: 200
+    damage: 0
+    armor: 0
+    experience: 0
+    aggressive: false
+    attackable: false
+    lore_npc: true
+    dialogue:
+      - "Ah, a visitor! So rare these days. The labyrinth has many secrets, young one."
+      - "I've walked these passages for longer than most cities have stood. The maze remembers everything."
+      - "The five cities were not always separate, you know. Once, they were one great civilization."
+      - "The labyrinth predates the towers themselves. Some say it was built by the same forgotten race."
+      - "Seek out my fellow scholars scattered through these halls. Together, our knowledge tells the full story."
+    locations:
+      - "labyrinth_14_9"
+    respawn_median: 0
+    respawn_variation: 0
+
+  maze_historian:
+    name: "Maze Historian"
+    description: "A hunched figure clutching a worn leather journal, constantly scribbling notes about the labyrinth's architecture. Their fingers are stained with ink and their eyes dart about, cataloging every detail."
+    level: 12
+    health: 150
+    damage: 0
+    armor: 0
+    experience: 0
+    aggressive: false
+    attackable: false
+    lore_npc: true
+    dialogue:
+      - "Did you notice the pattern of these walls? Each section was built by a different race."
+      - "The humans carved the northern passages, the elves wove magic into the east, the dwarves reinforced the south..."
+      - "The gnomes added their mechanical puzzles to the west, and the orcs... well, they added the bones."
+      - "Every brick tells a story if you know how to listen. I've been listening for decades."
+      - "There are five scholars in this labyrinth. Find us all, and you'll understand the true history of this place."
+    locations:
+      - "labyrinth_27_9"
+    respawn_median: 0
+    respawn_variation: 0
+
+  forgotten_sage:
+    name: "Forgotten Sage"
+    description: "A translucent figure who flickers between visibility and shadow. Whether alive, dead, or something in between is unclear. Their voice echoes with the weight of forgotten ages."
+    level: 20
+    health: 300
+    damage: 0
+    armor: 0
+    experience: 0
+    aggressive: false
+    attackable: false
+    lore_npc: true
+    dialogue:
+      - "I was here when the towers first rose from the earth, piercing the sky with corruption."
+      - "The Blighted One was not always evil. It was once a guardian, meant to protect... but something changed it."
+      - "The five towers were built to contain pieces of the original corruption. To seal it away forever."
+      - "But seals weaken over time. The corruption seeps through. The towers grow taller to contain it."
+      - "Only by cleansing all five towers and facing what lies beneath can the cycle be broken."
+    locations:
+      - "labyrinth_33_17"
+    respawn_median: 0
+    respawn_variation: 0
+
+  wandering_archivist:
+    name: "Wandering Archivist"
+    description: "A spectacled figure in a dusty coat, carrying a massive backpack stuffed with scrolls and books. They seem perpetually lost but refuse to admit it."
+    level: 10
+    health: 120
+    damage: 0
+    armor: 0
+    experience: 0
+    aggressive: false
+    attackable: false
+    lore_npc: true
+    dialogue:
+      - "Oh! A fellow traveler! Have you seen my missing volumes? I seem to have... misplaced them."
+      - "I document the connections between cities. The labyrinth is proof they once worked together."
+      - "Humans brought engineering, elves brought magic, dwarves brought stone, gnomes brought innovation, orcs brought... enthusiasm."
+      - "Each gate bears the mark of its city. The builders wanted everyone to remember the alliance."
+      - "Five gates, five cities, five towers, five guardians. The number five echoes through everything here."
+    locations:
+      - "labyrinth_36_1"
+    respawn_median: 0
+    respawn_variation: 0
+
+  keeper_of_passages:
+    name: "Keeper of Passages"
+    description: "A cloaked figure who knows every twist and turn of the labyrinth. They speak in riddles but their knowledge is invaluable."
+    level: 18
+    health: 250
+    damage: 0
+    armor: 0
+    experience: 0
+    aggressive: false
+    attackable: false
+    lore_npc: true
+    dialogue:
+      - "Left, right, straight, back - the labyrinth tests not your strength, but your will."
+      - "I have walked every passage, touched every stone. The maze speaks to those who listen."
+      - "The shortcuts were not built - they formed. The labyrinth grows and changes like a living thing."
+      - "Some say the maze itself is alive, a guardian of sorts. Perhaps it's just lonely."
+      - "Find my fellow keepers of knowledge. Together, our stories paint the full picture of this ancient place."
+    locations:
+      - "labyrinth_9_2"
+    respawn_median: 0
+    respawn_variation: 0
+
+  # Hidden Merchants in the labyrinth
+  shadow_merchant:
+    name: "Shadow Merchant"
+    description: "A cloaked figure who seems to materialize from the darkness itself. Their wares are laid out on a floating piece of dark cloth, and their eyes glint with mercantile cunning."
+    level: 8
+    health: 100
+    damage: 15
+    armor: 5
+    experience: 0
+    aggressive: false
+    attackable: false
+    dialogue:
+      - "Psst... traveler. I have goods you won't find in the cities. For the right price."
+      - "The labyrinth provides for those who know where to look. Type 'shop' to see my wares."
+      - "How did I get here? Better not to ask. How do I get supplies? Even better not to ask."
+      - "Gold speaks louder than questions in the darkness, friend."
+    locations:
+      - "labyrinth_12_4"
+      - "labyrinth_22_7"
+      - "labyrinth_2_27"
+      - "labyrinth_33_5"
+      - "labyrinth_7_26"
+    respawn_median: 0
+    respawn_variation: 0
+    shop_items:
+      - item_id: "torch"
+        price: 10
+      - item_id: "bread"
+        price: 5
+      - item_id: "health_potion"
+        price: 50
+      - item_id: "mana_potion"
+        price: 50
+      - item_id: "antidote"
+        price: 30

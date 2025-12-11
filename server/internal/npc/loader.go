@@ -48,6 +48,7 @@ type NPCDefinition struct {
 	QuestGiver       bool            `yaml:"quest_giver"`       // Can this NPC give quests?
 	GivesQuests      []string        `yaml:"gives_quests"`      // Quest IDs this NPC can give
 	TurnInQuests     []string        `yaml:"turn_in_quests"`    // Quest IDs that can be turned in to this NPC
+	LoreNPC          bool            `yaml:"lore_npc"`          // Is this a labyrinth lore NPC?
 	Locations        []string        `yaml:"locations"`         // Room IDs where this NPC spawns
 	RespawnMedian    int             `yaml:"respawn_median"`    // Median respawn time in seconds
 	RespawnVariation int             `yaml:"respawn_variation"` // Variation in respawn time (+/- seconds)
@@ -161,6 +162,17 @@ func CreateNPCFromDefinition(def NPCDefinition, roomID string) *NPC {
 		}
 		npc.SetShopInventory(shopInventory)
 	}
+	// Set lore NPC flag for labyrinth lore NPCs
+	if def.LoreNPC {
+		npc.SetLoreNPC(true)
+	}
+	return npc
+}
+
+// CreateNPCFromDefinitionWithID creates an NPC from an NPCDefinition and stores the definition ID
+func CreateNPCFromDefinitionWithID(npcID string, def NPCDefinition, roomID string) *NPC {
+	npc := CreateNPCFromDefinition(def, roomID)
+	npc.SetNPCID(npcID)
 	return npc
 }
 
@@ -188,9 +200,9 @@ func StringToMobType(s string) MobType {
 func (config *NPCsConfig) GetNPCsByLocation() map[string][]*NPC {
 	npcsByLocation := make(map[string][]*NPC)
 
-	for _, def := range config.NPCs {
+	for npcID, def := range config.NPCs {
 		for _, location := range def.Locations {
-			npc := CreateNPCFromDefinition(def, location)
+			npc := CreateNPCFromDefinitionWithID(npcID, def, location)
 			npcsByLocation[location] = append(npcsByLocation[location], npc)
 		}
 	}

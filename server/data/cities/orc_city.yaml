@@ -57,8 +57,21 @@ rooms:
     features:
       - training_dummy
     exits:
+      north: orc_north_gate
       east: orc_war_camp
       south: orc_shamans_hut
+
+  orc_north_gate:
+    name: "The Bone Passage"
+    description: "A rough opening in the camp's northern palisade, marked by a crude archway of stacked bones. Beyond lies the Great Labyrinth, an ancient maze that connects to the other cities of the realm. Orcs use these passages for raiding and trade - though they prefer raiding."
+    description_day: "Scouts occasionally emerge from the labyrinth with news of easy targets. Guards barely check who passes - strength is its own passport."
+    description_night: "The passage is darker at night, and those who venture in must be prepared to fight their way through both the labyrinth and its monsters."
+    type: city
+    features:
+      - gate
+      - labyrinth_entrance
+    exits:
+      south: orc_blood_pit
 
   orc_trophy_hall:
     name: "The Trophy Hall"

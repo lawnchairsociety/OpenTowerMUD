@@ -126,6 +126,17 @@ func main() {
 		_ = roomID // silence unused variable warning
 	}
 
+	// Initialize the labyrinth and connect it to all city gates
+	if err := towerManager.InitializeLabyrinth(serverCfg.Paths.DataDir + "/labyrinth/labyrinth.yaml"); err != nil {
+		logger.Warning("Failed to initialize labyrinth", "error", err)
+	} else {
+		if err := towerManager.ConnectLabyrinthGates(); err != nil {
+			logger.Warning("Failed to connect labyrinth gates", "error", err)
+		} else {
+			logger.Info("Labyrinth initialized and connected to city gates")
+		}
+	}
+
 	// Load NPCs from directories and place them in rooms
 	gameWorld.InitializeWithDirs(worldSeed, serverCfg.Paths.WorldDir, serverCfg.Paths.NPCsDir, serverCfg.Paths.MobsDir)
 

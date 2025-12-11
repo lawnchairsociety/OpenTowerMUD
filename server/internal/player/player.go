@@ -129,8 +129,10 @@ type Player struct {
 	// Quest system
 	questLog       *quest.PlayerQuestLog // Active and completed quests
 	questInventory []*items.Item         // Quest-bound items (weightless, can't drop)
-	earnedTitles   map[string]bool       // title ID -> earned
-	activeTitle    string                // Currently displayed title
+	earnedTitles           map[string]bool // title ID -> earned
+	activeTitle            string          // Currently displayed title
+	visitedLabyrinthGates  map[string]bool // cityID -> visited (for Wanderer title)
+	talkedToLoreNPCs       map[string]bool // npcID -> talked to (for Keeper title)
 	// Player stall system
 	stallOpen      bool                    // Is the player's stall open for business?
 	stallInventory []*command.StallItem    // Items for sale in the stall
@@ -187,8 +189,10 @@ func NewPlayer(name string, client Client, world *world.World, server ServerInte
 		// Quest system
 		questLog:       quest.NewPlayerQuestLog(),
 		questInventory: make([]*items.Item, 0),
-		earnedTitles:   make(map[string]bool),
-		activeTitle:    "",
+		earnedTitles:          make(map[string]bool),
+		activeTitle:           "",
+		visitedLabyrinthGates: make(map[string]bool),
+		talkedToLoreNPCs:      make(map[string]bool),
 		// Stall system
 		stallOpen:      false,
 		stallInventory: make([]*command.StallItem, 0),
@@ -2399,6 +2403,146 @@ func (p *Player) GetDisplayName() string {
 		return p.Name
 	}
 	return fmt.Sprintf("%s, %s", p.Name, p.activeTitle)
+}
+
+// ==================== LABYRINTH EXPLORATION METHODS ====================
+
+// VisitLabyrinthGate marks a city gate in the labyrinth as visited.
+// Returns true if this is the first time visiting this gate.
+func (p *Player) VisitLabyrinthGate(cityID string) bool {
+	if p.visitedLabyrinthGates == nil {
+		p.visitedLabyrinthGates = make(map[string]bool)
+	}
+	if p.visitedLabyrinthGates[cityID] {
+		return false // Already visited
+	}
+	p.visitedLabyrinthGates[cityID] = true
+	return true
+}
+
+// HasVisitedLabyrinthGate returns true if the player has visited a specific city gate.
+func (p *Player) HasVisitedLabyrinthGate(cityID string) bool {
+	if p.visitedLabyrinthGates == nil {
+		return false
+	}
+	return p.visitedLabyrinthGates[cityID]
+}
+
+// GetVisitedLabyrinthGates returns a list of visited city IDs.
+func (p *Player) GetVisitedLabyrinthGates() []string {
+	if p.visitedLabyrinthGates == nil {
+		return nil
+	}
+	gates := make([]string, 0, len(p.visitedLabyrinthGates))
+	for cityID := range p.visitedLabyrinthGates {
+		gates = append(gates, cityID)
+	}
+	return gates
+}
+
+// HasVisitedAllLabyrinthGates returns true if the player has visited all 5 city gates.
+func (p *Player) HasVisitedAllLabyrinthGates() bool {
+	if p.visitedLabyrinthGates == nil {
+		return false
+	}
+	// The 5 required city gates
+	requiredGates := []string{"human", "elf", "dwarf", "gnome", "orc"}
+	for _, cityID := range requiredGates {
+		if !p.visitedLabyrinthGates[cityID] {
+			return false
+		}
+	}
+	return true
+}
+
+// GetVisitedLabyrinthGatesString returns visited gates as comma-separated string (for persistence).
+func (p *Player) GetVisitedLabyrinthGatesString() string {
+	gates := p.GetVisitedLabyrinthGates()
+	return strings.Join(gates, ",")
+}
+
+// SetVisitedLabyrinthGatesFromString sets visited gates from comma-separated string (from persistence).
+func (p *Player) SetVisitedLabyrinthGatesFromString(gatesStr string) {
+	p.visitedLabyrinthGates = make(map[string]bool)
+	if gatesStr == "" {
+		return
+	}
+	gates := strings.Split(gatesStr, ",")
+	for _, cityID := range gates {
+		cityID = strings.TrimSpace(cityID)
+		if cityID != "" {
+			p.visitedLabyrinthGates[cityID] = true
+		}
+	}
+}
+
+// TalkToLoreNPC marks a lore NPC as talked to.
+// Returns true if this is the first time talking to this NPC.
+func (p *Player) TalkToLoreNPC(npcID string) bool {
+	if p.talkedToLoreNPCs == nil {
+		p.talkedToLoreNPCs = make(map[string]bool)
+	}
+	if p.talkedToLoreNPCs[npcID] {
+		return false // Already talked to
+	}
+	p.talkedToLoreNPCs[npcID] = true
+	return true
+}
+
+// HasTalkedToLoreNPC returns true if the player has talked to a specific lore NPC.
+func (p *Player) HasTalkedToLoreNPC(npcID string) bool {
+	if p.talkedToLoreNPCs == nil {
+		return false
+	}
+	return p.talkedToLoreNPCs[npcID]
+}
+
+// GetTalkedToLoreNPCs returns a list of lore NPC IDs talked to.
+func (p *Player) GetTalkedToLoreNPCs() []string {
+	if p.talkedToLoreNPCs == nil {
+		return nil
+	}
+	npcs := make([]string, 0, len(p.talkedToLoreNPCs))
+	for npcID := range p.talkedToLoreNPCs {
+		npcs = append(npcs, npcID)
+	}
+	return npcs
+}
+
+// HasTalkedToAllLoreNPCs returns true if the player has talked to all 5 labyrinth lore NPCs.
+func (p *Player) HasTalkedToAllLoreNPCs() bool {
+	if p.talkedToLoreNPCs == nil {
+		return false
+	}
+	// The 5 required lore NPCs in the labyrinth
+	requiredNPCs := []string{"ancient_scholar", "maze_historian", "forgotten_sage", "wandering_archivist", "keeper_of_passages"}
+	for _, npcID := range requiredNPCs {
+		if !p.talkedToLoreNPCs[npcID] {
+			return false
+		}
+	}
+	return true
+}
+
+// GetTalkedToLoreNPCsString returns talked-to lore NPCs as comma-separated string (for persistence).
+func (p *Player) GetTalkedToLoreNPCsString() string {
+	npcs := p.GetTalkedToLoreNPCs()
+	return strings.Join(npcs, ",")
+}
+
+// SetTalkedToLoreNPCsFromString sets talked-to lore NPCs from comma-separated string (from persistence).
+func (p *Player) SetTalkedToLoreNPCsFromString(npcsStr string) {
+	p.talkedToLoreNPCs = make(map[string]bool)
+	if npcsStr == "" {
+		return
+	}
+	npcs := strings.Split(npcsStr, ",")
+	for _, npcID := range npcs {
+		npcID = strings.TrimSpace(npcID)
+		if npcID != "" {
+			p.talkedToLoreNPCs[npcID] = true
+		}
+	}
 }
 
 // ==================== STALL METHODS ====================

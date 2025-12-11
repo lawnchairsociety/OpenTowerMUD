@@ -271,6 +271,12 @@ func (r *Room) GetDescriptionForPlayerWithCustomDesc(playerName string, baseDesc
 				featureDescs = append(featureDescs, "a merchant's stall")
 			case "locked_door":
 				featureDescs = append(featureDescs, "a locked door")
+			case "shortcut":
+				featureDescs = append(featureDescs, "a shimmering portal to elsewhere in the labyrinth")
+			case "labyrinth_entrance":
+				featureDescs = append(featureDescs, "an entrance to the great labyrinth")
+			case "lore_npc":
+				featureDescs = append(featureDescs, "a scholar who knows ancient lore")
 			case "forge":
 				featureDescs = append(featureDescs, "a blazing forge")
 			case "workbench":

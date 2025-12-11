@@ -80,6 +80,19 @@ rooms:
     exits:
       north: gnome_chem_lab
       east: gnome_market_floor
+      west: gnome_west_gate
+
+  gnome_west_gate:
+    name: "The Mechanical Gate"
+    description: "A marvel of gnomish engineering, this gate uses interlocking gears and hydraulic systems to open and close with perfect precision. Beyond lies the Great Labyrinth, its ancient stone passages a stark contrast to Cogsworth's mechanical wonders. Sensors monitor all who pass through."
+    description_day: "The gate's brass mechanisms gleam as they cycle through their endless routine. Travelers from distant cities sometimes emerge, marveling at gnomish technology."
+    description_night: "Gas lamps illuminate the gate's workings, and pressure sensors click softly as they detect even the smallest vibration from the labyrinth beyond."
+    type: city
+    features:
+      - gate
+      - labyrinth_entrance
+    exits:
+      east: gnome_workshop
 
   gnome_market_floor:
     name: "The Market Floor"

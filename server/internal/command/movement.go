@@ -264,6 +264,51 @@ func executeMoveDirection(c *Command, p PlayerInterface, direction string) strin
 		}
 	}
 
+	// Track labyrinth gate discovery - if entering a labyrinth gate room, discover that city's portal
+	if nextRoom.HasFeature("labyrinth_entrance") {
+		// Check if this is a labyrinth gate room by checking for the "gate" feature
+		if nextRoom.HasFeature("gate") {
+			// Get the tower manager to determine which city this gate leads to
+			if towerMgr, ok := server.GetTowerManager().(*tower.TowerManager); ok {
+				if lab := towerMgr.GetLabyrinth(); lab != nil {
+					// Check if this room is a labyrinth gate
+					cityID := lab.GetCityIDForGateRoom(nextRoom.GetID())
+					if cityID != "" {
+						// Track this gate visit for the Wanderer of the Ways title
+						if p.VisitLabyrinthGate(cityID) {
+							// First time visiting this gate
+							visitedCount := len(p.GetVisitedLabyrinthGates())
+							p.SendMessage(fmt.Sprintf("\n*** You have discovered the %s Gate! (%d/5 gates found) ***\n", getCityDisplayName(cityID), visitedCount))
+
+							// Check if player has now visited all gates
+							if p.HasVisitedAllLabyrinthGates() {
+								title := "Wanderer of the Ways"
+								if !p.HasEarnedTitle(title) {
+									p.EarnTitle(title)
+									p.SendMessage(fmt.Sprintf("\n================================================================================\n                    TITLE EARNED: %s\n\n  You have discovered all five city gates in the Great Labyrinth!\n  The paths between all cities are now known to you.\n================================================================================\n", title))
+									// Announce to server
+									server.BroadcastToAll(fmt.Sprintf("\n*** %s has earned the title: %s ***\n", p.GetName(), title))
+								}
+							}
+						}
+
+						// Also discover their floor 0 portal if it's a different city
+						if cityID != p.GetHomeTowerString() {
+							if !p.HasDiscoveredPortalInTowerByString(cityID, 0) {
+								p.DiscoverPortalInTowerByString(cityID, 0)
+								cityName := getCityDisplayName(cityID)
+								logger.Debug("City portal discovered via labyrinth",
+									"player", p.GetName(),
+									"city", cityID)
+								p.SendMessage(fmt.Sprintf("\n*** You can now use portals to travel to %s! ***\n", cityName))
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
 	// Update quest explore progress
 	updateQuestExploreProgress(p, server, nextRoom)
 
@@ -413,6 +458,24 @@ func executePortal(c *Command, p PlayerInterface) string {
 			sb.WriteString("You haven't discovered any other floors in this tower.\n")
 		}
 
+		// Show discovered cities from labyrinth exploration
+		for _, racialTowerID := range tower.AllRacialTowers {
+			towerIDStr := string(racialTowerID)
+			if towerIDStr == currentTowerID {
+				continue // Skip current tower, already shown above
+			}
+			// Check if player has discovered this city's floor 0
+			if p.HasDiscoveredPortalInTowerByString(towerIDStr, 0) {
+				cityName := getCityDisplayName(towerIDStr)
+				sb.WriteString(fmt.Sprintf("\n== %s ==\n", cityName))
+				discoveredFloors := p.GetDiscoveredPortalsInTowerByString(towerIDStr)
+				for _, floor := range discoveredFloors {
+					floorName := getFloorDisplayName(floor)
+					sb.WriteString(fmt.Sprintf("  - %s (portal %s %d)\n", floorName, towerIDStr, floor))
+				}
+			}
+		}
+
 		// Show unified tower option if unlocked and not already in unified
 		if unifiedUnlocked && currentTowerID != string(tower.TowerUnified) {
 			sb.WriteString("\n== Infinity Spire (Unlocked!) ==\n")
@@ -439,7 +502,7 @@ func executePortal(c *Command, p PlayerInterface) string {
 			}
 		}
 
-		sb.WriteString("\nUsage: portal <floor number>")
+		sb.WriteString("\nUsage: portal <floor number> | portal <race> <floor>")
 		if unifiedUnlocked {
 			sb.WriteString(" | portal unified <floor> | portal home <floor>")
 		}
@@ -480,6 +543,18 @@ func executePortal(c *Command, p PlayerInterface) string {
 
 	case "city", "town", "ground":
 		destFloor = 0
+
+	case "human", "elf", "dwarf", "gnome", "orc":
+		// Cross-city travel via labyrinth discovery
+		destTowerID = destArg
+		if len(c.Args) > 1 {
+			_, err := fmt.Sscanf(c.Args[1], "%d", &destFloor)
+			if err != nil {
+				return fmt.Sprintf("Invalid floor number. Usage: portal %s <floor>", destArg)
+			}
+		} else {
+			destFloor = 0 // Default to city
+		}
 
 	default:
 		// Try to parse as number
@@ -584,6 +659,24 @@ func getTowerDisplayName(towerID string) string {
 		return "Infinity Spire"
 	default:
 		return "Unknown Tower"
+	}
+}
+
+// getCityDisplayName returns a human-readable city name for portal display
+func getCityDisplayName(towerID string) string {
+	switch tower.TowerID(towerID) {
+	case tower.TowerHuman:
+		return "Ironhaven (Human)"
+	case tower.TowerElf:
+		return "Sylvanthal (Elf)"
+	case tower.TowerDwarf:
+		return "Khazad-Karn (Dwarf)"
+	case tower.TowerGnome:
+		return "Cogsworth (Gnome)"
+	case tower.TowerOrc:
+		return "Skullgar (Orc)"
+	default:
+		return "Unknown City"
 	}
 }
 

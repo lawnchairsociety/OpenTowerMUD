@@ -1,6 +1,6 @@
 # OpenTowerMUD Server
 
-A procedurally generated MUD (Multi-User Dungeon) server featuring a vertical tower dungeon with Wave Function Collapse-based floor generation.
+A procedurally generated MUD (Multi-User Dungeon) server featuring multiple racial cities, themed tower dungeons, and a massive labyrinth connecting them all.
 
 ## Quick Start
 
@@ -23,59 +23,96 @@ A procedurally generated MUD (Multi-User Dungeon) server featuring a vertical to
 
 ## Configuration
 
-The server uses YAML configuration files in the `data/` directory:
+The server uses YAML configuration files in the `data/` directory. See [data/README.md](data/README.md) for details.
 
-| File | Description |
-|------|-------------|
-| `city_rooms.yaml` | The 10-room walled city (floor 0) |
-| `mobs.yaml` | Monster definitions with tiers |
-| `items.yaml` | Item definitions with loot tiers |
-| `npcs.yaml` | City NPC definitions |
-| `spells.yaml` | Spell definitions |
-| `logging.yaml` | Logging configuration |
-| `chat_filter.yaml` | Chat filter rules |
-| `tower.yaml` | Tower save file (auto-generated) |
+## Game World
 
-## Game Overview
+### Five Racial Cities
 
-### The Tower
+Each race has their own starting city with unique themes:
 
-- **Floor 0 (City)**: Safe zone with shops, altar, and portal
-- **Floor 1+**: Procedurally generated dungeon floors
-- **Every 10 floors**: Boss floor with increased rewards
+| City | Race | Tower Theme |
+|------|------|-------------|
+| Ironhaven | Human | Arcane Spire |
+| Sylvanthal | Elf | Diseased World Tree |
+| Khazad-Karn | Dwarf | Descending Mines |
+| Cogsworth | Gnome | Mechanical Tower |
+| Skullgar | Orc | Beast-Skull Tower |
 
-### Commands
+### The Towers
 
-Once connected, use `help` to see available commands. Common commands:
+Each city has a 25-floor tower with themed mobs and a final boss:
+- **Floors 1-5**: Tier 1 mobs (easy)
+- **Floors 6-10**: Tier 2 mobs (medium)
+- **Floors 11-20**: Tier 3 mobs (hard)
+- **Floors 21-25**: Tier 4 mobs (elite) + Final Boss
 
-- `look` - Examine your surroundings
-- `north/south/east/west/up/down` - Move between rooms
-- `attack <target>` - Combat
-- `cast <spell> <target>` - Cast spells
-- `inventory` - View your items
-- `portal` - Fast-travel to discovered floors
+### The Infinity Spire
 
-### Difficulty Scaling
+A 100-floor unified tower unlocked after all 5 racial tower bosses are defeated (tracked globally). Features the ultimate challenge: The Blighted One.
 
-Difficulty increases as you climb:
-- **Floors 1-5**: Tier 1 mobs
-- **Floors 6-10**: Tier 2 mobs
-- **Floors 11-20**: Tier 3 mobs
-- **Floors 21+**: Tier 4 mobs
+### The Great Labyrinth
+
+A 40x40 procedurally generated maze connecting all five cities:
+- Navigate between cities through underground passages
+- Discover lore NPCs who reveal world history
+- Find wandering merchants with rare goods
+- Battle labyrinth-dwelling creatures
+- Earn titles: "Wanderer of the Ways" and "Keeper of Forgotten Lore"
+
+## Features
+
+### Playable Races
+- **Human** - Versatile, bonus ability point
+- **Elf** - Agile, magic affinity
+- **Dwarf** - Sturdy, poison resistance
+- **Gnome** - Clever, tinker bonuses
+- **Orc** - Strong, combat bonuses
+
+### Classes
+- Warrior, Mage, Cleric, Rogue, Ranger, Paladin
+- Multiclassing available through trainers
+
+### Mail System
+Send mail with gold and item attachments to other players. Access mailboxes in city centers.
+
+### Portal System
+- Discover portals when visiting stairway rooms
+- Fast-travel to any discovered floor
+- City portals always available
+
+### Other Features
+- D20-based combat with ability modifiers
+- Crafting system (Blacksmithing, Leatherworking, Alchemy, Enchanting)
+- Quest system with NPC quest givers
+- Day/night cycle affecting room descriptions
+- Title system for achievements
+
+## Commands
+
+Use `help` in-game to see all available commands. Common commands:
+
+| Command | Description |
+|---------|-------------|
+| `look` | Examine surroundings |
+| `north/south/east/west/up/down` | Movement |
+| `attack <target>` | Enter combat |
+| `cast <spell> [target]` | Cast spells |
+| `inventory` | View items |
+| `portal` | Fast-travel menu |
+| `mail` | Access mailbox |
+| `races` | View race information |
+| `title` | View/set titles |
 
 ## Data Persistence
 
-- Player accounts and characters are stored in SQLite (`opentowermud.db`)
-- Tower state is saved to `data/tower.yaml`
+- Player accounts and characters: SQLite (`opentowermud.db`)
+- Tower state: `data/tower.yaml`
+- Boss defeat tracking: Persisted in database
 
 ## Deployment
 
 For production deployment with TLS/SSL support, see [deploy/README.md](deploy/README.md).
-
-The recommended setup uses a reverse proxy (nginx or Caddy) for:
-- Secure WebSocket connections (`wss://`)
-- Automatic certificate management
-- HTTP to HTTPS redirect
 
 ## Building from Source
 
@@ -83,6 +120,18 @@ The recommended setup uses a reverse proxy (nginx or Caddy) for:
 cd server
 go build -o opentowermud ./cmd/mud
 ```
+
+## Testing
+
+```bash
+# Run integration tests
+./scripts/run-integration-tests.sh
+
+# Run unit tests
+go test ./...
+```
+
+See [test/README.md](test/README.md) for details.
 
 ## License
 

@@ -164,7 +164,20 @@ rooms:
       - bookshelf
     exits:
       north: elf_moonwell
+      east: elf_east_gate
       west: elf_runekeeper
+
+  elf_east_gate:
+    name: "Eastern Forest Gate"
+    description: "Where the forest of Sylvanthal meets the ancient stone passages of the Great Labyrinth. A natural arch of intertwined branches frames the entrance to the underground maze. The trees here have grown around the labyrinth's opening, accepting it as part of the forest."
+    description_day: "Dappled sunlight reveals the transition from living wood to ancient stone. Rangers occasionally emerge from the labyrinth with news from distant cities."
+    description_night: "Bioluminescent moss lights both the forest path and the first few feet of the labyrinth beyond."
+    type: city
+    features:
+      - gate
+      - labyrinth_entrance
+    exits:
+      west: elf_ancient_library
 
   elf_living_forge:
     name: "The Living Forge"

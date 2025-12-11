@@ -37,134 +37,128 @@ The script will:
 SERVER_PORT=4001 ./scripts/run-integration-tests.sh
 
 # Enable verbose output (shows each command and result)
-./scripts/run-integration-tests.sh -v
+VERBOSE=true ./scripts/run-integration-tests.sh
 
-# Combine options
-SERVER_PORT=4001 ./scripts/run-integration-tests.sh -v
+# Filter to specific tests
+./testrunner -filter "Mail"
 ```
 
 ### Manual Testing
 
 If you prefer to run the server and tests separately:
 
-1. Start the MUD server with test configuration files:
+1. Start the MUD server with test configuration:
 ```bash
 cd server
-./opentowermud --readonly --port 4000 --db data/test/players_test.db --world data/test/world_test.yaml --npcs data/test/npcs_test.yaml --mobs data/test/mobs_test.yaml --items data/test/items_test.yaml --chatfilter data/test/chat_filter_test.yaml
+./opentowermud --readonly --port 4000 --db data/test/players_test.db --config data/test/server_test.yaml
 ```
-
-**Important:**
-- The `--readonly` flag prevents the world file from being modified during tests
-- The `--port` flag allows running on a custom port (default: 4000)
-- The `--db` flag uses a separate test database (cleaned up after tests)
-- The test configuration files in `data/test/` are required for all tests to pass:
-  - `world_test.yaml` - Test world with specific room IDs
-  - `npcs_test.yaml` - Town NPCs (bartender, merchant, etc.)
-  - `mobs_test.yaml` - Test mobs with fast respawn times (10 seconds)
-  - `items_test.yaml` - Items placed in test world rooms
-  - `chat_filter_test.yaml` - Chat filter with test banned words
-  - `players_test.db` - Test database (auto-created, auto-deleted)
 
 2. In another terminal, run the tests:
-```bash
-cd server
-go run ./cmd/testrunner
-```
-
-### Build and Run
-
-```bash
-cd server
-go build -o opentowermud ./cmd/mud
-go build -o testrunner ./cmd/testrunner
-./testrunner
-```
-
-### Custom Server Address
-
 ```bash
 ./testrunner -addr localhost:4000
 ```
 
-### Verbose Output
+### Test Runner Options
 
 ```bash
-./testrunner -v
+./testrunner -h
+  -addr string     Server address (default "localhost:4000")
+  -filter string   Run only tests containing this string
+  -list            List all available tests
+  -v               Verbose output
 ```
 
-This shows detailed logging for each test action and result.
+## Test Groups (119 tests)
 
-## Current Tests (33/33 passing)
+### Group 1: Connection & Account System
+- Basic connection and welcome
+- Account registration
+- Login flow and persistence
+- Invalid/banned account handling
 
-### Phase 1-2 Tests (Implemented)
-1. **Basic Connection** - Verify clients can connect and receive welcome
-2. **Movement** - Test north/south movement between rooms
-3. **Item Pickup/Drop** - Test get/drop commands with items
-4. **Multiple Clients Movement** - Test 3 clients moving to different rooms simultaneously
-5. **Say Command** - Test room-wide message broadcasting
-6. **Tell Command** - Test private player-to-player messaging
+### Group 2: Communication & Social
+- Say command (room broadcast)
+- Tell command (private messages)
+- Who command
+- Ignore/unignore system
+- Anti-spam and chat filter
 
-### Phase 3 Tests (Implemented)
-7. **Weight/Capacity System** - Test carry weight limits and capacity checks
-8. **Inventory Display** - Test inventory command with item details
+### Group 3: Character Info & Stats
+- Score/stats display
+- Class and race commands
+- Ability scores
+- Title system
+- Skills display
 
-### Phase 10 Tests (Implemented)
-9. **Multi-Target Combat** - Test cooperative group combat with XP split
+### Group 4: Inventory & Shopping
+- Item pickup/drop
+- Buy/sell from NPCs
+- Equipment wear/remove
+- Consumables (eat/drink)
+- Weight/capacity limits
 
-### Phase 12 Tests (Implemented)
-10. **Un-Attackable NPCs** - Test friendly NPC protection system
+### Group 5: Combat System
+- Attack rolls (D20 mechanics)
+- Combat threat and targeting
+- Flee command
+- Mob kills and XP
+- Consider command
 
-### Phase 15 Tests (Implemented)
-11. **NPC Respawning** - Test NPC respawn system with configurable timers
+### Group 6: Magic System
+- Spell casting
+- Heal other player
+- Bless and buff spells
+- Spell damage with INT modifier
 
-### Phase 16 Tests (Implemented)
-12. **World Expansion** - Test dynamic world expansion when approaching world boundaries
+### Group 7: Room Features & Tower
+- Portal command
+- Look at features
+- Tower climbing
+- Pray at altar
 
-### Phase 19 Tests (Implemented)
-13. **Chat Filter (REPLACE mode)** - Test word filtering in say/tell commands
+### Group 8: NPCs & Training
+- Unattackable NPC protection
+- Mob respawning
+- Train command
+- Learn from trainers
 
-### Phase 20 Tests (Implemented)
-14. **Account Registration** - Test new account creation and game entry
-15. **Login Flow** - Test login with existing credentials and location persistence
-16. **Invalid Login** - Test that invalid credentials are rejected
-17. **Banned Account** - Test that banned accounts cannot log in
-18. **Inventory Persistence** - Test inventory persists across sessions
+### Group 9: Crafting System
+- Crafting stations (forge, workbench, etc.)
+- Recipe learning
+- Material requirements
+- Craft command
 
-### Phase 21 Tests (Implemented)
-19. **Admin Commands Hidden** - Test non-admins can't access admin commands
-20. **Admin Announce** - Test admin announcement broadcasts to all players
+### Group 10: Quest System
+- Quest listing
+- Quest acceptance
+- Progress tracking
+- Quest completion
 
-### Phase 22 Tests (Implemented)
-21. **Pray at Altar** - Test pray command heals player at temple altar
-22. **Pray Without Altar** - Test pray command fails without altar
-23. **Consider Self** - Test consider self/me shows player stats
-24. **Portal Command** - Test portal shows available destinations
-25. **Look at Features** - Test looking at altar and portal features
+### Group 11: Admin Commands
+- Admin command access control
+- Announce broadcasts
 
-### Phase 23 Tests (Implemented)
-26. **Spell Casting** - Test basic spell mechanics (cast, mana cost, cooldown)
-27. **Heal Other Player** - Test healing another player with heal spell
-28. **Dazzle Spell** - Test room-wide stun effect on hostile NPCs
-29. **Dazzle In Combat** - Test stunned NPCs don't attack during combat
+### Group 12: Player Stalls
+- Stall creation
+- Item listing
+- Buying from stalls
+- Stall management
 
-### Phase 24 Tests (Implemented)
-30. **Player Level Up** - Test XP gain and level-up from combat
-
-### Phase 25 Tests (Implemented)
-31. **Ability Scores** - Test ability score assignment and display
-
-### Phase 26 Tests (Implemented)
-32. **Attack Rolls** - Test D20 attack roll mechanics with hit/miss outcomes
-33. **Spell Damage with Modifiers** - Test spell damage scales with INT modifier
-
-**All 33 tests passing (100% success rate)**
+### Group 13: Multi-City Expansion
+- Mail send/receive
+- Per-player mail indexing
+- Race selection (5 races)
+- Portal cross-city travel
+- Labyrinth gate access
+- Labyrinth navigation
+- Lore NPC interaction
+- Title system
+- Multiple cities verification
 
 ## Test Client API
 
-The `testclient` package provides a full-featured test client with authentication support:
-
 ```go
-// Create client and register a new account (handles full auth flow)
+// Create client and register a new account
 client, err := testclient.NewTestClient("PlayerName", "localhost:4000")
 defer client.Close()
 
@@ -175,45 +169,34 @@ creds := testclient.Credentials{
     CharacterName: "MyCharacter",
 }
 client, err := testclient.NewTestClientWithLogin(creds, "localhost:4000")
-defer client.Close()
-
-// Raw connection (no auth) for testing auth flow itself
-client, err := testclient.NewTestClientRaw("localhost:4000")
-defer client.Close()
 
 // Send commands
 client.SendCommand("north")
-client.SendCommand("get stick")
+client.SendCommand("mail read 1")
 
 // Check for messages
 if client.WaitForMessage("Town Square", 1*time.Second) {
-    // Message was received
+    // Message received
 }
 
-// Wait for any of multiple messages
-text, found := client.WaitForAnyMessage([]string{"success", "failure"}, 2*time.Second)
+// Check if message exists
+if client.HasMessage("Mail sent") {
+    // Found it
+}
 
 // Get all messages
 messages := client.GetMessages()
 
-// Check if message exists
-if client.HasMessage("some text") {
-    // Found it
-}
-
 // Clear message buffer
 client.ClearMessages()
-
-// Debug print
-client.PrintMessages()
 ```
 
 ## Adding New Tests
 
-1. Add a test function to `test/scenarios.go`:
+1. Add a test function to the appropriate file in `test/`:
 ```go
-func TestMyNewFeature(serverAddr string) TestResult {
-    client, err := testclient.NewTestClient("TestName", serverAddr)
+func TestMyFeature(serverAddr string) TestResult {
+    client, err := testclient.NewTestClient(uniqueName("mytest"), serverAddr)
     if err != nil {
         return TestResult{
             Name: "My Feature",
@@ -223,123 +206,32 @@ func TestMyNewFeature(serverAddr string) TestResult {
     }
     defer client.Close()
 
-    // Your test logic here
+    // Test logic here
+    client.SendCommand("mycommand")
+    time.Sleep(300 * time.Millisecond)
 
-    return TestResult{
-        Name: "My Feature",
-        Passed: true,
-        Message: "Feature works correctly",
+    if !client.HasMessage("expected output") {
+        return TestResult{Name: "My Feature", Passed: false, Message: "Expected output not found"}
     }
+
+    return TestResult{Name: "My Feature", Passed: true, Message: "Feature works"}
 }
 ```
 
-2. Add it to `RunAllTests()` in `scenarios.go`:
-```go
-results = append(results, TestMyNewFeature(serverAddr))
-```
-
-## Test Output
-
-```
-============================================================
-Integration Test Results
-============================================================
-
-[[PASS]] Basic Connection
-    Connected successfully, received welcome messages
-
-[[PASS]] Movement
-    Successfully moved between rooms
-
-[[PASS]] Item Pickup/Drop
-    Successfully picked up and dropped items
-
-[[PASS]] Multiple Clients Movement
-    3 clients moved to different rooms simultaneously
-
-[[PASS]] Say Command
-    Room-wide message broadcasting works
-
-[[PASS]] Tell Command
-    Private player-to-player messaging works
-
-[[PASS]] Weight/Capacity System
-    Carry weight limits enforced correctly
-
-[[PASS]] Inventory Display
-    Inventory shows item details with weight
-
-[[PASS]] Multi-Target Combat
-    Cooperative combat with XP split works
-
-[[PASS]] Un-Attackable NPCs
-    Friendly NPCs cannot be attacked
-
-[[PASS]] NPC Respawning
-    Goblin respawned successfully after 10 seconds
-
-[[PASS]] World Expansion
-    World expansion triggered after 1 moves
-
-[[PASS]] Chat Filter (REPLACE mode)
-    Chat filter correctly replaces banned words with asterisks in both say and tell
-
-[[PASS]] Account Registration
-    Successfully registered account 'RegTest12345' and entered game
-
-[[PASS]] Login Flow
-    Successfully logged back in and location persisted
-
-[[PASS]] Invalid Login
-    Invalid credentials correctly rejected
-
-[[PASS]] Banned Account
-    Banned account correctly rejected with ban message
-
-[[PASS]] Inventory Persistence
-    Inventory successfully persisted across sessions
-
-[[PASS]] Spell Casting
-    Basic spell mechanics work correctly
-
-[[PASS]] Heal Other Player
-    Successfully healed another player
-
-[[PASS]] Dazzle Spell
-    Room-wide stun affects all hostile NPCs
-
-[[PASS]] Dazzle In Combat
-    Stunned NPCs do not attack during combat
-
-[[PASS]] Player Level Up
-    Player successfully leveled up from XP gain
-
-[[PASS]] Ability Scores
-    Ability scores assigned and displayed correctly
-
-[[PASS]] Attack Rolls (Dice Combat)
-    D20 attack roll mechanics work correctly
-
-[[PASS]] Spell Damage (INT Modifier)
-    Spell damage scales with INT modifier
-
-============================================================
-Total: 33 tests, 33 passed, 0 failed
-============================================================
-```
+2. Add to `RunAllTests()` and `getAllTests()` in `scenarios.go`
 
 ## CI/CD Integration
 
-The test runner exits with code 0 on success, 1 on failure - perfect for CI pipelines:
+The test runner exits with code 0 on success, 1 on failure:
 
 ```bash
-./testrunner || exit 1
+./scripts/run-integration-tests.sh || exit 1
 ```
 
-## Future Enhancements
+## Test Configuration
 
-- Add timeout configuration
-- Parallel test execution
-- Test coverage reporting
-- Performance benchmarks
-- Stress testing (100+ concurrent clients)
+Test data files in `data/test/`:
+- `server_test.yaml` - Test server configuration
+- `players_test.db` - Test database (auto-created/deleted)
+- `npcs/npcs_test.yaml` - Test NPCs
+- `mobs/mobs_test.yaml` - Test mobs (fast respawn)

@@ -266,6 +266,17 @@ func RunAllTests(serverAddr string) []TestResult {
 	results = append(results, TestStallCloseOnRoomChange(serverAddr))
 	results = append(results, TestStallRequiresCity(serverAddr))
 
+	// Group 13: Multi-City Expansion
+	results = append(results, TestMailSend(serverAddr))
+	results = append(results, TestMailRead(serverAddr))
+	results = append(results, TestRaceSelection(serverAddr))
+	results = append(results, TestPortalCrossCity(serverAddr))
+	results = append(results, TestLabyrinthGateExists(serverAddr))
+	results = append(results, TestLabyrinthNavigation(serverAddr))
+	results = append(results, TestLoreNPCTalk(serverAddr))
+	results = append(results, TestTitleSystem(serverAddr))
+	results = append(results, TestMultipleCitiesExist(serverAddr))
+
 	return results
 }
 
@@ -411,6 +422,17 @@ func getAllTests() []testEntry {
 		{"Stall Purchase", TestStallPurchase},
 		{"Stall Close On Room Change", TestStallCloseOnRoomChange},
 		{"Stall Requires City", TestStallRequiresCity},
+
+		// Group 13: Multi-City Expansion
+		{"Mail Send", TestMailSend},
+		{"Mail Read", TestMailRead},
+		{"Race Selection", TestRaceSelection},
+		{"Portal Cross-City", TestPortalCrossCity},
+		{"Labyrinth Gate Exists", TestLabyrinthGateExists},
+		{"Labyrinth Navigation", TestLabyrinthNavigation},
+		{"Lore NPC Talk", TestLoreNPCTalk},
+		{"Title System", TestTitleSystem},
+		{"Multiple Cities Exist", TestMultipleCitiesExist},
 	}
 }
 

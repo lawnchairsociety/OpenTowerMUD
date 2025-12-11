@@ -144,6 +144,26 @@ func executeMailList(p PlayerInterface) string {
 	return result.String()
 }
 
+// translateMailIndex converts a user-facing mail index (1, 2, 3...) to the actual database mail ID.
+// Returns the mail ID, or 0 if the index is invalid.
+func translateMailIndex(indexStr string, p PlayerInterface, db *database.Database) (int64, int64, string) {
+	index, err := strconv.ParseInt(indexStr, 10, 64)
+	if err != nil || index < 1 {
+		return 0, 0, "Invalid mail number. Use a number from your mailbox list."
+	}
+
+	mailID, err := db.GetMailIDByIndex(p.GetCharacterID(), index)
+	if err != nil {
+		logger.Error("Failed to translate mail index", "error", err, "player", p.GetName(), "index", index)
+		return 0, 0, "Failed to look up mail."
+	}
+	if mailID == 0 {
+		return 0, 0, "Mail not found."
+	}
+
+	return mailID, index, ""
+}
+
 // executeMailRead reads a specific mail message.
 func executeMailRead(idStr string, p PlayerInterface) string {
 	room, ok := GetRoom(p)
@@ -155,11 +175,6 @@ func executeMailRead(idStr string, p PlayerInterface) string {
 		return "You need to be at a mailbox to read your mail."
 	}
 
-	mailID, err := strconv.ParseInt(idStr, 10, 64)
-	if err != nil {
-		return "Invalid mail ID. Usage: mail read <id>"
-	}
-
 	server, ok := p.GetServer().(ServerInterface)
 	if !ok {
 		return "Internal error: invalid server type"
@@ -168,6 +183,12 @@ func executeMailRead(idStr string, p PlayerInterface) string {
 	db, ok := server.GetDatabase().(*database.Database)
 	if !ok {
 		return "Internal error: database not available"
+	}
+
+	// Translate user-facing index to actual mail ID
+	mailID, mailIndex, errMsg := translateMailIndex(idStr, p, db)
+	if errMsg != "" {
+		return errMsg
 	}
 
 	m, err := db.GetMail(mailID, p.GetCharacterID())
@@ -226,11 +247,11 @@ func executeMailRead(idStr string, p PlayerInterface) string {
 
 	result.WriteString("\n")
 	if hasAttachments && m.HasAttachments() {
-		result.WriteString(fmt.Sprintf("Type 'mail collect %d' to collect attachments.\n", m.ID))
+		result.WriteString(fmt.Sprintf("Type 'mail collect %d' to collect attachments.\n", mailIndex))
 	}
-	result.WriteString(fmt.Sprintf("Type 'mail reply %d' to reply.\n", m.ID))
+	result.WriteString(fmt.Sprintf("Type 'mail reply %d' to reply.\n", mailIndex))
 	if !m.HasAttachments() {
-		result.WriteString(fmt.Sprintf("Type 'mail delete %d' to delete.\n", m.ID))
+		result.WriteString(fmt.Sprintf("Type 'mail delete %d' to delete.\n", mailIndex))
 	}
 
 	return result.String()
@@ -412,11 +433,6 @@ func executeMailCollect(idStr string, p PlayerInterface) string {
 		return "You need to be at a mailbox to collect mail attachments."
 	}
 
-	mailID, err := strconv.ParseInt(idStr, 10, 64)
-	if err != nil {
-		return "Invalid mail ID. Usage: mail collect <id>"
-	}
-
 	server, ok := p.GetServer().(ServerInterface)
 	if !ok {
 		return "Internal error: invalid server type"
@@ -425,6 +441,12 @@ func executeMailCollect(idStr string, p PlayerInterface) string {
 	db, ok := server.GetDatabase().(*database.Database)
 	if !ok {
 		return "Internal error: database not available"
+	}
+
+	// Translate user-facing index to actual mail ID
+	mailID, _, errMsg := translateMailIndex(idStr, p, db)
+	if errMsg != "" {
+		return errMsg
 	}
 
 	m, err := db.GetMail(mailID, p.GetCharacterID())
@@ -496,11 +518,6 @@ func executeMailDelete(idStr string, p PlayerInterface) string {
 		return "You need to be at a mailbox to delete mail."
 	}
 
-	mailID, err := strconv.ParseInt(idStr, 10, 64)
-	if err != nil {
-		return "Invalid mail ID. Usage: mail delete <id>"
-	}
-
 	server, ok := p.GetServer().(ServerInterface)
 	if !ok {
 		return "Internal error: invalid server type"
@@ -511,7 +528,13 @@ func executeMailDelete(idStr string, p PlayerInterface) string {
 		return "Internal error: database not available"
 	}
 
-	err = db.DeleteMail(mailID, p.GetCharacterID())
+	// Translate user-facing index to actual mail ID
+	mailID, _, errMsg := translateMailIndex(idStr, p, db)
+	if errMsg != "" {
+		return errMsg
+	}
+
+	err := db.DeleteMail(mailID, p.GetCharacterID())
 	if err != nil {
 		if strings.Contains(err.Error(), "collect all attachments") {
 			return "You must collect all attachments before deleting this mail."
@@ -538,11 +561,6 @@ func executeMailReply(idStr string, p PlayerInterface) string {
 		return "You need to be at a mailbox to reply to mail."
 	}
 
-	mailID, err := strconv.ParseInt(idStr, 10, 64)
-	if err != nil {
-		return "Invalid mail ID. Usage: mail reply <id>"
-	}
-
 	server, ok := p.GetServer().(ServerInterface)
 	if !ok {
 		return "Internal error: invalid server type"
@@ -551,6 +569,12 @@ func executeMailReply(idStr string, p PlayerInterface) string {
 	db, ok := server.GetDatabase().(*database.Database)
 	if !ok {
 		return "Internal error: database not available"
+	}
+
+	// Translate user-facing index to actual mail ID
+	mailID, _, errMsg := translateMailIndex(idStr, p, db)
+	if errMsg != "" {
+		return errMsg
 	}
 
 	m, err := db.GetMail(mailID, p.GetCharacterID())

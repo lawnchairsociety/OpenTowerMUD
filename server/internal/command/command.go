@@ -594,6 +594,32 @@ type PlayerInterface interface {
 	// Returns an error if the title hasn't been earned.
 	SetActiveTitle(titleID string) error
 
+	// === Labyrinth Exploration ===
+
+	// VisitLabyrinthGate marks a city gate as visited. Returns true if first visit.
+	VisitLabyrinthGate(cityID string) bool
+
+	// HasVisitedLabyrinthGate returns true if the gate has been visited.
+	HasVisitedLabyrinthGate(cityID string) bool
+
+	// GetVisitedLabyrinthGates returns all visited city gate IDs.
+	GetVisitedLabyrinthGates() []string
+
+	// HasVisitedAllLabyrinthGates returns true if all 5 gates visited.
+	HasVisitedAllLabyrinthGates() bool
+
+	// TalkToLoreNPC marks a lore NPC as talked to. Returns true if first conversation.
+	TalkToLoreNPC(npcID string) bool
+
+	// HasTalkedToLoreNPC returns true if the NPC has been talked to.
+	HasTalkedToLoreNPC(npcID string) bool
+
+	// GetTalkedToLoreNPCs returns all lore NPC IDs talked to.
+	GetTalkedToLoreNPCs() []string
+
+	// HasTalkedToAllLoreNPCs returns true if all 5 lore NPCs talked to.
+	HasTalkedToAllLoreNPCs() bool
+
 	// === Player Stalls (Player-to-Player Trading) ===
 
 	// IsStallOpen returns true if the player's stall is open for business.

@@ -188,7 +188,20 @@ rooms:
     type: city
     features: []
     exits:
+      south: dwarf_south_gate
       west: dwarf_deep_mines
+
+  dwarf_south_gate:
+    name: "The Labyrinth Gate"
+    description: "A massive stone archway leads from the cart station into the Great Labyrinth. Dwarven runes of protection line the threshold, and heavy iron doors stand ready to seal the passage if danger approaches. Beyond lies the ancient maze that connects all the great cities."
+    description_day: "Traders occasionally emerge from the labyrinth with goods from distant lands. Guards check each arrival."
+    description_night: "The passage is quieter at night, though the runes glow ever-vigilant against whatever might lurk in the labyrinth."
+    type: city
+    features:
+      - gate
+      - labyrinth_entrance
+    exits:
+      north: dwarf_cart_station
 
   dwarf_the_breach:
     name: "The Breach"

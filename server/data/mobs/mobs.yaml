@@ -2423,3 +2423,150 @@ npcs:
         chance: 100
     respawn_median: 86400
     respawn_variation: 3600
+
+  # ===================
+  # LABYRINTH MOBS (Tier 1-2)
+  # ===================
+  # These mobs spawn in the Great Labyrinth that connects all cities
+
+  labyrinth_crawler:
+    name: "labyrinth crawler"
+    description: "A pale, eyeless creature that has evolved to navigate the endless darkness of the labyrinth"
+    level: 1
+    health: 18
+    damage: 3
+    armor: 0
+    experience: 10
+    aggressive: true
+    attackable: true
+    tier: 1
+    mob_type: "beast"
+    tower_tags: ["labyrinth"]
+    gold_min: 1
+    gold_max: 4
+    loot_table:
+      - item: "mushroom"
+        chance: 35
+      - item: "leather"
+        chance: 20
+    respawn_median: 180
+    respawn_variation: 45
+
+  lost_spirit:
+    name: "lost spirit"
+    description: "The translucent ghost of a traveler who never found their way out of the maze"
+    level: 2
+    health: 22
+    damage: 4
+    armor: 0
+    experience: 15
+    aggressive: true
+    attackable: true
+    tier: 1
+    mob_type: "undead"
+    tower_tags: ["labyrinth"]
+    gold_min: 2
+    gold_max: 5
+    loot_table:
+      - item: "ectoplasm"
+        chance: 30
+      - item: "ghostly_essence"
+        chance: 15
+    respawn_median: 240
+    respawn_variation: 60
+
+  tunnel_spider:
+    name: "tunnel spider"
+    description: "A large spider with long legs adapted for moving through narrow passages"
+    level: 2
+    health: 16
+    damage: 5
+    armor: 0
+    experience: 14
+    aggressive: true
+    attackable: true
+    tier: 1
+    mob_type: "beast"
+    tower_tags: ["labyrinth"]
+    gold_min: 1
+    gold_max: 3
+    loot_table:
+      - item: "spider_silk"
+        chance: 40
+      - item: "venom_sac"
+        chance: 20
+    respawn_median: 180
+    respawn_variation: 45
+
+  maze_lurker:
+    name: "maze lurker"
+    description: "A hunched humanoid creature that hunts travelers who venture too deep into the labyrinth"
+    level: 3
+    health: 35
+    damage: 6
+    armor: 2
+    experience: 25
+    aggressive: true
+    attackable: true
+    tier: 2
+    mob_type: "humanoid"
+    tower_tags: ["labyrinth"]
+    gold_min: 3
+    gold_max: 8
+    loot_table:
+      - item: "leather"
+        chance: 25
+      - item: "bone"
+        chance: 30
+      - item: "rusty_blade"
+        chance: 15
+    respawn_median: 300
+    respawn_variation: 75
+
+  stone_elemental:
+    name: "stone elemental"
+    description: "A creature formed from the ancient stone of the labyrinth walls"
+    level: 4
+    health: 50
+    damage: 7
+    armor: 5
+    experience: 35
+    aggressive: true
+    attackable: true
+    tier: 2
+    mob_type: "construct"
+    tower_tags: ["labyrinth"]
+    gold_min: 0
+    gold_max: 5
+    loot_table:
+      - item: "stone_shard"
+        chance: 50
+      - item: "earth_crystal"
+        chance: 20
+    respawn_median: 360
+    respawn_variation: 90
+
+  passage_wraith:
+    name: "passage wraith"
+    description: "A dark, incorporeal being that drifts through the labyrinth seeking the warmth of the living"
+    level: 4
+    health: 40
+    damage: 8
+    armor: 3
+    experience: 40
+    aggressive: true
+    attackable: true
+    tier: 2
+    mob_type: "undead"
+    tower_tags: ["labyrinth"]
+    gold_min: 5
+    gold_max: 12
+    loot_table:
+      - item: "ectoplasm"
+        chance: 40
+      - item: "ghostly_essence"
+        chance: 25
+      - item: "cursed_amulet"
+        chance: 10
+    respawn_median: 360
+    respawn_variation: 90

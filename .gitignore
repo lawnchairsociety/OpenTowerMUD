@@ -10,6 +10,7 @@
 /server/mapgen
 /server/utilities/balance/balance
 /server/floorgen
+/server/mazegen
 
 # Server generated files
 /server/data/world/*

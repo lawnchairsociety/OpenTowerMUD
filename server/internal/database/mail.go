@@ -48,9 +48,11 @@ func (d *Database) SendMail(senderID int64, senderName string, recipientID int64
 }
 
 // GetMailbox returns all mail for a recipient, ordered by sent date descending.
+// The ID returned is a per-player sequential index (1, 2, 3...), not the database ID.
 func (d *Database) GetMailbox(recipientID int64) ([]mail.MailSummary, error) {
 	rows, err := d.db.Query(`
-		SELECT m.id, m.sender_name, m.subject, m.gold_attached, m.gold_collected, m.read, m.sent_at,
+		SELECT ROW_NUMBER() OVER (ORDER BY m.sent_at DESC) as idx,
+		       m.sender_name, m.subject, m.gold_attached, m.gold_collected, m.read, m.sent_at,
 		       (SELECT COUNT(*) FROM mail_items mi WHERE mi.mail_id = m.id AND mi.collected = 0) as uncollected_items
 		FROM mail m
 		WHERE m.recipient_id = ?
@@ -82,6 +84,26 @@ func (d *Database) GetMailbox(recipientID int64) ([]mail.MailSummary, error) {
 	}
 
 	return summaries, nil
+}
+
+// GetMailIDByIndex converts a per-player mail index (1, 2, 3...) to the actual database mail ID.
+// Returns 0 if the index is out of range.
+func (d *Database) GetMailIDByIndex(recipientID int64, index int64) (int64, error) {
+	var mailID int64
+	err := d.db.QueryRow(`
+		SELECT id FROM (
+			SELECT m.id, ROW_NUMBER() OVER (ORDER BY m.sent_at DESC) as idx
+			FROM mail m
+			WHERE m.recipient_id = ?
+		) WHERE idx = ?`,
+		recipientID, index).Scan(&mailID)
+	if err == sql.ErrNoRows {
+		return 0, nil
+	}
+	if err != nil {
+		return 0, fmt.Errorf("failed to get mail ID by index: %w", err)
+	}
+	return mailID, nil
 }
 
 // GetMail returns a single mail message with its items.

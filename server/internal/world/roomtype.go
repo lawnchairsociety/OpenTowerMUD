@@ -4,12 +4,14 @@ package world
 type RoomType int
 
 const (
-	RoomTypeCity     RoomType = iota // Safe city rooms (ground floor)
-	RoomTypeCorridor                 // Tower corridors
-	RoomTypeRoom                     // General tower rooms
-	RoomTypeStairs                   // Stairway rooms (up/down)
-	RoomTypeTreasure                 // Treasure/loot rooms
-	RoomTypeBoss                     // Boss rooms (every 10 floors)
+	RoomTypeCity          RoomType = iota // Safe city rooms (ground floor)
+	RoomTypeCorridor                      // Tower corridors
+	RoomTypeRoom                          // General tower rooms
+	RoomTypeStairs                        // Stairway rooms (up/down)
+	RoomTypeTreasure                      // Treasure/loot rooms
+	RoomTypeBoss                          // Boss rooms (every 10 floors)
+	RoomTypeLabyrinth                     // Labyrinth passages
+	RoomTypeLabyrinthGate                 // City gate rooms in the labyrinth
 )
 
 // String returns the string representation of a RoomType
@@ -27,6 +29,10 @@ func (t RoomType) String() string {
 		return "treasure"
 	case RoomTypeBoss:
 		return "boss"
+	case RoomTypeLabyrinth:
+		return "labyrinth"
+	case RoomTypeLabyrinthGate:
+		return "labyrinth_gate"
 	default:
 		return "unknown"
 	}
@@ -47,6 +53,10 @@ func ParseRoomType(s string) (RoomType, bool) {
 		return RoomTypeTreasure, true
 	case "boss":
 		return RoomTypeBoss, true
+	case "labyrinth":
+		return RoomTypeLabyrinth, true
+	case "labyrinth_gate":
+		return RoomTypeLabyrinthGate, true
 	default:
 		return RoomTypeCity, false
 	}

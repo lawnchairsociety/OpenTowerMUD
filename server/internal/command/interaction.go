@@ -81,6 +81,31 @@ func executeTalk(c *Command, p PlayerInterface) string {
 		}
 	}
 
+	// Track lore NPC conversations for the Keeper of Forgotten Lore title
+	if foundNPC.IsLoreNPC() {
+		npcID := foundNPC.GetNPCID()
+		if npcID != "" {
+			if p.TalkToLoreNPC(npcID) {
+				// First time talking to this lore NPC
+				talkedCount := len(p.GetTalkedToLoreNPCs())
+				response += fmt.Sprintf("\n\n*** You have spoken with this lore keeper. (%d/5 scholars found) ***", talkedCount)
+
+				// Check if player has now talked to all lore NPCs
+				if p.HasTalkedToAllLoreNPCs() {
+					title := "Keeper of Forgotten Lore"
+					if !p.HasEarnedTitle(title) {
+						p.EarnTitle(title)
+						response += fmt.Sprintf("\n\n================================================================================\n                    TITLE EARNED: %s\n\n  You have spoken with all five lore keepers of the Great Labyrinth!\n  The ancient secrets of the maze are now yours to keep.\n================================================================================", title)
+						// Announce to server
+						if server, ok := p.GetServer().(ServerInterface); ok {
+							server.BroadcastToAll(fmt.Sprintf("\n*** %s has earned the title: %s ***\n", p.GetName(), title))
+						}
+					}
+				}
+			}
+		}
+	}
+
 	return response
 }
 

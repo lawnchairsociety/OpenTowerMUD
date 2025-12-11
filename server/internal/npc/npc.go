@@ -70,6 +70,8 @@ type NPC struct {
 	QuestGiver       bool            // Can this NPC give quests?
 	GivesQuests      []string        // Quest IDs this NPC can give
 	TurnInQuests     []string        // Quest IDs that can be turned in to this NPC
+	LoreNPC          bool            // Is this a labyrinth lore NPC?
+	NPCID            string          // Original NPC definition ID (for tracking)
 	mu               sync.RWMutex
 }
 
@@ -846,4 +848,32 @@ func (n *NPC) HasQuestInteraction() bool {
 	n.mu.RLock()
 	defer n.mu.RUnlock()
 	return len(n.GivesQuests) > 0 || len(n.TurnInQuests) > 0
+}
+
+// IsLoreNPC returns true if this NPC is a labyrinth lore NPC
+func (n *NPC) IsLoreNPC() bool {
+	n.mu.RLock()
+	defer n.mu.RUnlock()
+	return n.LoreNPC
+}
+
+// SetLoreNPC sets whether this NPC is a lore NPC
+func (n *NPC) SetLoreNPC(isLoreNPC bool) {
+	n.mu.Lock()
+	defer n.mu.Unlock()
+	n.LoreNPC = isLoreNPC
+}
+
+// GetNPCID returns the original NPC definition ID
+func (n *NPC) GetNPCID() string {
+	n.mu.RLock()
+	defer n.mu.RUnlock()
+	return n.NPCID
+}
+
+// SetNPCID sets the original NPC definition ID
+func (n *NPC) SetNPCID(npcID string) {
+	n.mu.Lock()
+	defer n.mu.Unlock()
+	n.NPCID = npcID
 }
