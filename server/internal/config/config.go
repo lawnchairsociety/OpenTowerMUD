@@ -17,6 +17,14 @@ type ServerConfig struct {
 	Session     SessionConfig     `yaml:"session"`
 	Paths       PathsConfig       `yaml:"paths"`
 	Game        GameConfig        `yaml:"game"`
+	Website     WebsiteConfig     `yaml:"website"`
+}
+
+// WebsiteConfig holds companion website settings.
+type WebsiteConfig struct {
+	// URL is the URL of the companion website for registration.
+	// If empty, in-game registration remains enabled.
+	URL string `yaml:"url"`
 }
 
 // PathsConfig holds file and directory paths for game data.
@@ -154,9 +162,12 @@ func DefaultConfig() *ServerConfig {
 			NameFilter: "data/name_filter.yaml",
 		},
 		Game: GameConfig{
-			Seed:          0,                // 0 = random seed based on time
+			Seed:          0,                 // 0 = random seed based on time
 			EnabledTowers: []string{"human"}, // Default to human tower only
-			StaticFloors:  true,             // Use static floors for multi-tower
+			StaticFloors:  true,              // Use static floors for multi-tower
+		},
+		Website: WebsiteConfig{
+			URL: "", // Empty = in-game registration enabled
 		},
 	}
 }

@@ -92,3 +92,11 @@ game:
 
   # Load floors from YAML files instead of generating via WFC
   static_floors: true
+
+# Companion website configuration
+website:
+  # URL of the companion website for registration
+  # If set, in-game registration is disabled and players are directed to the website
+  # Leave empty to allow in-game registration
+  # Example: "https://opentowermud.example.com"
+  url: ""

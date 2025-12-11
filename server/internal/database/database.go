@@ -183,6 +183,23 @@ func (d *Database) migrate() error {
 		`ALTER TABLE characters ADD COLUMN active_title TEXT NOT NULL DEFAULT ''`,
 		// Multi-tower system
 		`ALTER TABLE characters ADD COLUMN home_tower TEXT NOT NULL DEFAULT 'human'`,
+		// Labyrinth tracking
+		`ALTER TABLE characters ADD COLUMN visited_labyrinth_gates TEXT NOT NULL DEFAULT ''`,
+		`ALTER TABLE characters ADD COLUMN talked_to_lore_npcs TEXT NOT NULL DEFAULT ''`,
+		// Character statistics for website
+		`ALTER TABLE characters ADD COLUMN statistics TEXT NOT NULL DEFAULT '{}'`,
+		// Web sessions table for companion website
+		`CREATE TABLE IF NOT EXISTS web_sessions (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			token TEXT UNIQUE NOT NULL,
+			account_id INTEGER NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
+			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+			expires_at TIMESTAMP NOT NULL,
+			ip_address TEXT,
+			user_agent TEXT
+		)`,
+		`CREATE INDEX IF NOT EXISTS idx_web_sessions_token ON web_sessions(token)`,
+		`CREATE INDEX IF NOT EXISTS idx_web_sessions_expires ON web_sessions(expires_at)`,
 	}
 
 	for _, m := range migrations {

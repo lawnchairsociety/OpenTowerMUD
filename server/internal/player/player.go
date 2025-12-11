@@ -133,6 +133,8 @@ type Player struct {
 	activeTitle            string          // Currently displayed title
 	visitedLabyrinthGates  map[string]bool // cityID -> visited (for Wanderer title)
 	talkedToLoreNPCs       map[string]bool // npcID -> talked to (for Keeper title)
+	// Statistics tracking for website
+	statistics *PlayerStatistics
 	// Player stall system
 	stallOpen      bool                    // Is the player's stall open for business?
 	stallInventory []*command.StallItem    // Items for sale in the stall
@@ -193,6 +195,8 @@ func NewPlayer(name string, client Client, world *world.World, server ServerInte
 		activeTitle:           "",
 		visitedLabyrinthGates: make(map[string]bool),
 		talkedToLoreNPCs:      make(map[string]bool),
+		// Statistics
+		statistics: NewPlayerStatistics(),
 		// Stall system
 		stallOpen:      false,
 		stallInventory: make([]*command.StallItem, 0),
@@ -2543,6 +2547,82 @@ func (p *Player) SetTalkedToLoreNPCsFromString(npcsStr string) {
 			p.talkedToLoreNPCs[npcID] = true
 		}
 	}
+}
+
+// ==================== STATISTICS METHODS ====================
+
+// GetStatistics returns the player's statistics tracker.
+func (p *Player) GetStatistics() *PlayerStatistics {
+	if p.statistics == nil {
+		p.statistics = NewPlayerStatistics()
+	}
+	return p.statistics
+}
+
+// GetStatisticsJSON returns the statistics as a JSON string for persistence.
+func (p *Player) GetStatisticsJSON() string {
+	if p.statistics == nil {
+		return "{}"
+	}
+	return p.statistics.ToJSON()
+}
+
+// SetStatisticsFromJSON loads statistics from a JSON string.
+func (p *Player) SetStatisticsFromJSON(jsonStr string) {
+	if p.statistics == nil {
+		p.statistics = NewPlayerStatistics()
+	}
+	p.statistics.FromJSON(jsonStr)
+}
+
+// RecordKill records a mob kill in statistics.
+func (p *Player) RecordKill(mobID string) {
+	p.GetStatistics().RecordKill(mobID)
+}
+
+// RecordFloorReached records reaching a floor in a tower.
+func (p *Player) RecordFloorReached(towerID string, floor int) {
+	p.GetStatistics().RecordFloorReached(towerID, floor)
+}
+
+// RecordGoldEarned records gold earned.
+func (p *Player) RecordGoldEarned(amount int) {
+	p.GetStatistics().RecordGoldEarned(amount)
+}
+
+// RecordQuestCompleted records a quest completion.
+func (p *Player) RecordQuestCompleted() {
+	p.GetStatistics().RecordQuestCompleted()
+}
+
+// RecordDeath records a player death.
+func (p *Player) RecordDeath() {
+	p.GetStatistics().RecordDeath()
+}
+
+// RecordDamageDealt records damage dealt.
+func (p *Player) RecordDamageDealt(amount int) {
+	p.GetStatistics().RecordDamageDealt(amount)
+}
+
+// RecordDamageTaken records damage taken.
+func (p *Player) RecordDamageTaken(amount int) {
+	p.GetStatistics().RecordDamageTaken(amount)
+}
+
+// RecordItemCrafted records an item being crafted.
+func (p *Player) RecordItemCrafted() {
+	p.GetStatistics().RecordItemCrafted()
+}
+
+// RecordSpellCast records a spell being cast.
+func (p *Player) RecordSpellCast() {
+	p.GetStatistics().RecordSpellCast()
+}
+
+// RecordMove records a room movement.
+func (p *Player) RecordMove() {
+	p.GetStatistics().RecordMove()
 }
 
 // ==================== STALL METHODS ====================

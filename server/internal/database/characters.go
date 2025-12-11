@@ -59,8 +59,13 @@ type Character struct {
 	QuestInventory string // Comma-separated list of quest item IDs
 	EarnedTitles   string // Comma-separated list of earned title IDs
 	ActiveTitle    string // Currently displayed title ID
-	CreatedAt      time.Time
-	LastPlayed     *time.Time
+	// Labyrinth tracking
+	VisitedLabyrinthGates string // Comma-separated list of city IDs visited via labyrinth
+	TalkedToLoreNPCs      string // Comma-separated list of lore NPC IDs talked to
+	// Statistics for website
+	Statistics string // JSON-serialized player statistics
+	CreatedAt  time.Time
+	LastPlayed *time.Time
 }
 
 // CreateCharacter creates a new character for an account with default ability scores and warrior class.
@@ -239,6 +244,8 @@ func (d *Database) GetCharactersByAccount(accountID int64) ([]*Character, error)
 		        COALESCE(crafting_skills, ''), COALESCE(known_recipes, ''),
 		        COALESCE(quest_log, '{}'), COALESCE(quest_inventory, ''),
 		        COALESCE(earned_titles, ''), COALESCE(active_title, ''),
+		        COALESCE(visited_labyrinth_gates, ''), COALESCE(talked_to_lore_npcs, ''),
+		        COALESCE(statistics, '{}'),
 		        created_at, last_played
 		 FROM characters WHERE account_id = ? ORDER BY last_played DESC NULLS LAST, name`,
 		accountID,
@@ -275,6 +282,8 @@ func (d *Database) GetCharacterByName(name string) (*Character, error) {
 		        COALESCE(crafting_skills, ''), COALESCE(known_recipes, ''),
 		        COALESCE(quest_log, '{}'), COALESCE(quest_inventory, ''),
 		        COALESCE(earned_titles, ''), COALESCE(active_title, ''),
+		        COALESCE(visited_labyrinth_gates, ''), COALESCE(talked_to_lore_npcs, ''),
+		        COALESCE(statistics, '{}'),
 		        created_at, last_played
 		 FROM characters WHERE name = ?`,
 		name,
@@ -302,6 +311,8 @@ func (d *Database) GetCharacterByID(id int64) (*Character, error) {
 		        COALESCE(crafting_skills, ''), COALESCE(known_recipes, ''),
 		        COALESCE(quest_log, '{}'), COALESCE(quest_inventory, ''),
 		        COALESCE(earned_titles, ''), COALESCE(active_title, ''),
+		        COALESCE(visited_labyrinth_gates, ''), COALESCE(talked_to_lore_npcs, ''),
+		        COALESCE(statistics, '{}'),
 		        created_at, last_played
 		 FROM characters WHERE id = ?`,
 		id,
@@ -352,6 +363,9 @@ func (d *Database) SaveCharacter(c *Character) error {
 			quest_inventory = ?,
 			earned_titles = ?,
 			active_title = ?,
+			visited_labyrinth_gates = ?,
+			talked_to_lore_npcs = ?,
+			statistics = ?,
 			last_played = CURRENT_TIMESTAMP
 		 WHERE id = ?`,
 		c.RoomID, c.Health, c.MaxHealth, c.Mana, c.MaxMana,
@@ -360,6 +374,7 @@ func (d *Database) SaveCharacter(c *Character) error {
 		c.Gold, c.KeyRing, c.PrimaryClass, c.ClassLevels, c.ActiveClass, c.Race, c.HomeTower,
 		c.CraftingSkills, c.KnownRecipes,
 		c.QuestLog, c.QuestInventory, c.EarnedTitles, c.ActiveTitle,
+		c.VisitedLabyrinthGates, c.TalkedToLoreNPCs, c.Statistics,
 		c.ID,
 	)
 	if err != nil {
@@ -434,6 +449,7 @@ func scanCharacter(rows *sql.Rows) (*Character, error) {
 		&c.HomeTower,
 		&c.CraftingSkills, &c.KnownRecipes,
 		&c.QuestLog, &c.QuestInventory, &c.EarnedTitles, &c.ActiveTitle,
+		&c.VisitedLabyrinthGates, &c.TalkedToLoreNPCs, &c.Statistics,
 		&c.CreatedAt, &lastPlayed,
 	)
 	if err != nil {
@@ -462,6 +478,7 @@ func scanCharacterRow(row *sql.Row) (*Character, error) {
 		&c.HomeTower,
 		&c.CraftingSkills, &c.KnownRecipes,
 		&c.QuestLog, &c.QuestInventory, &c.EarnedTitles, &c.ActiveTitle,
+		&c.VisitedLabyrinthGates, &c.TalkedToLoreNPCs, &c.Statistics,
 		&c.CreatedAt, &lastPlayed,
 	)
 	if err != nil {

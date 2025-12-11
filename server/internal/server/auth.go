@@ -62,6 +62,10 @@ type AuthResult struct {
 // handleAuth handles the login/registration flow for a new connection.
 // Returns the authenticated account and selected character, or an error.
 func (s *Server) handleAuth(client Client) (*AuthResult, error) {
+	// Check if website registration is configured
+	cfg := s.GetServerConfig()
+	websiteURL := cfg.Website.URL
+
 	// Welcome screen
 	t := text.GetInstance()
 	if t != nil {
@@ -76,9 +80,17 @@ func (s *Server) handleAuth(client Client) (*AuthResult, error) {
 		client.WriteLine("=====================================\n")
 		client.WriteLine("\n")
 		client.WriteLine("  [L] Login\n")
-		client.WriteLine("  [R] Register\n")
+		if websiteURL == "" {
+			client.WriteLine("  [R] Register\n")
+		}
 		client.WriteLine("\n")
 	}
+
+	// Show website registration URL if configured
+	if websiteURL != "" {
+		client.WriteLine(fmt.Sprintf("New player? Register at: %s/register\n\n", websiteURL))
+	}
+
 	client.WriteLine("Enter choice: ")
 
 	choice, err := client.ReadLine()
@@ -91,6 +103,11 @@ func (s *Server) handleAuth(client Client) (*AuthResult, error) {
 	case "l", "login":
 		return s.handleLogin(client)
 	case "r", "register":
+		// Only allow registration if website URL is not configured
+		if websiteURL != "" {
+			client.WriteLine(fmt.Sprintf("\nIn-game registration is disabled.\nPlease register at: %s/register\n\n", websiteURL))
+			return nil, errors.New("registration disabled - use website")
+		}
 		return s.handleRegister(client)
 	default:
 		client.WriteLine("Invalid choice. Disconnecting.\n")

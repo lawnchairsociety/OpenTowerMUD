@@ -210,6 +210,19 @@ func (s *Server) loadPlayer(client Client, auth *AuthResult) (*player.Player, er
 		_ = p.SetActiveTitle(char.ActiveTitle)
 	}
 
+	// Load labyrinth tracking
+	if char.VisitedLabyrinthGates != "" {
+		p.SetVisitedLabyrinthGatesFromString(char.VisitedLabyrinthGates)
+	}
+	if char.TalkedToLoreNPCs != "" {
+		p.SetTalkedToLoreNPCsFromString(char.TalkedToLoreNPCs)
+	}
+
+	// Load statistics
+	if char.Statistics != "" && char.Statistics != "{}" {
+		p.SetStatisticsFromJSON(char.Statistics)
+	}
+
 	logger.Info("Player loaded",
 		"player", char.Name,
 		"player_level", char.Level,
@@ -271,10 +284,13 @@ func (s *Server) savePlayerImpl(p *player.Player) error {
 		Race:              string(p.GetRace()),
 		CraftingSkills:    p.GetCraftingSkillsString(),
 		KnownRecipes:      p.GetKnownRecipesString(),
-		QuestLog:          p.GetQuestLogJSON(),
-		QuestInventory:    p.GetQuestInventoryString(),
-		EarnedTitles:      p.GetEarnedTitlesString(),
-		ActiveTitle:       p.GetActiveTitle(),
+		QuestLog:              p.GetQuestLogJSON(),
+		QuestInventory:        p.GetQuestInventoryString(),
+		EarnedTitles:          p.GetEarnedTitlesString(),
+		ActiveTitle:           p.GetActiveTitle(),
+		VisitedLabyrinthGates: p.GetVisitedLabyrinthGatesString(),
+		TalkedToLoreNPCs:      p.GetTalkedToLoreNPCsString(),
+		Statistics:            p.GetStatisticsJSON(),
 	}
 
 	// Get inventory and equipment IDs
