@@ -155,6 +155,18 @@ func (d *Database) migrate() error {
 		`CREATE INDEX IF NOT EXISTS idx_mail_recipient ON mail(recipient_id, read)`,
 		`CREATE INDEX IF NOT EXISTS idx_mail_sender ON mail(sender_id)`,
 		`CREATE INDEX IF NOT EXISTS idx_mail_items_mail ON mail_items(mail_id)`,
+
+		// Boss kills tracking table
+		`CREATE TABLE IF NOT EXISTS boss_kills (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			tower_id TEXT NOT NULL,
+			player_name TEXT NOT NULL,
+			killed_at DATETIME NOT NULL,
+			is_first_kill INTEGER DEFAULT 0
+		)`,
+		`CREATE INDEX IF NOT EXISTS idx_boss_kills_tower ON boss_kills(tower_id)`,
+		`CREATE INDEX IF NOT EXISTS idx_boss_kills_player ON boss_kills(player_name)`,
+		`CREATE INDEX IF NOT EXISTS idx_boss_kills_first ON boss_kills(tower_id, is_first_kill)`,
 	}
 
 	// Run safe migrations for new columns (ignore errors if columns already exist)

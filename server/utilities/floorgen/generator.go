@@ -145,6 +145,8 @@ func generateRoomName(tower string, tt wfc.TileType, floor int) string {
 	floorLabel := fmt.Sprintf("Floor %d", floor)
 	if tower == "dwarf" {
 		floorLabel = fmt.Sprintf("Mine Level %d", floor)
+	} else if tower == "unified" {
+		floorLabel = fmt.Sprintf("Spire %d", floor)
 	}
 
 	switch tower {
@@ -158,6 +160,8 @@ func generateRoomName(tower string, tt wfc.TileType, floor int) string {
 		return generateGnomeRoomName(tt, floorLabel)
 	case "orc":
 		return generateOrcRoomName(tt, floorLabel)
+	case "unified":
+		return generateUnifiedRoomName(tt, floorLabel)
 	default:
 		return generateDefaultRoomName(tt, floorLabel)
 	}
@@ -268,6 +272,27 @@ func generateOrcRoomName(tt wfc.TileType, floorLabel string) string {
 	}
 }
 
+func generateUnifiedRoomName(tt wfc.TileType, floorLabel string) string {
+	switch tt {
+	case wfc.TileCorridor:
+		return fmt.Sprintf("Corrupted Passage (%s)", floorLabel)
+	case wfc.TileRoom:
+		return fmt.Sprintf("Blighted Chamber (%s)", floorLabel)
+	case wfc.TileDeadEnd:
+		return fmt.Sprintf("Festering Alcove (%s)", floorLabel)
+	case wfc.TileStairsUp:
+		return fmt.Sprintf("Spiral of Decay (%s)", floorLabel)
+	case wfc.TileStairsDown:
+		return fmt.Sprintf("Descent of Corruption (%s)", floorLabel)
+	case wfc.TileTreasure:
+		return fmt.Sprintf("Tainted Treasury (%s)", floorLabel)
+	case wfc.TileBoss:
+		return fmt.Sprintf("Throne of Corruption (%s)", floorLabel)
+	default:
+		return fmt.Sprintf("Unknown Room (%s)", floorLabel)
+	}
+}
+
 func generateDefaultRoomName(tt wfc.TileType, floorLabel string) string {
 	switch tt {
 	case wfc.TileCorridor:
@@ -302,6 +327,8 @@ func generateRoomDescription(tower string, tt wfc.TileType) string {
 		return generateGnomeDescription(tt)
 	case "orc":
 		return generateOrcDescription(tt)
+	case "unified":
+		return generateUnifiedDescription(tt)
 	default:
 		return generateDefaultDescription(tt)
 	}
@@ -409,6 +436,27 @@ func generateOrcDescription(tt wfc.TileType) string {
 		return "The warchief's arena, where only the mightiest survive. Bones of challengers litter the blood-soaked floor."
 	default:
 		return "You are in the Beast-Skull Tower."
+	}
+}
+
+func generateUnifiedDescription(tt wfc.TileType) string {
+	switch tt {
+	case wfc.TileCorridor:
+		return "A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light."
+	case wfc.TileRoom:
+		return "A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption."
+	case wfc.TileDeadEnd:
+		return "A festering alcove where corruption has pooled deep. Strange formations grow from every surface, and the air itself seems to infect your lungs."
+	case wfc.TileStairsUp:
+		return "A spiral of decay ascending through corrupted flesh. Each step squelches beneath your feet, and the walls seem to watch your ascent."
+	case wfc.TileStairsDown:
+		return "A descent into deeper corruption. A shimmering portal offers escape to floors you've survived. The darkness below hungers for your presence."
+	case wfc.TileTreasure:
+		return "A treasury tainted by corruption, treasures of fallen worlds gathered here. Even the gold seems diseased, but power radiates from within."
+	case wfc.TileBoss:
+		return "A throne room of corruption where the air screams in silence. Something ancient and terrible awaits here, at the heart of all decay."
+	default:
+		return "You are within the Infinity Spire, where corruption reigns eternal."
 	}
 }
 

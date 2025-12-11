@@ -24,6 +24,8 @@ type TowerInterface interface {
 type TowerManagerInterface interface {
 	// FindRoomByString searches all towers for a room by ID
 	FindRoomByString(roomID string) *Room
+	// FindRoomWithTowerID searches all towers for a room and returns both room and tower ID
+	FindRoomWithTowerID(roomID string) (*Room, string)
 	// GetAllCityRooms returns city rooms from all towers
 	GetAllCityRooms() map[string]*Room
 	// GetSpawnRoomByString returns the spawn room for a specific tower
@@ -32,6 +34,8 @@ type TowerManagerInterface interface {
 	GetFloorPortalRoomByString(towerID string, floorNum int) *Room
 	// IsInitializedByString returns true if a tower has been initialized
 	IsInitializedByString(towerID string) bool
+	// GetMaxFloorsForTower returns the max floors for a given tower
+	GetMaxFloorsForTower(towerID string) int
 }
 
 type World struct {
@@ -212,6 +216,32 @@ func (w *World) GetTowerManager() TowerManagerInterface {
 	w.mu.RLock()
 	defer w.mu.RUnlock()
 	return w.towerManager
+}
+
+// FindRoomWithTowerID searches all towers for a room and returns both room and tower ID.
+// Returns empty string for tower ID if room not found or tower manager not set.
+func (w *World) FindRoomWithTowerID(roomID string) (*Room, string) {
+	w.mu.RLock()
+	tm := w.towerManager
+	w.mu.RUnlock()
+
+	if tm == nil {
+		return nil, ""
+	}
+	return tm.FindRoomWithTowerID(roomID)
+}
+
+// GetMaxFloorsForTower returns the max floors for a given tower.
+// Returns 0 if tower manager not set or tower not found.
+func (w *World) GetMaxFloorsForTower(towerID string) int {
+	w.mu.RLock()
+	tm := w.towerManager
+	w.mu.RUnlock()
+
+	if tm == nil {
+		return 0
+	}
+	return tm.GetMaxFloorsForTower(towerID)
 }
 
 // GetFloorPortalRoom returns the portal room for a specific floor

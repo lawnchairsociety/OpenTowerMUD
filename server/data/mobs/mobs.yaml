@@ -1917,3 +1917,509 @@ npcs:
         chance: 100
     respawn_median: 1800
     respawn_variation: 300
+
+  # ===================
+  # UNIFIED TOWER (INFINITY SPIRE) MOBS
+  # ===================
+
+  # ===================
+  # Tier 5: Veteran Mobs (Unified Floors 26-50)
+  # ===================
+
+  plague_wraith:
+    name: "plague wraith"
+    description: "A spirit of pure disease, its touch brings festering wounds and decay"
+    level: 20
+    health: 300
+    damage: 35
+    armor: 10
+    experience: 500
+    aggressive: true
+    attackable: true
+    tier: 5
+    mob_type: "undead"
+    tower_tags: ["unified"]
+    gold_min: 80
+    gold_max: 150
+    loot_table:
+      - item: "ghost_essence"
+        chance: 40
+      - item: "void_crystal"
+        chance: 25
+      - item: "ancient_essence"
+        chance: 20
+    respawn_median: 300
+    respawn_variation: 60
+
+  blighted_knight:
+    name: "blighted knight"
+    description: "A fallen paladin consumed by corruption, armor fused to rotting flesh"
+    level: 22
+    health: 400
+    damage: 40
+    armor: 15
+    experience: 600
+    aggressive: true
+    attackable: true
+    tier: 5
+    mob_type: "undead"
+    tower_tags: ["unified"]
+    gold_min: 100
+    gold_max: 180
+    loot_table:
+      - item: "steel_ingot"
+        chance: 35
+      - item: "adamantine_shard"
+        chance: 20
+      - item: "ghost_essence"
+        chance: 25
+    respawn_median: 300
+    respawn_variation: 60
+
+  rot_mage:
+    name: "rot mage"
+    description: "A sorcerer who channels the power of decay itself, necrotic energy crackling from skeletal hands"
+    level: 21
+    health: 250
+    damage: 45
+    armor: 5
+    experience: 550
+    aggressive: true
+    attackable: true
+    tier: 5
+    mob_type: "humanoid"
+    tower_tags: ["unified"]
+    gold_min: 90
+    gold_max: 160
+    loot_table:
+      - item: "arcane_dust"
+        chance: 40
+      - item: "void_crystal"
+        chance: 30
+      - item: "ancient_essence"
+        chance: 25
+    respawn_median: 300
+    respawn_variation: 60
+
+  corruption_elemental:
+    name: "corruption elemental"
+    description: "A swirling mass of corrupted energy, reality warps and sickens in its presence"
+    level: 23
+    health: 350
+    damage: 38
+    armor: 8
+    experience: 580
+    aggressive: true
+    attackable: true
+    tier: 5
+    mob_type: "construct"
+    tower_tags: ["unified"]
+    gold_min: 85
+    gold_max: 155
+    loot_table:
+      - item: "void_crystal"
+        chance: 40
+      - item: "arcane_dust"
+        chance: 30
+      - item: "rough_gem"
+        chance: 20
+    respawn_median: 300
+    respawn_variation: 60
+
+  # ===================
+  # Tier 6: Champion Mobs (Unified Floors 51-75)
+  # ===================
+
+  entropy_fiend:
+    name: "entropy fiend"
+    description: "A demon of pure dissolution, reality unravels in its presence like rotting cloth"
+    level: 28
+    health: 500
+    damage: 55
+    armor: 15
+    experience: 900
+    aggressive: true
+    attackable: true
+    tier: 6
+    mob_type: "demon"
+    tower_tags: ["unified"]
+    gold_min: 150
+    gold_max: 280
+    loot_table:
+      - item: "void_crystal"
+        chance: 45
+      - item: "ancient_essence"
+        chance: 35
+      - item: "dragonhide_scrap"
+        chance: 25
+    respawn_median: 360
+    respawn_variation: 90
+
+  corrupted_seraph:
+    name: "corrupted seraph"
+    description: "An angel twisted by blight, six wings now drip with infection and malice"
+    level: 30
+    health: 550
+    damage: 60
+    armor: 18
+    experience: 950
+    aggressive: true
+    attackable: true
+    tier: 6
+    mob_type: "humanoid"
+    tower_tags: ["unified"]
+    gold_min: 160
+    gold_max: 300
+    loot_table:
+      - item: "ancient_essence"
+        chance: 50
+      - item: "enchanted_gem"
+        chance: 30
+      - item: "void_crystal"
+        chance: 35
+    respawn_median: 360
+    respawn_variation: 90
+
+  blight_colossus:
+    name: "blight colossus"
+    description: "A towering mass of corrupted flesh and bone, each step leaves a trail of decay"
+    level: 29
+    health: 700
+    damage: 50
+    armor: 25
+    experience: 1000
+    aggressive: true
+    attackable: true
+    tier: 6
+    mob_type: "giant"
+    tower_tags: ["unified"]
+    gold_min: 180
+    gold_max: 350
+    loot_table:
+      - item: "dragonhide_scrap"
+        chance: 50
+      - item: "adamantine_shard"
+        chance: 35
+      - item: "ancient_essence"
+        chance: 40
+    respawn_median: 360
+    respawn_variation: 90
+
+  void_stalker:
+    name: "void stalker"
+    description: "A predator from beyond reality, phasing in and out of existence as it hunts"
+    level: 28
+    health: 450
+    damage: 65
+    armor: 12
+    experience: 880
+    aggressive: true
+    attackable: true
+    tier: 6
+    mob_type: "demon"
+    tower_tags: ["unified"]
+    gold_min: 140
+    gold_max: 260
+    loot_table:
+      - item: "void_crystal"
+        chance: 55
+      - item: "ghost_essence"
+        chance: 40
+      - item: "ancient_essence"
+        chance: 30
+    respawn_median: 360
+    respawn_variation: 90
+
+  # ===================
+  # Tier 7: Legendary Mobs (Unified Floors 76-100)
+  # ===================
+
+  avatar_of_decay:
+    name: "avatar of decay"
+    description: "A physical manifestation of entropy, the end of all things given form and hunger"
+    level: 35
+    health: 800
+    damage: 70
+    armor: 20
+    experience: 1500
+    aggressive: true
+    attackable: true
+    tier: 7
+    mob_type: "demon"
+    tower_tags: ["unified"]
+    gold_min: 250
+    gold_max: 500
+    loot_table:
+      - item: "ancient_essence"
+        chance: 60
+      - item: "void_crystal"
+        chance: 50
+      - item: "dragonhide_scrap"
+        chance: 40
+      - item: "enchanted_gem"
+        chance: 30
+    respawn_median: 420
+    respawn_variation: 120
+
+  reality_cancer:
+    name: "reality cancer"
+    description: "A tumor on existence itself, spreading wrongness wherever it goes, warping space and time"
+    level: 38
+    health: 900
+    damage: 75
+    armor: 22
+    experience: 1650
+    aggressive: true
+    attackable: true
+    tier: 7
+    mob_type: "construct"
+    tower_tags: ["unified"]
+    gold_min: 280
+    gold_max: 550
+    loot_table:
+      - item: "void_crystal"
+        chance: 65
+      - item: "ancient_essence"
+        chance: 55
+      - item: "enchanted_gem"
+        chance: 40
+      - item: "dragonhide_scrap"
+        chance: 35
+    respawn_median: 420
+    respawn_variation: 120
+
+  herald_of_the_blighted:
+    name: "herald of the blighted"
+    description: "A chosen servant of The Blighted One, radiating corruption with every breath, eyes burning with malevolent purpose"
+    level: 40
+    health: 1000
+    damage: 80
+    armor: 25
+    experience: 1800
+    aggressive: true
+    attackable: true
+    tier: 7
+    mob_type: "undead"
+    tower_tags: ["unified"]
+    gold_min: 300
+    gold_max: 600
+    loot_table:
+      - item: "ancient_essence"
+        chance: 70
+      - item: "void_crystal"
+        chance: 60
+      - item: "dragonhide_scrap"
+        chance: 50
+      - item: "enchanted_gem"
+        chance: 40
+    respawn_median: 420
+    respawn_variation: 120
+
+  primordial_horror:
+    name: "primordial horror"
+    description: "Something that should not exist, older than the world, a writhing mass of impossible angles and hungry mouths"
+    level: 42
+    health: 1100
+    damage: 85
+    armor: 18
+    experience: 1950
+    aggressive: true
+    attackable: true
+    tier: 7
+    mob_type: "demon"
+    tower_tags: ["unified"]
+    gold_min: 320
+    gold_max: 650
+    loot_table:
+      - item: "void_crystal"
+        chance: 75
+      - item: "ancient_essence"
+        chance: 65
+      - item: "enchanted_gem"
+        chance: 45
+      - item: "dragonhide_scrap"
+        chance: 55
+    respawn_median: 420
+    respawn_variation: 120
+
+  # ===================
+  # UNIFIED TOWER SUB-BOSSES (Every 10 Floors)
+  # ===================
+
+  lich_council_member:
+    name: "Lich Council Member"
+    description: "One of the ancient liches who serve The Blighted One, radiating necrotic power accumulated over millennia"
+    level: 25
+    health: 1500
+    damage: 50
+    armor: 15
+    experience: 3000
+    aggressive: true
+    attackable: true
+    tier: 5
+    boss: true
+    mob_type: "undead"
+    tower_tags: ["unified"]
+    gold_min: 500
+    gold_max: 1000
+    loot_table:
+      - item: "elixir"
+        chance: 100
+      - item: "ghost_essence"
+        chance: 100
+      - item: "arcane_dust"
+        chance: 100
+      - item: "void_crystal"
+        chance: 100
+      - item: "ancient_essence"
+        chance: 100
+      - item: "legendary_key"
+        chance: 100
+    respawn_median: 3600
+    respawn_variation: 600
+
+  aspect_of_pestilence:
+    name: "Aspect of Pestilence"
+    description: "A fragment of The Blighted One's power given form, disease incarnate spreading corruption with every breath"
+    level: 32
+    health: 2500
+    damage: 65
+    armor: 18
+    experience: 5000
+    aggressive: true
+    attackable: true
+    tier: 6
+    boss: true
+    mob_type: "demon"
+    tower_tags: ["unified"]
+    gold_min: 800
+    gold_max: 1500
+    loot_table:
+      - item: "elixir"
+        chance: 100
+      - item: "void_crystal"
+        chance: 100
+      - item: "ancient_essence"
+        chance: 100
+      - item: "dragonhide_scrap"
+        chance: 100
+      - item: "enchanted_gem"
+        chance: 100
+      - item: "legendary_key"
+        chance: 100
+    respawn_median: 3600
+    respawn_variation: 600
+
+  aspect_of_decay:
+    name: "Aspect of Decay"
+    description: "Another fragment of The Blighted One's power, embodying dissolution and rot, entropy made manifest"
+    level: 35
+    health: 3000
+    damage: 72
+    armor: 20
+    experience: 6000
+    aggressive: true
+    attackable: true
+    tier: 6
+    boss: true
+    mob_type: "demon"
+    tower_tags: ["unified"]
+    gold_min: 1000
+    gold_max: 2000
+    loot_table:
+      - item: "elixir"
+        chance: 100
+      - item: "void_crystal"
+        chance: 100
+      - item: "ancient_essence"
+        chance: 100
+      - item: "dragonhide_scrap"
+        chance: 100
+      - item: "enchanted_gem"
+        chance: 100
+      - item: "legendary_key"
+        chance: 100
+    respawn_median: 3600
+    respawn_variation: 600
+
+  primordial_blight:
+    name: "Primordial Blight"
+    description: "The original corruption, older than the world itself, the first plague given terrible sentience"
+    level: 42
+    health: 4000
+    damage: 85
+    armor: 25
+    experience: 8000
+    aggressive: true
+    attackable: true
+    tier: 7
+    boss: true
+    mob_type: "demon"
+    tower_tags: ["unified"]
+    gold_min: 1500
+    gold_max: 3000
+    loot_table:
+      - item: "elixir"
+        chance: 100
+      - item: "void_crystal"
+        chance: 100
+      - item: "ancient_essence"
+        chance: 100
+      - item: "dragonhide_scrap"
+        chance: 100
+      - item: "enchanted_gem"
+        chance: 100
+      - item: "legendary_key"
+        chance: 100
+    respawn_median: 3600
+    respawn_variation: 600
+
+  # ===================
+  # THE BLIGHTED ONE - Final Boss (Floor 100)
+  # ===================
+
+  the_blighted_one:
+    name: "The Blighted One"
+    description: |
+      The source of all corruption. An entity older than memory, it has spread
+      its influence through the towers for eons. Its form is ever-shifting -
+      now a mass of writhing decay, now a twisted parody of beauty. The air
+      itself sickens in its presence. This is the end of your journey.
+    level: 50
+    health: 15000
+    damage: 100
+    armor: 30
+    experience: 100000
+    aggressive: true
+    attackable: true
+    tier: 7
+    boss: true
+    mob_type: "demon"
+    tower_tags: ["unified"]
+    gold_min: 5000
+    gold_max: 10000
+    loot_table:
+      - item: "elixir"
+        chance: 100
+      - item: "elixir"
+        chance: 100
+      - item: "elixir"
+        chance: 100
+      - item: "void_crystal"
+        chance: 100
+      - item: "void_crystal"
+        chance: 100
+      - item: "ancient_essence"
+        chance: 100
+      - item: "ancient_essence"
+        chance: 100
+      - item: "dragonhide_scrap"
+        chance: 100
+      - item: "enchanted_gem"
+        chance: 100
+      - item: "enchanted_gem"
+        chance: 100
+      - item: "legendary_key"
+        chance: 100
+    respawn_median: 86400
+    respawn_variation: 3600

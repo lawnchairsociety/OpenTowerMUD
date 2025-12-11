@@ -96,6 +96,8 @@ npcs:
       - "The ancestors watch from beyond death. Honor them with blood, and they will mend your wounds. Shame them, and they will turn away."
       - "The spirits follow you now. Make them proud."
       - "Type 'train' if you wish to learn the ways of the Cleric."
+      - "The oldest spirits speak of The Blighted One... a corruption that turns the dead against the living. It waits in the Infinity Spire."
+      - "Five guardians seal its prison. When all five fall, the path opens. One hundred floors of pure decay, with The Blighted One at the top."
     locations:
       - "orc_shamans_hut"
     respawn_median: 0
@@ -422,6 +424,8 @@ npcs:
       - "Return with glory or don't return at all. There is no middle ground."
       - "Check your mail at the box near the portal. Even in the wastes, messages find their way."
       - "The portal can take you to other cities, should you need allies from distant lands."
+      - "The old war songs tell of the greatest enemy - The Blighted One. It cannot be killed, only imprisoned. The five towers are its chains."
+      - "Break all five chains and the Infinity Spire opens. There, true glory awaits - or death. Either way, a worthy battle."
     locations:
       - "orc_trophy_hall"
     respawn_median: 0

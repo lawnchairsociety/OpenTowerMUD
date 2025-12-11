@@ -6,6 +6,7 @@ import (
 
 	"github.com/lawnchairsociety/opentowermud/server/internal/logger"
 	"github.com/lawnchairsociety/opentowermud/server/internal/quest"
+	"github.com/lawnchairsociety/opentowermud/server/internal/tower"
 	"github.com/lawnchairsociety/opentowermud/server/internal/world"
 )
 
@@ -369,12 +370,25 @@ func executePortal(c *Command, p PlayerInterface) string {
 		return "Internal error: invalid world type"
 	}
 
-	// Get discovered floor portals (excluding current floor)
-	discoveredPortals := p.GetDiscoveredPortals()
-	currentFloor := room.GetFloor()
+	// Determine current tower from room ID
+	currentTowerID := p.GetHomeTowerString()
 	currentRoomID := room.GetID()
+	currentFloor := room.GetFloor()
 
-	// Filter out current floor
+	// Check if we're in the unified tower
+	if strings.HasPrefix(currentRoomID, "unified_") {
+		currentTowerID = string(tower.TowerUnified)
+	}
+
+	// Check if unified tower is unlocked
+	unifiedUnlocked := server.IsUnifiedTowerUnlocked()
+
+	// Get tower manager for multi-tower operations
+	towerMgrIface := server.GetTowerManager()
+	towerMgr, hasTowerMgr := towerMgrIface.(*tower.TowerManager)
+
+	// Get discovered floor portals for current tower (excluding current floor)
+	discoveredPortals := p.GetDiscoveredPortalsInTowerByString(currentTowerID)
 	availableFloors := make([]int, 0)
 	for _, floor := range discoveredPortals {
 		if floor != currentFloor {
@@ -384,48 +398,127 @@ func executePortal(c *Command, p PlayerInterface) string {
 
 	// If no arguments, show available destinations
 	if len(c.Args) == 0 {
-		if len(availableFloors) == 0 {
-			return "The portal shimmers before you, but you haven't discovered any other floors to travel to.\nClimb the tower and find stairway landings with portals!"
-		}
-
 		var sb strings.Builder
 		sb.WriteString("The portal shimmers with arcane energy. Available destinations:\n\n")
-		for _, floor := range availableFloors {
-			floorName := getFloorDisplayName(floor)
-			sb.WriteString(fmt.Sprintf("  - %s (portal %d)\n", floorName, floor))
+
+		// Show current tower floors
+		if len(availableFloors) > 0 {
+			towerDisplayName := getTowerDisplayName(currentTowerID)
+			sb.WriteString(fmt.Sprintf("== %s ==\n", towerDisplayName))
+			for _, floor := range availableFloors {
+				floorName := getFloorDisplayName(floor)
+				sb.WriteString(fmt.Sprintf("  - %s (portal %d)\n", floorName, floor))
+			}
+		} else {
+			sb.WriteString("You haven't discovered any other floors in this tower.\n")
 		}
+
+		// Show unified tower option if unlocked and not already in unified
+		if unifiedUnlocked && currentTowerID != string(tower.TowerUnified) {
+			sb.WriteString("\n== Infinity Spire (Unlocked!) ==\n")
+			unifiedPortals := p.GetDiscoveredPortalsInTowerByString(string(tower.TowerUnified))
+			if len(unifiedPortals) == 0 {
+				sb.WriteString("  - Ground Floor (portal unified 0)\n")
+			} else {
+				for _, floor := range unifiedPortals {
+					floorName := getUnifiedFloorDisplayName(floor)
+					sb.WriteString(fmt.Sprintf("  - %s (portal unified %d)\n", floorName, floor))
+				}
+			}
+		}
+
+		// Show home tower option if in unified tower
+		if currentTowerID == string(tower.TowerUnified) {
+			homeTowerID := p.GetHomeTowerString()
+			homeTowerName := getTowerDisplayName(homeTowerID)
+			sb.WriteString(fmt.Sprintf("\n== %s (Home) ==\n", homeTowerName))
+			homePortals := p.GetDiscoveredPortalsInTowerByString(homeTowerID)
+			for _, floor := range homePortals {
+				floorName := getFloorDisplayName(floor)
+				sb.WriteString(fmt.Sprintf("  - %s (portal home %d)\n", floorName, floor))
+			}
+		}
+
 		sb.WriteString("\nUsage: portal <floor number>")
+		if unifiedUnlocked {
+			sb.WriteString(" | portal unified <floor> | portal home <floor>")
+		}
 		return sb.String()
 	}
 
-	// Parse floor number from argument
-	destArg := strings.TrimSpace(c.Args[0])
+	// Parse destination arguments
+	destArg := strings.TrimSpace(strings.ToLower(c.Args[0]))
 	destFloor := -1
+	destTowerID := currentTowerID
 
-	// Handle special names
-	switch strings.ToLower(destArg) {
+	// Handle special destinations
+	switch destArg {
+	case "unified", "infinity", "spire":
+		if !unifiedUnlocked {
+			return "The Infinity Spire remains sealed. Defeat all five tower guardians to unlock it."
+		}
+		destTowerID = string(tower.TowerUnified)
+		if len(c.Args) > 1 {
+			_, err := fmt.Sscanf(c.Args[1], "%d", &destFloor)
+			if err != nil {
+				return "Invalid floor number. Usage: portal unified <floor>"
+			}
+		} else {
+			destFloor = 0 // Default to ground floor
+		}
+
+	case "home":
+		destTowerID = p.GetHomeTowerString()
+		if len(c.Args) > 1 {
+			_, err := fmt.Sscanf(c.Args[1], "%d", &destFloor)
+			if err != nil {
+				return "Invalid floor number. Usage: portal home <floor>"
+			}
+		} else {
+			destFloor = 0 // Default to city
+		}
+
 	case "city", "town", "ground":
 		destFloor = 0
+
 	default:
 		// Try to parse as number
 		_, err := fmt.Sscanf(destArg, "%d", &destFloor)
 		if err != nil {
-			return fmt.Sprintf("Invalid floor number: '%s'. Type 'portal' to see available destinations.", destArg)
+			return fmt.Sprintf("Invalid destination: '%s'. Type 'portal' to see available destinations.", destArg)
 		}
 	}
 
-	// Check if player has discovered this floor
-	if !p.HasDiscoveredPortal(destFloor) {
-		return fmt.Sprintf("You haven't discovered a portal on floor %d. Type 'portal' to see available destinations.", destFloor)
+	// Check if player has discovered this floor (grant floor 0 access for unified if unlocked)
+	if destTowerID == string(tower.TowerUnified) && destFloor == 0 && unifiedUnlocked {
+		// Auto-discover unified tower floor 0 when first accessing it
+		if !p.HasDiscoveredPortalInTowerByString(destTowerID, 0) {
+			p.DiscoverPortalInTowerByString(destTowerID, 0)
+		}
 	}
 
-	// Can't portal to current floor
-	if destFloor == currentFloor {
-		return "You're already on this floor!"
+	if !p.HasDiscoveredPortalInTowerByString(destTowerID, destFloor) {
+		towerName := getTowerDisplayName(destTowerID)
+		return fmt.Sprintf("You haven't discovered a portal on %s floor %d. Type 'portal' to see available destinations.", towerName, destFloor)
+	}
+
+	// Can't portal to current location
+	if destFloor == currentFloor && destTowerID == currentTowerID {
+		return "You're already here!"
 	}
 
 	// Get the destination room
-	destRoom := w.GetFloorPortalRoom(destFloor)
+	var destRoom *world.Room
+	if hasTowerMgr && destTowerID != currentTowerID {
+		// Cross-tower travel
+		destRoom = towerMgr.GetFloorPortalRoom(tower.TowerID(destTowerID), destFloor)
+	} else if destTowerID == currentTowerID {
+		// Same tower travel
+		destRoom = w.GetFloorPortalRoom(destFloor)
+	} else {
+		return "Unable to access the destination tower."
+	}
+
 	if destRoom == nil {
 		return fmt.Sprintf("Floor %d doesn't have a portal room.", destFloor)
 	}
@@ -441,7 +534,15 @@ func executePortal(c *Command, p PlayerInterface) string {
 	// Broadcast arrival
 	server.BroadcastToRoom(destRoomID, fmt.Sprintf("%s emerges from the portal in a flash of light!\n", p.GetName()), p)
 
-	return fmt.Sprintf("You step through the shimmering portal...\n\nYou emerge on %s!\n\n%s", getFloorDisplayName(destFloor), destRoom.GetDescriptionForPlayer(p.GetName()))
+	// Generate arrival message
+	var arrivalMsg string
+	if destTowerID == string(tower.TowerUnified) {
+		arrivalMsg = fmt.Sprintf("You step through the shimmering portal into the Infinity Spire...\n\nYou emerge on %s!\n\n%s", getUnifiedFloorDisplayName(destFloor), destRoom.GetDescriptionForPlayer(p.GetName()))
+	} else {
+		arrivalMsg = fmt.Sprintf("You step through the shimmering portal...\n\nYou emerge on %s!\n\n%s", getFloorDisplayName(destFloor), destRoom.GetDescriptionForPlayer(p.GetName()))
+	}
+
+	return arrivalMsg
 }
 
 // getFloorDisplayName returns a human-readable floor name
@@ -450,6 +551,40 @@ func getFloorDisplayName(floor int) string {
 		return "the City"
 	}
 	return fmt.Sprintf("Floor %d", floor)
+}
+
+// getUnifiedFloorDisplayName returns display name for unified tower floors
+func getUnifiedFloorDisplayName(floor int) string {
+	if floor == 0 {
+		return "the Spire Base"
+	}
+	if floor == 100 {
+		return "The Blighted One's Domain (Floor 100)"
+	}
+	if floor == 25 || floor == 50 || floor == 75 {
+		return fmt.Sprintf("Sub-Boss Chamber (Floor %d)", floor)
+	}
+	return fmt.Sprintf("Floor %d", floor)
+}
+
+// getTowerDisplayName returns a human-readable tower name
+func getTowerDisplayName(towerID string) string {
+	switch tower.TowerID(towerID) {
+	case tower.TowerHuman:
+		return "Aetherspire (Human)"
+	case tower.TowerElf:
+		return "Sylvan Heights (Elf)"
+	case tower.TowerDwarf:
+		return "Khazad-Karn Depths (Dwarf)"
+	case tower.TowerGnome:
+		return "Mechanical Spire (Gnome)"
+	case tower.TowerOrc:
+		return "Eternal Battlefield (Orc)"
+	case tower.TowerUnified:
+		return "Infinity Spire"
+	default:
+		return "Unknown Tower"
+	}
 }
 
 // getPortalCommandName returns a short name for use in portal commands

@@ -18,6 +18,9 @@ npcs:
       - "The World Tree sickens. The blight spreads higher each day. We need heroes willing to climb into the corruption."
       - "Our ancestors planted these groves ten thousand years ago. We will not abandon them now."
       - "The portal will carry you to other cities, should you wish to seek allies elsewhere."
+      - "Ancient texts speak of a spire beyond all spires... the Infinity Spire, where The Blighted One waits."
+      - "The corruption in our tree... it comes from somewhere above the sky. Something sealed away long ago."
+      - "Legends tell of The Blighted One - the source of all decay. If the five guardians fall, its prison opens."
     locations:
       - "elf_grove_heart"
     respawn_median: 0

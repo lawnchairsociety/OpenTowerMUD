@@ -1,0 +1,370 @@
+# Floor 73 - unified tower
+# Generated with seed: 115
+# Room count: 50
+
+floor: 73
+tower: unified
+generated_seed: 115
+stairs_up: unified_f73_r9_7
+stairs_down: unified_f73_r8_2
+portal_room: unified_f73_r8_2
+rooms:
+  unified_f73_r10_0:
+    name: Corrupted Passage (Spire 73)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      west: unified_f73_r9_0
+  unified_f73_r10_1:
+    name: Blighted Chamber (Spire 73)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      west: unified_f73_r9_1
+  unified_f73_r3_6:
+    name: Blighted Chamber (Spire 73)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      south: unified_f73_r3_7
+  unified_f73_r3_7:
+    name: Blighted Chamber (Spire 73)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      north: unified_f73_r3_6
+      east: unified_f73_r4_7
+  unified_f73_r4_3:
+    name: Corrupted Passage (Spire 73)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      east: unified_f73_r5_3
+  unified_f73_r4_6:
+    name: Corrupted Passage (Spire 73)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      south: unified_f73_r4_7
+  unified_f73_r4_7:
+    name: Corrupted Passage (Spire 73)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f73_r4_6
+      east: unified_f73_r5_7
+      west: unified_f73_r3_7
+  unified_f73_r5_1:
+    name: Blighted Chamber (Spire 73)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      south: unified_f73_r5_2
+  unified_f73_r5_2:
+    name: Blighted Chamber (Spire 73)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      north: unified_f73_r5_1
+      south: unified_f73_r5_3
+  unified_f73_r5_3:
+    name: Blighted Chamber (Spire 73)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      north: unified_f73_r5_2
+      east: unified_f73_r6_3
+      west: unified_f73_r4_3
+  unified_f73_r5_4:
+    name: Corrupted Passage (Spire 73)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      east: unified_f73_r6_4
+  unified_f73_r5_5:
+    name: Blighted Chamber (Spire 73)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      east: unified_f73_r6_5
+  unified_f73_r5_6:
+    name: Corrupted Passage (Spire 73)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      east: unified_f73_r6_6
+  unified_f73_r5_7:
+    name: Corrupted Passage (Spire 73)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      east: unified_f73_r6_7
+      west: unified_f73_r4_7
+  unified_f73_r6_0:
+    name: Tainted Treasury (Spire 73)
+    description: A treasury tainted by corruption, treasures of fallen worlds gathered here. Even the gold seems diseased, but power radiates from within.
+    type: treasure
+    features:
+      - treasure
+    exits:
+      south: unified_f73_r6_1
+  unified_f73_r6_1:
+    name: Corrupted Passage (Spire 73)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f73_r6_0
+      south: unified_f73_r6_2
+  unified_f73_r6_2:
+    name: Corrupted Passage (Spire 73)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f73_r6_1
+      east: unified_f73_r7_2
+  unified_f73_r6_3:
+    name: Tainted Treasury (Spire 73)
+    description: A treasury tainted by corruption, treasures of fallen worlds gathered here. Even the gold seems diseased, but power radiates from within.
+    type: treasure
+    features:
+      - treasure
+    exits:
+      east: unified_f73_r7_3
+      west: unified_f73_r5_3
+  unified_f73_r6_4:
+    name: Corrupted Passage (Spire 73)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      south: unified_f73_r6_5
+      west: unified_f73_r5_4
+  unified_f73_r6_5:
+    name: Blighted Chamber (Spire 73)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      north: unified_f73_r6_4
+      east: unified_f73_r7_5
+      west: unified_f73_r5_5
+  unified_f73_r6_6:
+    name: Corrupted Passage (Spire 73)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      south: unified_f73_r6_7
+      east: unified_f73_r7_6
+      west: unified_f73_r5_6
+  unified_f73_r6_7:
+    name: Corrupted Passage (Spire 73)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f73_r6_6
+      south: unified_f73_r6_8
+      west: unified_f73_r5_7
+  unified_f73_r6_8:
+    name: Blighted Chamber (Spire 73)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      north: unified_f73_r6_7
+      south: unified_f73_r6_9
+  unified_f73_r6_9:
+    name: Blighted Chamber (Spire 73)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      north: unified_f73_r6_8
+  unified_f73_r7_0:
+    name: Corrupted Passage (Spire 73)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      south: unified_f73_r7_1
+  unified_f73_r7_1:
+    name: Corrupted Passage (Spire 73)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f73_r7_0
+      south: unified_f73_r7_2
+      east: unified_f73_r8_1
+  unified_f73_r7_10:
+    name: Blighted Chamber (Spire 73)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      north: unified_f73_r7_9
+  unified_f73_r7_2:
+    name: Corrupted Passage (Spire 73)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f73_r7_1
+      south: unified_f73_r7_3
+      east: unified_f73_r8_2
+      west: unified_f73_r6_2
+  unified_f73_r7_3:
+    name: Blighted Chamber (Spire 73)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      north: unified_f73_r7_2
+      south: unified_f73_r7_4
+      east: unified_f73_r8_3
+      west: unified_f73_r6_3
+  unified_f73_r7_4:
+    name: Blighted Chamber (Spire 73)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      north: unified_f73_r7_3
+      south: unified_f73_r7_5
+  unified_f73_r7_5:
+    name: Corrupted Passage (Spire 73)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f73_r7_4
+      south: unified_f73_r7_6
+      east: unified_f73_r8_5
+      west: unified_f73_r6_5
+  unified_f73_r7_6:
+    name: Corrupted Passage (Spire 73)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f73_r7_5
+      south: unified_f73_r7_7
+      east: unified_f73_r8_6
+      west: unified_f73_r6_6
+  unified_f73_r7_7:
+    name: Corrupted Passage (Spire 73)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f73_r7_6
+      south: unified_f73_r7_8
+  unified_f73_r7_8:
+    name: Blighted Chamber (Spire 73)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      north: unified_f73_r7_7
+      south: unified_f73_r7_9
+  unified_f73_r7_9:
+    name: Blighted Chamber (Spire 73)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      north: unified_f73_r7_8
+      south: unified_f73_r7_10
+  unified_f73_r8_0:
+    name: Corrupted Passage (Spire 73)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      south: unified_f73_r8_1
+      east: unified_f73_r9_0
+  unified_f73_r8_1:
+    name: Blighted Chamber (Spire 73)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      north: unified_f73_r8_0
+      east: unified_f73_r9_1
+      west: unified_f73_r7_1
+  unified_f73_r8_2:
+    name: Descent of Corruption (Spire 73)
+    description: A descent into deeper corruption. A shimmering portal offers escape to floors you've survived. The darkness below hungers for your presence.
+    type: stairs_down
+    features:
+      - stairs_down
+      - portal
+    exits:
+      west: unified_f73_r7_2
+  unified_f73_r8_3:
+    name: Corrupted Passage (Spire 73)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      west: unified_f73_r7_3
+  unified_f73_r8_4:
+    name: Blighted Chamber (Spire 73)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      south: unified_f73_r8_5
+      east: unified_f73_r9_4
+  unified_f73_r8_5:
+    name: Corrupted Passage (Spire 73)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f73_r8_4
+      east: unified_f73_r9_5
+      west: unified_f73_r7_5
+  unified_f73_r8_6:
+    name: Blighted Chamber (Spire 73)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      south: unified_f73_r8_7
+      west: unified_f73_r7_6
+  unified_f73_r8_7:
+    name: Corrupted Passage (Spire 73)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f73_r8_6
+      east: unified_f73_r9_7
+  unified_f73_r9_0:
+    name: Corrupted Passage (Spire 73)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      east: unified_f73_r10_0
+      west: unified_f73_r8_0
+  unified_f73_r9_1:
+    name: Tainted Treasury (Spire 73)
+    description: A treasury tainted by corruption, treasures of fallen worlds gathered here. Even the gold seems diseased, but power radiates from within.
+    type: treasure
+    features:
+      - treasure
+    exits:
+      south: unified_f73_r9_2
+      east: unified_f73_r10_1
+      west: unified_f73_r8_1
+  unified_f73_r9_2:
+    name: Blighted Chamber (Spire 73)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      north: unified_f73_r9_1
+  unified_f73_r9_4:
+    name: Corrupted Passage (Spire 73)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      west: unified_f73_r8_4
+  unified_f73_r9_5:
+    name: Corrupted Passage (Spire 73)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      south: unified_f73_r9_6
+      west: unified_f73_r8_5
+  unified_f73_r9_6:
+    name: Corrupted Passage (Spire 73)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f73_r9_5
+  unified_f73_r9_7:
+    name: Spiral of Decay (Spire 73)
+    description: A spiral of decay ascending through corrupted flesh. Each step squelches beneath your feet, and the walls seem to watch your ascent.
+    type: stairs_up
+    features:
+      - stairs_up
+    exits:
+      west: unified_f73_r8_7

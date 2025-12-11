@@ -193,6 +193,12 @@ func main() {
 	srv.SetRecipeRegistry(recipeRegistry)
 	srv.SetQuestRegistry(questRegistry)
 
+	// Initialize boss tracker (requires database)
+	if err := srv.InitBossTracker(); err != nil {
+		log.Fatalf("Failed to initialize boss tracker: %v", err)
+	}
+	logger.Info("Boss tracker initialized")
+
 	// Set server config on server (already loaded earlier)
 	srv.SetServerConfig(serverCfg)
 	if len(serverCfg.WebSocket.AllowedOrigins) == 0 {

@@ -426,6 +426,8 @@ npcs:
       - "Cogsworth's gears keep turning because of people like you. Don't let us down."
       - "Check your mail at the box near the portal. Even underground, messages find their way."
       - "The portal can take you to other cities, should you need allies from distant lands."
+      - "Our corruption is merely a symptom. The real disease lies in the Infinity Spire - a tower that appears only when all five guardians are defeated."
+      - "The Blighted One... it's the source code of corruption itself. It infects everything it touches. We must stop it before it rewrites reality."
     locations:
       - "gnome_central_gear"
     respawn_median: 0
@@ -455,6 +457,8 @@ npcs:
       - "The stars speak, if you know how to listen. I am Stargazer Orbitron. The corruption in the Spire... it's spreading faster than my models predicted."
       - "I've tracked anomalies in the celestial patterns. Something in the Spire is affecting the very fabric of reality. This is most troubling."
       - "Look to the stars, young one. They remember when there was no corruption, and perhaps they know how to end it."
+      - "My telescopes detect a structure beyond our spire... the Infinity Spire, one hundred floors of concentrated corruption. The Blighted One dwells at its peak."
+      - "The five racial towers are locks on a prison. When all five guardians fall, the seal breaks and the true enemy reveals itself."
     locations:
       - "gnome_observatory"
     respawn_median: 0

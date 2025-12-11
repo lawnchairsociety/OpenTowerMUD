@@ -1,0 +1,372 @@
+# Floor 30 - unified tower
+# Generated with seed: 72
+# Room count: 50
+
+floor: 30
+tower: unified
+generated_seed: 72
+stairs_up: unified_f30_r8_3
+stairs_down: unified_f30_r5_5
+portal_room: unified_f30_r5_5
+rooms:
+  unified_f30_r10_10:
+    name: Corrupted Passage (Spire 30)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f30_r10_9
+      east: unified_f30_r11_10
+  unified_f30_r10_11:
+    name: Blighted Chamber (Spire 30)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      west: unified_f30_r9_11
+  unified_f30_r10_9:
+    name: Corrupted Passage (Spire 30)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      south: unified_f30_r10_10
+      west: unified_f30_r9_9
+  unified_f30_r11_10:
+    name: Corrupted Passage (Spire 30)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      east: unified_f30_r12_10
+      west: unified_f30_r10_10
+  unified_f30_r12_10:
+    name: Throne of Corruption (Spire 30)
+    description: A throne room of corruption where the air screams in silence. Something ancient and terrible awaits here, at the heart of all decay.
+    type: boss
+    features:
+      - boss
+    exits:
+      west: unified_f30_r11_10
+  unified_f30_r3_9:
+    name: Corrupted Passage (Spire 30)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      east: unified_f30_r4_9
+  unified_f30_r4_10:
+    name: Corrupted Passage (Spire 30)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f30_r4_9
+  unified_f30_r4_6:
+    name: Blighted Chamber (Spire 30)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      east: unified_f30_r5_6
+  unified_f30_r4_7:
+    name: Corrupted Passage (Spire 30)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      south: unified_f30_r4_8
+  unified_f30_r4_8:
+    name: Blighted Chamber (Spire 30)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      north: unified_f30_r4_7
+      east: unified_f30_r5_8
+  unified_f30_r4_9:
+    name: Blighted Chamber (Spire 30)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      south: unified_f30_r4_10
+      east: unified_f30_r5_9
+      west: unified_f30_r3_9
+  unified_f30_r5_5:
+    name: Descent of Corruption (Spire 30)
+    description: A descent into deeper corruption. A shimmering portal offers escape to floors you've survived. The darkness below hungers for your presence.
+    type: stairs_down
+    features:
+      - stairs_down
+      - portal
+    exits:
+      south: unified_f30_r5_6
+  unified_f30_r5_6:
+    name: Corrupted Passage (Spire 30)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f30_r5_5
+      east: unified_f30_r6_6
+      west: unified_f30_r4_6
+  unified_f30_r5_7:
+    name: Blighted Chamber (Spire 30)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      east: unified_f30_r6_7
+  unified_f30_r5_8:
+    name: Corrupted Passage (Spire 30)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      south: unified_f30_r5_9
+      west: unified_f30_r4_8
+  unified_f30_r5_9:
+    name: Corrupted Passage (Spire 30)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f30_r5_8
+      east: unified_f30_r6_9
+      west: unified_f30_r4_9
+  unified_f30_r6_10:
+    name: Blighted Chamber (Spire 30)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      north: unified_f30_r6_9
+      south: unified_f30_r6_11
+      east: unified_f30_r7_10
+  unified_f30_r6_11:
+    name: Tainted Treasury (Spire 30)
+    description: A treasury tainted by corruption, treasures of fallen worlds gathered here. Even the gold seems diseased, but power radiates from within.
+    type: treasure
+    features:
+      - treasure
+    exits:
+      north: unified_f30_r6_10
+  unified_f30_r6_4:
+    name: Corrupted Passage (Spire 30)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      south: unified_f30_r6_5
+  unified_f30_r6_5:
+    name: Corrupted Passage (Spire 30)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f30_r6_4
+      south: unified_f30_r6_6
+      east: unified_f30_r7_5
+  unified_f30_r6_6:
+    name: Corrupted Passage (Spire 30)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f30_r6_5
+      south: unified_f30_r6_7
+      west: unified_f30_r5_6
+  unified_f30_r6_7:
+    name: Tainted Treasury (Spire 30)
+    description: A treasury tainted by corruption, treasures of fallen worlds gathered here. Even the gold seems diseased, but power radiates from within.
+    type: treasure
+    features:
+      - treasure
+    exits:
+      north: unified_f30_r6_6
+      east: unified_f30_r7_7
+      west: unified_f30_r5_7
+  unified_f30_r6_8:
+    name: Corrupted Passage (Spire 30)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      east: unified_f30_r7_8
+  unified_f30_r6_9:
+    name: Blighted Chamber (Spire 30)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      south: unified_f30_r6_10
+      east: unified_f30_r7_9
+      west: unified_f30_r5_9
+  unified_f30_r7_10:
+    name: Blighted Chamber (Spire 30)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      south: unified_f30_r7_11
+      west: unified_f30_r6_10
+  unified_f30_r7_11:
+    name: Corrupted Passage (Spire 30)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f30_r7_10
+      east: unified_f30_r8_11
+  unified_f30_r7_2:
+    name: Blighted Chamber (Spire 30)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      south: unified_f30_r7_3
+  unified_f30_r7_3:
+    name: Corrupted Passage (Spire 30)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f30_r7_2
+      south: unified_f30_r7_4
+      east: unified_f30_r8_3
+  unified_f30_r7_4:
+    name: Blighted Chamber (Spire 30)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      north: unified_f30_r7_3
+      south: unified_f30_r7_5
+  unified_f30_r7_5:
+    name: Corrupted Passage (Spire 30)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f30_r7_4
+      west: unified_f30_r6_5
+  unified_f30_r7_6:
+    name: Blighted Chamber (Spire 30)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      south: unified_f30_r7_7
+      east: unified_f30_r8_6
+  unified_f30_r7_7:
+    name: Corrupted Passage (Spire 30)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f30_r7_6
+      south: unified_f30_r7_8
+      east: unified_f30_r8_7
+      west: unified_f30_r6_7
+  unified_f30_r7_8:
+    name: Corrupted Passage (Spire 30)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f30_r7_7
+      south: unified_f30_r7_9
+      west: unified_f30_r6_8
+  unified_f30_r7_9:
+    name: Corrupted Passage (Spire 30)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f30_r7_8
+      east: unified_f30_r8_9
+      west: unified_f30_r6_9
+  unified_f30_r8_10:
+    name: Blighted Chamber (Spire 30)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      north: unified_f30_r8_9
+  unified_f30_r8_11:
+    name: Corrupted Passage (Spire 30)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      east: unified_f30_r9_11
+      west: unified_f30_r7_11
+  unified_f30_r8_3:
+    name: Spiral of Decay (Spire 30)
+    description: A spiral of decay ascending through corrupted flesh. Each step squelches beneath your feet, and the walls seem to watch your ascent.
+    type: stairs_up
+    features:
+      - stairs_up
+    exits:
+      west: unified_f30_r7_3
+  unified_f30_r8_6:
+    name: Corrupted Passage (Spire 30)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      east: unified_f30_r9_6
+      west: unified_f30_r7_6
+  unified_f30_r8_7:
+    name: Corrupted Passage (Spire 30)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      east: unified_f30_r9_7
+      west: unified_f30_r7_7
+  unified_f30_r8_8:
+    name: Corrupted Passage (Spire 30)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      south: unified_f30_r8_9
+  unified_f30_r8_9:
+    name: Corrupted Passage (Spire 30)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f30_r8_8
+      south: unified_f30_r8_10
+      east: unified_f30_r9_9
+      west: unified_f30_r7_9
+  unified_f30_r9_10:
+    name: Corrupted Passage (Spire 30)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f30_r9_9
+  unified_f30_r9_11:
+    name: Corrupted Passage (Spire 30)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      south: unified_f30_r9_12
+      east: unified_f30_r10_11
+      west: unified_f30_r8_11
+  unified_f30_r9_12:
+    name: Corrupted Passage (Spire 30)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f30_r9_11
+      south: unified_f30_r9_13
+  unified_f30_r9_13:
+    name: Corrupted Passage (Spire 30)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f30_r9_12
+      south: unified_f30_r9_14
+  unified_f30_r9_14:
+    name: Tainted Treasury (Spire 30)
+    description: A treasury tainted by corruption, treasures of fallen worlds gathered here. Even the gold seems diseased, but power radiates from within.
+    type: treasure
+    features:
+      - treasure
+    exits:
+      north: unified_f30_r9_13
+  unified_f30_r9_6:
+    name: Corrupted Passage (Spire 30)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      west: unified_f30_r8_6
+  unified_f30_r9_7:
+    name: Blighted Chamber (Spire 30)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      south: unified_f30_r9_8
+      west: unified_f30_r8_7
+  unified_f30_r9_8:
+    name: Corrupted Passage (Spire 30)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f30_r9_7
+  unified_f30_r9_9:
+    name: Blighted Chamber (Spire 30)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      south: unified_f30_r9_10
+      east: unified_f30_r10_9
+      west: unified_f30_r8_9

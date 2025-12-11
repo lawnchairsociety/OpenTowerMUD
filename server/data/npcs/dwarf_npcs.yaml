@@ -18,6 +18,8 @@ npcs:
       - "The Breach opened thirty years ago. Since then, horrors climb from the depths. We need warriors."
       - "Check your mail at the box beside the portal. Even underground, messages find their way."
       - "The portal can take you to other cities, should you need allies from distant lands."
+      - "Ancient records speak of a time before the towers, when a single great darkness threatened all. It was sealed away... somewhere above."
+      - "The five towers are connected, they say. Defeat the guardian of each, and a path opens to something older. Something waiting."
     locations:
       - "dwarf_great_hall"
     respawn_median: 0
@@ -109,6 +111,8 @@ npcs:
       - "Pray at the altar, and the stone itself will lend you strength."
       - "The creatures below were once mortal. Perhaps they can find rest through your actions."
       - "Type 'train' if you wish to learn the ways of the Cleric."
+      - "The spirits whisper of The Blighted One... a corruption so ancient it predates the mountains. It stirs in its prison."
+      - "When the five guardians fall, the Infinity Spire opens. There, at the hundredth floor, waits the source of all decay."
     locations:
       - "dwarf_ancestor_hall"
     respawn_median: 0

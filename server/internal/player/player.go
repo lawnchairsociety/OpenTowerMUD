@@ -1383,6 +1383,23 @@ func (p *Player) GetAllDiscoveredPortals() map[tower.TowerID][]int {
 	return result
 }
 
+// === String-based portal methods for interface compatibility ===
+
+// DiscoverPortalInTowerByString marks a floor's portal as discovered using a string tower ID.
+func (p *Player) DiscoverPortalInTowerByString(towerIDStr string, floorNum int) {
+	p.DiscoverPortalInTower(tower.TowerID(towerIDStr), floorNum)
+}
+
+// HasDiscoveredPortalInTowerByString returns true if a portal has been discovered using a string tower ID.
+func (p *Player) HasDiscoveredPortalInTowerByString(towerIDStr string, floorNum int) bool {
+	return p.HasDiscoveredPortalInTower(tower.TowerID(towerIDStr), floorNum)
+}
+
+// GetDiscoveredPortalsInTowerByString returns discovered floor numbers for a tower using a string ID.
+func (p *Player) GetDiscoveredPortalsInTowerByString(towerIDStr string) []int {
+	return p.GetDiscoveredPortalsInTower(tower.TowerID(towerIDStr))
+}
+
 // GetDiscoveredPortalsString returns discovered portals as a comma-separated string (for persistence)
 // Format: "human:0,1,5;elf:0,3" or just "0,1,5" for backward compatibility (home tower only)
 func (p *Player) GetDiscoveredPortalsString() string {

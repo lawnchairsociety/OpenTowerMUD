@@ -52,6 +52,7 @@ type Server struct {
 	serverConfig        *config.ServerConfig
 	connLimiter         *ConnLimiter
 	loginRateLimiter    *LoginRateLimiter
+	bossTracker         *tower.BossTracker
 }
 
 func NewServer(address string, world *world.World, pilgrimMode bool) *Server {
@@ -114,6 +115,42 @@ func (s *Server) SetServerConfig(cfg *config.ServerConfig) {
 	s.connLimiter = NewConnLimiter(cfg.Connections)
 	// Initialize login rate limiter
 	s.loginRateLimiter = NewLoginRateLimiter(cfg.RateLimit)
+}
+
+// InitBossTracker initializes the boss tracker using the database.
+// Must be called after SetDatabase.
+func (s *Server) InitBossTracker() error {
+	if s.db == nil {
+		return fmt.Errorf("database not set")
+	}
+	adapter := NewBossKillAdapter(s.db)
+	tracker, err := tower.NewBossTracker(adapter)
+	if err != nil {
+		return fmt.Errorf("failed to initialize boss tracker: %w", err)
+	}
+	s.bossTracker = tracker
+	return nil
+}
+
+// GetBossTracker returns the boss tracker
+func (s *Server) GetBossTracker() *tower.BossTracker {
+	return s.bossTracker
+}
+
+// IsUnifiedTowerUnlocked returns true if all five racial towers have been defeated.
+func (s *Server) IsUnifiedTowerUnlocked() bool {
+	if s.bossTracker == nil {
+		return false
+	}
+	return s.bossTracker.IsUnifiedUnlocked()
+}
+
+// GetTowerManager returns the tower manager for multi-tower operations.
+func (s *Server) GetTowerManager() interface{} {
+	if s.world == nil {
+		return nil
+	}
+	return s.world.GetTowerManager()
 }
 
 // GetServerConfig returns the server configuration
@@ -1240,6 +1277,18 @@ func (s *Server) handleNPCDeath(npc *npc.NPC, room *world.Room) {
 			"floor", floorNum,
 			"key_id", keyID,
 			"room", room.GetID())
+
+		// Check if this is a tower final boss (final floor boss)
+		if s.bossTracker != nil && len(attackerNames) > 0 {
+			_, towerID := s.world.FindRoomWithTowerID(room.GetID())
+			if towerID != "" {
+				maxFloors := s.world.GetMaxFloorsForTower(towerID)
+				if floorNum == maxFloors {
+					// This is the tower's final boss!
+					s.handleTowerBossDefeat(tower.TowerID(towerID), attackerNames)
+				}
+			}
+		}
 	}
 
 	// End combat for NPC
@@ -1257,6 +1306,184 @@ func (s *Server) handleNPCDeath(npc *npc.NPC, room *world.Room) {
 
 	// Schedule respawn (if enabled)
 	s.respawnManager.AddDeadNPC(npc)
+}
+
+// handleTowerBossDefeat handles when a tower's final boss is defeated
+func (s *Server) handleTowerBossDefeat(towerID tower.TowerID, attackerNames []string) {
+	if len(attackerNames) == 0 {
+		return
+	}
+
+	theme := tower.GetTheme(towerID)
+	if theme == nil {
+		return
+	}
+
+	// Record the kill for the first attacker (party leader)
+	primaryAttacker := attackerNames[0]
+	isFirstKill, err := s.bossTracker.RecordKill(towerID, primaryAttacker)
+	if err != nil {
+		logger.Error("Failed to record boss kill", "tower", towerID, "player", primaryAttacker, "error", err)
+		return
+	}
+
+	// Get the appropriate title
+	var title string
+	if isFirstKill {
+		title = tower.GetFirstClearTitle(towerID)
+	} else {
+		title = tower.GetSharedClearTitle(towerID)
+	}
+
+	// Award titles to all attackers
+	for _, attackerName := range attackerNames {
+		if attackerInterface := s.FindPlayer(attackerName); attackerInterface != nil {
+			if attacker, ok := attackerInterface.(*player.Player); ok {
+				// Check if they already have this title
+				if !attacker.HasEarnedTitle(title) {
+					attacker.EarnTitle(title)
+					attacker.SendMessage(fmt.Sprintf("\n*** You have earned the title: %s ***\n", title))
+				}
+			}
+		}
+	}
+
+	// Special handling for The Blighted One (unified tower boss)
+	if towerID == tower.TowerUnified {
+		s.handleBlightedOneVictory(primaryAttacker, attackerNames, isFirstKill, title)
+		return
+	}
+
+	// Broadcast announcement for racial tower bosses
+	if isFirstKill {
+		announcement := fmt.Sprintf(
+			"\n================================================================================\n"+
+				"                    %s HAS BEEN CONQUERED!\n\n"+
+				"  %s has become the FIRST to defeat the guardian of %s!\n"+
+				"  They have earned the unique title: %s\n"+
+				"================================================================================\n",
+			strings.ToUpper(theme.Name), primaryAttacker, theme.Name, title)
+		s.BroadcastToAll(announcement)
+	} else {
+		s.BroadcastToAll(fmt.Sprintf(
+			"\n*** %s has defeated the guardian of %s! ***\n",
+			primaryAttacker, theme.Name))
+	}
+
+	logger.Info("Tower boss defeated",
+		"tower", towerID,
+		"tower_name", theme.Name,
+		"player", primaryAttacker,
+		"first_kill", isFirstKill,
+		"title_awarded", title)
+
+	// Check if this unlocks the unified tower
+	if isFirstKill && s.bossTracker.IsUnifiedUnlocked() {
+		s.handleUnifiedTowerUnlock()
+	}
+}
+
+// handleBlightedOneVictory handles the epic event when The Blighted One is defeated
+func (s *Server) handleBlightedOneVictory(primaryAttacker string, attackerNames []string, isFirstKill bool, title string) {
+	if isFirstKill {
+		// First ever defeat of The Blighted One - the ultimate achievement
+		announcement := `
+================================================================================
+================================================================================
+
+        ████████╗██╗  ██╗███████╗    ██████╗ ██╗     ██╗ ██████╗ ██╗  ██╗████████╗
+        ╚══██╔══╝██║  ██║██╔════╝    ██╔══██╗██║     ██║██╔════╝ ██║  ██║╚══██╔══╝
+           ██║   ███████║█████╗      ██████╔╝██║     ██║██║  ███╗███████║   ██║
+           ██║   ██╔══██║██╔══╝      ██╔══██╗██║     ██║██║   ██║██╔══██║   ██║
+           ██║   ██║  ██║███████╗    ██████╔╝███████╗██║╚██████╔╝██║  ██║   ██║
+           ╚═╝   ╚═╝  ╚═╝╚══════╝    ╚═════╝ ╚══════╝╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝
+
+                            HAS BEEN VANQUISHED!
+
+================================================================================
+
+    After eons of corruption and decay, The Blighted One has finally fallen!
+
+    ` + primaryAttacker + ` has become the SAVIOR OF THE REALM!
+
+    The corruption that plagued the five towers begins to fade. The world
+    can finally begin to heal. Songs will be sung of this day for generations.
+
+    Heroes who participated in this legendary victory:`
+
+		for _, name := range attackerNames {
+			announcement += "\n      - " + name
+		}
+
+		announcement += `
+
+    The title "Savior of the Realm" is now yours to bear with pride.
+
+================================================================================
+================================================================================
+`
+		s.BroadcastToAll(announcement)
+
+		// Send special message to all participants
+		for _, attackerName := range attackerNames {
+			if attackerInterface := s.FindPlayer(attackerName); attackerInterface != nil {
+				if attacker, ok := attackerInterface.(*player.Player); ok {
+					attacker.SendMessage(`
+================================================================================
+                        CONGRATULATIONS, HERO!
+
+  You have accomplished the ultimate goal. The Blighted One is no more.
+
+  Your name will be etched in the annals of history as one of the heroes
+  who saved the realm from eternal corruption.
+
+  The tower stands cleansed. The people are safe. You are a legend.
+
+================================================================================
+`)
+				}
+			}
+		}
+	} else {
+		// Subsequent defeats
+		announcement := fmt.Sprintf(`
+================================================================================
+                    THE BLIGHTED ONE HAS FALLEN AGAIN!
+
+  %s has once again defeated The Blighted One!
+
+  The corruption stirs but is beaten back. The realm remains safe.
+
+  They have earned the title: %s
+================================================================================
+`, primaryAttacker, title)
+		s.BroadcastToAll(announcement)
+	}
+
+	logger.Info("THE BLIGHTED ONE DEFEATED",
+		"event", "blighted_one_victory",
+		"player", primaryAttacker,
+		"first_kill", isFirstKill,
+		"attackers", strings.Join(attackerNames, ", "))
+}
+
+// handleUnifiedTowerUnlock handles the epic event when the Infinity Spire is unlocked
+func (s *Server) handleUnifiedTowerUnlock() {
+	announcement := `
+================================================================================
+                    THE INFINITY SPIRE HAS AWAKENED
+
+  The guardians of all five towers have fallen. The seals are broken.
+
+  A new portal has appeared in every city, leading to the Infinity Spire -
+  where The Blighted One awaits at the apex, the source of all corruption.
+
+  Only the bravest heroes dare enter. Only the strongest will survive.
+================================================================================
+`
+	s.BroadcastToAll(announcement)
+
+	logger.Info("UNIFIED TOWER UNLOCKED", "event", "unified_unlock")
 }
 
 // respawnNPC handles respawning an NPC at its original location

@@ -1,0 +1,370 @@
+# Floor 89 - unified tower
+# Generated with seed: 131
+# Room count: 50
+
+floor: 89
+tower: unified
+generated_seed: 131
+stairs_up: unified_f89_r10_9
+stairs_down: unified_f89_r3_7
+portal_room: unified_f89_r3_7
+rooms:
+  unified_f89_r10_6:
+    name: Blighted Chamber (Spire 89)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      south: unified_f89_r10_7
+  unified_f89_r10_7:
+    name: Blighted Chamber (Spire 89)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      north: unified_f89_r10_6
+      east: unified_f89_r11_7
+      west: unified_f89_r9_7
+  unified_f89_r10_8:
+    name: Blighted Chamber (Spire 89)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      south: unified_f89_r10_9
+      east: unified_f89_r11_8
+      west: unified_f89_r9_8
+  unified_f89_r10_9:
+    name: Spiral of Decay (Spire 89)
+    description: A spiral of decay ascending through corrupted flesh. Each step squelches beneath your feet, and the walls seem to watch your ascent.
+    type: stairs_up
+    features:
+      - stairs_up
+    exits:
+      north: unified_f89_r10_8
+  unified_f89_r11_6:
+    name: Corrupted Passage (Spire 89)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      south: unified_f89_r11_7
+      east: unified_f89_r12_6
+  unified_f89_r11_7:
+    name: Corrupted Passage (Spire 89)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f89_r11_6
+      west: unified_f89_r10_7
+  unified_f89_r11_8:
+    name: Blighted Chamber (Spire 89)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      south: unified_f89_r11_9
+      west: unified_f89_r10_8
+  unified_f89_r11_9:
+    name: Corrupted Passage (Spire 89)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f89_r11_8
+  unified_f89_r12_6:
+    name: Corrupted Passage (Spire 89)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      west: unified_f89_r11_6
+  unified_f89_r3_7:
+    name: Descent of Corruption (Spire 89)
+    description: A descent into deeper corruption. A shimmering portal offers escape to floors you've survived. The darkness below hungers for your presence.
+    type: stairs_down
+    features:
+      - stairs_down
+      - portal
+    exits:
+      east: unified_f89_r4_7
+  unified_f89_r4_4:
+    name: Corrupted Passage (Spire 89)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      east: unified_f89_r5_4
+  unified_f89_r4_5:
+    name: Blighted Chamber (Spire 89)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      east: unified_f89_r5_5
+  unified_f89_r4_6:
+    name: Corrupted Passage (Spire 89)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      south: unified_f89_r4_7
+  unified_f89_r4_7:
+    name: Corrupted Passage (Spire 89)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f89_r4_6
+      east: unified_f89_r5_7
+      west: unified_f89_r3_7
+  unified_f89_r5_3:
+    name: Corrupted Passage (Spire 89)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      south: unified_f89_r5_4
+  unified_f89_r5_4:
+    name: Blighted Chamber (Spire 89)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      north: unified_f89_r5_3
+      east: unified_f89_r6_4
+      west: unified_f89_r4_4
+  unified_f89_r5_5:
+    name: Blighted Chamber (Spire 89)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      south: unified_f89_r5_6
+      west: unified_f89_r4_5
+  unified_f89_r5_6:
+    name: Corrupted Passage (Spire 89)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f89_r5_5
+      south: unified_f89_r5_7
+  unified_f89_r5_7:
+    name: Blighted Chamber (Spire 89)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      north: unified_f89_r5_6
+      east: unified_f89_r6_7
+      west: unified_f89_r4_7
+  unified_f89_r5_8:
+    name: Tainted Treasury (Spire 89)
+    description: A treasury tainted by corruption, treasures of fallen worlds gathered here. Even the gold seems diseased, but power radiates from within.
+    type: treasure
+    features:
+      - treasure
+    exits:
+      east: unified_f89_r6_8
+  unified_f89_r5_9:
+    name: Tainted Treasury (Spire 89)
+    description: A treasury tainted by corruption, treasures of fallen worlds gathered here. Even the gold seems diseased, but power radiates from within.
+    type: treasure
+    features:
+      - treasure
+    exits:
+      east: unified_f89_r6_9
+  unified_f89_r6_3:
+    name: Corrupted Passage (Spire 89)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      south: unified_f89_r6_4
+  unified_f89_r6_4:
+    name: Corrupted Passage (Spire 89)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f89_r6_3
+      south: unified_f89_r6_5
+      west: unified_f89_r5_4
+  unified_f89_r6_5:
+    name: Corrupted Passage (Spire 89)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f89_r6_4
+      south: unified_f89_r6_6
+  unified_f89_r6_6:
+    name: Corrupted Passage (Spire 89)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f89_r6_5
+      east: unified_f89_r7_6
+  unified_f89_r6_7:
+    name: Corrupted Passage (Spire 89)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      south: unified_f89_r6_8
+      east: unified_f89_r7_7
+      west: unified_f89_r5_7
+  unified_f89_r6_8:
+    name: Blighted Chamber (Spire 89)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      north: unified_f89_r6_7
+      south: unified_f89_r6_9
+      west: unified_f89_r5_8
+  unified_f89_r6_9:
+    name: Corrupted Passage (Spire 89)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f89_r6_8
+      west: unified_f89_r5_9
+  unified_f89_r7_10:
+    name: Blighted Chamber (Spire 89)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      north: unified_f89_r7_9
+      east: unified_f89_r8_10
+  unified_f89_r7_4:
+    name: Blighted Chamber (Spire 89)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      south: unified_f89_r7_5
+  unified_f89_r7_5:
+    name: Blighted Chamber (Spire 89)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      north: unified_f89_r7_4
+      south: unified_f89_r7_6
+  unified_f89_r7_6:
+    name: Corrupted Passage (Spire 89)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f89_r7_5
+      south: unified_f89_r7_7
+      east: unified_f89_r8_6
+      west: unified_f89_r6_6
+  unified_f89_r7_7:
+    name: Corrupted Passage (Spire 89)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f89_r7_6
+      south: unified_f89_r7_8
+      west: unified_f89_r6_7
+  unified_f89_r7_8:
+    name: Blighted Chamber (Spire 89)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      north: unified_f89_r7_7
+      south: unified_f89_r7_9
+  unified_f89_r7_9:
+    name: Blighted Chamber (Spire 89)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      north: unified_f89_r7_8
+      south: unified_f89_r7_10
+  unified_f89_r8_10:
+    name: Tainted Treasury (Spire 89)
+    description: A treasury tainted by corruption, treasures of fallen worlds gathered here. Even the gold seems diseased, but power radiates from within.
+    type: treasure
+    features:
+      - treasure
+    exits:
+      north: unified_f89_r8_9
+      west: unified_f89_r7_10
+  unified_f89_r8_3:
+    name: Blighted Chamber (Spire 89)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      south: unified_f89_r8_4
+  unified_f89_r8_4:
+    name: Blighted Chamber (Spire 89)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      north: unified_f89_r8_3
+      south: unified_f89_r8_5
+  unified_f89_r8_5:
+    name: Blighted Chamber (Spire 89)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      north: unified_f89_r8_4
+      south: unified_f89_r8_6
+      east: unified_f89_r9_5
+  unified_f89_r8_6:
+    name: Blighted Chamber (Spire 89)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      north: unified_f89_r8_5
+      south: unified_f89_r8_7
+      east: unified_f89_r9_6
+      west: unified_f89_r7_6
+  unified_f89_r8_7:
+    name: Corrupted Passage (Spire 89)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f89_r8_6
+      south: unified_f89_r8_8
+  unified_f89_r8_8:
+    name: Blighted Chamber (Spire 89)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      north: unified_f89_r8_7
+      east: unified_f89_r9_8
+  unified_f89_r8_9:
+    name: Corrupted Passage (Spire 89)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      south: unified_f89_r8_10
+      east: unified_f89_r9_9
+  unified_f89_r9_3:
+    name: Corrupted Passage (Spire 89)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      south: unified_f89_r9_4
+  unified_f89_r9_4:
+    name: Corrupted Passage (Spire 89)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f89_r9_3
+      south: unified_f89_r9_5
+  unified_f89_r9_5:
+    name: Blighted Chamber (Spire 89)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      north: unified_f89_r9_4
+      west: unified_f89_r8_5
+  unified_f89_r9_6:
+    name: Corrupted Passage (Spire 89)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      south: unified_f89_r9_7
+      west: unified_f89_r8_6
+  unified_f89_r9_7:
+    name: Corrupted Passage (Spire 89)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      north: unified_f89_r9_6
+      east: unified_f89_r10_7
+  unified_f89_r9_8:
+    name: Corrupted Passage (Spire 89)
+    description: A passage of flesh and bone, the walls dripping with corruption. The air is thick with the stench of decay, and strange growths pulse with sickly light.
+    type: corridor
+    exits:
+      east: unified_f89_r10_8
+      west: unified_f89_r8_8
+  unified_f89_r9_9:
+    name: Blighted Chamber (Spire 89)
+    description: A chamber of wrongness where reality itself seems sick. The walls breathe slowly, and whispers echo from nowhere. You feel the presence of ancient corruption.
+    type: room
+    exits:
+      west: unified_f89_r8_9

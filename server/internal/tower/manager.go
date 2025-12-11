@@ -250,6 +250,21 @@ func (m *TowerManager) FindRoomByString(roomID string) *world.Room {
 	return room
 }
 
+// FindRoomWithTowerID searches all towers for a room and returns both room and tower ID
+func (m *TowerManager) FindRoomWithTowerID(roomID string) (*world.Room, string) {
+	room, towerID := m.FindRoom(roomID)
+	return room, string(towerID)
+}
+
+// GetMaxFloorsForTower returns the max floors for a given tower
+func (m *TowerManager) GetMaxFloorsForTower(towerID string) int {
+	theme := GetTheme(TowerID(towerID))
+	if theme == nil {
+		return 0
+	}
+	return theme.MaxFloors
+}
+
 // GetSpawnRoomByString returns the spawn room for a tower (implements TowerManagerInterface)
 func (m *TowerManager) GetSpawnRoomByString(towerID string) *world.Room {
 	return m.GetSpawnRoom(TowerID(towerID))

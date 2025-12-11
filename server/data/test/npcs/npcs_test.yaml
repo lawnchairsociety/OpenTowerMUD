@@ -24,11 +24,11 @@ npcs:
     respawn_variation: 0
     quest_giver: true
     gives_quests:
-      - tower_introduction
+      - test_introduction
       - floor_five
       - floor_ten
     turn_in_quests:
-      - tower_introduction
+      - test_introduction
 
   # ===================
   # Temple NPCs

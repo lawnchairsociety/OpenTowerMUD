@@ -99,20 +99,19 @@ func TestGetMobTier(t *testing.T) {
 
 func TestGetMobTierFor100FloorTower(t *testing.T) {
 	// Test with 100-floor unified tower scaling
+	// Unified tower is endgame content with higher tier mobs (4-7)
 	tests := []struct {
 		floor, want int
 	}{
-		{0, 0},   // City - safe
-		{1, 1},   // Easy
-		{10, 1},  // Easy (last)
-		{11, 2},  // Medium
-		{25, 2},  // Medium (last)
-		{26, 3},  // Hard
-		{50, 3},  // Hard (last)
-		{51, 4},  // Elite
-		{75, 4},  // Elite (last)
-		{76, 5},  // Legendary
-		{100, 5}, // Legendary (boss floor)
+		{0, 0},   // Base - no hostile mobs
+		{1, 4},   // Elite (unified entry level)
+		{25, 4},  // Elite (last)
+		{26, 5},  // Veteran
+		{50, 5},  // Veteran (last)
+		{51, 6},  // Champion
+		{75, 6},  // Champion (last)
+		{76, 7},  // Legendary (The Blighted One's domain)
+		{100, 7}, // Legendary (boss floor - The Blighted One)
 	}
 
 	for _, tc := range tests {

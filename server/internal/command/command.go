@@ -168,6 +168,13 @@ type ServerInterface interface {
 	// Returns (RoomInterface, nil) on success, (nil, error) on failure.
 	GenerateNextFloor(currentFloor int) (nextFloorStairsRoom interface{}, err error)
 
+	// IsUnifiedTowerUnlocked returns true if all five racial towers have been defeated.
+	IsUnifiedTowerUnlocked() bool
+
+	// GetTowerManager returns the tower manager for multi-tower operations.
+	// Returns *tower.TowerManager.
+	GetTowerManager() interface{}
+
 	// === Item Methods ===
 
 	// GetItemByID returns an item template by its ID, or nil if not found.
@@ -464,6 +471,18 @@ type PlayerInterface interface {
 
 	// GetDiscoveredPortals returns all discovered floor numbers.
 	GetDiscoveredPortals() []int
+
+	// DiscoverPortalInTowerByString marks a floor's portal as discovered in a specific tower.
+	DiscoverPortalInTowerByString(towerID string, floorNum int)
+
+	// HasDiscoveredPortalInTowerByString returns true if a portal has been discovered in a specific tower.
+	HasDiscoveredPortalInTowerByString(towerID string, floorNum int) bool
+
+	// GetDiscoveredPortalsInTowerByString returns discovered floor numbers for a specific tower.
+	GetDiscoveredPortalsInTowerByString(towerID string) []int
+
+	// GetHomeTowerString returns the player's home tower ID as a string.
+	GetHomeTowerString() string
 
 	// === Key Ring (Separate from Inventory) ===
 

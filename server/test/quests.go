@@ -125,7 +125,7 @@ func TestAcceptQuest(serverAddr string) TestResult {
 
 	time.Sleep(300 * time.Millisecond)
 
-	// Navigate to Town Square where Aldric is (gives tower_introduction)
+	// Navigate to Town Square where Aldric is (gives test_introduction)
 	logAction(testName, "Checking for Aldric in Town Square...")
 	client.ClearMessages()
 	client.SendCommand("look")
@@ -138,9 +138,9 @@ func TestAcceptQuest(serverAddr string) TestResult {
 	}
 
 	// Try to accept a quest
-	logAction(testName, "Accepting tower_introduction quest...")
+	logAction(testName, "Accepting test_introduction quest...")
 	client.ClearMessages()
-	client.SendCommand("accept tower_introduction")
+	client.SendCommand("accept test_introduction")
 	time.Sleep(300 * time.Millisecond)
 
 	messages := client.GetMessages()
@@ -156,21 +156,29 @@ func TestAcceptQuest(serverAddr string) TestResult {
 		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Accept quest failed. Got: %v", messages)}
 	}
 
-	// Verify quest appears in journal
+	// Verify quest appears in journal (retry a few times to handle timing)
 	logAction(testName, "Checking quest journal...")
-	client.ClearMessages()
-	client.SendCommand("quest")
-	time.Sleep(300 * time.Millisecond)
+	var hasQuestInJournal bool
+	var journalMessages []string
+	for i := 0; i < 5; i++ {
+		client.ClearMessages()
+		client.SendCommand("quest")
+		time.Sleep(500 * time.Millisecond)
 
-	messages = client.GetMessages()
-	fullOutput = strings.Join(messages, " ")
+		journalMessages = client.GetMessages()
+		fullOutput = strings.Join(journalMessages, " ")
 
-	hasQuestInJournal := strings.Contains(fullOutput, "Tower Awaits") || strings.Contains(fullOutput, "tower_introduction") ||
-		strings.Contains(fullOutput, "active") || strings.Contains(fullOutput, "Active")
+		hasQuestInJournal = strings.Contains(fullOutput, "Test Introduction") || strings.Contains(fullOutput, "test_introduction") ||
+			strings.Contains(fullOutput, "active") || strings.Contains(fullOutput, "Active")
+		if hasQuestInJournal {
+			break
+		}
+		time.Sleep(500 * time.Millisecond)
+	}
 	logResult(testName, hasQuestInJournal, "Quest appears in journal")
 
 	if !hasQuestInJournal {
-		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Quest not in journal. Got: %v", messages)}
+		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Quest not in journal. Got: %v", journalMessages)}
 	}
 
 	return TestResult{Name: testName, Passed: true, Message: "Quest can be accepted and appears in journal"}
@@ -189,15 +197,15 @@ func TestQuestProgress(serverAddr string) TestResult {
 
 	time.Sleep(300 * time.Millisecond)
 
-	// Accept tower_introduction quest (explore quest)
+	// Accept test_introduction quest (explore quest)
 	logAction(testName, "Accepting exploration quest...")
 	client.ClearMessages()
-	client.SendCommand("accept tower_introduction")
+	client.SendCommand("accept test_introduction")
 	time.Sleep(300 * time.Millisecond)
 
 	// Check initial progress
 	client.ClearMessages()
-	client.SendCommand("quest tower_introduction")
+	client.SendCommand("quest test_introduction")
 	time.Sleep(300 * time.Millisecond)
 
 	messages := client.GetMessages()
@@ -276,8 +284,8 @@ func TestQuestPrerequisites(serverAddr string) TestResult {
 	logAction(testName, "Navigating to Barracks...")
 	navigateToBarracks(client)
 
-	// Try to accept first_blood quest which requires tower_introduction to be completed
-	logAction(testName, "Trying to accept first_blood (requires tower_introduction)...")
+	// Try to accept first_blood quest which requires test_introduction to be completed
+	logAction(testName, "Trying to accept first_blood (requires test_introduction)...")
 	client.ClearMessages()
 	client.SendCommand("accept first_blood")
 	time.Sleep(300 * time.Millisecond)
@@ -285,7 +293,7 @@ func TestQuestPrerequisites(serverAddr string) TestResult {
 	messages := client.GetMessages()
 	fullOutput := strings.Join(messages, " ")
 
-	// Should either fail due to prerequisites or succeed if tower_introduction isn't a prereq
+	// Should either fail due to prerequisites or succeed if test_introduction isn't a prereq
 	// The quest should either be rejected or require prereq completion
 	hasPrereqCheck := strings.Contains(fullOutput, "prerequisite") || strings.Contains(fullOutput, "prereq") ||
 		strings.Contains(fullOutput, "complete") || strings.Contains(fullOutput, "first") ||
@@ -385,13 +393,13 @@ func TestCompleteQuestNotReady(serverAddr string) TestResult {
 
 	// Accept a quest first
 	logAction(testName, "Accepting quest...")
-	client.SendCommand("accept tower_introduction")
+	client.SendCommand("accept test_introduction")
 	time.Sleep(300 * time.Millisecond)
 
 	// Try to complete without finishing objectives
 	logAction(testName, "Trying to complete unfinished quest...")
 	client.ClearMessages()
-	client.SendCommand("complete tower_introduction")
+	client.SendCommand("complete test_introduction")
 	time.Sleep(300 * time.Millisecond)
 
 	messages := client.GetMessages()

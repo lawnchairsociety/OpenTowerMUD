@@ -154,6 +154,28 @@ func TestCombatAndKill(serverAddr string) TestResult {
 	// Navigate to Training Hall
 	navigateToTrainingHall(client)
 
+	// Wait for test rat to be present (may have been killed by previous test)
+	// Rat has 5s median respawn, so wait up to 15 seconds
+	logAction(testName, "Waiting for test rat to be present...")
+	var ratPresent bool
+	for i := 0; i < 15; i++ {
+		client.ClearMessages()
+		client.SendCommand("look")
+		time.Sleep(500 * time.Millisecond)
+
+		messages := client.GetMessages()
+		fullOutput := strings.Join(messages, " ")
+		if strings.Contains(fullOutput, "test rat") || strings.Contains(fullOutput, "rat") {
+			ratPresent = true
+			break
+		}
+		time.Sleep(1 * time.Second)
+	}
+
+	if !ratPresent {
+		return TestResult{Name: testName, Passed: false, Message: "Test rat not present in room after waiting"}
+	}
+
 	// Attack test rat (10 HP, fast respawn)
 	logAction(testName, "Attacking test rat...")
 	client.ClearMessages()
@@ -225,17 +247,20 @@ func TestMobRespawn(serverAddr string) TestResult {
 
 	// Kill the test rat (10 HP, 5s respawn in test config) - faster than training dummy
 	logAction(testName, "Killing test rat...")
+	client.ClearMessages()
 	client.SendCommand("attack rat")
+	time.Sleep(500 * time.Millisecond)
 
 	// Wait for kill (rat has 10 HP, should die quickly)
+	// Use more iterations with shorter waits for reliability
 	var killed bool
-	for i := 0; i < 10; i++ {
-		time.Sleep(3500 * time.Millisecond)
+	for i := 0; i < 15; i++ {
+		time.Sleep(3000 * time.Millisecond)
 		messages := client.GetMessages()
 		fullOutput := strings.Join(messages, " ")
 		if strings.Contains(fullOutput, "defeated") || strings.Contains(fullOutput, "killed") ||
 			strings.Contains(fullOutput, "slain") || strings.Contains(fullOutput, "dies") ||
-			strings.Contains(fullOutput, "experience") {
+			strings.Contains(fullOutput, "experience") || strings.Contains(fullOutput, "XP") {
 			killed = true
 			break
 		}

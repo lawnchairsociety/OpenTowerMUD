@@ -19,6 +19,8 @@ npcs:
       - "I've guided hundreds of adventurers in my day. Some came back heroes. Others... well."
       - "Remember: the bard saves your story, the priestess saves your soul, and your wits save your life!"
       - "See that mailbox by the fountain? You can send letters and even gold to other adventurers. Type 'mail' to check for messages!"
+      - "The five towers are connected, you know. Their guardians hold the keys to something greater."
+      - "Legends speak of The Blighted One - the source of all corruption. Pray you never meet it."
     locations:
       - "human_town_square"
     respawn_median: 0
@@ -89,6 +91,9 @@ npcs:
       - "The altar will heal your wounds and restore your spirit. Pray when you are weary."
       - "I sense a great destiny within you. Do not let fear hold you back."
       - "The tower was not always filled with such evil. Something awakened it long ago."
+      - "Ancient texts speak of an Infinity Spire, sealed away to contain a great evil."
+      - "The corruption in our tower... it comes from somewhere beyond. The Blighted One, they called it."
+      - "If all five guardians fall, the seal breaks. What lies beyond... only the bravest will discover."
     locations:
       - "human_temple"
     respawn_median: 0

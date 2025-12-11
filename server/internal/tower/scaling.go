@@ -49,14 +49,14 @@ func GetMobTier(floor int) int {
 }
 
 // GetMobTierForFloor returns the mob tier based on floor and tower max floors.
-// For 25-floor towers, tiers are compressed. For 100-floor unified tower, tiers spread out.
+// For 25-floor towers, tiers are compressed (1-4). For 100-floor unified tower, starts at tier 4.
 func GetMobTierForFloor(floor int, maxFloors int) int {
 	if floor <= 0 {
 		return 0 // City - no hostile mobs
 	}
 
 	if maxFloors <= 25 {
-		// Compressed tiers for 25-floor towers
+		// Compressed tiers for 25-floor racial towers
 		switch {
 		case floor <= 6:
 			return 1 // Easy mobs
@@ -69,18 +69,16 @@ func GetMobTierForFloor(floor int, maxFloors int) int {
 		}
 	}
 
-	// Original scaling for 100-floor unified tower
+	// Unified tower (100 floors) - endgame content starts at tier 4
 	switch {
-	case floor <= 10:
-		return 1 // Easy mobs
 	case floor <= 25:
-		return 2 // Medium mobs
+		return 4 // Elite mobs (unified entry level)
 	case floor <= 50:
-		return 3 // Hard mobs
+		return 5 // Veteran mobs
 	case floor <= 75:
-		return 4 // Elite mobs
+		return 6 // Champion mobs
 	default:
-		return 5 // Legendary mobs (new tier for deep unified)
+		return 7 // Legendary mobs (The Blighted One's domain)
 	}
 }
 
@@ -97,7 +95,7 @@ func GetLootTierForFloor(floor int, maxFloors int) int {
 	}
 
 	if maxFloors <= 25 {
-		// Compressed tiers for 25-floor towers
+		// Compressed tiers for 25-floor racial towers
 		switch {
 		case floor <= 5:
 			return 1 // Common loot
@@ -112,18 +110,16 @@ func GetLootTierForFloor(floor int, maxFloors int) int {
 		}
 	}
 
-	// Original scaling for 100-floor unified tower
+	// Unified tower (100 floors) - better loot throughout
 	switch {
-	case floor <= 10:
-		return 1 // Common loot
 	case floor <= 25:
-		return 2 // Uncommon loot
+		return 3 // Rare loot (unified entry level)
 	case floor <= 50:
-		return 3 // Rare loot
-	case floor <= 75:
 		return 4 // Epic loot
-	default:
+	case floor <= 75:
 		return 5 // Legendary loot
+	default:
+		return 5 // Legendary loot (The Blighted One's domain)
 	}
 }
 
