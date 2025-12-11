@@ -354,17 +354,19 @@ func TestRacesCommand(serverAddr string) TestResult {
 	messages := client.GetMessages()
 	fullOutput := strings.Join(messages, " ")
 
-	// Should show all 7 races
+	// Should show all 5 races
 	hasHuman := strings.Contains(fullOutput, "Human")
 	hasDwarf := strings.Contains(fullOutput, "Dwarf")
 	hasElf := strings.Contains(fullOutput, "Elf")
-	hasHalfling := strings.Contains(fullOutput, "Halfling")
+	hasGnome := strings.Contains(fullOutput, "Gnome")
+	hasOrc := strings.Contains(fullOutput, "Orc")
 	logResult(testName, hasHuman, "Human listed")
 	logResult(testName, hasDwarf, "Dwarf listed")
 	logResult(testName, hasElf, "Elf listed")
-	logResult(testName, hasHalfling, "Halfling listed")
+	logResult(testName, hasGnome, "Gnome listed")
+	logResult(testName, hasOrc, "Orc listed")
 
-	if !hasHuman || !hasDwarf || !hasElf || !hasHalfling {
+	if !hasHuman || !hasDwarf || !hasElf || !hasGnome || !hasOrc {
 		return TestResult{Name: testName, Passed: false, Message: fmt.Sprintf("Races command missing races. Got: %v", messages)}
 	}
 

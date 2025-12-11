@@ -14,10 +14,8 @@ func TestRaceIsValid(t *testing.T) {
 		{Human, true},
 		{Dwarf, true},
 		{Elf, true},
-		{Halfling, true},
 		{Gnome, true},
-		{HalfElf, true},
-		{HalfOrc, true},
+		{Orc, true},
 		{Race("invalid"), false},
 		{Race(""), false},
 	}
@@ -39,10 +37,8 @@ func TestRaceString(t *testing.T) {
 		{Human, "Human"},
 		{Dwarf, "Dwarf"},
 		{Elf, "Elf"},
-		{Halfling, "Halfling"},
 		{Gnome, "Gnome"},
-		{HalfElf, "Half-Elf"},
-		{HalfOrc, "Half-Orc"},
+		{Orc, "Orc"},
 		{Race("invalid"), "Unknown"},
 	}
 
@@ -66,12 +62,9 @@ func TestParseRace(t *testing.T) {
 		{"HUMAN", Human, false},
 		{"dwarf", Dwarf, false},
 		{"elf", Elf, false},
-		{"halfling", Halfling, false},
 		{"gnome", Gnome, false},
-		{"half-elf", HalfElf, false},
-		{"halfelf", HalfElf, false}, // Alternate spelling
-		{"half-orc", HalfOrc, false},
-		{"halforc", HalfOrc, false}, // Alternate spelling
+		{"orc", Orc, false},
+		{"Orc", Orc, false},
 		{"invalid", Race(""), true},
 		{"", Race(""), true},
 	}
@@ -98,13 +91,13 @@ func TestParseRace(t *testing.T) {
 func TestAllRaces(t *testing.T) {
 	races := AllRaces()
 
-	// Should return all 7 races
-	if len(races) != 7 {
-		t.Errorf("AllRaces() returned %d races, want 7", len(races))
+	// Should return all 5 races
+	if len(races) != 5 {
+		t.Errorf("AllRaces() returned %d races, want 5", len(races))
 	}
 
 	// Should be in consistent order
-	expected := []Race{Human, Dwarf, Elf, Halfling, Gnome, HalfElf, HalfOrc}
+	expected := []Race{Human, Dwarf, Elf, Gnome, Orc}
 	for i, r := range races {
 		if r != expected[i] {
 			t.Errorf("AllRaces()[%d] = %q, want %q", i, r, expected[i])
@@ -142,24 +135,20 @@ func TestGetDefinition(t *testing.T) {
 
 func TestDefinition_ApplyStatBonuses(t *testing.T) {
 	tests := []struct {
-		race                                  Race
-		str, dex, con, int_, wis, cha         int
+		race                                          Race
+		str, dex, con, int_, wis, cha                 int
 		expStr, expDex, expCon, expInt, expWis, expCha int
 	}{
 		// Dwarf: +2 CON, -2 CHA
 		{Dwarf, 10, 10, 10, 10, 10, 10, 10, 10, 12, 10, 10, 8},
 		// Elf: +2 DEX, -2 CON
 		{Elf, 10, 10, 10, 10, 10, 10, 10, 12, 8, 10, 10, 10},
-		// Halfling: +2 DEX, -2 STR
-		{Halfling, 10, 10, 10, 10, 10, 10, 8, 12, 10, 10, 10, 10},
 		// Gnome: +2 CON, -2 STR
 		{Gnome, 10, 10, 10, 10, 10, 10, 8, 10, 12, 10, 10, 10},
-		// Half-Orc: +2 STR, -2 INT, -2 CHA
-		{HalfOrc, 10, 10, 10, 10, 10, 10, 12, 10, 10, 8, 10, 8},
+		// Orc: +2 STR, -2 INT
+		{Orc, 10, 10, 10, 10, 10, 10, 12, 10, 10, 8, 10, 10},
 		// Human: no bonuses (human gets +1 choice at creation)
 		{Human, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10},
-		// Half-Elf: no bonuses
-		{HalfElf, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10},
 	}
 
 	for _, tt := range tests {
@@ -188,9 +177,9 @@ func TestDefinition_GetStatBonusesString(t *testing.T) {
 	}{
 		{Dwarf, "+2 CON, -2 CHA"},
 		{Elf, "+2 DEX, -2 CON"},
-		{Halfling, "-2 STR, +2 DEX"}, // Order is STR, DEX, CON, INT, WIS, CHA
+		{Gnome, "-2 STR, +2 CON"}, // Order is STR, DEX, CON, INT, WIS, CHA
+		{Orc, "+2 STR, -2 INT"},
 		{Human, "+1 to one ability (your choice)"},
-		{HalfElf, "None"},
 	}
 
 	for _, tt := range tests {
@@ -225,8 +214,8 @@ func TestDefinition_HasStatBonus(t *testing.T) {
 	}{
 		{Dwarf, true},
 		{Elf, true},
-		{Human, false},    // Human gets choice at creation, not fixed bonuses
-		{HalfElf, false},  // Half-elf has no stat bonuses
+		{Orc, true},
+		{Human, false}, // Human gets choice at creation, not fixed bonuses
 	}
 
 	for _, tt := range tests {
@@ -348,7 +337,7 @@ func TestSetGlobalConfig(t *testing.T) {
 }
 
 func TestSmallRaces(t *testing.T) {
-	smallRaces := []Race{Halfling, Gnome}
+	smallRaces := []Race{Gnome}
 	for _, r := range smallRaces {
 		def := GetDefinition(r)
 		if def == nil {
@@ -361,7 +350,7 @@ func TestSmallRaces(t *testing.T) {
 }
 
 func TestMediumRaces(t *testing.T) {
-	mediumRaces := []Race{Human, Dwarf, Elf, HalfElf, HalfOrc}
+	mediumRaces := []Race{Human, Dwarf, Elf, Orc}
 	for _, r := range mediumRaces {
 		def := GetDefinition(r)
 		if def == nil {

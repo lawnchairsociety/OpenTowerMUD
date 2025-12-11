@@ -13,13 +13,11 @@ import (
 type Race string
 
 const (
-	Human    Race = "human"
-	Dwarf    Race = "dwarf"
-	Elf      Race = "elf"
-	Halfling Race = "halfling"
-	Gnome    Race = "gnome"
-	HalfElf  Race = "half-elf"
-	HalfOrc  Race = "half-orc"
+	Human Race = "human"
+	Dwarf Race = "dwarf"
+	Elf   Race = "elf"
+	Gnome Race = "gnome"
+	Orc   Race = "orc"
 )
 
 // IsValid returns true if the race is a valid race
@@ -39,13 +37,6 @@ func (r Race) String() string {
 // ParseRace parses a string into a Race, case-insensitive
 func ParseRace(s string) (Race, error) {
 	normalized := strings.ToLower(strings.TrimSpace(s))
-	// Handle alternate spellings
-	switch normalized {
-	case "halfelf":
-		normalized = "half-elf"
-	case "halforc":
-		normalized = "half-orc"
-	}
 
 	if _, exists := globalConfig.Races[normalized]; exists {
 		return Race(normalized), nil
@@ -107,7 +98,7 @@ func SetGlobalConfig(config *RacesConfig) {
 // AllRaces returns all valid races from the loaded configuration
 func AllRaces() []Race {
 	// Return in a consistent order
-	order := []string{"human", "dwarf", "elf", "halfling", "gnome", "half-elf", "half-orc"}
+	order := []string{"human", "dwarf", "elf", "gnome", "orc"}
 	var races []Race
 	for _, id := range order {
 		if _, exists := globalConfig.Races[id]; exists {
@@ -230,13 +221,6 @@ func init() {
 				StatBonuses: map[string]int{"DEX": 2, "CON": -2},
 				Abilities:   []string{"Low-light Vision", "Sleep Immunity"},
 			},
-			"halfling": {
-				Name:        "Halfling",
-				Description: "Small but brave, halflings are nimble and lucky.",
-				Size:        "Small",
-				StatBonuses: map[string]int{"DEX": 2, "STR": -2},
-				Abilities:   []string{"Fearless", "Lucky"},
-			},
 			"gnome": {
 				Name:        "Gnome",
 				Description: "Curious and inventive, gnomes are small but hardy.",
@@ -244,18 +228,11 @@ func init() {
 				StatBonuses: map[string]int{"CON": 2, "STR": -2},
 				Abilities:   []string{"Low-light Vision", "Illusion Resistance"},
 			},
-			"half-elf": {
-				Name:        "Half-Elf",
-				Description: "Combining the best of both worlds, half-elves are diplomatic.",
+			"orc": {
+				Name:        "Orc",
+				Description: "Powerful and relentless, orcs are born warriors.",
 				Size:        "Medium",
-				StatBonuses: map[string]int{},
-				Abilities:   []string{"Sleep Immunity", "Adaptable"},
-			},
-			"half-orc": {
-				Name:        "Half-Orc",
-				Description: "Strong and fierce, half-orcs combine human ambition with orcish might.",
-				Size:        "Medium",
-				StatBonuses: map[string]int{"STR": 2, "INT": -2, "CHA": -2},
+				StatBonuses: map[string]int{"STR": 2, "INT": -2},
 				Abilities:   []string{"Darkvision", "Ferocity"},
 			},
 		},

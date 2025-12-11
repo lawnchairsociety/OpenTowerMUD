@@ -410,10 +410,8 @@ func TestPlayer_GetRaceName(t *testing.T) {
 		{race.Human, "Human"},
 		{race.Dwarf, "Dwarf"},
 		{race.Elf, "Elf"},
-		{race.Halfling, "Halfling"},
 		{race.Gnome, "Gnome"},
-		{race.HalfElf, "Half-Elf"},
-		{race.HalfOrc, "Half-Orc"},
+		{race.Orc, "Orc"},
 		{race.Race("invalid"), "Unknown"},
 		{race.Race(""), "Unknown"},
 	}

@@ -522,7 +522,7 @@ func TestCreateCharacterWithClassAndRace_AllRaces(t *testing.T) {
 	}
 
 	// Test all races
-	races := []string{"human", "dwarf", "elf", "halfling", "gnome", "half-elf", "half-orc"}
+	races := []string{"human", "dwarf", "elf", "gnome", "orc"}
 	for i, race := range races {
 		name := "Hero" + race
 		char, err := db.CreateCharacterWithClassAndRace(account.ID, name, "warrior", race, 10, 10, 10, 10, 10, 10)
@@ -568,9 +568,9 @@ func TestGetCharactersByAccount_IncludesRace(t *testing.T) {
 	}
 
 	// Create characters of different races
-	_, err = db.CreateCharacterWithClassAndRace(account.ID, "Frodo", "rogue", "halfling", 8, 16, 12, 12, 12, 14)
+	_, err = db.CreateCharacterWithClassAndRace(account.ID, "Grommash", "rogue", "orc", 14, 12, 12, 8, 10, 10)
 	if err != nil {
-		t.Fatalf("Failed to create halfling: %v", err)
+		t.Fatalf("Failed to create orc: %v", err)
 	}
 	_, err = db.CreateCharacterWithClassAndRace(account.ID, "Gandalf", "mage", "human", 10, 12, 12, 16, 16, 14)
 	if err != nil {
@@ -590,9 +590,9 @@ func TestGetCharactersByAccount_IncludesRace(t *testing.T) {
 	// Check races are loaded (order may vary, so check by name)
 	for _, char := range chars {
 		switch char.Name {
-		case "Frodo":
-			if char.Race != "halfling" {
-				t.Errorf("Frodo: Expected Race 'halfling', got '%s'", char.Race)
+		case "Grommash":
+			if char.Race != "orc" {
+				t.Errorf("Grommash: Expected Race 'orc', got '%s'", char.Race)
 			}
 		case "Gandalf":
 			if char.Race != "human" {

@@ -177,7 +177,7 @@ func executeRace(c *Command, p PlayerInterface) string {
 		// Show player's own race info
 		playerRace, err := race.ParseRace(strings.ToLower(p.GetRaceName()))
 		if err != nil {
-			return fmt.Sprintf("Your race: %s\n\nUse 'race <name>' to view information about a specific race.\nValid races: Human, Dwarf, Elf, Halfling, Gnome, Half-Elf, Half-Orc", p.GetRaceName())
+			return fmt.Sprintf("Your race: %s\n\nUse 'race <name>' to view information about a specific race.\nValid races: Human, Dwarf, Elf, Gnome, Orc", p.GetRaceName())
 		}
 		return formatRaceInfo(playerRace)
 	}
@@ -186,7 +186,7 @@ func executeRace(c *Command, p PlayerInterface) string {
 	raceName := strings.ToLower(strings.Join(c.Args, "-"))
 	r, err := race.ParseRace(raceName)
 	if err != nil {
-		return fmt.Sprintf("Unknown race: %s\nValid races: Human, Dwarf, Elf, Halfling, Gnome, Half-Elf, Half-Orc", c.Args[0])
+		return fmt.Sprintf("Unknown race: %s\nValid races: Human, Dwarf, Elf, Gnome, Orc", c.Args[0])
 	}
 	return formatRaceInfo(r)
 }

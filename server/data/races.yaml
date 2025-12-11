@@ -46,17 +46,6 @@ races:
       - "Low-light Vision: Can see in dim light"
       - "Sleep Immunity: Cannot be magically put to sleep"
 
-  halfling:
-    name: "Halfling"
-    description: "Small but brave, halflings are nimble and lucky. They rarely succumb to fear and have a knack for avoiding danger."
-    size: "Small"
-    stat_bonuses:
-      DEX: 2
-      STR: -2
-    abilities:
-      - "Fearless: Resistant to fear effects"
-      - "Lucky: Fortune favors the small"
-
   gnome:
     name: "Gnome"
     description: "Curious and inventive, gnomes are small but hardy. They have a natural resistance to illusions and a keen intellect."
@@ -68,23 +57,13 @@ races:
       - "Low-light Vision: Can see in dim light"
       - "Illusion Resistance: Hard to fool with tricks"
 
-  half-elf:
-    name: "Half-Elf"
-    description: "Combining the best of both worlds, half-elves are diplomatic and adaptable. They inherit elven resistance to sleep magic."
-    size: "Medium"
-    stat_bonuses: {}  # No stat bonuses
-    abilities:
-      - "Sleep Immunity: Cannot be magically put to sleep"
-      - "Adaptable: Fits in with any group"
-
-  half-orc:
-    name: "Half-Orc"
-    description: "Strong and fierce, half-orcs combine human ambition with orcish might. They can see in darkness and fight on when others would fall."
+  orc:
+    name: "Orc"
+    description: "Powerful and relentless, orcs are born warriors. Their raw strength and ferocity make them formidable opponents in any battle."
     size: "Medium"
     stat_bonuses:
       STR: 2
       INT: -2
-      CHA: -2
     abilities:
       - "Darkvision: Can see in complete darkness"
       - "Ferocity: Fight on when near death"
