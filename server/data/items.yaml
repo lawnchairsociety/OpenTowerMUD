@@ -910,7 +910,7 @@ items:
     value: 30
     tier: 1
     slot: "body"
-    armor: 0
+    armor: 3
     required_class: "mage"
 
   arcane_robe:
@@ -921,7 +921,7 @@ items:
     value: 250
     tier: 3
     slot: "body"
-    armor: 1
+    armor: 4
     required_class: "mage"
 
   # =========================================
@@ -1406,3 +1406,254 @@ items:
     weight: 0.3
     type: "misc"
     value: 200
+
+  # =========================================
+  # Craftable Items from Mob Materials
+  # =========================================
+
+  # --- Bone Crafted Items (Blacksmithing) ---
+  bone_dagger:
+    name: "bone dagger"
+    description: "A jagged dagger carved from monster bone, surprisingly sharp"
+    weight: 1.0
+    type: "weapon"
+    value: 20
+    slot: "weapon"
+    damage: 4
+    damage_dice: "1d4"
+    two_handed: false
+    weapon_type: "finesse"
+
+  bone_club:
+    name: "bone club"
+    description: "A brutal club fashioned from large monster bones"
+    weight: 4.0
+    type: "weapon"
+    value: 25
+    slot: "weapon"
+    damage: 5
+    damage_dice: "1d6"
+    two_handed: false
+    weapon_type: "simple"
+
+  # --- Mithril Crafted Items (Blacksmithing) ---
+  mithril_dagger:
+    name: "mithril dagger"
+    description: "A lightweight dagger of silvery mithril, perfectly balanced"
+    weight: 0.8
+    type: "weapon"
+    value: 200
+    tier: 3
+    slot: "weapon"
+    damage: 8
+    damage_dice: "1d6+1"
+    two_handed: false
+    weapon_type: "finesse"
+
+  mithril_sword:
+    name: "mithril sword"
+    description: "A gleaming sword of mithril, light as a feather yet strong as steel"
+    weight: 4.0
+    type: "weapon"
+    value: 400
+    tier: 3
+    slot: "weapon"
+    damage: 12
+    damage_dice: "1d10+1"
+    two_handed: false
+    weapon_type: "martial"
+
+  mithril_chainmail:
+    name: "mithril chainmail"
+    description: "Chainmail woven from mithril rings, offering excellent protection with minimal weight"
+    weight: 25.0
+    type: "armor"
+    value: 450
+    tier: 3
+    slot: "body"
+    armor: 7
+    armor_type: "medium"
+
+  # --- Adamantine Crafted Items (Blacksmithing) ---
+  adamantine_blade:
+    name: "adamantine blade"
+    description: "A legendary blade forged from unbreakable adamantine, capable of cutting through anything"
+    weight: 5.0
+    type: "weapon"
+    value: 800
+    tier: 4
+    slot: "weapon"
+    damage: 16
+    damage_dice: "2d8"
+    two_handed: false
+    weapon_type: "martial"
+
+  adamantine_plate:
+    name: "adamantine plate"
+    description: "Armor forged from adamantine, the ultimate protection for those strong enough to bear its weight"
+    weight: 50.0
+    type: "armor"
+    value: 1200
+    tier: 4
+    slot: "body"
+    armor: 12
+    armor_type: "heavy"
+
+  # --- Dragonhide Crafted Items (Leatherworking) ---
+  dragonhide_vest:
+    name: "dragonhide vest"
+    description: "A supple vest crafted from dragon scales, offering remarkable protection for its weight"
+    weight: 10.0
+    type: "armor"
+    value: 500
+    tier: 4
+    slot: "body"
+    armor: 6
+    armor_type: "light"
+
+  dragonhide_gloves:
+    name: "dragonhide gloves"
+    description: "Gloves made from dragon hide, both protective and heat-resistant"
+    weight: 0.5
+    type: "armor"
+    value: 150
+    tier: 4
+    slot: "hands"
+    armor: 2
+    armor_type: "light"
+
+  dragonhide_boots:
+    name: "dragonhide boots"
+    description: "Boots crafted from tough dragon hide, perfect for traversing dangerous terrain"
+    weight: 1.5
+    type: "armor"
+    value: 175
+    tier: 4
+    slot: "feet"
+    armor: 2
+    armor_type: "light"
+
+  climbing_kit:
+    name: "climbing kit"
+    description: "A set of ropes and tools for scaling walls and cliffs"
+    weight: 5.0
+    type: "misc"
+    value: 40
+
+  # --- Alchemy Potions from Mob Materials ---
+  moonlight_elixir:
+    name: "moonlight elixir"
+    description: "A shimmering silver potion that restores both body and mind"
+    weight: 0.3
+    type: "potion"
+    value: 80
+    consumable: true
+    heal_amount: 25
+    mana_amount: 25
+
+  phoenix_elixir:
+    name: "phoenix elixir"
+    description: "A radiant golden potion infused with phoenix feather, capable of healing grievous wounds"
+    weight: 0.4
+    type: "potion"
+    value: 300
+    consumable: true
+    heal_amount: 100
+
+  demonic_draught:
+    name: "demonic draught"
+    description: "A bubbling red-black potion that temporarily enhances combat prowess"
+    weight: 0.3
+    type: "potion"
+    value: 120
+    consumable: true
+
+  ethereal_potion:
+    name: "ethereal potion"
+    description: "A translucent potion that makes the drinker partially incorporeal"
+    weight: 0.2
+    type: "potion"
+    value: 75
+    consumable: true
+
+  heartfire_potion:
+    name: "heartfire potion"
+    description: "A warm potion brewed from demon heart that heals and grants fire resistance"
+    weight: 0.3
+    type: "potion"
+    value: 150
+    consumable: true
+    heal_amount: 75
+
+  stone_skin_potion:
+    name: "stone skin potion"
+    description: "A gritite potion that temporarily hardens the skin like stone"
+    weight: 0.4
+    type: "potion"
+    value: 60
+    consumable: true
+
+  # --- Enchanted Items from Mob Materials ---
+  void_ring:
+    name: "void ring"
+    description: "A ring set with a void crystal that pulses with otherworldly energy, slowly restoring mana"
+    weight: 0.05
+    type: "armor"
+    value: 400
+    tier: 4
+    slot: "ring"
+    armor: 0
+
+  ancient_amulet:
+    name: "ancient amulet"
+    description: "An amulet imbued with ancient essence, said to enhance the wearer's ability to learn"
+    weight: 0.2
+    type: "armor"
+    value: 500
+    tier: 4
+    slot: "neck"
+    armor: 2
+
+  stone_ward_amulet:
+    name: "stone ward amulet"
+    description: "An amulet enchanted with the essence of stone, providing solid protection"
+    weight: 0.3
+    type: "armor"
+    value: 100
+    tier: 2
+    slot: "neck"
+    armor: 2
+
+  vampiric_dagger:
+    name: "vampiric dagger"
+    description: "A cursed blade crafted from a vampire's fang, it thirsts for blood and heals its wielder"
+    weight: 1.2
+    type: "weapon"
+    value: 350
+    tier: 4
+    slot: "weapon"
+    damage: 10
+    damage_dice: "1d8+1"
+    two_handed: false
+    weapon_type: "finesse"
+
+  dragon_scale_shield:
+    name: "dragon scale shield"
+    description: "A shield reinforced with dragon scales, highly resistant to fire and physical blows"
+    weight: 10.0
+    type: "armor"
+    value: 450
+    tier: 4
+    slot: "off-hand"
+    armor: 5
+    armor_type: "shield"
+
+  golem_heart_amulet:
+    name: "golem heart amulet"
+    description: "An amulet containing a fragment of golem core, granting the wearer increased vitality"
+    weight: 0.4
+    type: "armor"
+    value: 400
+    tier: 4
+    slot: "neck"
+    armor: 3

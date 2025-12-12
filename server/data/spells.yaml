@@ -29,7 +29,7 @@ spells:
   magic_missile:
     name: "magic missile"
     description: "A bolt of magical force that never misses (1d4+1 damage)"
-    mana_cost: 5
+    mana_cost: 3
     cooldown: 3
     level: 1
     allowed_classes: [mage]

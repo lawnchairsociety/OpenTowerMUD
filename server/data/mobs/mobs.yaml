@@ -36,8 +36,8 @@ npcs:
     name: "goblin"
     description: "A small, green goblin with sharp teeth and beady eyes"
     level: 1
-    health: 20
-    damage: 3
+    health: 28
+    damage: 4
     armor: 0
     experience: 10
     aggressive: true
@@ -61,8 +61,8 @@ npcs:
     name: "giant rat"
     description: "A massive rat with glowing red eyes and matted fur"
     level: 1
-    health: 15
-    damage: 2
+    health: 18
+    damage: 3
     armor: 0
     experience: 8
     aggressive: true
@@ -109,8 +109,8 @@ npcs:
     name: "skeleton"
     description: "An animated skeleton wielding a rusty blade"
     level: 2
-    health: 18
-    damage: 4
+    health: 22
+    damage: 5
     armor: 1
     experience: 15
     aggressive: true
@@ -530,7 +530,7 @@ npcs:
     name: "orc warrior"
     description: "A brutish orc wielding a crude axe"
     level: 3
-    health: 40
+    health: 36
     damage: 8
     armor: 2
     experience: 30
@@ -1131,9 +1131,9 @@ npcs:
     name: "dark knight"
     description: "A fearsome knight clad in black armor, wielding a dark blade"
     level: 6
-    health: 80
-    damage: 15
-    armor: 5
+    health: 55
+    damage: 10
+    armor: 4
     experience: 100
     aggressive: true
     attackable: true
@@ -1162,9 +1162,9 @@ npcs:
     name: "cave troll"
     description: "A massive troll with thick grey skin and enormous fists"
     level: 7
-    health: 100
-    damage: 18
-    armor: 4
+    health: 75
+    damage: 13
+    armor: 3
     experience: 120
     aggressive: true
     attackable: true
@@ -1191,9 +1191,9 @@ npcs:
     name: "gargoyle"
     description: "A stone creature brought to life by dark magic"
     level: 7
-    health: 90
-    damage: 16
-    armor: 6
+    health: 65
+    damage: 11
+    armor: 4
     experience: 110
     aggressive: true
     attackable: true
@@ -1222,8 +1222,8 @@ npcs:
     name: "demon imp"
     description: "A small demonic creature with fiery eyes and clawed hands"
     level: 8
-    health: 70
-    damage: 20
+    health: 50
+    damage: 13
     armor: 2
     experience: 130
     aggressive: true
@@ -1282,9 +1282,9 @@ npcs:
     name: "skeletal champion"
     description: "An undead warrior clad in ancient armor, its empty eye sockets burning with malevolent fire"
     level: 8
-    health: 95
-    damage: 18
-    armor: 5
+    health: 65
+    damage: 12
+    armor: 4
     experience: 135
     aggressive: true
     attackable: true
@@ -1313,9 +1313,9 @@ npcs:
     name: "ettin"
     description: "A massive two-headed giant, each head bickering with the other even in battle"
     level: 8
-    health: 120
-    damage: 20
-    armor: 4
+    health: 80
+    damage: 13
+    armor: 3
     experience: 140
     aggressive: true
     attackable: true
@@ -1541,9 +1541,9 @@ npcs:
     name: "elder vampire"
     description: "An ancient vampire lord with pale skin and burning red eyes"
     level: 10
-    health: 150
-    damage: 25
-    armor: 5
+    health: 100
+    damage: 16
+    armor: 4
     experience: 200
     aggressive: true
     attackable: true
@@ -1576,9 +1576,9 @@ npcs:
     name: "shadow assassin"
     description: "A deadly killer who moves through shadows unseen"
     level: 10
-    health: 100
-    damage: 35
-    armor: 3
+    health: 70
+    damage: 20
+    armor: 2
     experience: 220
     aggressive: true
     attackable: true
@@ -1607,9 +1607,9 @@ npcs:
     name: "stone golem"
     description: "A massive construct of living stone, animated by ancient runes"
     level: 12
-    health: 200
-    damage: 22
-    armor: 10
+    health: 140
+    damage: 15
+    armor: 7
     experience: 250
     aggressive: true
     attackable: true
@@ -1928,10 +1928,10 @@ npcs:
   goblin_king:
     name: "Goblin King"
     description: "The massive ruler of the goblin horde, wearing a crude crown and wielding a spiked club"
-    level: 5
-    health: 150
+    level: 8
+    health: 102
     damage: 12
-    armor: 3
+    armor: 2
     experience: 150
     aggressive: true
     attackable: true

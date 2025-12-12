@@ -233,44 +233,103 @@ func runLevelSim() {
 func runSweep() {
 	fmt.Println("=== Comprehensive Balance Sweep ===")
 	fmt.Println()
-	fmt.Println("Running standard balance checks...")
+	fmt.Println("Running standard balance checks with GEAR PROGRESSION...")
+	fmt.Println()
+	fmt.Println("HP Calculation: StartingHP (class-based: 8-10) + (level-1) * avg_hit_die (3-6)")
+	fmt.Println("  Warrior L1: 10 HP, L5: 34 HP, L10: 64 HP")
+	fmt.Println("  Mage L1: 8 HP, L5: 24 HP, L10: 44 HP")
+	fmt.Println()
+	fmt.Println("Gear Progression (based on loot tiers):")
+	fmt.Println("  L1 (Starting): rusty_sword (1d6), leather_armor (AC 3)")
+	fmt.Println("  L5 (Tier 1-2): longsword (1d8), chainmail_vest (AC 5)")
+	fmt.Println("  L10 (Tier 2-3): greatsword (2d6), plate_armor (AC 8)")
+	fmt.Println()
+	fmt.Println("Mage Gear Progression:")
+	fmt.Println("  L1: wooden_staff (1d6), apprentice_robe (AC 3), magic_missile (1d4+1)")
+	fmt.Println("  L5: staff, apprentice_robe (AC 3), magic_missile (1d4+1), +2 INT mod")
+	fmt.Println("  L10: staff, arcane_robe (AC 4), magic_missile (1d4+1), +3 INT mod")
 	fmt.Println()
 
 	iterations := 10000
 
-	// Test 1: Level 1 player vs Tier 1 mob
-	fmt.Println("--- Test 1: Level 1 Player vs Floor 1 Mob ---")
-	player1 := balance.NewPlayerStats("Player", 1, 100, 0, 0, "1d4") // Unarmed, STR 10
-	mob1 := balance.NewNPCStats("Test Rat", 1, 20, 0, 3)
+	// Test 1: Level 1 Warrior with starting gear vs Tier 1 mob
+	// Warrior: StartingHP=10, rusty_sword (1d6), leather_armor (AC +3)
+	fmt.Println("--- Test 1: Level 1 Warrior (Starting Gear) vs Tier 1 Mob (Goblin) ---")
+	player1 := balance.NewPlayerStats("Player", 1, 10, 3, 0, "1d6") // 10 HP, leather armor, rusty sword, STR 10
+	mob1 := balance.NewNPCStats("Goblin", 1, 28, 0, 4)              // Goblin: L1, 28 HP, 4 dmg
 	result1 := balance.RunSimulation(player1, mob1, iterations)
 	printSimulationResult(result1)
-	assessBalance("Level 1 vs Tier 1", result1.WinRate)
+	assessBalance("L1 Warrior vs Goblin", result1.WinRate)
 	fmt.Println()
 
-	// Test 2: Level 5 player with weapon vs Floor 5 mob
-	fmt.Println("--- Test 2: Level 5 Player (Equipped) vs Floor 5 Mob ---")
-	player2 := balance.NewPlayerStats("Player", 5, 140, 3, 1, "1d8") // STR 12, leather armor, longsword
-	mob2 := balance.NewNPCStats("Tower Goblin", 5, 60, 2, 8)
-	result2 := balance.RunSimulation(player2, mob2, iterations)
+	// Test 2: Level 1 Mage with spells vs Tier 1 mob
+	// Mage: StartingHP=8, wooden_staff (1d6), apprentice_robe (AC +3), magic_missile spell
+	// Mages start with INT 14 (+2 mod) as their primary stat
+	fmt.Println("--- Test 2: Level 1 Mage (With Spells) vs Tier 1 Mob (Goblin) ---")
+	mage1 := balance.NewCasterStats("Mage", 1, 8, 3, 2, "1d6", 20, 3, "1d4+1") // 8 HP, apprentice robe (AC 3), staff, 20 mana, 3 cost (6 casts), 1d4+1 spell, INT 14 (+2)
+	result2 := balance.RunCasterSimulation(mage1, mob1, iterations)
 	printSimulationResult(result2)
-	assessBalance("Level 5 vs Floor 5", result2.WinRate)
+	assessBalance("L1 Mage vs Goblin", result2.WinRate)
 	fmt.Println()
 
-	// Test 3: Level 10 player vs Floor 10 boss
-	fmt.Println("--- Test 3: Level 10 Player vs Floor 10 Boss ---")
-	player3 := balance.NewPlayerStats("Player", 10, 190, 6, 2, "1d10+1") // STR 14, good gear
-	mob3 := balance.NewNPCStats("Floor 10 Boss", 12, 200, 5, 20)
+	// Test 3: Level 5 Warrior with UPGRADED gear vs Tier 2 mob
+	// Warrior L5: 10 + 4*6 = 34 HP
+	// Gear: longsword (1d8), chainmail_vest (AC 5), STR 12 (+1 mod)
+	fmt.Println("--- Test 3: Level 5 Warrior (Tier 1-2 Gear) vs Tier 2 Mob (Orc Warrior) ---")
+	player3 := balance.NewPlayerStats("Player", 5, 34, 5, 1, "1d8") // 34 HP, chainmail vest, longsword, STR 12
+	mob3 := balance.NewNPCStats("Orc Warrior", 3, 36, 2, 8)         // Updated orc_warrior: 36 HP
 	result3 := balance.RunSimulation(player3, mob3, iterations)
 	printSimulationResult(result3)
-	assessBalance("Level 10 vs Boss", result3.WinRate)
+	assessBalance("L5 Warrior vs Orc", result3.WinRate)
 	fmt.Println()
 
-	// Test 4: Undergeared check - ensure weak players struggle
-	fmt.Println("--- Test 4: Undergeared Player (Balance Check) ---")
-	player4 := balance.NewPlayerStats("Player", 5, 140, 0, 0, "1d4") // No gear
-	result4 := balance.RunSimulation(player4, mob2, iterations)
+	// Test 4: Level 5 Mage vs Tier 2 mob
+	// Mage L5: 8 + 4*4 = 24 HP
+	// Gear: apprentice_robe (AC 3), 40 mana, magic_missile (1d4+1), INT 14 (+2 mod)
+	// Note: magic_missile is more mana-efficient than frost_bolt for 1v1
+	fmt.Println("--- Test 4: Level 5 Mage (With magic_missile) vs Tier 2 Mob (Orc Warrior) ---")
+	mage4 := balance.NewCasterStats("Mage", 5, 24, 3, 2, "1d6", 40, 3, "1d4+1") // 24 HP, apprentice robe (AC 3), 40 mana, magic_missile, INT 14
+	result4 := balance.RunCasterSimulation(mage4, mob3, iterations)
 	printSimulationResult(result4)
-	if result4.WinRate > 30 {
+	assessBalance("L5 Mage vs Orc", result4.WinRate)
+	fmt.Println()
+
+	// Test 5: Level 10 Warrior with Tier 2-3 gear vs Tier 3 mob (Troll)
+	// Warrior L10: 10 + 9*6 = 64 HP
+	// Gear: greatsword (2d6), plate_armor (AC 8), STR 14 (+2 mod)
+	fmt.Println("--- Test 5: Level 10 Warrior (Tier 2-3 Gear) vs Tier 3 Mob (Troll) ---")
+	player5 := balance.NewPlayerStats("Player", 10, 64, 8, 2, "2d6") // 64 HP, plate armor, greatsword, STR 14
+	mob5 := balance.NewNPCStats("Troll", 7, 75, 3, 13)               // Updated Troll: 75 HP, 3 armor, 13 damage
+	result5 := balance.RunSimulation(player5, mob5, iterations)
+	printSimulationResult(result5)
+	assessBalance("L10 Warrior vs Troll", result5.WinRate)
+	fmt.Println()
+
+	// Test 6: Level 10 Mage vs Tier 3 mob
+	// Mage L10: 8 + 9*4 = 44 HP
+	// Gear: arcane_robe (AC 4), 65 mana (20+9*5), magic_missile, INT 16 (+3 mod at level 10)
+	// Note: magic_missile more efficient than fireball for 1v1
+	fmt.Println("--- Test 6: Level 10 Mage (With magic_missile) vs Tier 3 Mob (Troll) ---")
+	mage6 := balance.NewCasterStats("Mage", 10, 44, 4, 3, "1d6", 65, 3, "1d4+1") // 44 HP, arcane robe (AC 4), 65 mana, magic_missile, INT 16
+	result6 := balance.RunCasterSimulation(mage6, mob5, iterations)
+	printSimulationResult(result6)
+	assessBalance("L10 Mage vs Troll", result6.WinRate)
+	fmt.Println()
+
+	// Test 7: Level 10 Warrior vs Tier 1 Boss (Goblin King)
+	fmt.Println("--- Test 7: Level 10 Warrior vs Tier 1 Boss (Goblin King) ---")
+	mob7 := balance.NewNPCStats("Goblin King", 8, 102, 2, 12) // Updated boss: L8, 102 HP, 2 armor, 12 damage
+	result7 := balance.RunSimulation(player5, mob7, iterations)
+	printSimulationResult(result7)
+	assessBalance("L10 Warrior vs Boss", result7.WinRate)
+	fmt.Println()
+
+	// Test 8: Undergeared check - ensure weak players struggle
+	fmt.Println("--- Test 8: Undergeared L5 Player (Balance Check) ---")
+	player8 := balance.NewPlayerStats("Player", 5, 34, 0, 0, "1d4") // No gear
+	result8 := balance.RunSimulation(player8, mob3, iterations)
+	printSimulationResult(result8)
+	if result8.WinRate > 30 {
 		fmt.Println("WARNING: Undergeared players may have it too easy")
 	} else {
 		fmt.Println("OK: Gear matters for combat success")

@@ -758,6 +758,11 @@ func (p *Player) isWearingHeavyArmor() bool {
 	return false
 }
 
+// GetArmorClass returns the player's AC (10 + total armor)
+func (p *Player) GetArmorClass() int {
+	return 10 + p.GetEffectiveArmor()
+}
+
 // GetEffectiveArmor returns total armor including class bonuses
 func (p *Player) GetEffectiveArmor() int {
 	// Base armor from equipment

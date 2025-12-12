@@ -139,7 +139,7 @@ var Definitions = map[Class]*Definition{
 		PrimaryStat:         "INT",
 		ArmorProficiencies:  []ArmorType{ArmorNone},
 		WeaponProficiencies: []WeaponType{WeaponSimple}, // Limited to daggers, staves
-		StartingHP:          6,
+		StartingHP:          8,
 		StartingMana:        20,
 		ManaPerLevel:        5,
 		MulticlassRequirements: map[string]int{

@@ -24,6 +24,7 @@ import (
 	"github.com/lawnchairsociety/opentowermud/server/internal/player"
 	"github.com/lawnchairsociety/opentowermud/server/internal/quest"
 	"github.com/lawnchairsociety/opentowermud/server/internal/spells"
+	"github.com/lawnchairsociety/opentowermud/server/internal/stats"
 	"github.com/lawnchairsociety/opentowermud/server/internal/tower"
 	"github.com/lawnchairsociety/opentowermud/server/internal/world"
 )
@@ -1103,16 +1104,48 @@ func (s *Server) processNPCAttacks() {
 				continue
 			}
 
-			// NPC attacks the random target
+			// NPC attacks the target - roll d20 + level vs player AC
+			playerAC := targetPlayer.GetArmorClass()
+			npcAttackRoll := stats.D20() + npc.GetLevel()
+
+			if npcAttackRoll < playerAC {
+				// Miss!
+				logger.Debug("NPC attack miss",
+					"npc", npc.GetName(),
+					"target", targetName,
+					"roll", npcAttackRoll,
+					"player_ac", playerAC)
+
+				// Send miss message to all players fighting this NPC
+				targets := npc.GetTargets()
+				for _, fighterName := range targets {
+					if fighterInterface := s.FindPlayer(fighterName); fighterInterface != nil {
+						if fighter, ok := fighterInterface.(*player.Player); ok {
+							if fighterName == targetName {
+								fighter.SendMessage(fmt.Sprintf("%s attacks you... (%d vs AC %d) Miss!\n",
+									npc.GetName(), npcAttackRoll, playerAC))
+							} else {
+								fighter.SendMessage(fmt.Sprintf("%s attacks %s and misses!\n",
+									npc.GetName(), targetName))
+							}
+						}
+					}
+				}
+				continue
+			}
+
+			// Hit! Deal damage
 			npcDamage := npc.GetAttackDamage()
 			playerDamageTaken := targetPlayer.TakeDamage(npcDamage)
 
 			// Record damage taken in player statistics
 			targetPlayer.RecordDamageTaken(playerDamageTaken)
 
-			logger.Debug("NPC attack",
+			logger.Debug("NPC attack hit",
 				"npc", npc.GetName(),
 				"target", targetName,
+				"roll", npcAttackRoll,
+				"player_ac", playerAC,
 				"damage_dealt", playerDamageTaken,
 				"target_hp", targetPlayer.GetHealth(),
 				"target_max_hp", targetPlayer.GetMaxHealth())
@@ -1124,8 +1157,8 @@ func (s *Server) processNPCAttacks() {
 					if fighter, ok := fighterInterface.(*player.Player); ok {
 						if fighterName == targetName {
 							// Message for the target
-							fighter.SendMessage(fmt.Sprintf("%s hits you for %d damage! (%d/%d HP)\n",
-								npc.GetName(), playerDamageTaken, targetPlayer.GetHealth(), targetPlayer.GetMaxHealth()))
+							fighter.SendMessage(fmt.Sprintf("%s attacks you... (%d vs AC %d) Hit! %d damage! (%d/%d HP)\n",
+								npc.GetName(), npcAttackRoll, playerAC, playerDamageTaken, targetPlayer.GetHealth(), targetPlayer.GetMaxHealth()))
 						} else {
 							// Message for other fighters
 							fighter.SendMessage(fmt.Sprintf("%s hits %s for %d damage!\n",

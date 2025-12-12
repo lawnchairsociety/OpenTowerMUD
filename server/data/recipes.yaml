@@ -137,6 +137,125 @@ recipes:
         quantity: 3
     output: plate_armor
 
+  # --- Bone Crafted Weapons (skill 15-25) ---
+  bone_dagger:
+    name: "Bone Dagger"
+    description: "A jagged dagger carved from monster bone"
+    skill: blacksmithing
+    difficulty: 14
+    skill_gain: 2
+    station: forge
+    level_required: 3
+    skill_required: 15
+    ingredients:
+      - item: bone
+        quantity: 2
+      - item: leather_strip
+        quantity: 1
+    output: bone_dagger
+
+  bone_club:
+    name: "Bone Club"
+    description: "A brutal club fashioned from large monster bones"
+    skill: blacksmithing
+    difficulty: 16
+    skill_gain: 3
+    station: forge
+    level_required: 4
+    skill_required: 20
+    ingredients:
+      - item: bone
+        quantity: 3
+      - item: wooden_shaft
+        quantity: 1
+    output: bone_club
+
+  # --- Mithril Crafted Items (skill 60-70) ---
+  mithril_dagger:
+    name: "Mithril Dagger"
+    description: "A lightweight dagger of silvery mithril"
+    skill: blacksmithing
+    difficulty: 24
+    skill_gain: 5
+    station: forge
+    level_required: 15
+    skill_required: 60
+    ingredients:
+      - item: mithril_ore
+        quantity: 2
+      - item: leather_strip
+        quantity: 1
+    output: mithril_dagger
+
+  mithril_sword:
+    name: "Mithril Sword"
+    description: "A gleaming sword of mithril, light yet deadly"
+    skill: blacksmithing
+    difficulty: 26
+    skill_gain: 6
+    station: forge
+    level_required: 18
+    skill_required: 65
+    ingredients:
+      - item: mithril_ore
+        quantity: 4
+      - item: leather_strip
+        quantity: 2
+    output: mithril_sword
+
+  mithril_chainmail:
+    name: "Mithril Chainmail"
+    description: "Chainmail woven from mithril rings"
+    skill: blacksmithing
+    difficulty: 28
+    skill_gain: 7
+    station: forge
+    level_required: 20
+    skill_required: 70
+    ingredients:
+      - item: mithril_ore
+        quantity: 6
+      - item: leather
+        quantity: 2
+    output: mithril_chainmail
+
+  # --- Adamantine Crafted Items (skill 80+) ---
+  adamantine_blade:
+    name: "Adamantine Blade"
+    description: "A legendary blade forged from unbreakable adamantine"
+    skill: blacksmithing
+    difficulty: 30
+    skill_gain: 8
+    station: forge
+    level_required: 25
+    skill_required: 80
+    ingredients:
+      - item: adamantine_shard
+        quantity: 3
+      - item: mithril_ore
+        quantity: 2
+      - item: leather_strip
+        quantity: 1
+    output: adamantine_blade
+
+  adamantine_plate:
+    name: "Adamantine Plate"
+    description: "Armor forged from adamantine, the ultimate protection"
+    skill: blacksmithing
+    difficulty: 32
+    skill_gain: 10
+    station: forge
+    level_required: 28
+    skill_required: 85
+    ingredients:
+      - item: adamantine_shard
+        quantity: 8
+      - item: steel_ingot
+        quantity: 4
+      - item: leather
+        quantity: 3
+    output: adamantine_plate
+
   # =============================================================================
   # LEATHERWORKING - Workbench
   # =============================================================================
@@ -258,6 +377,74 @@ recipes:
       - item: thread
         quantity: 2
     output: studded_leather
+
+  # --- Utility Items (skill 30-40) ---
+  climbing_kit:
+    name: "Climbing Kit"
+    description: "A set of ropes and tools for scaling walls"
+    skill: leatherworking
+    difficulty: 18
+    skill_gain: 4
+    station: workbench
+    level_required: 8
+    skill_required: 35
+    ingredients:
+      - item: rope
+        quantity: 2
+      - item: wooden_shaft
+        quantity: 2
+      - item: iron_ore
+        quantity: 1
+    output: climbing_kit
+
+  # --- Dragonhide Crafted Items (skill 70-80) ---
+  dragonhide_gloves:
+    name: "Dragonhide Gloves"
+    description: "Gloves made from dragon hide, heat-resistant"
+    skill: leatherworking
+    difficulty: 26
+    skill_gain: 6
+    station: workbench
+    level_required: 18
+    skill_required: 70
+    ingredients:
+      - item: dragonhide_scrap
+        quantity: 2
+      - item: thread
+        quantity: 1
+    output: dragonhide_gloves
+
+  dragonhide_boots:
+    name: "Dragonhide Boots"
+    description: "Boots crafted from tough dragon hide"
+    skill: leatherworking
+    difficulty: 26
+    skill_gain: 6
+    station: workbench
+    level_required: 18
+    skill_required: 70
+    ingredients:
+      - item: dragonhide_scrap
+        quantity: 2
+      - item: thread
+        quantity: 2
+    output: dragonhide_boots
+
+  dragonhide_vest:
+    name: "Dragonhide Vest"
+    description: "A supple vest crafted from dragon scales"
+    skill: leatherworking
+    difficulty: 28
+    skill_gain: 8
+    station: workbench
+    level_required: 22
+    skill_required: 75
+    ingredients:
+      - item: dragonhide_scrap
+        quantity: 4
+      - item: thread
+        quantity: 3
+    output: dragonhide_vest
 
   # =============================================================================
   # ALCHEMY - Alchemy Lab
@@ -406,6 +593,115 @@ recipes:
         quantity: 1
     output: invisibility_potion
 
+  # --- Mob Material Potions (skill 25-75) ---
+  stone_skin_potion:
+    name: "Stone Skin Potion"
+    description: "Temporarily hardens the skin like stone"
+    skill: alchemy
+    difficulty: 16
+    skill_gain: 3
+    station: alchemy_lab
+    level_required: 5
+    skill_required: 25
+    ingredients:
+      - item: stone_shard
+        quantity: 2
+      - item: monster_blood
+        quantity: 1
+      - item: empty_vial
+        quantity: 1
+    output: stone_skin_potion
+
+  ethereal_potion:
+    name: "Ethereal Potion"
+    description: "Makes the drinker partially incorporeal"
+    skill: alchemy
+    difficulty: 20
+    skill_gain: 5
+    station: alchemy_lab
+    level_required: 10
+    skill_required: 40
+    ingredients:
+      - item: ectoplasm
+        quantity: 2
+      - item: ghost_essence
+        quantity: 1
+      - item: empty_vial
+        quantity: 1
+    output: ethereal_potion
+
+  moonlight_elixir:
+    name: "Moonlight Elixir"
+    description: "A shimmering potion that restores body and mind"
+    skill: alchemy
+    difficulty: 22
+    skill_gain: 5
+    station: alchemy_lab
+    level_required: 12
+    skill_required: 50
+    ingredients:
+      - item: moonpetal
+        quantity: 2
+      - item: blue_herb
+        quantity: 2
+      - item: empty_vial
+        quantity: 1
+    output: moonlight_elixir
+
+  demonic_draught:
+    name: "Demonic Draught"
+    description: "Temporarily enhances combat prowess"
+    skill: alchemy
+    difficulty: 24
+    skill_gain: 6
+    station: alchemy_lab
+    level_required: 15
+    skill_required: 55
+    ingredients:
+      - item: demonic_essence
+        quantity: 1
+      - item: monster_blood
+        quantity: 2
+      - item: empty_vial
+        quantity: 1
+    output: demonic_draught
+
+  heartfire_potion:
+    name: "Heartfire Potion"
+    description: "Heals and grants fire resistance"
+    skill: alchemy
+    difficulty: 26
+    skill_gain: 7
+    station: alchemy_lab
+    level_required: 18
+    skill_required: 65
+    ingredients:
+      - item: demon_heart
+        quantity: 1
+      - item: red_herb
+        quantity: 2
+      - item: empty_vial
+        quantity: 1
+    output: heartfire_potion
+
+  phoenix_elixir:
+    name: "Phoenix Elixir"
+    description: "A radiant potion capable of healing grievous wounds"
+    skill: alchemy
+    difficulty: 28
+    skill_gain: 8
+    station: alchemy_lab
+    level_required: 22
+    skill_required: 75
+    ingredients:
+      - item: phoenix_feather
+        quantity: 1
+      - item: red_herb
+        quantity: 3
+      - item: empty_vial
+        quantity: 1
+    output: phoenix_elixir
+
   # =============================================================================
   # ENCHANTING - Enchanting Table
   # =============================================================================
@@ -516,3 +812,112 @@ recipes:
       - item: ghost_essence
         quantity: 2
     output: mana_crystal
+
+  # --- Mob Material Enchantments (skill 25-80) ---
+  stone_ward_amulet:
+    name: "Stone Ward Amulet"
+    description: "An amulet enchanted with the essence of stone"
+    skill: enchanting
+    difficulty: 18
+    skill_gain: 4
+    station: enchanting_table
+    level_required: 6
+    skill_required: 30
+    ingredients:
+      - item: stone_shard
+        quantity: 2
+      - item: rough_gem
+        quantity: 1
+      - item: arcane_dust
+        quantity: 2
+    output: stone_ward_amulet
+
+  vampiric_dagger:
+    name: "Vampiric Dagger"
+    description: "A cursed blade that thirsts for blood"
+    skill: enchanting
+    difficulty: 26
+    skill_gain: 7
+    station: enchanting_table
+    level_required: 18
+    skill_required: 65
+    ingredients:
+      - item: vampire_fang
+        quantity: 1
+      - item: steel_ingot
+        quantity: 1
+      - item: demonic_essence
+        quantity: 1
+    output: vampiric_dagger
+
+  golem_heart_amulet:
+    name: "Golem Heart Amulet"
+    description: "An amulet granting increased vitality"
+    skill: enchanting
+    difficulty: 26
+    skill_gain: 7
+    station: enchanting_table
+    level_required: 18
+    skill_required: 65
+    ingredients:
+      - item: golem_core
+        quantity: 1
+      - item: silver_chain
+        quantity: 1
+      - item: arcane_dust
+        quantity: 2
+    output: golem_heart_amulet
+
+  dragon_scale_shield:
+    name: "Dragon Scale Shield"
+    description: "A shield reinforced with dragon scales"
+    skill: enchanting
+    difficulty: 28
+    skill_gain: 8
+    station: enchanting_table
+    level_required: 20
+    skill_required: 70
+    ingredients:
+      - item: dragon_scale
+        quantity: 2
+      - item: steel_ingot
+        quantity: 2
+      - item: leather
+        quantity: 2
+    output: dragon_scale_shield
+
+  void_ring:
+    name: "Void Ring"
+    description: "A ring that slowly restores mana"
+    skill: enchanting
+    difficulty: 28
+    skill_gain: 8
+    station: enchanting_table
+    level_required: 20
+    skill_required: 75
+    ingredients:
+      - item: void_crystal
+        quantity: 1
+      - item: silver_chain
+        quantity: 1
+      - item: arcane_dust
+        quantity: 3
+    output: void_ring
+
+  ancient_amulet:
+    name: "Ancient Amulet"
+    description: "An amulet said to enhance the wearer's ability to learn"
+    skill: enchanting
+    difficulty: 30
+    skill_gain: 9
+    station: enchanting_table
+    level_required: 22
+    skill_required: 80
+    ingredients:
+      - item: ancient_essence
+        quantity: 1
+      - item: silver_chain
+        quantity: 1
+      - item: enchanted_gem
+        quantity: 1
+    output: ancient_amulet

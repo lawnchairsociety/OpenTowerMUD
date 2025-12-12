@@ -13,11 +13,20 @@ type CombatantStats struct {
 	Level       int
 	Health      int
 	MaxHealth   int
-	Armor       int // For NPCs: flat armor reduction; For players: sum of equipped armor
-	Damage      int // For NPCs: flat damage dealt per hit
+	Armor       int    // For NPCs: flat armor reduction; For players: sum of equipped armor
+	Damage      int    // For NPCs: flat damage dealt per hit
 	DamageDice  string // For players: dice notation like "1d6+2"
 	StrMod      int    // Player strength modifier for attack rolls and damage
 	ArmorClass  int    // Target AC for attack rolls (10 + armor for NPCs)
+}
+
+// CasterStats extends CombatantStats with mana and spell information
+type CasterStats struct {
+	CombatantStats
+	Mana         int    // Current/max mana
+	SpellCost    int    // Mana cost per spell cast
+	SpellDice    string // Spell damage dice (e.g., "1d4+1" for magic missile)
+	CastingMod   int    // INT or WIS modifier for spell damage
 }
 
 // NewPlayerStats creates stats for a player combatant
@@ -44,6 +53,26 @@ func NewNPCStats(name string, level, health, armor, damage int) CombatantStats {
 		Armor:      armor,
 		Damage:     damage,
 		ArmorClass: 10 + armor,
+	}
+}
+
+// NewCasterStats creates stats for a spellcasting player
+func NewCasterStats(name string, level, health, armor, castingMod int, weaponDice string, mana, spellCost int, spellDice string) CasterStats {
+	return CasterStats{
+		CombatantStats: CombatantStats{
+			Name:       name,
+			Level:      level,
+			Health:     health,
+			MaxHealth:  health,
+			Armor:      armor,
+			DamageDice: weaponDice,
+			StrMod:     0, // Casters typically don't use STR
+			ArmorClass: 10 + armor,
+		},
+		Mana:       mana,
+		SpellCost:  spellCost,
+		SpellDice:  spellDice,
+		CastingMod: castingMod,
 	}
 }
 
@@ -152,17 +181,22 @@ func SimulateCombat(player, npc CombatantStats) CombatResult {
 			break
 		}
 
-		// NPC attacks
-		npcDamage := npc.Damage
+		// NPC attacks - roll d20 + level vs player AC
+		playerAC := 10 + player.Armor
+		npcAttackRoll := rollD20() + npc.Level
+		if npcAttackRoll >= playerAC {
+			// Hit! Deal damage
+			npcDamage := npc.Damage
 
-		// Apply player armor reduction
-		actualDamage := npcDamage - player.Armor
-		if actualDamage < 1 {
-			actualDamage = 1
+			// Apply player armor reduction
+			actualDamage := npcDamage - player.Armor
+			if actualDamage < 1 {
+				actualDamage = 1
+			}
+
+			playerHP -= actualDamage
+			result.PlayerDamageIn += actualDamage
 		}
-
-		playerHP -= actualDamage
-		result.PlayerDamageIn += actualDamage
 	}
 
 	result.Rounds = round
@@ -190,6 +224,128 @@ func RunSimulation(player, npc CombatantStats, iterations int) SimulationResult 
 
 	for i := 0; i < iterations; i++ {
 		combat := SimulateCombat(player, npc)
+
+		if combat.PlayerWon {
+			result.PlayerWins++
+			totalPlayerHPLeft += combat.PlayerHPRemain
+		} else {
+			result.NPCWins++
+		}
+
+		totalRounds += combat.Rounds
+		totalDamageDealt += combat.PlayerDamageOut
+		totalDamageTaken += combat.PlayerDamageIn
+
+		if combat.Rounds < result.MinRounds {
+			result.MinRounds = combat.Rounds
+		}
+		if combat.Rounds > result.MaxRounds {
+			result.MaxRounds = combat.Rounds
+		}
+	}
+
+	result.WinRate = float64(result.PlayerWins) / float64(iterations) * 100
+	result.AvgRounds = float64(totalRounds) / float64(iterations)
+	result.AvgDamageDealt = float64(totalDamageDealt) / float64(iterations)
+	result.AvgDamageTaken = float64(totalDamageTaken) / float64(iterations)
+
+	if result.PlayerWins > 0 {
+		result.AvgPlayerHPLeft = float64(totalPlayerHPLeft) / float64(result.PlayerWins)
+	}
+
+	return result
+}
+
+// SimulateCasterCombat runs a single combat between a spellcasting player and NPC
+// Casters alternate between spells (when mana available) and weapon attacks
+// Spells auto-hit (no roll needed), making them more reliable than weapon attacks
+func SimulateCasterCombat(caster CasterStats, npc CombatantStats) CombatResult {
+	result := CombatResult{}
+
+	playerHP := caster.Health
+	playerMana := caster.Mana
+	npcHP := npc.Health
+	round := 0
+	maxRounds := 1000
+
+	for playerHP > 0 && npcHP > 0 && round < maxRounds {
+		round++
+
+		// Player attacks - use spell if mana available, otherwise weapon
+		if playerMana >= caster.SpellCost && caster.SpellDice != "" {
+			// Cast spell - auto-hit!
+			spellDamage := rollDice(caster.SpellDice, caster.CastingMod)
+			actualDamage := spellDamage - npc.Armor
+			if actualDamage < 1 {
+				actualDamage = 1
+			}
+			npcHP -= actualDamage
+			result.PlayerDamageOut += actualDamage
+			playerMana -= caster.SpellCost
+		} else {
+			// Weapon attack - must roll to hit
+			attackRoll := rollD20() + caster.StrMod
+			if attackRoll >= npc.ArmorClass {
+				var damage int
+				if caster.DamageDice != "" {
+					damage = rollDice(caster.DamageDice, caster.StrMod)
+				} else {
+					damage = 1 + caster.StrMod
+				}
+				actualDamage := damage - npc.Armor
+				if actualDamage < 1 {
+					actualDamage = 1
+				}
+				npcHP -= actualDamage
+				result.PlayerDamageOut += actualDamage
+			}
+		}
+
+		// Check if NPC died
+		if npcHP <= 0 {
+			break
+		}
+
+		// NPC attacks - roll d20 + level vs player AC
+		playerAC := 10 + caster.Armor
+		npcAttackRoll := rollD20() + npc.Level
+		if npcAttackRoll >= playerAC {
+			// Hit! Deal damage
+			npcDamage := npc.Damage
+			actualDamage := npcDamage - caster.Armor
+			if actualDamage < 1 {
+				actualDamage = 1
+			}
+			playerHP -= actualDamage
+			result.PlayerDamageIn += actualDamage
+		}
+	}
+
+	result.Rounds = round
+	result.PlayerHPRemain = playerHP
+	result.NPCHPRemain = npcHP
+	result.PlayerWon = playerHP > 0 && npcHP <= 0
+
+	return result
+}
+
+// RunCasterSimulation runs multiple caster combat simulations and returns aggregated results
+func RunCasterSimulation(caster CasterStats, npc CombatantStats, iterations int) SimulationResult {
+	result := SimulationResult{
+		Simulations: iterations,
+		PlayerStats: caster.CombatantStats,
+		NPCStats:    npc,
+		MinRounds:   999999,
+		MaxRounds:   0,
+	}
+
+	totalRounds := 0
+	totalPlayerHPLeft := 0
+	totalDamageDealt := 0
+	totalDamageTaken := 0
+
+	for i := 0; i < iterations; i++ {
+		combat := SimulateCasterCombat(caster, npc)
 
 		if combat.PlayerWon {
 			result.PlayerWins++
@@ -318,11 +474,18 @@ func RunLevelProgressionSim(basePlayer CombatantStats, mob CombatantStats, level
 }
 
 // ScalePlayerForLevel scales a base player's stats for a given level
+// Uses actual game HP formula: StartingHP + (level-1) * avg_hit_die
+// Warrior: 10 base + 6 per level (d10 avg)
+// Mage: 6 base + 4 per level (d6 avg)
+// Default assumes warrior-like progression
 func ScalePlayerForLevel(base CombatantStats, level int) CombatantStats {
 	scaled := base
 
-	// HP scales: 100 base + 10 per level
-	scaled.Health = 100 + (level-1)*10
+	// HP scales using actual game formula:
+	// StartingHP (default 10 for warrior) + (level-1) * avg_hit_die (6 for d10)
+	baseHP := 10 // Warrior starting HP
+	hpPerLevel := 6 // Average of d10 hit die
+	scaled.Health = baseHP + (level-1)*hpPerLevel
 	scaled.MaxHealth = scaled.Health
 	scaled.Level = level
 
