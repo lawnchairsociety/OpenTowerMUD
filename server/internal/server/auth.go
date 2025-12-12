@@ -446,11 +446,8 @@ func (s *Server) handleCharacterCreation(client Client, account *database.Accoun
 		return nil, err
 	}
 
-	// Select home city/tower
-	selectedTower, err := s.handleCitySelection(client)
-	if err != nil {
-		return nil, err
-	}
+	// Home city/tower is determined by race
+	selectedTower := selectedRace
 
 	// Assign ability scores using the standard array
 	scores, err := s.handleAbilityScoreAssignment(client, selectedClass, selectedRace)
@@ -641,69 +638,6 @@ func (s *Server) handleRaceSelection(client Client) (string, error) {
 	}
 }
 
-// handleCitySelection guides the player through choosing their home city
-func (s *Server) handleCitySelection(client Client) (string, error) {
-	client.WriteLine("\n--- Choose Your Home City ---\n\n")
-
-	// Define available cities with their tower IDs
-	type cityOption struct {
-		ID   tower.TowerID
-		Name string
-		Desc string
-	}
-
-	cities := []cityOption{
-		{tower.TowerHuman, "Ironhaven (Human)", "A grand walled city beneath the magical Arcane Spire."},
-		{tower.TowerElf, "Sylvanthal (Elf)", "A forest sanctuary around the ancient, diseased World Tree."},
-		{tower.TowerDwarf, "Khazad-Karn (Dwarf)", "A mountain stronghold above the endless descending mines."},
-		{tower.TowerGnome, "Cogsworth (Gnome)", "A city of gears and steam beneath the Mechanical Tower."},
-		{tower.TowerOrc, "Skullgar (Orc)", "A brutal war camp around the fearsome Beast-Skull Tower."},
-	}
-
-	for i, city := range cities {
-		client.WriteLine(fmt.Sprintf("  [%d] %s\n", i+1, city.Name))
-		client.WriteLine(fmt.Sprintf("      %s\n\n", city.Desc))
-	}
-
-	client.WriteLine("This choice determines where you start and respawn.\n")
-	client.WriteLine("You can travel to other cities later in the game.\n\n")
-
-	for {
-		client.WriteLine(fmt.Sprintf("Enter city number (1-%d): ", len(cities)))
-
-		input, err := client.ReadLine()
-		if err != nil {
-			return "", errors.New("connection closed")
-		}
-		input = strings.TrimSpace(input)
-
-		// Parse the input
-		choice, err := strconv.Atoi(input)
-		if err != nil || choice < 1 || choice > len(cities) {
-			client.WriteLine(fmt.Sprintf("Please enter a number from 1 to %d.\n", len(cities)))
-			continue
-		}
-
-		selectedCity := cities[choice-1]
-
-		// Confirm selection
-		client.WriteLine(fmt.Sprintf("\nYou selected: %s\n", selectedCity.Name))
-		client.WriteLine(fmt.Sprintf("  %s\n", selectedCity.Desc))
-		client.WriteLine("\nIs this correct? (Y/N): ")
-
-		confirm, err := client.ReadLine()
-		if err != nil {
-			return "", errors.New("connection closed")
-		}
-		confirm = strings.ToLower(strings.TrimSpace(confirm))
-
-		if confirm == "y" || confirm == "yes" {
-			return string(selectedCity.ID), nil
-		}
-
-		client.WriteLine("\n")
-	}
-}
 
 // handleHumanBonusSelection lets human players choose which stat to increase by +1
 func (s *Server) handleHumanBonusSelection(client Client, scores *stats.AbilityScores) (string, error) {
