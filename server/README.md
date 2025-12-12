@@ -49,7 +49,7 @@ Each city has a 25-floor tower with themed mobs and a final boss:
 
 ### The Infinity Spire
 
-A 100-floor unified tower unlocked after all 5 racial tower bosses are defeated (tracked globally). Features the ultimate challenge: The Blighted One.
+A 100-floor unified tower unlocked after all 5 racial tower bosses are defeated (tracked globally). Features the ultimate challenge: The Architect.
 
 ### The Great Labyrinth
 

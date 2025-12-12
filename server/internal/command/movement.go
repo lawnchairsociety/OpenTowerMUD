@@ -634,7 +634,7 @@ func getUnifiedFloorDisplayName(floor int) string {
 		return "the Spire Base"
 	}
 	if floor == 100 {
-		return "The Blighted One's Domain (Floor 100)"
+		return "The Architect's Domain (Floor 100)"
 	}
 	if floor == 25 || floor == 50 || floor == 75 {
 		return fmt.Sprintf("Sub-Boss Chamber (Floor %d)", floor)

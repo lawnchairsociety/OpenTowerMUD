@@ -13,6 +13,7 @@ npcs:
     experience: 0
     aggressive: false
     attackable: false
+    guide_npc: true
     dialogue:
       - "Welcome to Khazad-Karn, surface-walker. Our halls have stood for five thousand years."
       - "The Breach opened thirty years ago. Since then, horrors climb from the depths. We need warriors."
@@ -111,8 +112,8 @@ npcs:
       - "Pray at the altar, and the stone itself will lend you strength."
       - "The creatures below were once mortal. Perhaps they can find rest through your actions."
       - "Type 'train' if you wish to learn the ways of the Cleric."
-      - "The spirits whisper of The Blighted One... a corruption so ancient it predates the mountains. It stirs in its prison."
-      - "When the five guardians fall, the Infinity Spire opens. There, at the hundredth floor, waits the source of all decay."
+      - "The spirits whisper of The Architect... a being so ancient it predates the mountains. It waits atop its tower."
+      - "When the five guardians fall, the Infinity Spire opens. There, at the hundredth floor, The Architect awaits."
     locations:
       - "dwarf_ancestor_hall"
     respawn_median: 0

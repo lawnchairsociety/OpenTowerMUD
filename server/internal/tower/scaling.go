@@ -78,7 +78,7 @@ func GetMobTierForFloor(floor int, maxFloors int) int {
 	case floor <= 75:
 		return 6 // Champion mobs
 	default:
-		return 7 // Legendary mobs (The Blighted One's domain)
+		return 7 // Legendary mobs (The Architect's domain)
 	}
 }
 
@@ -119,7 +119,7 @@ func GetLootTierForFloor(floor int, maxFloors int) int {
 	case floor <= 75:
 		return 5 // Legendary loot
 	default:
-		return 5 // Legendary loot (The Blighted One's domain)
+		return 5 // Legendary loot (The Architect's domain)
 	}
 }
 

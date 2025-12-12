@@ -10,15 +10,15 @@ welcome:
 
     [L] Login
 
-# Guide (Aldric) tutorial topics
+# Guide tutorial topics - works with all race-specific guide NPCs
 guide:
   greeting: |
-    %s smiles warmly as you approach.
+    %s welcomes you warmly.
 
-    "Ah, %s! Welcome to our fair city. I'm here to help newcomers survive
-    the Endless Tower. What would you like to know about?"
+    "Ah, %s! Welcome, newcomer. I'm here to help you survive what lies ahead.
+    What would you like to know about?"
 
-      talk %s tower    - The Endless Tower and what awaits you
+      talk %s tower    - The corrupted tower and what awaits you
       talk %s combat   - How to fight and stay alive
       talk %s save     - How your progress is saved
       talk %s shop     - Buying, selling, and equipment
@@ -26,16 +26,16 @@ guide:
       talk %s quests   - Finding and completing quests
       talk %s commands - Quick reference of useful commands
 
-    He leans on his walking stick. "Just ask about any topic, friend!"
+    "Just ask about any topic, and I'll share what I know."
 
   tower: |
-    %s points toward the massive tower looming to the south.
+    %s gestures toward the corrupted tower that looms nearby.
 
-    "That's the Arcane Spire - it's why we're all here." He squints upward,
-    shielding his eyes. "Many adventurers have tried to reach the top. Few have
-    succeeded. A powerful guardian awaits those who dare climb to the summit."
+    "The tower is why we're all here. Something has corrupted it from within,
+    and only by climbing to the top can we hope to stop it. Many adventurers
+    have tried. Few have succeeded. A powerful guardian awaits at the summit."
 
-      - Go SOUTH four times from Town Square to reach the TOWER ENTRANCE
+      - Find the TOWER ENTRANCE in your city
       - Type 'up' to begin climbing
       - Each floor has corridors, chambers, and treasure rooms
       - Every 10th floor has a powerful BOSS guarding the way forward!
@@ -50,7 +50,7 @@ guide:
 
       BEFORE FIGHTING:
       - Type 'consider <monster>' to assess if you can handle it
-      - Visit the TEMPLE (east from here) and type 'pray' to fully heal
+      - Visit the TEMPLE or ALTAR and type 'pray' to fully heal
 
       DURING COMBAT:
       - Type 'attack <monster>' to start fighting
@@ -67,7 +67,7 @@ guide:
   save: |
     %s nods reassuringly.
 
-    "Ah, worried about losing your progress? Fear not!"
+    "Worried about losing your progress? Fear not!"
 
       Your progress is saved automatically:
       - When you disconnect or quit the game
@@ -76,14 +76,14 @@ guide:
 
       You don't need to do anything special - just play and enjoy!
 
-    "The magic of this realm remembers all your deeds, friend."
+    "The realm remembers all your deeds."
 
   shop: |
-    %s jingles a few coins in his pocket.
+    %s mentions coins.
 
-    "Gold makes the world go round, friend! You've got %d gold to start."
+    "Gold is essential for any adventurer! You've got %d gold to start."
 
-      SHOPPING (General Store - south then east from here):
+      SHOPPING (look for a shop or merchant in your city):
       - Type 'shop' to see items for sale
       - Type 'buy <item>' to purchase
       - Type 'sell <item>' to sell loot (50%% of value)
@@ -101,7 +101,7 @@ guide:
     "Buy a weapon before heading into the tower!"
 
   portal: |
-    %s gestures to a shimmering spot nearby.
+    %s points to a shimmering spot nearby.
 
     "Once you've explored the tower, travel becomes much easier!"
 
@@ -110,13 +110,13 @@ guide:
       - Type 'portal' to see floors you've discovered
       - Type 'portal <floor>' to instantly travel there!
 
-      - Town Square (floor 0) is always available
-      - Great for quick trips back to heal, shop, and save!
+      - Your city (floor 0) is always available
+      - Great for quick trips back to heal, shop, and resupply!
 
     "Discover portals as you climb - they're lifesavers!"
 
   quests: |
-    %s strokes his beard thoughtfully.
+    %s considers the question.
 
     "Quests! Yes, many folk in the city need help with tasks. Complete their
     quests and you'll be rewarded handsomely!"
@@ -146,7 +146,7 @@ guide:
     "I have a few quests myself, if you're interested!"
 
   commands: |
-    %s counts off on his fingers.
+    %s lists the essentials.
 
     "Here are the commands you'll use most:"
 

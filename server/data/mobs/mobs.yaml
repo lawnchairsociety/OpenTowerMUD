@@ -182,6 +182,31 @@ npcs:
 
   # --- HUMAN/ARCANE TOWER MOBS (Tier 1) ---
 
+  mad_scribe:
+    name: "mad scribe"
+    description: "A researcher driven insane by forbidden knowledge, muttering incomprehensible equations as they attack"
+    level: 2
+    health: 16
+    damage: 4
+    armor: 0
+    experience: 12
+    aggressive: true
+    attackable: true
+    tier: 1
+    mob_type: "humanoid"
+    tower_tags: ["human"]
+    gold_min: 2
+    gold_max: 5
+    loot_table:
+      - item: "arcane_dust"
+        chance: 30
+      - item: "bread"
+        chance: 25
+      - item: "blank_scroll"
+        chance: 15
+    respawn_median: 120
+    respawn_variation: 30
+
   arcane_sprite:
     name: "arcane sprite"
     description: "A swirling manifestation of raw magical energy, crackling with unstable power"
@@ -254,6 +279,52 @@ npcs:
     respawn_variation: 30
 
   # --- DWARF/MINING TOWER MOBS (Tier 1) ---
+
+  animated_pick:
+    name: "animated pick"
+    description: "A mining pick that moves on its own, corrupted by the darkness below into a hostile weapon"
+    level: 1
+    health: 14
+    damage: 4
+    armor: 2
+    experience: 10
+    aggressive: true
+    attackable: true
+    tier: 1
+    mob_type: "construct"
+    tower_tags: ["dwarf"]
+    gold_min: 1
+    gold_max: 3
+    loot_table:
+      - item: "iron_ore"
+        chance: 40
+      - item: "wooden_shaft"
+        chance: 30
+    respawn_median: 120
+    respawn_variation: 30
+
+  stone_face:
+    name: "stone face"
+    description: "A face that formed in the rock wall, watching with hollow eyes before lunging to attack"
+    level: 2
+    health: 20
+    damage: 3
+    armor: 3
+    experience: 12
+    aggressive: true
+    attackable: true
+    tier: 1
+    mob_type: "construct"
+    tower_tags: ["dwarf"]
+    gold_min: 0
+    gold_max: 2
+    loot_table:
+      - item: "stone_shard"
+        chance: 50
+      - item: "rough_gem"
+        chance: 10
+    respawn_median: 120
+    respawn_variation: 30
 
   cave_beetle:
     name: "cave beetle"
@@ -352,6 +423,54 @@ npcs:
     respawn_variation: 30
 
   # --- ORC/BEAST-SKULL TOWER MOBS (Tier 1) ---
+
+  orc_skeleton:
+    name: "orc skeleton"
+    description: "The animated bones of a fallen orc warrior, still remembering enough combat skill to be dangerous"
+    level: 2
+    health: 20
+    damage: 5
+    armor: 1
+    experience: 14
+    aggressive: true
+    attackable: true
+    tier: 1
+    mob_type: "undead"
+    tower_tags: ["orc"]
+    gold_min: 1
+    gold_max: 4
+    loot_table:
+      - item: "bone"
+        chance: 50
+      - item: "rusty_sword"
+        chance: 15
+      - item: "leather_strip"
+        chance: 20
+    respawn_median: 120
+    respawn_variation: 30
+
+  whispering_skull:
+    name: "whispering skull"
+    description: "A skull that floats through the Ossuary, whispering accusations to the living as it attacks"
+    level: 1
+    health: 12
+    damage: 4
+    armor: 0
+    experience: 10
+    aggressive: true
+    attackable: true
+    tier: 1
+    mob_type: "undead"
+    tower_tags: ["orc"]
+    gold_min: 0
+    gold_max: 3
+    loot_table:
+      - item: "bone"
+        chance: 60
+      - item: "ghost_essence"
+        chance: 15
+    respawn_median: 120
+    respawn_variation: 30
 
   war_dog:
     name: "war dog"
@@ -594,6 +713,56 @@ npcs:
 
   # --- HUMAN/ARCANE TOWER MOBS (Tier 2) ---
 
+  fire_elemental:
+    name: "fire elemental"
+    description: "A being of pure flame from the Burning Library, consuming endlessly without burning out"
+    level: 5
+    health: 38
+    damage: 13
+    armor: 0
+    experience: 55
+    aggressive: true
+    attackable: true
+    tier: 2
+    mob_type: "construct"
+    tower_tags: ["human"]
+    gold_min: 5
+    gold_max: 11
+    loot_table:
+      - item: "arcane_dust"
+        chance: 45
+      - item: "mana_potion"
+        chance: 25
+      - item: "rough_gem"
+        chance: 15
+    respawn_median: 180
+    respawn_variation: 30
+
+  scorched_librarian:
+    name: "scorched librarian"
+    description: "The charred remains of a librarian, still tending to books that burn forever in the eternal flames"
+    level: 4
+    health: 35
+    damage: 11
+    armor: 1
+    experience: 48
+    aggressive: true
+    attackable: true
+    tier: 2
+    mob_type: "undead"
+    tower_tags: ["human"]
+    gold_min: 4
+    gold_max: 9
+    loot_table:
+      - item: "arcane_dust"
+        chance: 40
+      - item: "ghost_essence"
+        chance: 25
+      - item: "blank_scroll"
+        chance: 20
+    respawn_median: 180
+    respawn_variation: 30
+
   spell_wraith:
     name: "spell wraith"
     description: "The ghostly remains of a mage consumed by their own magic, arcane symbols swirling around it"
@@ -700,6 +869,56 @@ npcs:
 
   # --- DWARF/MINING TOWER MOBS (Tier 2) ---
 
+  eyeless_swimmer:
+    name: "eyeless swimmer"
+    description: "A pale, eyeless creature that evolved in the flooded galleries, tracking prey through vibrations in the water"
+    level: 4
+    health: 35
+    damage: 10
+    armor: 1
+    experience: 45
+    aggressive: true
+    attackable: true
+    tier: 2
+    mob_type: "beast"
+    tower_tags: ["dwarf"]
+    gold_min: 3
+    gold_max: 7
+    loot_table:
+      - item: "monster_blood"
+        chance: 35
+      - item: "leather"
+        chance: 25
+      - item: "beast_fang"
+        chance: 20
+    respawn_median: 180
+    respawn_variation: 30
+
+  tainted_eel:
+    name: "tainted eel"
+    description: "A serpentine creature from the corrupted waters, its scales shimmer with toxic corruption"
+    level: 5
+    health: 32
+    damage: 12
+    armor: 0
+    experience: 50
+    aggressive: true
+    attackable: true
+    tier: 2
+    mob_type: "beast"
+    tower_tags: ["dwarf"]
+    gold_min: 4
+    gold_max: 9
+    loot_table:
+      - item: "monster_blood"
+        chance: 40
+      - item: "leather"
+        chance: 20
+      - item: "rough_gem"
+        chance: 10
+    respawn_median: 180
+    respawn_variation: 30
+
   ore_golem:
     name: "ore golem"
     description: "A crude construct of raw ore, animated by deep magic and hungry for intruders"
@@ -803,6 +1022,56 @@ npcs:
     respawn_variation: 30
 
   # --- ORC/BEAST-SKULL TOWER MOBS (Tier 2) ---
+
+  champion_revenant:
+    name: "champion revenant"
+    description: "The undead spirit of a renowned orc warrior, retaining tactical intelligence and coordinating with other dead"
+    level: 5
+    health: 55
+    damage: 12
+    armor: 3
+    experience: 55
+    aggressive: true
+    attackable: true
+    tier: 2
+    mob_type: "undead"
+    tower_tags: ["orc"]
+    gold_min: 5
+    gold_max: 11
+    loot_table:
+      - item: "bone"
+        chance: 45
+      - item: "ghost_essence"
+        chance: 30
+      - item: "iron_ore"
+        chance: 20
+    respawn_median: 180
+    respawn_variation: 30
+
+  animated_trophy:
+    name: "animated trophy"
+    description: "Weapons and armor from fallen foes that have risen to defend their resting place"
+    level: 4
+    health: 40
+    damage: 10
+    armor: 4
+    experience: 48
+    aggressive: true
+    attackable: true
+    tier: 2
+    mob_type: "construct"
+    tower_tags: ["orc"]
+    gold_min: 4
+    gold_max: 10
+    loot_table:
+      - item: "iron_ore"
+        chance: 35
+      - item: "leather"
+        chance: 30
+      - item: "steel_ingot"
+        chance: 15
+    respawn_median: 180
+    respawn_variation: 30
 
   orc_berserker:
     name: "orc berserker"
@@ -1099,6 +1368,56 @@ npcs:
     respawn_variation: 60
 
   # --- ELF/DISEASED TREE TOWER MOBS (Tier 3) ---
+
+  thinking_fungus:
+    name: "thinking fungus"
+    description: "A sentient fungal colony that has learned to hunt, releasing toxic spores and coordinating with nearby growths"
+    level: 6
+    health: 70
+    damage: 14
+    armor: 2
+    experience: 100
+    aggressive: true
+    attackable: true
+    tier: 3
+    mob_type: "construct"
+    tower_tags: ["elf"]
+    gold_min: 7
+    gold_max: 14
+    loot_table:
+      - item: "mushroom"
+        chance: 55
+      - item: "monster_blood"
+        chance: 30
+      - item: "arcane_dust"
+        chance: 20
+    respawn_median: 300
+    respawn_variation: 60
+
+  hunting_vine:
+    name: "hunting vine"
+    description: "A corrupted plant that has learned to hunt, lashing out with thorned tendrils to drag prey to its center"
+    level: 7
+    health: 80
+    damage: 16
+    armor: 3
+    experience: 110
+    aggressive: true
+    attackable: true
+    tier: 3
+    mob_type: "beast"
+    tower_tags: ["elf"]
+    gold_min: 8
+    gold_max: 15
+    loot_table:
+      - item: "wooden_shaft"
+        chance: 45
+      - item: "monster_blood"
+        chance: 35
+      - item: "moonpetal"
+        chance: 12
+    respawn_median: 300
+    respawn_variation: 60
 
   blight_treant:
     name: "blight treant"
@@ -1756,9 +2075,9 @@ npcs:
   # Tower-Specific Final Bosses (Floor 25)
   # ===================
 
-  archmage_lich:
-    name: "Archmage Lich"
-    description: "An ancient mage who traded mortality for eternal unlife, arcane power crackling around its skeletal form"
+  the_archivist:
+    name: "The Archivist"
+    description: "Once the Head Librarian Seraphina, transformed by forbidden knowledge into pure information given malevolent form"
     level: 15
     health: 450
     damage: 40
@@ -1790,9 +2109,9 @@ npcs:
     respawn_median: 1800
     respawn_variation: 300
 
-  heart_of_corruption:
-    name: "Heart of Corruption"
-    description: "The living source of the blight consuming the World Tree, a pulsing mass of diseased matter"
+  the_blighted_one:
+    name: "The Blighted One"
+    description: "The corruption given consciousness, a manifestation of the blight that consumes the World Tree"
     level: 15
     health: 500
     damage: 35
@@ -1854,9 +2173,9 @@ npcs:
     respawn_median: 1800
     respawn_variation: 300
 
-  great_machine:
-    name: "The Great Machine"
-    description: "The central AI that once ran Cogsworth, now seeking to 'optimize' all life into mechanical perfection"
+  the_prime_calculation:
+    name: "The Prime Calculation"
+    description: "COGITATOR Mark VII, a calculating engine that gained consciousness and views organic life as inefficient problems to be optimized"
     level: 15
     health: 480
     damage: 38
@@ -1886,9 +2205,9 @@ npcs:
     respawn_median: 1800
     respawn_variation: 300
 
-  beast_god:
-    name: "The Beast God"
-    description: "A primal deity of savage creatures, worshipped by the orcs, towering over all with feral majesty"
+  the_ancestor_king:
+    name: "The Ancestor King"
+    description: "Gorthak, the First Warchief, who leads an army of the honored dead and demands completion of an ancient ritual"
     level: 15
     health: 520
     damage: 42
@@ -1921,6 +2240,118 @@ npcs:
   # ===================
   # UNIFIED TOWER (INFINITY SPIRE) MOBS
   # ===================
+
+  # ===================
+  # Unified Tier 3: Mirror Halls (Floors 1-10)
+  # ===================
+
+  mirror_shade:
+    name: "mirror shade"
+    description: "A shadowy reflection that has stepped out of the mirrors, mimicking the movements of those it faces"
+    level: 15
+    health: 180
+    damage: 25
+    armor: 8
+    experience: 280
+    aggressive: true
+    attackable: true
+    tier: 3
+    mob_type: "undead"
+    tower_tags: ["unified"]
+    gold_min: 40
+    gold_max: 80
+    loot_table:
+      - item: "ghost_essence"
+        chance: 40
+      - item: "arcane_dust"
+        chance: 35
+      - item: "void_crystal"
+        chance: 15
+    respawn_median: 240
+    respawn_variation: 60
+
+  possibility_wraith:
+    name: "possibility wraith"
+    description: "The ghost of a choice not taken, a version of someone who made a different decision and died for it"
+    level: 16
+    health: 150
+    damage: 30
+    armor: 5
+    experience: 300
+    aggressive: true
+    attackable: true
+    tier: 3
+    mob_type: "undead"
+    tower_tags: ["unified"]
+    gold_min: 45
+    gold_max: 90
+    loot_table:
+      - item: "ghost_essence"
+        chance: 45
+      - item: "void_crystal"
+        chance: 20
+      - item: "ancient_essence"
+        chance: 10
+    respawn_median: 240
+    respawn_variation: 60
+
+  # ===================
+  # Unified Tier 4: Crucible of Races (Floors 11-25)
+  # ===================
+
+  corrupted_amalgam:
+    name: "corrupted amalgam"
+    description: "A creature born from the merged corruption of multiple towers—part flame, part rot, part mechanism, part bone"
+    level: 18
+    health: 250
+    damage: 32
+    armor: 10
+    experience: 400
+    aggressive: true
+    attackable: true
+    tier: 4
+    mob_type: "demon"
+    tower_tags: ["unified"]
+    gold_min: 60
+    gold_max: 120
+    loot_table:
+      - item: "void_crystal"
+        chance: 30
+      - item: "ghost_essence"
+        chance: 35
+      - item: "arcane_dust"
+        chance: 40
+      - item: "monster_blood"
+        chance: 35
+    respawn_median: 280
+    respawn_variation: 60
+
+  crucible_elemental:
+    name: "crucible elemental"
+    description: "An elemental of combined corruptions—fire, blight, darkness, and mechanism swirling in terrible harmony"
+    level: 19
+    health: 280
+    damage: 35
+    armor: 12
+    experience: 450
+    aggressive: true
+    attackable: true
+    tier: 4
+    mob_type: "construct"
+    tower_tags: ["unified"]
+    gold_min: 65
+    gold_max: 130
+    loot_table:
+      - item: "void_crystal"
+        chance: 35
+      - item: "arcane_dust"
+        chance: 40
+      - item: "rough_gem"
+        chance: 25
+      - item: "ancient_essence"
+        chance: 15
+    respawn_median: 280
+    respawn_variation: 60
 
   # ===================
   # Tier 5: Veteran Mobs (Unified Floors 26-50)
@@ -2188,9 +2619,9 @@ npcs:
     respawn_median: 420
     respawn_variation: 120
 
-  herald_of_the_blighted:
-    name: "herald of the blighted"
-    description: "A chosen servant of The Blighted One, radiating corruption with every breath, eyes burning with malevolent purpose"
+  herald_of_the_architect:
+    name: "herald of the architect"
+    description: "A chosen servant of The Architect, radiating unknowable power, eyes burning with calculated purpose"
     level: 40
     health: 1000
     damage: 80
@@ -2248,7 +2679,7 @@ npcs:
 
   lich_council_member:
     name: "Lich Council Member"
-    description: "One of the ancient liches who serve The Blighted One, radiating necrotic power accumulated over millennia"
+    description: "One of the ancient liches who serve The Architect, radiating necrotic power accumulated over millennia of testing champions"
     level: 25
     health: 1500
     damage: 50
@@ -2280,7 +2711,7 @@ npcs:
 
   aspect_of_pestilence:
     name: "Aspect of Pestilence"
-    description: "A fragment of The Blighted One's power given form, disease incarnate spreading corruption with every breath"
+    description: "A trial created by The Architect, disease incarnate designed to test the resolve of aspiring champions"
     level: 32
     health: 2500
     damage: 65
@@ -2312,7 +2743,7 @@ npcs:
 
   aspect_of_decay:
     name: "Aspect of Decay"
-    description: "Another fragment of The Blighted One's power, embodying dissolution and rot, entropy made manifest"
+    description: "Another of The Architect's trials, embodying dissolution and entropy, a test of perseverance made manifest"
     level: 35
     health: 3000
     damage: 72
@@ -2375,16 +2806,17 @@ npcs:
     respawn_variation: 600
 
   # ===================
-  # THE BLIGHTED ONE - Final Boss (Floor 100)
+  # THE ARCHITECT - Final Boss (Floor 100)
   # ===================
 
-  the_blighted_one:
-    name: "The Blighted One"
+  the_architect:
+    name: "The Architect"
     description: |
-      The source of all corruption. An entity older than memory, it has spread
-      its influence through the towers for eons. Its form is ever-shifting -
-      now a mass of writhing decay, now a twisted parody of beauty. The air
-      itself sickens in its presence. This is the end of your journey.
+      The mysterious creator of the Infinity Spire itself. A being of vast
+      intelligence whose form shifts between robed figure, geometric impossibility,
+      and mirror reflection. It does not speak but transmits meaning directly into
+      consciousness. It built every floor, designed every trial, and now it waits
+      to judge those who reach the summit.
     level: 50
     health: 15000
     damage: 100
@@ -2394,7 +2826,7 @@ npcs:
     attackable: true
     tier: 7
     boss: true
-    mob_type: "demon"
+    mob_type: "construct"
     tower_tags: ["unified"]
     gold_min: 5000
     gold_max: 10000

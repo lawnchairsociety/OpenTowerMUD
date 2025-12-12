@@ -110,8 +110,8 @@ func TestGetMobTierFor100FloorTower(t *testing.T) {
 		{50, 5},  // Veteran (last)
 		{51, 6},  // Champion
 		{75, 6},  // Champion (last)
-		{76, 7},  // Legendary (The Blighted One's domain)
-		{100, 7}, // Legendary (boss floor - The Blighted One)
+		{76, 7},  // Legendary (The Architect's domain)
+		{100, 7}, // Legendary (boss floor - The Architect)
 	}
 
 	for _, tc := range tests {

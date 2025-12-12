@@ -49,6 +49,7 @@ type NPCDefinition struct {
 	GivesQuests      []string        `yaml:"gives_quests"`      // Quest IDs this NPC can give
 	TurnInQuests     []string        `yaml:"turn_in_quests"`    // Quest IDs that can be turned in to this NPC
 	LoreNPC          bool            `yaml:"lore_npc"`          // Is this a labyrinth lore NPC?
+	GuideNPC         bool            `yaml:"guide_npc"`         // Is this a city guide NPC? (provides tutorial)
 	Locations        []string        `yaml:"locations"`         // Room IDs where this NPC spawns
 	RespawnMedian    int             `yaml:"respawn_median"`    // Median respawn time in seconds
 	RespawnVariation int             `yaml:"respawn_variation"` // Variation in respawn time (+/- seconds)
@@ -165,6 +166,10 @@ func CreateNPCFromDefinition(def NPCDefinition, roomID string) *NPC {
 	// Set lore NPC flag for labyrinth lore NPCs
 	if def.LoreNPC {
 		npc.SetLoreNPC(true)
+	}
+	// Set guide NPC flag for city guide NPCs
+	if def.GuideNPC {
+		npc.SetGuideNPC(true)
 	}
 	return npc
 }

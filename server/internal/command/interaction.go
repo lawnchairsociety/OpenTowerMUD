@@ -59,9 +59,8 @@ func executeTalk(c *Command, p PlayerInterface) string {
 		return handleBardInteraction(p, foundNPC)
 	}
 
-	// Special handling for Aldric the old guide - tutorial
-	// Check for "old guide" specifically to avoid matching "King Aldric the Wise"
-	if strings.Contains(strings.ToLower(foundNPC.GetName()), "old guide") {
+	// Special handling for guide NPCs - tutorial
+	if foundNPC.IsGuideNPC() {
 		return handleGuideInteraction(c, p, foundNPC)
 	}
 
@@ -152,15 +151,19 @@ func handleBardInteraction(p PlayerInterface, bard *npc.NPC) string {
 	return fmt.Sprintf("The %s strums his lute and nods at you.", bard.GetName())
 }
 
-// handleGuideInteraction provides the new player tutorial from Aldric
-// Supports topic-based conversation: talk aldric, talk aldric tower, etc.
+// handleGuideInteraction provides the new player tutorial from city guides
+// Supports topic-based conversation: talk <guide>, talk <guide> tower, etc.
 func handleGuideInteraction(c *Command, p PlayerInterface, guide *npc.NPC) string {
-	// Check if a topic was specified (args after "aldric" or "guide")
+	// Extract the guide's first name for topic detection
+	guideName := strings.ToLower(strings.Split(guide.GetName(), " ")[0])
+
+	// Check if a topic was specified (args after the guide's name)
 	topic := ""
 	args := c.Args
 	for i, arg := range args {
 		lower := strings.ToLower(arg)
-		if lower == "aldric" || lower == "guide" || lower == "old" {
+		// Match the guide's first name or common words
+		if lower == guideName || lower == "guide" || lower == "elder" || lower == "chronicler" {
 			// Topic is everything after the NPC name
 			if i+1 < len(args) {
 				topic = strings.ToLower(strings.Join(args[i+1:], " "))

@@ -13,6 +13,7 @@ npcs:
     experience: 0
     aggressive: false
     attackable: false
+    guide_npc: true
     dialogue:
       - "Greetings, adventurer! New to our little city, are you? Talk to me and I'll tell you all you need to know!"
       - "The tower looms ever upward... infinite floors, infinite danger, infinite glory."
@@ -20,7 +21,7 @@ npcs:
       - "Remember: the bard saves your story, the priestess saves your soul, and your wits save your life!"
       - "See that mailbox by the fountain? You can send letters and even gold to other adventurers. Type 'mail' to check for messages!"
       - "The five towers are connected, you know. Their guardians hold the keys to something greater."
-      - "Legends speak of The Blighted One - the source of all corruption. Pray you never meet it."
+      - "Legends speak of The Architect - a being that built the Infinity Spire itself. Pray you never face its trials."
     locations:
       - "human_town_square"
     respawn_median: 0
@@ -92,7 +93,7 @@ npcs:
       - "I sense a great destiny within you. Do not let fear hold you back."
       - "The tower was not always filled with such evil. Something awakened it long ago."
       - "Ancient texts speak of an Infinity Spire, sealed away to contain a great evil."
-      - "The corruption in our tower... it comes from somewhere beyond. The Blighted One, they called it."
+      - "The trials in our tower... they were designed by something beyond. The Architect, they call it."
       - "If all five guardians fall, the seal breaks. What lies beyond... only the bravest will discover."
     locations:
       - "human_temple"

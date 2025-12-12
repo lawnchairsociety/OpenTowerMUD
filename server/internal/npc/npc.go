@@ -71,6 +71,7 @@ type NPC struct {
 	GivesQuests      []string        // Quest IDs this NPC can give
 	TurnInQuests     []string        // Quest IDs that can be turned in to this NPC
 	LoreNPC          bool            // Is this a labyrinth lore NPC?
+	GuideNPC         bool            // Is this a city guide NPC? (provides tutorial)
 	NPCID            string          // Original NPC definition ID (for tracking)
 	mu               sync.RWMutex
 }
@@ -862,6 +863,20 @@ func (n *NPC) SetLoreNPC(isLoreNPC bool) {
 	n.mu.Lock()
 	defer n.mu.Unlock()
 	n.LoreNPC = isLoreNPC
+}
+
+// IsGuideNPC returns true if this NPC is a city guide NPC (provides tutorial)
+func (n *NPC) IsGuideNPC() bool {
+	n.mu.RLock()
+	defer n.mu.RUnlock()
+	return n.GuideNPC
+}
+
+// SetGuideNPC sets whether this NPC is a guide NPC
+func (n *NPC) SetGuideNPC(isGuideNPC bool) {
+	n.mu.Lock()
+	defer n.mu.Unlock()
+	n.GuideNPC = isGuideNPC
 }
 
 // GetNPCID returns the original NPC definition ID

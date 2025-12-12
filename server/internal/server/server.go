@@ -1348,9 +1348,9 @@ func (s *Server) handleTowerBossDefeat(towerID tower.TowerID, attackerNames []st
 		}
 	}
 
-	// Special handling for The Blighted One (unified tower boss)
+	// Special handling for The Architect (unified tower boss)
 	if towerID == tower.TowerUnified {
-		s.handleBlightedOneVictory(primaryAttacker, attackerNames, isFirstKill, title)
+		s.handleArchitectVictory(primaryAttacker, attackerNames, isFirstKill, title)
 		return
 	}
 
@@ -1383,31 +1383,31 @@ func (s *Server) handleTowerBossDefeat(towerID tower.TowerID, attackerNames []st
 	}
 }
 
-// handleBlightedOneVictory handles the epic event when The Blighted One is defeated
-func (s *Server) handleBlightedOneVictory(primaryAttacker string, attackerNames []string, isFirstKill bool, title string) {
+// handleArchitectVictory handles the epic event when The Architect is defeated
+func (s *Server) handleArchitectVictory(primaryAttacker string, attackerNames []string, isFirstKill bool, title string) {
 	if isFirstKill {
-		// First ever defeat of The Blighted One - the ultimate achievement
+		// First ever defeat of The Architect - the ultimate achievement
 		announcement := `
 ================================================================================
 ================================================================================
 
-        ████████╗██╗  ██╗███████╗    ██████╗ ██╗     ██╗ ██████╗ ██╗  ██╗████████╗
-        ╚══██╔══╝██║  ██║██╔════╝    ██╔══██╗██║     ██║██╔════╝ ██║  ██║╚══██╔══╝
-           ██║   ███████║█████╗      ██████╔╝██║     ██║██║  ███╗███████║   ██║
-           ██║   ██╔══██║██╔══╝      ██╔══██╗██║     ██║██║   ██║██╔══██║   ██║
-           ██║   ██║  ██║███████╗    ██████╔╝███████╗██║╚██████╔╝██║  ██║   ██║
-           ╚═╝   ╚═╝  ╚═╝╚══════╝    ╚═════╝ ╚══════╝╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝
+     █████╗ ██████╗  ██████╗██╗  ██╗██╗████████╗███████╗ ██████╗████████╗
+    ██╔══██╗██╔══██╗██╔════╝██║  ██║██║╚══██╔══╝██╔════╝██╔════╝╚══██╔══╝
+    ███████║██████╔╝██║     ███████║██║   ██║   █████╗  ██║        ██║
+    ██╔══██║██╔══██╗██║     ██╔══██║██║   ██║   ██╔══╝  ██║        ██║
+    ██║  ██║██║  ██║╚██████╗██║  ██║██║   ██║   ███████╗╚██████╗   ██║
+    ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝╚═╝   ╚═╝   ╚══════╝ ╚═════╝   ╚═╝
 
-                            HAS BEEN VANQUISHED!
+                            HAS BEEN OVERCOME!
 
 ================================================================================
 
-    After eons of corruption and decay, The Blighted One has finally fallen!
+    The Architect has acknowledged defeat for the first time in eternity!
 
     ` + primaryAttacker + ` has become the SAVIOR OF THE REALM!
 
-    The corruption that plagued the five towers begins to fade. The world
-    can finally begin to heal. Songs will be sung of this day for generations.
+    The Infinity Spire's trials are complete. The mysterious creator has
+    found what it sought. Songs will be sung of this day for generations.
 
     Heroes who participated in this legendary victory:`
 
@@ -1432,12 +1432,12 @@ func (s *Server) handleBlightedOneVictory(primaryAttacker string, attackerNames 
 ================================================================================
                         CONGRATULATIONS, HERO!
 
-  You have accomplished the ultimate goal. The Blighted One is no more.
+  You have accomplished the ultimate goal. The Architect's trials are complete.
 
   Your name will be etched in the annals of history as one of the heroes
-  who saved the realm from eternal corruption.
+  who conquered the Infinity Spire and proved worthy of the Architect's design.
 
-  The tower stands cleansed. The people are safe. You are a legend.
+  The tower acknowledges you. The realm is saved. You are a legend.
 
 ================================================================================
 `)
@@ -1448,11 +1448,11 @@ func (s *Server) handleBlightedOneVictory(primaryAttacker string, attackerNames 
 		// Subsequent defeats
 		announcement := fmt.Sprintf(`
 ================================================================================
-                    THE BLIGHTED ONE HAS FALLEN AGAIN!
+                    THE ARCHITECT HAS FALLEN AGAIN!
 
-  %s has once again defeated The Blighted One!
+  %s has once again overcome The Architect!
 
-  The corruption stirs but is beaten back. The realm remains safe.
+  The Infinity Spire's master acknowledges another worthy champion.
 
   They have earned the title: %s
 ================================================================================
@@ -1460,8 +1460,8 @@ func (s *Server) handleBlightedOneVictory(primaryAttacker string, attackerNames 
 		s.BroadcastToAll(announcement)
 	}
 
-	logger.Info("THE BLIGHTED ONE DEFEATED",
-		"event", "blighted_one_victory",
+	logger.Info("THE ARCHITECT DEFEATED",
+		"event", "architect_victory",
 		"player", primaryAttacker,
 		"first_kill", isFirstKill,
 		"attackers", strings.Join(attackerNames, ", "))
@@ -1476,7 +1476,7 @@ func (s *Server) handleUnifiedTowerUnlock() {
   The guardians of all five towers have fallen. The seals are broken.
 
   A new portal has appeared in every city, leading to the Infinity Spire -
-  where The Blighted One awaits at the apex, the source of all corruption.
+  where The Architect awaits at the apex, testing all who dare ascend.
 
   Only the bravest heroes dare enter. Only the strongest will survive.
 ================================================================================

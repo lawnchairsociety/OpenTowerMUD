@@ -8,7 +8,9 @@ websocket:
   # Examples:
   #   - "https://example.com"
   #   - "http://localhost:3000"
-  allowed_origins: []
+  allowed_origins:
+    - "http://localhost:8080"
+    - "https://opentowermud.spiralbound.games"
 
   # Maximum message size in bytes (default: 4096)
   # Prevents memory exhaustion from oversized messages

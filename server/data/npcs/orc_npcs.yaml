@@ -96,8 +96,8 @@ npcs:
       - "The ancestors watch from beyond death. Honor them with blood, and they will mend your wounds. Shame them, and they will turn away."
       - "The spirits follow you now. Make them proud."
       - "Type 'train' if you wish to learn the ways of the Cleric."
-      - "The oldest spirits speak of The Blighted One... a corruption that turns the dead against the living. It waits in the Infinity Spire."
-      - "Five guardians seal its prison. When all five fall, the path opens. One hundred floors of pure decay, with The Blighted One at the top."
+      - "The oldest spirits speak of The Architect... a being that tests all warriors. It waits in the Infinity Spire."
+      - "Five guardians seal the way. When all five fall, the path opens. One hundred floors of trials, with The Architect at the top."
     locations:
       - "orc_shamans_hut"
     respawn_median: 0
@@ -405,6 +405,42 @@ npcs:
     respawn_median: 0
     respawn_variation: 0
 
+  # === GUIDE NPC ===
+
+  # City Guide - War Camp
+  skullgar_guide:
+    name: "Battlemaster Gorrak"
+    description: "A scarred old orc missing one eye and half an ear, but his remaining eye burns with undiminished fire. He sits by the central fire pit, sharpening an ancient blade and eyeing newcomers with practiced assessment."
+    level: 12
+    health: 100
+    damage: 0
+    armor: 5
+    experience: 0
+    aggressive: false
+    attackable: false
+    guide_npc: true
+    dialogue:
+      - "Fresh blood, eh? I am Battlemaster Gorrak. Many whelps I have trained - some became legends, most became corpses. Talk to me if you want to survive longer than a day."
+      - "The Beast-Skull Tower above? Our ancestors built it to honor the great beast. Now their spirits are corrupted, risen to fight the living. We must put them down again."
+      - "I've trained thousands of warriors. The clever ones listened. The stupid ones... well, their bones decorate the Ossuary now."
+      - "Remember: the bone drums record your victories, the spirit talkers restore your flesh, and your rage determines if you live or die!"
+      - "See the bone post by the portal? You can send messages and even gold to other warriors. Type 'mail' to check for word from allies!"
+      - "The five towers are connected by ancient pacts. Break all five guardians, and the Infinity Spire reveals itself!"
+      - "The Architect... the spirits whisper of it. Something that watches and tests. It doesn't fight - it judges. And judgment is worse than death."
+    locations:
+      - "orc_war_camp"
+    respawn_median: 0
+    respawn_variation: 0
+    quest_giver: true
+    gives_quests:
+      - tower_introduction
+      - floor_five
+      - floor_ten
+    turn_in_quests:
+      - tower_introduction
+      - floor_five
+      - floor_ten
+
   # === QUEST GIVERS ===
 
   # Main Quest Giver - Trophy Hall
@@ -424,7 +460,7 @@ npcs:
       - "Return with glory or don't return at all. There is no middle ground."
       - "Check your mail at the box near the portal. Even in the wastes, messages find their way."
       - "The portal can take you to other cities, should you need allies from distant lands."
-      - "The old war songs tell of the greatest enemy - The Blighted One. It cannot be killed, only imprisoned. The five towers are its chains."
+      - "The old war songs tell of the ultimate challenge - The Architect. It cannot be conquered by strength alone. The five guardians hold the key."
       - "Break all five chains and the Infinity Spire opens. There, true glory awaits - or death. Either way, a worthy battle."
     locations:
       - "orc_trophy_hall"

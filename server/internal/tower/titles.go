@@ -9,7 +9,7 @@ type TowerTitles struct {
 // towerTitles maps tower IDs to their title definitions.
 var towerTitles = map[TowerID]TowerTitles{
 	TowerHuman: {
-		FirstClearTitle:  "Archmage's Bane",
+		FirstClearTitle:  "Archivist's End",
 		SharedClearTitle: "Spire Conqueror",
 	},
 	TowerElf: {
@@ -25,8 +25,8 @@ var towerTitles = map[TowerID]TowerTitles{
 		SharedClearTitle: "Machine Breaker",
 	},
 	TowerOrc: {
-		FirstClearTitle:  "Godslayer",
-		SharedClearTitle: "Beast Tamer",
+		FirstClearTitle:  "Kingslayer",
+		SharedClearTitle: "Ancestor's Champion",
 	},
 	TowerUnified: {
 		FirstClearTitle:  "Savior of the Realm",
