@@ -71,7 +71,6 @@ func (s *Server) handleAuth(client Client) (*AuthResult, error) {
 	if t != nil {
 		client.WriteLine("\n")
 		client.WriteLine(t.GetWelcomeBanner())
-		client.WriteLine("\n")
 	} else {
 		// Fallback if text not loaded
 		client.WriteLine("\n")
@@ -80,16 +79,15 @@ func (s *Server) handleAuth(client Client) (*AuthResult, error) {
 		client.WriteLine("=====================================\n")
 		client.WriteLine("\n")
 		client.WriteLine("  [L] Login\n")
-		if websiteURL == "" {
-			client.WriteLine("  [R] Register\n")
-		}
-		client.WriteLine("\n")
 	}
 
-	// Show website registration URL if configured
-	if websiteURL != "" {
-		client.WriteLine(fmt.Sprintf("New player? Register at: %s/register\n\n", websiteURL))
+	// Show registration option or website URL based on config
+	if websiteURL == "" {
+		client.WriteLine("  [R] Register\n")
+	} else {
+		client.WriteLine(fmt.Sprintf("\nNew player? Register at: %s/register\n", websiteURL))
 	}
+	client.WriteLine("")
 
 	client.WriteLine("Enter choice: ")
 

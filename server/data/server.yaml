@@ -99,4 +99,4 @@ website:
   # If set, in-game registration is disabled and players are directed to the website
   # Leave empty to allow in-game registration
   # Example: "https://opentowermud.example.com"
-  url: ""
+  url: "http://localhost:8080"
