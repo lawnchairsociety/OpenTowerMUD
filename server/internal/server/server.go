@@ -470,26 +470,40 @@ func (s *Server) BroadcastMessage(message string, exclude *player.Player) {
 
 // sendNewPlayerWelcome sends a special welcome message to new players
 func (s *Server) sendNewPlayerWelcome(p *player.Player) {
-	welcome := `
+	theme := tower.GetTheme(p.GetHomeTower())
+
+	// Fallback values
+	cityName := "the city"
+	guideName := "the guide"
+	guideKeyword := "guide"
+
+	if theme != nil {
+		cityName = theme.CityName
+		if theme.GuideName != "" {
+			guideName = theme.GuideName
+			guideKeyword = theme.GuideKeyword
+		}
+	}
+
+	welcome := fmt.Sprintf(`
 ==============================================================================
                       WELCOME TO OPEN TOWER MUD!
 ==============================================================================
 
-You find yourself standing in the Town Square, the heart of a walled city
-that exists in the shadow of an endless tower. The air crackles with mystery
-and danger.
+You find yourself in %s, a city that exists in the shadow of an endless tower.
+The air crackles with mystery and danger.
 
-An old man with kind eyes and a weathered cloak notices you and waves warmly.
+%s notices you and beckons warmly.
 
-  "Ah, a new adventurer! Over here, friend! I am Aldric, the old guide.
+  "Ah, a new adventurer! Over here, friend!
    TALK TO ME and I'll tell you everything you need to know about this place!"
 
-   Type: talk aldric
+   Type: talk %s
 
 ------------------------------------------------------------------------------
   TIP: Type 'look' to see your surroundings, 'help' for all commands
 ------------------------------------------------------------------------------
-`
+`, cityName, guideName, guideKeyword)
 	p.SendMessage(welcome)
 }
 

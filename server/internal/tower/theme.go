@@ -13,6 +13,8 @@ type TowerTheme struct {
 	SpawnRoom     string   // "town_square" - where new characters start
 	TowerEntrance string   // "tower_entrance" - room leading into tower
 	PortalRoom    string   // "town_square" - room with city portal
+	GuideName     string   // "Aldric" - name of the city guide NPC
+	GuideKeyword  string   // "aldric" - keyword to talk to guide
 }
 
 // themes holds all tower theme definitions.
@@ -29,6 +31,8 @@ var themes = map[TowerID]*TowerTheme{
 		SpawnRoom:     "human_town_square",
 		TowerEntrance: "human_tower_entrance",
 		PortalRoom:    "human_town_square",
+		GuideName:     "Aldric",
+		GuideKeyword:  "aldric",
 	},
 	TowerElf: {
 		ID:            TowerElf,
@@ -42,6 +46,8 @@ var themes = map[TowerID]*TowerTheme{
 		SpawnRoom:     "elf_grove_heart",
 		TowerEntrance: "elf_world_tree_base",
 		PortalRoom:    "elf_grove_heart",
+		GuideName:     "Elder Thandril",
+		GuideKeyword:  "thandril",
 	},
 	TowerDwarf: {
 		ID:            TowerDwarf,
@@ -55,6 +61,8 @@ var themes = map[TowerID]*TowerTheme{
 		SpawnRoom:     "dwarf_great_hall",
 		TowerEntrance: "dwarf_the_breach",
 		PortalRoom:    "dwarf_great_hall",
+		GuideName:     "Chronicler Dain",
+		GuideKeyword:  "dain",
 	},
 	TowerGnome: {
 		ID:            TowerGnome,
@@ -68,6 +76,8 @@ var themes = map[TowerID]*TowerTheme{
 		SpawnRoom:     "gnome_central_gear",
 		TowerEntrance: "gnome_containment_gate",
 		PortalRoom:    "gnome_central_gear",
+		GuideName:     "Tinker Cogsworth",
+		GuideKeyword:  "tinker",
 	},
 	TowerOrc: {
 		ID:            TowerOrc,
@@ -81,6 +91,8 @@ var themes = map[TowerID]*TowerTheme{
 		SpawnRoom:     "orc_war_camp",
 		TowerEntrance: "orc_skull_gate",
 		PortalRoom:    "orc_war_camp",
+		GuideName:     "Battlemaster Gorrak",
+		GuideKeyword:  "gorrak",
 	},
 	TowerUnified: {
 		ID:            TowerUnified,
@@ -94,6 +106,8 @@ var themes = map[TowerID]*TowerTheme{
 		SpawnRoom:     "unified_town_square",
 		TowerEntrance: "unified_tower_entrance",
 		PortalRoom:    "unified_town_square",
+		GuideName:     "",
+		GuideKeyword:  "",
 	},
 }
 
