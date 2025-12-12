@@ -116,6 +116,9 @@ func castSelfSpell(c *Command, p PlayerInterface, spell *spells.Spell) string {
 		return "Not enough mana!"
 	}
 
+	// Record spell cast in statistics
+	p.RecordSpellCast()
+
 	// Start cooldown
 	if spell.Cooldown > 0 {
 		p.StartSpellCooldown(spell.ID, spell.Cooldown)
@@ -181,6 +184,9 @@ func castAllySpell(c *Command, p PlayerInterface, spell *spells.Spell, target Pl
 	if !p.UseMana(spell.ManaCost) {
 		return "Not enough mana!"
 	}
+
+	// Record spell cast in statistics
+	p.RecordSpellCast()
 
 	// Start cooldown
 	if spell.Cooldown > 0 {
@@ -270,6 +276,9 @@ func castEnemySpell(c *Command, p PlayerInterface, spell *spells.Spell, targetNP
 	if !p.UseMana(spell.ManaCost) {
 		return "Not enough mana!"
 	}
+
+	// Record spell cast in statistics
+	p.RecordSpellCast()
 
 	// Start cooldown
 	if spell.Cooldown > 0 {
@@ -384,6 +393,9 @@ func castRoomSpell(c *Command, p PlayerInterface, spell *spells.Spell) string {
 	if !p.UseMana(spell.ManaCost) {
 		return "Not enough mana!"
 	}
+
+	// Record spell cast in statistics
+	p.RecordSpellCast()
 
 	// Start cooldown
 	if spell.Cooldown > 0 {

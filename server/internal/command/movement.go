@@ -239,12 +239,27 @@ func executeMoveDirection(c *Command, p PlayerInterface, direction string) strin
 	// Move the player
 	p.MoveTo(nextRoomIface)
 
+	// Record movement in statistics
+	p.RecordMove()
+
 	logger.Debug("Player moved",
 		"player", p.GetName(),
 		"direction", direction,
 		"from_room", currentRoom.GetID(),
 		"to_room", nextRoom.GetID(),
 		"to_floor", nextRoom.GetFloor())
+
+	// Track highest floor reached in towers
+	floor := nextRoom.GetFloor()
+	if floor > 0 {
+		// Determine tower ID from room ID prefix or player's home tower
+		towerID := p.GetHomeTowerString()
+		// Check if this is the unified tower (room IDs start with "unified_")
+		if len(nextRoom.GetID()) > 8 && nextRoom.GetID()[:8] == "unified_" {
+			towerID = "unified"
+		}
+		p.RecordFloorReached(towerID, floor)
+	}
 
 	// Broadcast enter message to new room
 	// Determine opposite direction for enter message

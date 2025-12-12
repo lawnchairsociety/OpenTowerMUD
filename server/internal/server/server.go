@@ -995,6 +995,9 @@ func (s *Server) processPlayerAttack(p *player.Player) {
 	playerDamage := p.GetAttackDamageAgainst(npc, isSneakAttack)
 	npcDamageTaken := npc.TakeDamage(playerDamage)
 
+	// Record damage dealt in player statistics
+	p.RecordDamageDealt(npcDamageTaken)
+
 	// Add threat based on damage dealt
 	npc.AddThreat(p.GetName(), playerDamage)
 
@@ -1104,6 +1107,9 @@ func (s *Server) processNPCAttacks() {
 			npcDamage := npc.GetAttackDamage()
 			playerDamageTaken := targetPlayer.TakeDamage(npcDamage)
 
+			// Record damage taken in player statistics
+			targetPlayer.RecordDamageTaken(playerDamageTaken)
+
 			logger.Debug("NPC attack",
 				"npc", npc.GetName(),
 				"target", targetName,
@@ -1194,9 +1200,12 @@ func (s *Server) handleNPCDeath(npc *npc.NPC, room *world.Room) {
 
 			attackerNames = append(attackerNames, attackerName)
 
+			// Record kill in player statistics
+			mobID := strings.ToLower(strings.ReplaceAll(npc.GetName(), " ", "_"))
+			attacker.RecordKill(mobID)
+
 			// Update quest kill progress for this attacker
 			if s.questRegistry != nil {
-				mobID := strings.ToLower(strings.ReplaceAll(npc.GetName(), " ", "_"))
 				questLog := attacker.GetQuestLog()
 				if questLog != nil {
 					// Check all active quests for kill objectives matching this mob
@@ -1538,6 +1547,9 @@ func (s *Server) handlePlayerDeath(p *player.Player, npc *npc.NPC, room *world.R
 		"player", p.GetName(),
 		"killed_by", npc.GetName(),
 		"room", room.GetID())
+
+	// Record death in player statistics
+	p.RecordDeath()
 
 	// End combat for player and remove from NPC's target list
 	p.EndCombat()

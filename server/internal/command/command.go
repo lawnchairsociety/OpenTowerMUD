@@ -645,6 +645,23 @@ type PlayerInterface interface {
 
 	// ClearStall removes all items from the stall and returns them.
 	ClearStall() []*items.Item
+
+	// === Statistics Tracking ===
+
+	// RecordQuestCompleted increments the quest completion counter.
+	RecordQuestCompleted()
+
+	// RecordItemCrafted increments the items crafted counter.
+	RecordItemCrafted()
+
+	// RecordSpellCast increments the spells cast counter.
+	RecordSpellCast()
+
+	// RecordMove increments the distance traveled counter.
+	RecordMove()
+
+	// RecordFloorReached records reaching a floor in a tower.
+	RecordFloorReached(towerID string, floor int)
 }
 
 // PlayerInfo contains detailed information about an online player (for admin commands)

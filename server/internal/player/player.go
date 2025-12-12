@@ -419,6 +419,10 @@ func (p *Player) GetGold() int {
 // AddGold adds gold to the player's wallet
 func (p *Player) AddGold(amount int) {
 	p.Gold += amount
+	// Record gold earned in statistics (only positive amounts)
+	if amount > 0 {
+		p.RecordGoldEarned(amount)
+	}
 }
 
 // SpendGold attempts to spend gold, returns true if successful

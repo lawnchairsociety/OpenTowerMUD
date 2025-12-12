@@ -632,6 +632,9 @@ func executeComplete(c *Command, p PlayerInterface) string {
 	// Complete the quest in the log
 	questLog.TurnInQuest(questToComplete.ID, questToComplete.Repeatable)
 
+	// Record quest completion in statistics
+	p.RecordQuestCompleted()
+
 	return sb.String()
 }
 

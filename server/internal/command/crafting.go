@@ -262,6 +262,9 @@ func attemptCraft(p PlayerInterface, recipes *crafting.RecipeRegistry, recipeNam
 	// Update quest craft progress
 	updateQuestCraftProgress(p, recipe.OutputItem)
 
+	// Record crafting in statistics
+	p.RecordItemCrafted()
+
 	if newLevel > oldLevel {
 		sb.WriteString(fmt.Sprintf("Your %s skill increased to %d! (+%d)",
 			recipe.Skill.String(), newLevel, recipe.SkillGain))
