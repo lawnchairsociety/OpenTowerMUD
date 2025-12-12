@@ -385,6 +385,11 @@ func (d *Database) SaveCharacter(c *Character) error {
 
 // DeleteCharacter removes a character and all associated data.
 func (d *Database) DeleteCharacter(characterID int64) error {
+	// Delete mail where character is sender or recipient (mail FK lacks ON DELETE CASCADE)
+	if _, err := d.db.Exec("DELETE FROM mail WHERE sender_id = ? OR recipient_id = ?", characterID, characterID); err != nil {
+		return fmt.Errorf("failed to delete character mail: %w", err)
+	}
+
 	result, err := d.db.Exec("DELETE FROM characters WHERE id = ?", characterID)
 	if err != nil {
 		return fmt.Errorf("failed to delete character: %w", err)
