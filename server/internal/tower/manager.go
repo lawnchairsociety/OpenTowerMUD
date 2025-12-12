@@ -201,6 +201,28 @@ func (m *TowerManager) GetAllCityRooms() map[string]*world.Room {
 	return allRooms
 }
 
+// GetAllRooms returns all rooms from all initialized towers (all floors) and the labyrinth.
+func (m *TowerManager) GetAllRooms() map[string]*world.Room {
+	m.mu.RLock()
+	defer m.mu.RUnlock()
+
+	allRooms := make(map[string]*world.Room)
+	for _, t := range m.towers {
+		for id, room := range t.GetAllRooms() {
+			allRooms[id] = room
+		}
+	}
+
+	// Include labyrinth rooms
+	if m.labyrinth != nil {
+		for id, room := range m.labyrinth.GetRooms() {
+			allRooms[id] = room
+		}
+	}
+
+	return allRooms
+}
+
 // GetSpawnRoom returns the spawn room for a specific tower.
 func (m *TowerManager) GetSpawnRoom(id TowerID) *world.Room {
 	theme := GetTheme(id)
@@ -505,15 +527,51 @@ func (m *TowerManager) LoadTowerState(id TowerID) (bool, error) {
 	}
 
 	// Merge loaded state into existing tower (preserving city and config)
-	if existingTower, exists := m.towers[id]; exists {
-		// Copy loaded floor data (except floor 0 which is the city)
+	existingTower, exists := m.towers[id]
+	if exists {
+		// First pass: Copy all loaded floor data (except floor 0 which is the city)
+		var loadedFloorNums []int
 		for floorNum, floor := range loadedTower.Floors {
 			if floorNum > 0 {
 				existingTower.SetFloor(floorNum, floor)
+				loadedFloorNums = append(loadedFloorNums, floorNum)
 			}
 		}
 		if loadedTower.HighestFloor > existingTower.HighestFloor {
 			existingTower.HighestFloor = loadedTower.HighestFloor
+		}
+
+		// Second pass: Reconnect stairs and respawn mobs on loaded floors
+		for _, floorNum := range loadedFloorNums {
+			floor := existingTower.GetFloorIfExists(floorNum)
+			if floor == nil {
+				continue
+			}
+
+			// Connect stairs to adjacent floors
+			existingTower.ConnectStairs(floorNum)
+
+			// Respawn mobs on loaded floor (NPCs are not persisted)
+			if existingTower.GetMobSpawner() != nil {
+				floorRNG := rand.New(rand.NewSource(floor.GeneratedSeed * 1000))
+				existingTower.GetMobSpawner().SpawnMobsOnFloor(floor, floorNum, floorRNG)
+			}
+		}
+
+		// Reconnect city (floor 0) to the new floor 1 rooms
+		theme := GetTheme(id)
+		if theme != nil {
+			cityFloor := existingTower.GetFloorIfExists(0)
+			if cityFloor != nil {
+				if entranceRoom := cityFloor.GetRoom(theme.TowerEntrance); entranceRoom != nil {
+					if floor1 := existingTower.GetFloorIfExists(1); floor1 != nil {
+						if stairsDown := floor1.GetStairsDown(); stairsDown != nil {
+							entranceRoom.AddExit("up", stairsDown)
+							stairsDown.AddExit("down", entranceRoom)
+						}
+					}
+				}
+			}
 		}
 	} else {
 		// No existing tower, use loaded tower directly

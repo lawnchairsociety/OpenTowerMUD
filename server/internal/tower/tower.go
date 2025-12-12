@@ -379,6 +379,13 @@ func (t *Tower) connectStairsLocked(floorNum int) {
 	}
 }
 
+// ConnectStairs connects a floor's stairs to adjacent floors
+func (t *Tower) ConnectStairs(floorNum int) {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+	t.connectStairsLocked(floorNum)
+}
+
 // ConnectFloorToCity connects floor 1's stairs down to the tower entrance in the city
 func (t *Tower) ConnectFloorToCity(towerEntranceRoom *world.Room) error {
 	t.mu.Lock()

@@ -28,6 +28,8 @@ type TowerManagerInterface interface {
 	FindRoomWithTowerID(roomID string) (*Room, string)
 	// GetAllCityRooms returns city rooms from all towers
 	GetAllCityRooms() map[string]*Room
+	// GetAllRooms returns all rooms from all towers (all floors)
+	GetAllRooms() map[string]*Room
 	// GetSpawnRoomByString returns the spawn room for a specific tower
 	GetSpawnRoomByString(towerID string) *Room
 	// GetFloorPortalRoomByString returns the portal room for a floor in a specific tower
@@ -157,8 +159,14 @@ func (w *World) GetAllRooms() []*Room {
 		rooms = append(rooms, room)
 	}
 
-	// Include tower rooms
-	if w.tower != nil {
+	// Include tower rooms from all towers via tower manager (preferred)
+	if w.towerManager != nil {
+		towerRooms := w.towerManager.GetAllRooms()
+		for _, room := range towerRooms {
+			rooms = append(rooms, room)
+		}
+	} else if w.tower != nil {
+		// Fallback to single tower for backward compatibility
 		towerRooms := w.tower.GetAllRooms()
 		for _, room := range towerRooms {
 			rooms = append(rooms, room)
