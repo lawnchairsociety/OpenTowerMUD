@@ -325,7 +325,7 @@ func createSkillBar(current, max int) string {
 		filled = 1
 	}
 
-	bar := strings.Repeat("█", filled) + strings.Repeat("░", barLength-filled)
+	bar := strings.Repeat("=", filled) + strings.Repeat("-", barLength-filled)
 	return "[" + bar + "]"
 }
 

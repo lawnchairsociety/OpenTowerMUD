@@ -1391,7 +1391,7 @@ func (s *Server) handleTowerBossDefeat(towerID tower.TowerID, attackerNames []st
 		title = tower.GetSharedClearTitle(towerID)
 	}
 
-	// Award titles to all attackers
+	// Award titles to all attackers and check for deathless clears
 	for _, attackerName := range attackerNames {
 		if attackerInterface := s.FindPlayer(attackerName); attackerInterface != nil {
 			if attacker, ok := attackerInterface.(*player.Player); ok {
@@ -1400,6 +1400,8 @@ func (s *Server) handleTowerBossDefeat(towerID tower.TowerID, attackerNames []st
 					attacker.EarnTitle(title)
 					attacker.SendMessage(fmt.Sprintf("\n*** You have earned the title: %s ***\n", title))
 				}
+				// Check for deathless tower clear (unkillable achievement)
+				attacker.CheckDeathlessClear(string(towerID))
 			}
 		}
 	}

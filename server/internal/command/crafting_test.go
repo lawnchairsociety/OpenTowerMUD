@@ -211,37 +211,37 @@ func TestCreateSkillBar(t *testing.T) {
 			name:    "empty bar",
 			current: 0,
 			max:     100,
-			want:    "[░░░░░░░░░░░░░░░░░░░░]",
+			want:    "[--------------------]",
 		},
 		{
 			name:    "full bar",
 			current: 100,
 			max:     100,
-			want:    "[████████████████████]",
+			want:    "[====================]",
 		},
 		{
 			name:    "half bar",
 			current: 50,
 			max:     100,
-			want:    "[██████████░░░░░░░░░░]",
+			want:    "[==========----------]",
 		},
 		{
 			name:    "quarter bar",
 			current: 25,
 			max:     100,
-			want:    "[█████░░░░░░░░░░░░░░░]",
+			want:    "[=====---------------]",
 		},
 		{
 			name:    "minimum filled (1 skill point)",
 			current: 1,
 			max:     100,
-			want:    "[█░░░░░░░░░░░░░░░░░░░]", // At least 1 filled if current > 0
+			want:    "[=-------------------]", // At least 1 filled if current > 0
 		},
 		{
 			name:    "three quarters",
 			current: 75,
 			max:     100,
-			want:    "[███████████████░░░░░]",
+			want:    "[===============-----]",
 		},
 	}
 

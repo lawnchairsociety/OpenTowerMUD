@@ -18,14 +18,25 @@ type PlayerStatistics struct {
 	ItemsCrafted     int            `json:"items_crafted"`
 	SpellsCast       int            `json:"spells_cast"`
 	DistanceTraveled int            `json:"distance_traveled"` // Room moves
-	mu               sync.RWMutex
+
+	// Achievement tracking fields
+	PortalsUsed           int             `json:"portals_used"`             // Portal usage count
+	CitiesVisited         map[string]bool `json:"cities_visited"`           // city_id -> visited
+	SecretRoomsFound      int             `json:"secret_rooms_found"`       // Secret room discovery count
+	LabyrinthCompleted    bool            `json:"labyrinth_completed"`      // Successfully navigated labyrinth
+	TotalPlayTimeSeconds  int64           `json:"total_play_time_seconds"`  // Total play time in seconds
+	TowerClearsWithoutDeath map[string]int `json:"tower_clears_without_death"` // tower_id -> count of deathless clears
+
+	mu sync.RWMutex
 }
 
 // NewPlayerStatistics creates a new statistics tracker.
 func NewPlayerStatistics() *PlayerStatistics {
 	return &PlayerStatistics{
-		MobKills:     make(map[string]int),
-		HighestFloor: make(map[string]int),
+		MobKills:                make(map[string]int),
+		HighestFloor:            make(map[string]int),
+		CitiesVisited:           make(map[string]bool),
+		TowerClearsWithoutDeath: make(map[string]int),
 	}
 }
 
@@ -106,6 +117,92 @@ func (s *PlayerStatistics) RecordMove() {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	s.DistanceTraveled++
+}
+
+// RecordPortalUsed increments portal usage count.
+func (s *PlayerStatistics) RecordPortalUsed() {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.PortalsUsed++
+}
+
+// RecordCityVisited marks a city as visited.
+func (s *PlayerStatistics) RecordCityVisited(cityID string) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if s.CitiesVisited == nil {
+		s.CitiesVisited = make(map[string]bool)
+	}
+	s.CitiesVisited[cityID] = true
+}
+
+// HasVisitedAllCities checks if all 5 racial cities have been visited.
+func (s *PlayerStatistics) HasVisitedAllCities() bool {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	if s.CitiesVisited == nil {
+		return false
+	}
+	cities := []string{"human", "elf", "dwarf", "gnome", "orc"}
+	for _, city := range cities {
+		if !s.CitiesVisited[city] {
+			return false
+		}
+	}
+	return true
+}
+
+// RecordSecretRoomFound increments secret room discovery count.
+func (s *PlayerStatistics) RecordSecretRoomFound() {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.SecretRoomsFound++
+}
+
+// RecordLabyrinthCompleted marks the labyrinth as completed.
+func (s *PlayerStatistics) RecordLabyrinthCompleted() {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.LabyrinthCompleted = true
+}
+
+// AddPlayTime adds seconds to total play time.
+func (s *PlayerStatistics) AddPlayTime(seconds int64) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.TotalPlayTimeSeconds += seconds
+}
+
+// GetTotalPlayTimeHours returns total play time in hours.
+func (s *PlayerStatistics) GetTotalPlayTimeHours() float64 {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	return float64(s.TotalPlayTimeSeconds) / 3600.0
+}
+
+// RecordTowerClearWithoutDeath records a deathless tower clear.
+func (s *PlayerStatistics) RecordTowerClearWithoutDeath(towerID string) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if s.TowerClearsWithoutDeath == nil {
+		s.TowerClearsWithoutDeath = make(map[string]int)
+	}
+	s.TowerClearsWithoutDeath[towerID]++
+}
+
+// HasDeathlessClear checks if player has any deathless tower clear.
+func (s *PlayerStatistics) HasDeathlessClear() bool {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	if s.TowerClearsWithoutDeath == nil {
+		return false
+	}
+	for _, count := range s.TowerClearsWithoutDeath {
+		if count > 0 {
+			return true
+		}
+	}
+	return false
 }
 
 // GetTotalKills returns total kill count.

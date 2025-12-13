@@ -62,7 +62,7 @@ session:
   # Auto-save interval in minutes (default: 5)
   # All connected players are automatically saved at this interval
   # Set to 0 to disable auto-save (players must save manually via the bard)
-  auto_save_interval_minutes: 5
+  auto_save_interval_minutes: 1
 
 # File and directory paths for game data
 paths:

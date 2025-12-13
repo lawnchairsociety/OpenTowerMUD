@@ -662,6 +662,33 @@ type PlayerInterface interface {
 
 	// RecordFloorReached records reaching a floor in a tower.
 	RecordFloorReached(towerID string, floor int)
+
+	// RecordPortalUsed increments portal usage count.
+	RecordPortalUsed()
+
+	// RecordCityVisited marks a city as visited.
+	RecordCityVisited(cityID string)
+
+	// RecordSecretRoomFound increments secret room discovery count.
+	RecordSecretRoomFound()
+
+	// RecordLabyrinthCompleted marks the labyrinth as completed.
+	RecordLabyrinthCompleted()
+
+	// AddPlayTime adds seconds to total play time.
+	AddPlayTime(seconds int64)
+
+	// RecordTowerClearWithoutDeath records a deathless tower clear.
+	RecordTowerClearWithoutDeath(towerID string)
+
+	// StartTowerRun begins tracking a tower run for the unkillable achievement.
+	StartTowerRun(towerID string)
+
+	// EndTowerRun ends the current tower run.
+	EndTowerRun()
+
+	// CheckDeathlessClear checks if the boss kill was deathless and records it.
+	CheckDeathlessClear(towerID string)
 }
 
 // PlayerInfo contains detailed information about an online player (for admin commands)

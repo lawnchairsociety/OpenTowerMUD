@@ -138,8 +138,12 @@ type Player struct {
 	// Player stall system
 	stallOpen      bool                    // Is the player's stall open for business?
 	stallInventory []*command.StallItem    // Items for sale in the stall
+	// Tower run tracking for "unkillable" achievement
+	currentTowerRun  string // Tower ID of current run (empty if not in tower)
+	deathsDuringRun  int    // Deaths during current tower run
 	// Session tracking
 	lastActivity time.Time // Last time player sent input (for idle timeout)
+	loginTime    time.Time // When the player logged in (for play time tracking)
 }
 
 func NewPlayer(name string, client Client, world *world.World, server ServerInterface) *Player {
@@ -202,6 +206,7 @@ func NewPlayer(name string, client Client, world *world.World, server ServerInte
 		stallInventory: make([]*command.StallItem, 0),
 		// Session tracking
 		lastActivity: time.Now(),
+		loginTime:    time.Now(),
 	}
 
 	// Initialize anti-spam tracker with config from server
@@ -267,6 +272,11 @@ func (p *Player) SendMessage(message string) {
 
 func (p *Player) Disconnect() {
 	p.disconnected = true
+	// Track total play time for achievement
+	if !p.loginTime.IsZero() {
+		playTimeSeconds := int64(time.Since(p.loginTime).Seconds())
+		p.AddPlayTime(playTimeSeconds)
+	}
 	// Close stall and return items to inventory
 	if p.stallOpen {
 		for _, stallItem := range p.stallInventory {
@@ -2607,6 +2617,10 @@ func (p *Player) RecordQuestCompleted() {
 // RecordDeath records a player death.
 func (p *Player) RecordDeath() {
 	p.GetStatistics().RecordDeath()
+	// Track deaths during current tower run for unkillable achievement
+	if p.currentTowerRun != "" {
+		p.deathsDuringRun++
+	}
 }
 
 // RecordDamageDealt records damage dealt.
@@ -2632,6 +2646,81 @@ func (p *Player) RecordSpellCast() {
 // RecordMove records a room movement.
 func (p *Player) RecordMove() {
 	p.GetStatistics().RecordMove()
+}
+
+// RecordPortalUsed increments portal usage count.
+func (p *Player) RecordPortalUsed() {
+	p.GetStatistics().RecordPortalUsed()
+}
+
+// RecordCityVisited marks a city as visited.
+func (p *Player) RecordCityVisited(cityID string) {
+	p.GetStatistics().RecordCityVisited(cityID)
+}
+
+// RecordSecretRoomFound increments secret room discovery count.
+func (p *Player) RecordSecretRoomFound() {
+	p.GetStatistics().RecordSecretRoomFound()
+}
+
+// RecordLabyrinthCompleted marks the labyrinth as completed.
+func (p *Player) RecordLabyrinthCompleted() {
+	p.GetStatistics().RecordLabyrinthCompleted()
+}
+
+// AddPlayTime adds seconds to total play time.
+func (p *Player) AddPlayTime(seconds int64) {
+	p.GetStatistics().AddPlayTime(seconds)
+}
+
+// RecordTowerClearWithoutDeath records a deathless tower clear.
+func (p *Player) RecordTowerClearWithoutDeath(towerID string) {
+	p.GetStatistics().RecordTowerClearWithoutDeath(towerID)
+}
+
+// ==================== TOWER RUN TRACKING ====================
+
+// StartTowerRun begins tracking a tower run for the unkillable achievement.
+func (p *Player) StartTowerRun(towerID string) {
+	// Only track for racial towers (not unified)
+	if towerID == "unified" {
+		return
+	}
+	// If starting a new tower run, reset deaths
+	if p.currentTowerRun != towerID {
+		p.currentTowerRun = towerID
+		p.deathsDuringRun = 0
+	}
+}
+
+// EndTowerRun ends the current tower run (when leaving tower to city).
+func (p *Player) EndTowerRun() {
+	p.currentTowerRun = ""
+	p.deathsDuringRun = 0
+}
+
+// CheckDeathlessClear checks if the boss kill was a deathless clear and records it.
+func (p *Player) CheckDeathlessClear(towerID string) {
+	// Only track for racial towers (not unified)
+	if towerID == "unified" {
+		return
+	}
+	// Check if this was the tower we were tracking and no deaths occurred
+	if p.currentTowerRun == towerID && p.deathsDuringRun == 0 {
+		p.RecordTowerClearWithoutDeath(towerID)
+	}
+	// End the run after boss kill
+	p.EndTowerRun()
+}
+
+// GetCurrentTowerRun returns the tower ID of the current run.
+func (p *Player) GetCurrentTowerRun() string {
+	return p.currentTowerRun
+}
+
+// GetDeathsDuringRun returns deaths during the current tower run.
+func (p *Player) GetDeathsDuringRun() int {
+	return p.deathsDuringRun
 }
 
 // ==================== STALL METHODS ====================

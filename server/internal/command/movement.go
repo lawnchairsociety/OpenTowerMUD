@@ -249,7 +249,7 @@ func executeMoveDirection(c *Command, p PlayerInterface, direction string) strin
 		"to_room", nextRoom.GetID(),
 		"to_floor", nextRoom.GetFloor())
 
-	// Track highest floor reached in towers
+	// Track highest floor reached in towers and tower runs for unkillable achievement
 	floor := nextRoom.GetFloor()
 	if floor > 0 {
 		// Determine tower ID from room ID prefix or player's home tower
@@ -259,6 +259,20 @@ func executeMoveDirection(c *Command, p PlayerInterface, direction string) strin
 			towerID = "unified"
 		}
 		p.RecordFloorReached(towerID, floor)
+		// Start or continue tower run tracking for unkillable achievement
+		p.StartTowerRun(towerID)
+	} else if floor == 0 {
+		// End tower run when returning to city
+		p.EndTowerRun()
+		// Track city visits for achievement (floor 0 is the city)
+		roomID := nextRoom.GetID()
+		// Determine which city based on room ID prefix
+		for _, cityID := range []string{"human", "elf", "dwarf", "gnome", "orc"} {
+			if len(roomID) > len(cityID) && roomID[:len(cityID)+1] == cityID+"_" {
+				p.RecordCityVisited(cityID)
+				break
+			}
+		}
 	}
 
 	// Broadcast enter message to new room
@@ -291,12 +305,15 @@ func executeMoveDirection(c *Command, p PlayerInterface, direction string) strin
 					if cityID != "" {
 						// Track this gate visit for the Wanderer of the Ways title
 						if p.VisitLabyrinthGate(cityID) {
-							// First time visiting this gate
+							// First time visiting this gate - also track for achievement
+							p.RecordCityVisited(cityID)
 							visitedCount := len(p.GetVisitedLabyrinthGates())
 							p.SendMessage(fmt.Sprintf("\n*** You have discovered the %s Gate! (%d/5 gates found) ***\n", getCityDisplayName(cityID), visitedCount))
 
 							// Check if player has now visited all gates
 							if p.HasVisitedAllLabyrinthGates() {
+								// Track labyrinth completion for achievement
+								p.RecordLabyrinthCompleted()
 								title := "Wanderer of the Ways"
 								if !p.HasEarnedTitle(title) {
 									p.EarnTitle(title)
@@ -620,6 +637,9 @@ func executePortal(c *Command, p PlayerInterface) string {
 
 	// Move the player
 	p.MoveTo(destRoom)
+
+	// Track portal usage for achievement
+	p.RecordPortalUsed()
 
 	// Broadcast arrival
 	server.BroadcastToRoom(destRoomID, fmt.Sprintf("%s emerges from the portal in a flash of light!\n", p.GetName()), p)
