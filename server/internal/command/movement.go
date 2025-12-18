@@ -2,6 +2,7 @@ package command
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 
 	"github.com/lawnchairsociety/opentowermud/server/internal/logger"
@@ -9,6 +10,21 @@ import (
 	"github.com/lawnchairsociety/opentowermud/server/internal/tower"
 	"github.com/lawnchairsociety/opentowermud/server/internal/world"
 )
+
+// towerRoomIDPattern matches tower room IDs like "elf_f5_r10_7" or "unified_f1_r5_3"
+// Captures the tower ID prefix before "_f"
+var towerRoomIDPattern = regexp.MustCompile(`^([a-z]+)_f\d+_`)
+
+// getTowerFromRoomID extracts the tower ID from a room ID.
+// Tower room IDs follow the pattern: {tower}_f{floor}_r{x}_{y} (e.g., "elf_f5_r10_7")
+// Returns the tower ID (e.g., "elf", "human", "unified") or empty string for non-tower rooms.
+func getTowerFromRoomID(roomID string) string {
+	matches := towerRoomIDPattern.FindStringSubmatch(roomID)
+	if len(matches) >= 2 {
+		return matches[1]
+	}
+	return ""
+}
 
 // executeLook handles looking at the room or examining specific objects
 func executeLook(c *Command, p PlayerInterface) string {
@@ -262,11 +278,10 @@ func executeMoveDirection(c *Command, p PlayerInterface, direction string) strin
 	// Track highest floor reached in towers and tower runs for unkillable achievement
 	floor := nextRoom.GetFloor()
 	if floor > 0 {
-		// Determine tower ID from room ID prefix or player's home tower
-		towerID := p.GetHomeTowerString()
-		// Check if this is the unified tower (room IDs start with "unified_")
-		if len(nextRoom.GetID()) > 8 && nextRoom.GetID()[:8] == "unified_" {
-			towerID = "unified"
+		// Determine tower ID from room ID (not player's home tower)
+		towerID := getTowerFromRoomID(nextRoom.GetID())
+		if towerID == "" {
+			towerID = p.GetHomeTowerString()
 		}
 		p.RecordFloorReached(towerID, floor)
 		// Start or continue tower run tracking for unkillable achievement
@@ -294,12 +309,19 @@ func executeMoveDirection(c *Command, p PlayerInterface, direction string) strin
 	// Track floor portal discovery - if room has a portal, mark the floor as discovered
 	if nextRoom.HasFeature("portal") {
 		floorNum := nextRoom.GetFloor()
-		if !p.HasDiscoveredPortal(floorNum) {
-			p.DiscoverPortal(floorNum)
+		// Determine tower ID from room ID (not player's home tower)
+		portalTowerID := getTowerFromRoomID(nextRoom.GetID())
+		if portalTowerID == "" {
+			portalTowerID = p.GetHomeTowerString()
+		}
+		if !p.HasDiscoveredPortalInTowerByString(portalTowerID, floorNum) {
+			p.DiscoverPortalInTowerByString(portalTowerID, floorNum)
+			towerDisplayName := getTowerDisplayName(portalTowerID)
 			logger.Debug("Portal discovered",
 				"player", p.GetName(),
+				"tower", portalTowerID,
 				"floor", floorNum)
-			p.SendMessage(fmt.Sprintf("\n*** You have discovered a portal on %s! ***\n", getFloorDisplayName(floorNum)))
+			p.SendMessage(fmt.Sprintf("\n*** You have discovered a portal on %s in %s! ***\n", getFloorDisplayName(floorNum), towerDisplayName))
 		}
 	}
 
@@ -457,14 +479,13 @@ func executePortal(c *Command, p PlayerInterface) string {
 		return "Internal error: invalid world type"
 	}
 
-	// Determine current tower from room ID
-	currentTowerID := p.GetHomeTowerString()
+	// Determine current tower from room ID (not player's home tower)
 	currentRoomID := room.GetID()
 	currentFloor := room.GetFloor()
-
-	// Check if we're in the unified tower
-	if strings.HasPrefix(currentRoomID, "unified_") {
-		currentTowerID = string(tower.TowerUnified)
+	currentTowerID := getTowerFromRoomID(currentRoomID)
+	if currentTowerID == "" {
+		// Fall back to home tower for city rooms or unknown formats
+		currentTowerID = p.GetHomeTowerString()
 	}
 
 	// Check if unified tower is unlocked
