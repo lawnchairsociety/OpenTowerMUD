@@ -185,6 +185,7 @@ func (d *Database) SaveCharacterFull(c *Character, inventoryIDs []string, equipm
 			known_recipes = ?,
 			quest_log = ?,
 			quest_inventory = ?,
+			trophy_case = ?,
 			earned_titles = ?,
 			active_title = ?,
 			visited_labyrinth_gates = ?,
@@ -197,7 +198,7 @@ func (d *Database) SaveCharacterFull(c *Character, inventoryIDs []string, equipm
 		c.DiscoveredPortals, c.Strength, c.Dexterity, c.Constitution, c.Intelligence, c.Wisdom, c.Charisma,
 		c.Gold, c.KeyRing, c.PrimaryClass, c.ClassLevels, c.ActiveClass, c.Race, c.HomeTower,
 		c.CraftingSkills, c.KnownRecipes,
-		c.QuestLog, c.QuestInventory, c.EarnedTitles, c.ActiveTitle,
+		c.QuestLog, c.QuestInventory, c.TrophyCase, c.EarnedTitles, c.ActiveTitle,
 		c.VisitedLabyrinthGates, c.TalkedToLoreNPCs, c.Statistics,
 		c.ID,
 	)

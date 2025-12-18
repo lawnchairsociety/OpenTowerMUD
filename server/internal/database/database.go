@@ -179,6 +179,8 @@ func (d *Database) migrate() error {
 		// Quest system columns
 		`ALTER TABLE characters ADD COLUMN quest_log TEXT NOT NULL DEFAULT '{}'`,
 		`ALTER TABLE characters ADD COLUMN quest_inventory TEXT NOT NULL DEFAULT ''`,
+		// Trophy system
+		`ALTER TABLE characters ADD COLUMN trophy_case TEXT NOT NULL DEFAULT ''`,
 		`ALTER TABLE characters ADD COLUMN earned_titles TEXT NOT NULL DEFAULT ''`,
 		`ALTER TABLE characters ADD COLUMN active_title TEXT NOT NULL DEFAULT ''`,
 		// Multi-tower system

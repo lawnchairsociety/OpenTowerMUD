@@ -129,6 +129,8 @@ type Player struct {
 	// Quest system
 	questLog       *quest.PlayerQuestLog // Active and completed quests
 	questInventory []*items.Item         // Quest-bound items (weightless, can't drop)
+	// Trophy system - unique non-equippable items (weightless, can't drop/trade)
+	trophyCase []*items.Item
 	earnedTitles           map[string]bool // title ID -> earned
 	activeTitle            string          // Currently displayed title
 	visitedLabyrinthGates  map[string]bool // cityID -> visited (for Wanderer title)
@@ -195,6 +197,8 @@ func NewPlayer(name string, client Client, world *world.World, server ServerInte
 		// Quest system
 		questLog:       quest.NewPlayerQuestLog(),
 		questInventory: make([]*items.Item, 0),
+		// Trophy system
+		trophyCase: make([]*items.Item, 0),
 		earnedTitles:          make(map[string]bool),
 		activeTitle:           "",
 		visitedLabyrinthGates: make(map[string]bool),
@@ -422,8 +426,8 @@ func (p *Player) GetKeyRing() []*items.Item {
 }
 
 // GetOwnedUniqueItemIDs returns the IDs of all unique items the player owns
-// (in inventory, equipment, and key ring). Used for filtering unique items
-// from room displays so players don't see items they already own.
+// (in inventory, equipment, key ring, and trophy case). Used for filtering
+// unique items from room displays so players don't see items they already own.
 func (p *Player) GetOwnedUniqueItemIDs() []string {
 	var uniqueIDs []string
 
@@ -446,6 +450,11 @@ func (p *Player) GetOwnedUniqueItemIDs() []string {
 		if key.Unique {
 			uniqueIDs = append(uniqueIDs, key.ID)
 		}
+	}
+
+	// Check trophy case (all items in trophy case are unique by definition)
+	for _, trophy := range p.trophyCase {
+		uniqueIDs = append(uniqueIDs, trophy.ID)
 	}
 
 	return uniqueIDs
@@ -2387,6 +2396,47 @@ func (p *Player) ClearQuestInventoryForQuest(questItemIDs []string) {
 		}
 	}
 	p.questInventory = newInventory
+}
+
+// ==================== TROPHY CASE METHODS ====================
+
+// GetTrophyCase returns the player's trophy case contents
+func (p *Player) GetTrophyCase() []*items.Item {
+	return p.trophyCase
+}
+
+// AddTrophy adds a unique non-equippable item to the trophy case
+func (p *Player) AddTrophy(item *items.Item) {
+	p.trophyCase = append(p.trophyCase, item)
+}
+
+// HasTrophy returns true if the player has a trophy with the given ID
+func (p *Player) HasTrophy(itemID string) bool {
+	for _, trophy := range p.trophyCase {
+		if trophy.ID == itemID {
+			return true
+		}
+	}
+	return false
+}
+
+// GetTrophyCaseString returns a comma-separated list of trophy item IDs for persistence
+func (p *Player) GetTrophyCaseString() string {
+	if len(p.trophyCase) == 0 {
+		return ""
+	}
+	ids := make([]string, len(p.trophyCase))
+	for i, trophy := range p.trophyCase {
+		ids[i] = trophy.ID
+	}
+	return strings.Join(ids, ",")
+}
+
+// SetTrophyCaseFromString initializes the trophy case from a comma-separated list of item IDs
+// Note: Items must be recreated by the persistence layer using the item registry
+func (p *Player) SetTrophyCaseFromString(trophyStr string) {
+	p.trophyCase = make([]*items.Item, 0)
+	// Note: Items will be recreated by the persistence layer using the item registry
 }
 
 // ==================== TITLE METHODS ====================

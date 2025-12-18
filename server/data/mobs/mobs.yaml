@@ -1922,67 +1922,65 @@ npcs:
     respawn_variation: 120
 
   # ===================
-  # Boss Mobs (Every 10th floor)
+  # Tower-Specific Sub-Bosses (Floor 10)
   # ===================
 
-  goblin_king:
-    name: "Goblin King"
-    description: "The massive ruler of the goblin horde, wearing a crude crown and wielding a spiked club"
+  # --- HUMAN/ARCANE SPIRE - Floor 10 Boss ---
+  the_inferno_keeper:
+    name: "The Inferno Keeper"
+    description: "A massive fire elemental bound to guard the entrance to the Burning Library, flames roaring from its molten core"
     level: 8
-    health: 102
-    damage: 12
-    armor: 2
-    experience: 150
+    health: 140
+    damage: 14
+    armor: 3
+    experience: 180
     aggressive: true
     attackable: true
-    tier: 1
+    tier: 2
     boss: true
-    mob_type: "humanoid"
-    tower_tags: ["shared"]
-    gold_min: 50
-    gold_max: 75
-    loot_table:  # Bosses drop ALL loot at 100% - chances ignored
-      - item: "crown_of_the_goblin_king"
+    mob_type: "construct"
+    tower_tags: ["human"]
+    gold_min: 60
+    gold_max: 100
+    loot_table:
+      - item: "inferno_keepers_ember"
         chance: 100
       - item: "greater_healing_potion"
         chance: 100
       - item: "ancient_key"
         chance: 100
-      - item: "iron_ore"
+      - item: "arcane_dust"
         chance: 100
-      - item: "leather"
-        chance: 100
-      - item: "thread"
+      - item: "rough_gem"
         chance: 100
     respawn_median: 900
     respawn_variation: 180
 
-  spider_queen:
-    name: "Spider Queen"
-    description: "A colossal arachnid with countless offspring crawling across her abdomen"
+  # --- ELF/BLIGHTED TREE - Floor 10 Boss ---
+  the_brood_mother:
+    name: "The Brood Mother"
+    description: "A colossal spider twisted by the blight, her offspring crawl across her festering abdomen as she guards the Canker's approach"
     level: 8
-    health: 200
-    damage: 18
-    armor: 4
-    experience: 250
+    health: 150
+    damage: 15
+    armor: 3
+    experience: 180
     aggressive: true
     attackable: true
     tier: 2
     boss: true
     mob_type: "beast"
-    tower_tags: ["shared"]
-    gold_min: 75
-    gold_max: 125
-    loot_table:  # Bosses drop ALL loot at 100% - chances ignored
+    tower_tags: ["elf"]
+    gold_min: 60
+    gold_max: 100
+    loot_table:
+      - item: "brood_mothers_heart"
+        chance: 100
       - item: "spider_queens_fang"
         chance: 100
-      - item: "elixir"
+      - item: "greater_healing_potion"
         chance: 100
       - item: "ancient_key"
-        chance: 100
-      - item: "leather"
-        chance: 100
-      - item: "beast_fang"
         chance: 100
       - item: "monster_blood"
         chance: 100
@@ -1991,23 +1989,191 @@ npcs:
     respawn_median: 900
     respawn_variation: 180
 
-  shadow_lord:
-    name: "Shadow Lord"
-    description: "A towering figure of pure darkness, its form constantly shifting"
-    level: 12
-    health: 300
-    damage: 25
-    armor: 6
-    experience: 400
+  # --- DWARF/FLOODED MINES - Floor 10 Boss ---
+  the_drowned_foreman:
+    name: "The Drowned Foreman"
+    description: "The waterlogged corpse of the last mine foreman, still clutching his lantern, commanding the drowned dead to defend his galleries"
+    level: 8
+    health: 145
+    damage: 13
+    armor: 4
+    experience: 180
+    aggressive: true
+    attackable: true
+    tier: 2
+    boss: true
+    mob_type: "undead"
+    tower_tags: ["dwarf"]
+    gold_min: 60
+    gold_max: 100
+    loot_table:
+      - item: "foremans_lantern"
+        chance: 100
+      - item: "greater_healing_potion"
+        chance: 100
+      - item: "ancient_key"
+        chance: 100
+      - item: "iron_ore"
+        chance: 100
+      - item: "ghost_essence"
+        chance: 100
+    respawn_median: 900
+    respawn_variation: 180
+
+  # --- GNOME/CLOCKWORK TOWER - Floor 10 Boss ---
+  furnace_heart:
+    name: "Furnace Heart"
+    description: "The central heating system of the factory district, gone rogue and burning white-hot, its brass chassis warped by internal pressure"
+    level: 8
+    health: 135
+    damage: 16
+    armor: 4
+    experience: 180
+    aggressive: true
+    attackable: true
+    tier: 2
+    boss: true
+    mob_type: "construct"
+    tower_tags: ["gnome"]
+    gold_min: 60
+    gold_max: 100
+    loot_table:
+      - item: "furnace_heart_cog"
+        chance: 100
+      - item: "greater_healing_potion"
+        chance: 100
+      - item: "ancient_key"
+        chance: 100
+      - item: "steel_ingot"
+        chance: 100
+      - item: "arcane_dust"
+        chance: 100
+    respawn_median: 900
+    respawn_variation: 180
+
+  # --- ORC/BEAST-SKULL OSSUARY - Floor 10 Boss ---
+  groknar_the_unbroken:
+    name: "Groknar the Unbroken"
+    description: "A legendary orc champion who died undefeated in battle, his skeleton still radiates the fury that made him invincible in life"
+    level: 8
+    health: 160
+    damage: 16
+    armor: 3
+    experience: 180
+    aggressive: true
+    attackable: true
+    tier: 2
+    boss: true
+    mob_type: "undead"
+    tower_tags: ["orc"]
+    gold_min: 60
+    gold_max: 100
+    loot_table:
+      - item: "groknars_tusk"
+        chance: 100
+      - item: "crown_of_the_goblin_king"
+        chance: 100
+      - item: "greater_healing_potion"
+        chance: 100
+      - item: "ancient_key"
+        chance: 100
+      - item: "bone"
+        chance: 100
+      - item: "leather"
+        chance: 100
+    respawn_median: 900
+    respawn_variation: 180
+
+  # ===================
+  # Tower-Specific Sub-Bosses (Floor 20)
+  # ===================
+
+  # --- HUMAN/ARCANE SPIRE - Floor 20 Boss ---
+  the_tome_wraith:
+    name: "The Tome Wraith"
+    description: "A spectral scholar consumed by forbidden knowledge, pages of damned texts swirl around its translucent form"
+    level: 11
+    health: 250
+    damage: 22
+    armor: 4
+    experience: 350
     aggressive: true
     attackable: true
     tier: 3
     boss: true
     mob_type: "undead"
-    tower_tags: ["shared"]
-    gold_min: 100
-    gold_max: 175
-    loot_table:  # Bosses drop ALL loot at 100% - chances ignored
+    tower_tags: ["human"]
+    gold_min: 90
+    gold_max: 150
+    loot_table:
+      - item: "tome_of_unmaking"
+        chance: 100
+      - item: "elixir"
+        chance: 100
+      - item: "ancient_key"
+        chance: 100
+      - item: "arcane_dust"
+        chance: 100
+      - item: "ghost_essence"
+        chance: 100
+      - item: "blank_scroll"
+        chance: 100
+      - item: "enchanted_gem"
+        chance: 100
+    respawn_median: 900
+    respawn_variation: 180
+
+  # --- ELF/BLIGHTED TREE - Floor 20 Boss ---
+  the_canker_lord:
+    name: "The Canker Lord"
+    description: "The living heart of the infection, a towering mass of fungal corruption that spreads disease with every breath"
+    level: 11
+    health: 270
+    damage: 20
+    armor: 5
+    experience: 350
+    aggressive: true
+    attackable: true
+    tier: 3
+    boss: true
+    mob_type: "construct"
+    tower_tags: ["elf"]
+    gold_min: 90
+    gold_max: 150
+    loot_table:
+      - item: "heart_of_the_canker"
+        chance: 100
+      - item: "elixir"
+        chance: 100
+      - item: "ancient_key"
+        chance: 100
+      - item: "monster_blood"
+        chance: 100
+      - item: "mushroom"
+        chance: 100
+      - item: "moonpetal"
+        chance: 100
+    respawn_median: 900
+    respawn_variation: 180
+
+  # --- DWARF/FLOODED MINES - Floor 20 Boss ---
+  the_shadow_lord:
+    name: "The Shadow Lord"
+    description: "A towering figure of pure darkness from the deepest galleries, where no light has shone for centuries"
+    level: 11
+    health: 260
+    damage: 21
+    armor: 5
+    experience: 350
+    aggressive: true
+    attackable: true
+    tier: 3
+    boss: true
+    mob_type: "undead"
+    tower_tags: ["dwarf"]
+    gold_min: 90
+    gold_max: 150
+    loot_table:
       - item: "shadow_orb"
         chance: 100
       - item: "elixir"
@@ -2016,60 +2182,80 @@ npcs:
         chance: 100
       - item: "ghost_essence"
         chance: 100
-      - item: "arcane_dust"
-        chance: 100
-      - item: "blank_scroll"
-        chance: 100
       - item: "mithril_ore"
         chance: 100
-      - item: "enchanted_gem"
-        chance: 100
-      - item: "moonpetal"
+      - item: "rough_gem"
         chance: 100
     respawn_median: 900
     respawn_variation: 180
 
-  tower_guardian:
-    name: "Tower Guardian"
-    description: "An ancient construct created to protect the tower's deepest secrets"
-    level: 15
-    health: 500
-    damage: 35
-    armor: 12
-    experience: 750
+  # --- GNOME/CLOCKWORK TOWER - Floor 20 Boss ---
+  prototype_omega:
+    name: "Prototype Omega"
+    description: "The final military prototype before the factory fell, bristling with weapons that were never meant to be activated"
+    level: 11
+    health: 280
+    damage: 23
+    armor: 6
+    experience: 350
     aggressive: true
     attackable: true
-    tier: 4
+    tier: 3
     boss: true
     mob_type: "construct"
-    tower_tags: ["shared"]
-    gold_min: 150
-    gold_max: 250
-    loot_table:  # Bosses drop ALL loot at 100% - chances ignored
-      - item: "guardians_core"
-        chance: 100
-      - item: "legendary_key"
+    tower_tags: ["gnome"]
+    gold_min: 90
+    gold_max: 150
+    loot_table:
+      - item: "omega_core"
         chance: 100
       - item: "elixir"
         chance: 100
+      - item: "ancient_key"
+        chance: 100
       - item: "steel_ingot"
         chance: 100
-      - item: "arcane_dust"
+      - item: "mithril_ore"
         chance: 100
-      - item: "rough_gem"
+      - item: "golem_core"
         chance: 100
-      - item: "silver_chain"
+    respawn_median: 900
+    respawn_variation: 180
+
+  # --- ORC/BEAST-SKULL OSSUARY - Floor 20 Boss ---
+  the_warchief_specter:
+    name: "The Warchief Specter"
+    description: "The ghost of a great warchief who led the orc clans to glory, now bound to the Hall of Champions for eternity"
+    level: 11
+    health: 265
+    damage: 24
+    armor: 4
+    experience: 350
+    aggressive: true
+    attackable: true
+    tier: 3
+    boss: true
+    mob_type: "undead"
+    tower_tags: ["orc"]
+    gold_min: 90
+    gold_max: 150
+    loot_table:
+      - item: "chieftains_war_horn"
         chance: 100
-      - item: "adamantine_shard"
+      - item: "elixir"
         chance: 100
-      - item: "void_crystal"
+      - item: "ancient_key"
         chance: 100
-      - item: "ancient_essence"
+      - item: "ghost_essence"
         chance: 100
-      - item: "dragonhide_scrap"
+      - item: "bone"
         chance: 100
-    respawn_median: 1800
-    respawn_variation: 300
+      - item: "leather"
+        chance: 100
+      - item: "steel_ingot"
+        chance: 100
+    respawn_median: 900
+    respawn_variation: 180
 
   # ===================
   # Tower-Specific Final Bosses (Floor 25)
@@ -2092,6 +2278,8 @@ npcs:
     gold_min: 150
     gold_max: 250
     loot_table:
+      - item: "archivists_eye"
+        chance: 100
       - item: "elixir"
         chance: 100
       - item: "arcane_dust"
@@ -2126,6 +2314,8 @@ npcs:
     gold_min: 150
     gold_max: 250
     loot_table:
+      - item: "seed_of_corruption"
+        chance: 100
       - item: "elixir"
         chance: 100
       - item: "monster_blood"
@@ -2158,6 +2348,8 @@ npcs:
     gold_min: 150
     gold_max: 250
     loot_table:
+      - item: "guardians_core"
+        chance: 100
       - item: "elixir"
         chance: 100
       - item: "adamantine_shard"
@@ -2190,6 +2382,8 @@ npcs:
     gold_min: 150
     gold_max: 250
     loot_table:
+      - item: "calculation_matrix"
+        chance: 100
       - item: "elixir"
         chance: 100
       - item: "steel_ingot"
@@ -2217,11 +2411,13 @@ npcs:
     attackable: true
     tier: 4
     boss: true
-    mob_type: "beast"
+    mob_type: "undead"
     tower_tags: ["orc"]
     gold_min: 150
     gold_max: 250
     loot_table:
+      - item: "crown_of_the_first"
+        chance: 100
       - item: "elixir"
         chance: 100
       - item: "beast_fang"

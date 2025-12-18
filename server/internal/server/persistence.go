@@ -209,6 +209,24 @@ func (s *Server) loadPlayer(client Client, auth *AuthResult) (*player.Player, er
 		}
 	}
 
+	// Load trophy case items
+	if char.TrophyCase != "" {
+		trophyIDs := strings.Split(char.TrophyCase, ",")
+		for _, itemID := range trophyIDs {
+			itemID = strings.TrimSpace(itemID)
+			if itemID == "" {
+				continue
+			}
+			if s.itemsConfig != nil {
+				if item, exists := s.itemsConfig.GetItemByID(itemID); exists {
+					p.AddTrophy(item)
+				} else {
+					logger.Warning("Unknown trophy item", "character", char.Name, "item_id", itemID)
+				}
+			}
+		}
+	}
+
 	// Load earned titles
 	if char.EarnedTitles != "" {
 		p.SetEarnedTitlesFromString(char.EarnedTitles)
@@ -296,6 +314,7 @@ func (s *Server) savePlayerImpl(p *player.Player) error {
 		KnownRecipes:      p.GetKnownRecipesString(),
 		QuestLog:              p.GetQuestLogJSON(),
 		QuestInventory:        p.GetQuestInventoryString(),
+		TrophyCase:            p.GetTrophyCaseString(),
 		EarnedTitles:          p.GetEarnedTitlesString(),
 		ActiveTitle:           p.GetActiveTitle(),
 		VisitedLabyrinthGates: p.GetVisitedLabyrinthGatesString(),

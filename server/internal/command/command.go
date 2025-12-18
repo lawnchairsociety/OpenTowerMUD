@@ -581,6 +581,11 @@ type PlayerInterface interface {
 	HasQuestItem(itemID string) bool
 	ClearQuestInventoryForQuest(questItemIDs []string)
 
+	// Trophy case (unique non-equippable items, weightless)
+	GetTrophyCase() []*items.Item
+	AddTrophy(item *items.Item)
+	HasTrophy(itemID string) bool
+
 	// === Titles (Achievement Display) ===
 
 	// GetEarnedTitles returns all earned title IDs.
@@ -934,6 +939,8 @@ var commandRegistry = map[string]CommandHandler{
 	"i":         executeInventory,
 	"equipment": executeEquipment,
 	"eq":        executeEquipment,
+	"trophies":  executeTrophies,
+	"trophy":    executeTrophies,
 	"wield":     executeWield,
 	"wear":      executeWear,
 	"remove":    executeRemove,

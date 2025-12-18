@@ -57,6 +57,8 @@ type Character struct {
 	// Quest system
 	QuestLog       string // JSON-serialized PlayerQuestLog
 	QuestInventory string // Comma-separated list of quest item IDs
+	// Trophy system
+	TrophyCase string // Comma-separated list of trophy item IDs
 	EarnedTitles   string // Comma-separated list of earned title IDs
 	ActiveTitle    string // Currently displayed title ID
 	// Labyrinth tracking
@@ -243,6 +245,7 @@ func (d *Database) GetCharactersByAccount(accountID int64) ([]*Character, error)
 		        COALESCE(home_tower, 'human'),
 		        COALESCE(crafting_skills, ''), COALESCE(known_recipes, ''),
 		        COALESCE(quest_log, '{}'), COALESCE(quest_inventory, ''),
+		        COALESCE(trophy_case, ''),
 		        COALESCE(earned_titles, ''), COALESCE(active_title, ''),
 		        COALESCE(visited_labyrinth_gates, ''), COALESCE(talked_to_lore_npcs, ''),
 		        COALESCE(statistics, '{}'),
@@ -281,6 +284,7 @@ func (d *Database) GetCharacterByName(name string) (*Character, error) {
 		        COALESCE(home_tower, 'human'),
 		        COALESCE(crafting_skills, ''), COALESCE(known_recipes, ''),
 		        COALESCE(quest_log, '{}'), COALESCE(quest_inventory, ''),
+		        COALESCE(trophy_case, ''),
 		        COALESCE(earned_titles, ''), COALESCE(active_title, ''),
 		        COALESCE(visited_labyrinth_gates, ''), COALESCE(talked_to_lore_npcs, ''),
 		        COALESCE(statistics, '{}'),
@@ -310,6 +314,7 @@ func (d *Database) GetCharacterByID(id int64) (*Character, error) {
 		        COALESCE(home_tower, 'human'),
 		        COALESCE(crafting_skills, ''), COALESCE(known_recipes, ''),
 		        COALESCE(quest_log, '{}'), COALESCE(quest_inventory, ''),
+		        COALESCE(trophy_case, ''),
 		        COALESCE(earned_titles, ''), COALESCE(active_title, ''),
 		        COALESCE(visited_labyrinth_gates, ''), COALESCE(talked_to_lore_npcs, ''),
 		        COALESCE(statistics, '{}'),
@@ -453,7 +458,7 @@ func scanCharacter(rows *sql.Rows) (*Character, error) {
 		&c.Gold, &c.KeyRing, &c.PrimaryClass, &c.ClassLevels, &c.ActiveClass, &c.Race,
 		&c.HomeTower,
 		&c.CraftingSkills, &c.KnownRecipes,
-		&c.QuestLog, &c.QuestInventory, &c.EarnedTitles, &c.ActiveTitle,
+		&c.QuestLog, &c.QuestInventory, &c.TrophyCase, &c.EarnedTitles, &c.ActiveTitle,
 		&c.VisitedLabyrinthGates, &c.TalkedToLoreNPCs, &c.Statistics,
 		&c.CreatedAt, &lastPlayed,
 	)
@@ -482,7 +487,7 @@ func scanCharacterRow(row *sql.Row) (*Character, error) {
 		&c.Gold, &c.KeyRing, &c.PrimaryClass, &c.ClassLevels, &c.ActiveClass, &c.Race,
 		&c.HomeTower,
 		&c.CraftingSkills, &c.KnownRecipes,
-		&c.QuestLog, &c.QuestInventory, &c.EarnedTitles, &c.ActiveTitle,
+		&c.QuestLog, &c.QuestInventory, &c.TrophyCase, &c.EarnedTitles, &c.ActiveTitle,
 		&c.VisitedLabyrinthGates, &c.TalkedToLoreNPCs, &c.Statistics,
 		&c.CreatedAt, &lastPlayed,
 	)

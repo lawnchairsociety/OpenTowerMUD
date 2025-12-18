@@ -471,7 +471,6 @@ items:
     type: "armor"
     value: 500
     tier: 5
-    unique: true
     slot: "head"
     armor: 3
     armor_type: "light"
@@ -483,26 +482,156 @@ items:
     type: "weapon"
     value: 600
     tier: 5
-    unique: true
     slot: "weapon"
     damage: 12
     damage_dice: "2d6"
     two_handed: false
     weapon_type: "finesse"
 
+  # ===================
+  # Trophy Items (Unique, Weightless, Bound to Player)
+  # ===================
+
+  # --- Human/Arcane Spire Trophies ---
+
+  inferno_keepers_ember:
+    name: "inferno keeper's ember"
+    description: "A flame that never dies, contained within a crystalline sphere. It pulses with the eternal fire of the Burning Library."
+    weight: 0
+    type: "misc"
+    value: 400
+    tier: 3
+    unique: true
+
+  tome_of_unmaking:
+    name: "tome of unmaking"
+    description: "A book that writes itself in languages that hurt to read. The forbidden knowledge within whispers secrets that should remain unknown."
+    weight: 0
+    type: "misc"
+    value: 600
+    tier: 4
+    unique: true
+
+  archivists_eye:
+    name: "archivist's eye"
+    description: "A crystallized eye that still darts about, seeing through all the knowledge ever written. It belonged to Head Librarian Seraphina."
+    weight: 0
+    type: "misc"
+    value: 1000
+    tier: 5
+    unique: true
+
+  # --- Elf/World Tree Trophies ---
+
+  brood_mothers_heart:
+    name: "brood mother's heart"
+    description: "A pulsing mass of corrupted silk and crystallized venom. It still beats with a rhythm that mimics life."
+    weight: 0
+    type: "misc"
+    value: 400
+    tier: 3
+    unique: true
+
+  heart_of_the_canker:
+    name: "heart of the canker"
+    description: "A crystallized piece of the original corruption that infected the World Tree. It glows with a sickly inner light."
+    weight: 0
+    type: "misc"
+    value: 600
+    tier: 4
+    unique: true
+
+  seed_of_corruption:
+    name: "seed of corruption"
+    description: "The first seed of blight, preserved as a warning. It is cold to the touch and emanates an aura of decay."
+    weight: 0
+    type: "misc"
+    value: 1000
+    tier: 5
+    unique: true
+
+  # --- Dwarf/Descending Mines Trophies ---
+
+  foremans_lantern:
+    name: "foreman's eternal lantern"
+    description: "A lantern that burns with ghostfire, casting light that reveals what was never meant to be seen in the flooded depths."
+    weight: 0
+    type: "misc"
+    value: 400
+    tier: 3
+    unique: true
+
   shadow_orb:
     name: "shadow orb"
-    description: "A sphere of pure darkness taken from the Shadow Lord"
-    weight: 1.0
+    description: "A sphere of solid darkness taken from the Shadow Lord in the Breach. Light bends around it, unable to touch its surface."
+    weight: 0
     type: "misc"
-    value: 800
-    tier: 5
+    value: 600
+    tier: 4
     unique: true
 
   guardians_core:
     name: "guardian's core"
-    description: "The ancient power source of the Tower Guardian"
-    weight: 10.0
+    description: "The corrupted heart of the Deep Guardian. Adamantine plates and inverted runes still crackle with power that was meant to protect."
+    weight: 0
+    type: "misc"
+    value: 1000
+    tier: 5
+    unique: true
+
+  # --- Gnome/Mechanical Tower Trophies ---
+
+  furnace_heart_cog:
+    name: "furnace heart cog"
+    description: "A gear that turns by itself, still hot to the touch. It hums with the rhythm of the Steam Works' endless industry."
+    weight: 0
+    type: "misc"
+    value: 400
+    tier: 3
+    unique: true
+
+  omega_core:
+    name: "omega core"
+    description: "An unstable power source that flickers between existence and void. The failed prototype's last gift to the world."
+    weight: 0
+    type: "misc"
+    value: 600
+    tier: 4
+    unique: true
+
+  calculation_matrix:
+    name: "calculation matrix"
+    description: "A cube of pure logic, equations shifting endlessly on its surface. It contains the last thoughts of the Prime Calculation."
+    weight: 0
+    type: "misc"
+    value: 1000
+    tier: 5
+    unique: true
+
+  # --- Orc/Beast-Skull Tower Trophies ---
+
+  groknars_tusk:
+    name: "groknar's tusk"
+    description: "A massive tusk from the legendary champion Groknar the Unbroken. It still radiates the fury of countless battles."
+    weight: 0
+    type: "misc"
+    value: 400
+    tier: 3
+    unique: true
+
+  chieftains_war_horn:
+    name: "chieftains' war horn"
+    description: "A horn that echoes with the voices of a hundred war leaders. When held, one can almost hear their battle commands."
+    weight: 0
+    type: "misc"
+    value: 600
+    tier: 4
+    unique: true
+
+  crown_of_the_first:
+    name: "crown of the first"
+    description: "The original crown worn by the first orc, the Ancestor King himself. It weighs nothing but carries the burden of an entire people."
+    weight: 0
     type: "misc"
     value: 1000
     tier: 5

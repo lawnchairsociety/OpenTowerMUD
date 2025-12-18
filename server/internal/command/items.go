@@ -58,6 +58,20 @@ func executeTake(c *Command, p PlayerInterface) string {
 		return fmt.Sprintf("You can't take the %s.", foundItem.Name)
 	}
 
+	// Unique non-equippable items go to trophy case (no weight/capacity check)
+	if foundItem.Unique && foundItem.Slot == items.SlotNone {
+		removedItem, removed := room.RemoveItem(foundItem.Name)
+		if removed {
+			p.AddTrophy(removedItem)
+			logger.Debug("Item taken (trophy)",
+				"player", p.GetName(),
+				"item", foundItem.Name,
+				"room", room.GetID())
+			return fmt.Sprintf("You carefully take the %s and add it to your trophy case. This legendary item is now bound to you forever.", foundItem.Name)
+		}
+		return fmt.Sprintf("You can't take the %s.", foundItem.Name)
+	}
+
 	// Check if player can carry the item
 	if !p.CanCarry(foundItem) {
 		return fmt.Sprintf("You can't carry the %s. It's too heavy! (%.1f)", foundItem.Name, foundItem.Weight)
@@ -148,6 +162,25 @@ func executeInventory(c *Command, p PlayerInterface) string {
 		for _, key := range keyRing {
 			result += fmt.Sprintf("  - %s\n", key.Name)
 		}
+	}
+
+	return result
+}
+
+// executeTrophies shows the player's trophy case
+func executeTrophies(c *Command, p PlayerInterface) string {
+	trophies := p.GetTrophyCase()
+
+	if len(trophies) == 0 {
+		return "Your trophy case is empty.\n\nTrophies are rare collectibles dropped by powerful bosses. They are bound to you forever and stored without weight."
+	}
+
+	result := "=== Trophy Case ===\n"
+	result += "These rare treasures are bound to you forever.\n\n"
+
+	for _, trophy := range trophies {
+		result += fmt.Sprintf("  - %s\n", trophy.Name)
+		result += fmt.Sprintf("    %s\n", trophy.Description)
 	}
 
 	return result

@@ -96,8 +96,8 @@ func showStationRecipes(p PlayerInterface, recipes *crafting.RecipeRegistry, sta
 			status = fmt.Sprintf("[%s]", reason)
 		}
 
-		sb.WriteString(fmt.Sprintf("  %s - %s (Difficulty: %d) %s\n",
-			recipe.ID, recipe.Name, recipe.Difficulty, status))
+		sb.WriteString(fmt.Sprintf("  %s (Difficulty: %d) %s\n",
+			recipe.Name, recipe.Difficulty, status))
 	}
 
 	if knownRecipes == 0 {
