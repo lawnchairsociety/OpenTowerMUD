@@ -324,7 +324,9 @@ func HasMerchant(floorNum int) bool {
 	return floorNum > 0 && floorNum%MerchantFloorInterval == 0
 }
 
-// SpawnMerchantOnFloor adds a merchant NPC to the portal room if this floor has one
+// SpawnMerchantOnFloor adds a merchant NPC to the portal room if this floor has one.
+// This function is idempotent - it can be called multiple times safely (e.g., after
+// loading world state where NPCs are not persisted but features/descriptions are).
 func SpawnMerchantOnFloor(floor *Floor, floorNum int) *npc.NPC {
 	if !HasMerchant(floorNum) {
 		return nil
@@ -367,14 +369,15 @@ func SpawnMerchantOnFloor(floor *Floor, floorNum int) *npc.NPC {
 		{ItemName: "mana_potion", Price: 75},    // 150% of 50
 	})
 
-	// Add the merchant to the room
+	// Always add the merchant NPC (NPCs are not persisted, so this is needed on every load)
 	stairsRoom.AddNPC(merchant)
 
-	// Add the "merchant" feature to the room so commands can detect it
-	stairsRoom.AddFeature("merchant")
-
-	// Update room description to mention the merchant
-	stairsRoom.SetDescription(fmt.Sprintf("%s A crusty old merchant has set up a small trading post here.", stairsRoom.GetBaseDescription()))
+	// Only add feature and update description if this is a fresh spawn (not a reload).
+	// Features and descriptions ARE persisted, so we check for the feature to avoid duplicates.
+	if !stairsRoom.HasFeature("merchant") {
+		stairsRoom.AddFeature("merchant")
+		stairsRoom.SetDescription(fmt.Sprintf("%s A crusty old merchant has set up a small trading post here.", stairsRoom.GetBaseDescription()))
+	}
 
 	return merchant
 }

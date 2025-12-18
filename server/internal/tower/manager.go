@@ -556,6 +556,9 @@ func (m *TowerManager) LoadTowerState(id TowerID) (bool, error) {
 				floorRNG := rand.New(rand.NewSource(floor.GeneratedSeed * 1000))
 				existingTower.GetMobSpawner().SpawnMobsOnFloor(floor, floorNum, floorRNG)
 			}
+
+			// Respawn merchant on floors that have one (merchants are NPCs, not persisted)
+			SpawnMerchantOnFloor(floor, floorNum)
 		}
 
 		// Reconnect city (floor 0) to the new floor 1 rooms
