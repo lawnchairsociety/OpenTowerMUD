@@ -264,7 +264,133 @@ func (r *Room) GetDescriptionForPlayerWithCustomDesc(playerName string, baseDesc
 			case "altar":
 				featureDescs = append(featureDescs, "an altar for respawning")
 			case "treasure":
-				featureDescs = append(featureDescs, "a treasure chest")
+				featureDescs = append(featureDescs, "an opened treasure chest")
+			case "boss":
+				featureDescs = append(featureDescs, "an ominous presence")
+			case "merchant":
+				featureDescs = append(featureDescs, "a merchant's stall")
+			case "locked_door":
+				featureDescs = append(featureDescs, "a locked door")
+			case "shortcut":
+				featureDescs = append(featureDescs, "a shimmering portal to elsewhere in the labyrinth")
+			case "labyrinth_entrance":
+				featureDescs = append(featureDescs, "an entrance to the great labyrinth")
+			case "lore_npc":
+				featureDescs = append(featureDescs, "a scholar who knows ancient lore")
+			case "forge":
+				featureDescs = append(featureDescs, "a blazing forge")
+			case "workbench":
+				featureDescs = append(featureDescs, "a crafting workbench")
+			case "alchemy_lab":
+				featureDescs = append(featureDescs, "an alchemy laboratory")
+			case "enchanting_table":
+				featureDescs = append(featureDescs, "a glowing enchanting table")
+			default:
+				featureDescs = append(featureDescs, f)
+			}
+		}
+		desc += "\nFeatures: " + strings.Join(featureDescs, ", ") + "\n"
+	}
+
+	return desc
+}
+
+// GetDescriptionForPlayerFiltered returns a room description with items filtered.
+// excludeItemIDs contains item IDs that should not be shown (e.g., unique items the player already owns).
+func (r *Room) GetDescriptionForPlayerFiltered(playerName string, excludeItemIDs []string) string {
+	return r.GetDescriptionForPlayerFilteredWithCustomDesc(playerName, r.Description, excludeItemIDs)
+}
+
+// GetDescriptionForPlayerFilteredWithCustomDesc returns a room description with a custom base description and items filtered.
+// excludeItemIDs contains item IDs that should not be shown (e.g., unique items the player already owns).
+func (r *Room) GetDescriptionForPlayerFilteredWithCustomDesc(playerName string, baseDesc string, excludeItemIDs []string) string {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+
+	desc := fmt.Sprintf("\n=== %s ===\n%s\n", r.Name, baseDesc)
+
+	// Show NPCs in the room
+	if len(r.NPCs) > 0 {
+		npcNames := make([]string, len(r.NPCs))
+		for i, n := range r.NPCs {
+			npcNames[i] = fmt.Sprintf("%s (Level %d)", n.GetName(), n.GetLevel())
+		}
+		desc += "\nNPCs here: " + strings.Join(npcNames, ", ") + "\n"
+	}
+
+	// Show other players in the room
+	otherPlayers := make([]string, 0)
+	for _, name := range r.Players {
+		if name != playerName {
+			otherPlayers = append(otherPlayers, name)
+		}
+	}
+	if len(otherPlayers) > 0 {
+		desc += "\nPlayers here: " + strings.Join(otherPlayers, ", ") + "\n"
+	}
+
+	// Show items, filtering out excluded IDs (unique items the player already owns)
+	if len(r.Items) > 0 {
+		// Build exclusion map for O(1) lookup
+		excludeMap := make(map[string]bool)
+		for _, id := range excludeItemIDs {
+			excludeMap[id] = true
+		}
+
+		// Filter items
+		var visibleItems []string
+		for _, item := range r.Items {
+			if !excludeMap[item.ID] {
+				visibleItems = append(visibleItems, item.Name)
+			}
+		}
+
+		if len(visibleItems) > 0 {
+			desc += "\nYou can see: " + strings.Join(visibleItems, ", ") + "\n"
+		}
+	}
+
+	// Collect exits, including implicit exits from stairs features
+	exits := make([]string, 0, len(r.Exits)+2)
+	for direction := range r.Exits {
+		exits = append(exits, direction)
+	}
+	// Add implicit exits for stairs features (floors are generated on-demand)
+	hasStairsUp := false
+	hasStairsDown := false
+	for _, f := range r.Features {
+		if f == "stairs_up" {
+			hasStairsUp = true
+		}
+		if f == "stairs_down" {
+			hasStairsDown = true
+		}
+	}
+	if hasStairsUp && r.Exits["up"] == nil {
+		exits = append(exits, "up")
+	}
+	if hasStairsDown && r.Exits["down"] == nil {
+		exits = append(exits, "down")
+	}
+	if len(exits) > 0 {
+		desc += "\nExits: " + strings.Join(exits, ", ") + "\n"
+	}
+
+	// Show room features that players can interact with
+	if len(r.Features) > 0 {
+		featureDescs := make([]string, 0, len(r.Features))
+		for _, f := range r.Features {
+			switch f {
+			case "stairs_up":
+				featureDescs = append(featureDescs, "a stairway leading up")
+			case "stairs_down":
+				featureDescs = append(featureDescs, "a stairway leading down")
+			case "portal":
+				featureDescs = append(featureDescs, "a glowing portal")
+			case "altar":
+				featureDescs = append(featureDescs, "an altar for respawning")
+			case "treasure":
+				featureDescs = append(featureDescs, "an opened treasure chest")
 			case "boss":
 				featureDescs = append(featureDescs, "an ominous presence")
 			case "merchant":

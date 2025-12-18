@@ -34,6 +34,16 @@ func executeTake(c *Command, p PlayerInterface) string {
 		return fmt.Sprintf("You don't see '%s' here.", itemName)
 	}
 
+	// Check if this is a unique item the player already owns
+	if foundItem.Unique {
+		ownedUniqueIDs := p.GetOwnedUniqueItemIDs()
+		for _, id := range ownedUniqueIDs {
+			if id == foundItem.ID {
+				return fmt.Sprintf("You already possess a %s. This legendary item can only be owned once.", foundItem.Name)
+			}
+		}
+	}
+
 	// Keys go directly to key ring (no weight/capacity check)
 	if foundItem.Type == items.Key {
 		removedItem, removed := room.RemoveItem(foundItem.Name)
@@ -83,6 +93,11 @@ func executeDrop(c *Command, p PlayerInterface) string {
 	foundItem, exists := p.FindItem(itemName)
 	if !exists {
 		return fmt.Sprintf("You don't have '%s' in your inventory.", itemName)
+	}
+
+	// Unique items cannot be dropped
+	if foundItem.Unique {
+		return fmt.Sprintf("The %s is bound to you and cannot be dropped. This legendary item is yours forever.", foundItem.Name)
 	}
 
 	// Remove from inventory and add to room

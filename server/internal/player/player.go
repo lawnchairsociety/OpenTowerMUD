@@ -421,6 +421,36 @@ func (p *Player) GetKeyRing() []*items.Item {
 	return p.KeyRing
 }
 
+// GetOwnedUniqueItemIDs returns the IDs of all unique items the player owns
+// (in inventory, equipment, and key ring). Used for filtering unique items
+// from room displays so players don't see items they already own.
+func (p *Player) GetOwnedUniqueItemIDs() []string {
+	var uniqueIDs []string
+
+	// Check inventory
+	for _, item := range p.Inventory {
+		if item.Unique {
+			uniqueIDs = append(uniqueIDs, item.ID)
+		}
+	}
+
+	// Check equipment
+	for _, item := range p.Equipment {
+		if item.Unique {
+			uniqueIDs = append(uniqueIDs, item.ID)
+		}
+	}
+
+	// Check key ring
+	for _, key := range p.KeyRing {
+		if key.Unique {
+			uniqueIDs = append(uniqueIDs, key.ID)
+		}
+	}
+
+	return uniqueIDs
+}
+
 // GetGold returns the player's gold amount
 func (p *Player) GetGold() int {
 	return p.Gold
@@ -482,6 +512,8 @@ func (p *Player) SetKeyRingFromString(keyRingStr string) {
 			}
 		} else if keyID == "treasure_key" {
 			p.KeyRing = append(p.KeyRing, items.NewTreasureKey())
+		} else if keyID == "legendary_key" {
+			p.KeyRing = append(p.KeyRing, items.NewLegendaryKey())
 		}
 	}
 }

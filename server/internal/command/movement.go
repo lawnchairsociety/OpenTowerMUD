@@ -20,12 +20,15 @@ func executeLook(c *Command, p PlayerInterface) string {
 			return "Internal error: invalid room type"
 		}
 
+		// Get unique items the player already owns (to filter from display)
+		ownedUniqueIDs := p.GetOwnedUniqueItemIDs()
+
 		// Get time-appropriate description
 		serverIface := p.GetServer()
 		server, ok := serverIface.(ServerInterface)
 		if !ok {
-			// Fallback to default description if server not available
-			return room.GetDescriptionForPlayer(p.GetName())
+			// Fallback to filtered description if server not available
+			return room.GetDescriptionForPlayerFiltered(p.GetName(), ownedUniqueIDs)
 		}
 
 		// Select description based on time of day
@@ -36,8 +39,8 @@ func executeLook(c *Command, p PlayerInterface) string {
 			baseDesc = room.GetDescriptionNight()
 		}
 
-		// Build full description with time-based variant
-		desc := room.GetDescriptionForPlayerWithCustomDesc(p.GetName(), baseDesc)
+		// Build full description with time-based variant and item filtering
+		desc := room.GetDescriptionForPlayerFilteredWithCustomDesc(p.GetName(), baseDesc, ownedUniqueIDs)
 
 		// Append player stall information
 		stallInfo := getPlayersWithStallsInRoom(p, server, room)
@@ -77,6 +80,13 @@ func executeLook(c *Command, p PlayerInterface) string {
 	if targetLower == "stairs" || targetLower == "stairway" {
 		if room.HasFeature("stairs_up") || room.HasFeature("stairs_down") {
 			return "A spiral staircase winds through the tower, its ancient stones worn smooth by countless adventurers. Who knows what awaits beyond?"
+		}
+	}
+
+	// Handle chest/treasure lookups - the "treasure" feature represents an opened chest
+	if targetLower == "chest" || targetLower == "treasure" || targetLower == "treasure chest" {
+		if room.HasFeature("treasure") {
+			return "An ornate treasure chest lies open, its lock broken and lid thrown back. Whatever riches it once held have been scattered across the floor. Look around for items to take."
 		}
 	}
 

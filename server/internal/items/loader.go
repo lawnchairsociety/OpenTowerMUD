@@ -30,6 +30,8 @@ type ItemDefinition struct {
 	Consumable bool `yaml:"consumable,omitempty"`
 	HealAmount int  `yaml:"heal_amount,omitempty"`
 	ManaAmount int  `yaml:"mana_amount,omitempty"`
+	// Unique item flag (optional)
+	Unique bool `yaml:"unique,omitempty"` // If true, player can only possess one instance
 }
 
 // ItemsConfig represents the structure of the items.yaml file
@@ -138,6 +140,9 @@ func CreateItemFromDefinition(id string, def ItemDefinition) *Item {
 	item.Consumable = def.Consumable
 	item.HealAmount = def.HealAmount
 	item.ManaAmount = def.ManaAmount
+
+	// Set unique item flag
+	item.Unique = def.Unique
 
 	return item
 }

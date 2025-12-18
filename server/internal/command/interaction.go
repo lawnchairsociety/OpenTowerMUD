@@ -214,6 +214,9 @@ func getGuideGreeting(guide *npc.NPC, p PlayerInterface) string {
 		guideName, guideName, guideName, guideName, guideName, guideName, guideName)
 }
 
+// LegendaryKeyID is the item ID for the legendary key
+const LegendaryKeyID = "legendary_key"
+
 // executeUnlock handles the unlock command for locked doors
 func executeUnlock(c *Command, p PlayerInterface) string {
 	if err := c.RequireArgs(1, "Unlock what direction? Usage: unlock <direction>"); err != nil {
@@ -257,7 +260,24 @@ func executeUnlock(c *Command, p PlayerInterface) string {
 	// Get required key ID
 	keyID := room.GetExitKeyRequired(direction)
 
-	// Check if player has the key on their key ring
+	// Check if player has the legendary key (master key - opens any door)
+	hasLegendaryKey := p.HasKey(LegendaryKeyID)
+	if hasLegendaryKey {
+		// Legendary key can unlock ANY door and is never consumed
+		legendaryKey, _ := p.FindKey(LegendaryKeyID)
+		keyName := "legendary key"
+		if legendaryKey != nil {
+			keyName = legendaryKey.Name
+		}
+
+		// Unlock the exit
+		room.UnlockExit(direction)
+		room.RemoveFeature("locked_door")
+
+		return fmt.Sprintf("You hold up the %s, and it glows with brilliant golden light. The way %s unlocks itself before your power!\n(The legendary key is permanent and can unlock any door.)", keyName, direction)
+	}
+
+	// Check if player has the specific key required
 	if !p.HasKey(keyID) {
 		return "You don't have the key to unlock this door."
 	}

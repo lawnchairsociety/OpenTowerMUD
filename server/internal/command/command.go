@@ -504,6 +504,11 @@ type PlayerInterface interface {
 	// GetKeyRing returns all keys the player has.
 	GetKeyRing() []*items.Item
 
+	// GetOwnedUniqueItemIDs returns the IDs of all unique items the player owns
+	// (in inventory, equipment, and key ring). Used for filtering unique items
+	// from room displays so players don't see items they already own.
+	GetOwnedUniqueItemIDs() []string
+
 	// === Currency ===
 
 	// GetGold returns current gold amount.
@@ -770,6 +775,14 @@ type RoomInterface interface {
 	// GetDescriptionForPlayerWithCustomDesc returns a room description with a custom base.
 	// Used for special cases like looking through a window.
 	GetDescriptionForPlayerWithCustomDesc(playerName string, baseDesc string) string
+
+	// GetDescriptionForPlayerFiltered returns a room description with items filtered.
+	// excludeItemIDs contains item IDs that should not be shown (e.g., unique items the player already owns).
+	GetDescriptionForPlayerFiltered(playerName string, excludeItemIDs []string) string
+
+	// GetDescriptionForPlayerFilteredWithCustomDesc returns a room description with a custom base and items filtered.
+	// Used for time-of-day descriptions combined with unique item filtering.
+	GetDescriptionForPlayerFilteredWithCustomDesc(playerName string, baseDesc string, excludeItemIDs []string) string
 
 	// GetDescriptionDay returns the daytime description.
 	GetDescriptionDay() string

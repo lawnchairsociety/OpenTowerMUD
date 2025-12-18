@@ -471,6 +471,7 @@ items:
     type: "armor"
     value: 500
     tier: 5
+    unique: true
     slot: "head"
     armor: 3
     armor_type: "light"
@@ -482,6 +483,7 @@ items:
     type: "weapon"
     value: 600
     tier: 5
+    unique: true
     slot: "weapon"
     damage: 12
     damage_dice: "2d6"
@@ -495,6 +497,7 @@ items:
     type: "misc"
     value: 800
     tier: 5
+    unique: true
 
   guardians_core:
     name: "guardian's core"
@@ -503,14 +506,16 @@ items:
     type: "misc"
     value: 1000
     tier: 5
+    unique: true
 
   legendary_key:
     name: "legendary key"
-    description: "A golden key that glows with immense power"
+    description: "A golden key that glows with immense power. It can unlock any door in the tower."
     weight: 0.5
     type: "key"
     value: 500
     tier: 5
+    unique: true
 
   # =========================================
   # Class-Specific Weapons

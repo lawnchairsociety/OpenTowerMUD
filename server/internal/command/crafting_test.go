@@ -18,6 +18,8 @@ func (m *mockRoom) GetDescription() string                                      
 func (m *mockRoom) GetBaseDescription() string                                        { return "" }
 func (m *mockRoom) GetDescriptionForPlayer(playerName string) string                  { return "" }
 func (m *mockRoom) GetDescriptionForPlayerWithCustomDesc(playerName, desc string) string { return "" }
+func (m *mockRoom) GetDescriptionForPlayerFiltered(playerName string, excludeItemIDs []string) string { return "" }
+func (m *mockRoom) GetDescriptionForPlayerFilteredWithCustomDesc(playerName, baseDesc string, excludeItemIDs []string) string { return "" }
 func (m *mockRoom) GetDescriptionDay() string                                         { return "" }
 func (m *mockRoom) GetDescriptionNight() string                                       { return "" }
 func (m *mockRoom) GetExit(direction string) interface{}                              { return nil }

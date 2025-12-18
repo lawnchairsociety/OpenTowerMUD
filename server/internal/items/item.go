@@ -73,6 +73,8 @@ type Item struct {
 	Consumable bool // Can this item be consumed?
 	HealAmount int  // HP restored when consumed
 	ManaAmount int  // MP restored when consumed
+	// Unique item flag - player can only have one of these
+	Unique bool // If true, player can only possess one instance of this item
 }
 
 // NewItem creates a new item with the given properties
@@ -155,6 +157,19 @@ func NewTreasureKey() *Item {
 		Weight:      0.0, // Keys have no weight (stored on key ring)
 		Type:        Key,
 		Value:       50, // Can be purchased at shop
+	}
+}
+
+// NewLegendaryKey creates a legendary key item (master key)
+func NewLegendaryKey() *Item {
+	return &Item{
+		ID:          "legendary_key",
+		Name:        "Legendary Key",
+		Description: "A golden key that glows with immense power. It can unlock any door in the tower.",
+		Weight:      0.0, // Keys have no weight (stored on key ring)
+		Type:        Key,
+		Value:       0,    // Not sellable
+		Unique:      true, // Can only have one
 	}
 }
 
