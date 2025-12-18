@@ -498,6 +498,7 @@ func (p *Player) SetKeyRingFromString(keyRingStr string) {
 		return
 	}
 	keyIDs := strings.Split(keyRingStr, ",")
+	hasLegendaryKey := false // Track legendary key to prevent duplicates (it's unique)
 	for _, keyID := range keyIDs {
 		keyID = strings.TrimSpace(keyID)
 		if keyID == "" {
@@ -513,6 +514,11 @@ func (p *Player) SetKeyRingFromString(keyRingStr string) {
 		} else if keyID == "treasure_key" {
 			p.KeyRing = append(p.KeyRing, items.NewTreasureKey())
 		} else if keyID == "legendary_key" {
+			// Legendary key is unique - only allow one
+			if hasLegendaryKey {
+				continue
+			}
+			hasLegendaryKey = true
 			p.KeyRing = append(p.KeyRing, items.NewLegendaryKey())
 		}
 	}

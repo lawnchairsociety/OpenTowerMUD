@@ -105,15 +105,25 @@ func (s *Server) loadPlayer(client Client, auth *AuthResult) (*player.Player, er
 		p.SendMessage("\n[Your previous location no longer exists. You have been moved to the town square.]\n")
 	}
 
-	// Load inventory
+	// Load inventory (with deduplication for unique items)
 	inventoryIDs, err := s.db.LoadInventory(char.ID)
 	if err != nil {
 		logger.Warning("Failed to load inventory", "character", char.Name, "error", err)
 	} else {
 		p.Inventory = make([]*items.Item, 0, len(inventoryIDs))
+		seenUniqueItems := make(map[string]bool) // Track unique items to prevent duplicates
 		for _, itemID := range inventoryIDs {
 			if s.itemsConfig != nil {
 				if item, exists := s.itemsConfig.GetItemByID(itemID); exists {
+					// Check for duplicate unique items
+					if item.Unique {
+						if seenUniqueItems[itemID] {
+							logger.Warning("Skipping duplicate unique item in inventory",
+								"character", char.Name, "item_id", itemID)
+							continue
+						}
+						seenUniqueItems[itemID] = true
+					}
 					p.Inventory = append(p.Inventory, item)
 				} else {
 					logger.Warning("Unknown item in inventory", "character", char.Name, "item_id", itemID)
