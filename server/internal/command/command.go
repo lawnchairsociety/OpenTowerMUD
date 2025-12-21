@@ -926,6 +926,8 @@ var commandRegistry = map[string]CommandHandler{
 	"u":       func(c *Command, p PlayerInterface) string { return executeMoveDirection(c, p, "up") },
 	"down":    func(c *Command, p PlayerInterface) string { return executeMoveDirection(c, p, "down") },
 	"d":       func(c *Command, p PlayerInterface) string { return executeMoveDirection(c, p, "down") },
+	"enter":   func(c *Command, p PlayerInterface) string { return executeMoveDirection(c, p, "enter") },
+	"leave":   func(c *Command, p PlayerInterface) string { return executeMoveDirection(c, p, "leave") },
 	"exits":   executeExits,
 	"portal":  executePortal,
 

@@ -25,7 +25,7 @@ topics:
       where they lead.
 
   movement:
-    aliases: ["move", "movement", "go", "north", "south", "east", "west", "up", "down"]
+    aliases: ["move", "movement", "go", "north", "south", "east", "west", "up", "down", "enter", "leave"]
     text: |
       MOVEMENT
       Move around the world using directions.
@@ -33,9 +33,12 @@ topics:
       Usage:
         north, south, east, west - horizontal movement
         up, down                 - vertical movement (stairs)
+        enter, leave             - labyrinth transitions (at city gates)
         Shortcuts: n, s, e, w, u, d
 
       You can also use: go <direction>
+
+      See also: HELP LABYRINTH
 
   inventory:
     aliases: ["inventory", "inv", "i"]
@@ -335,6 +338,28 @@ topics:
       You must be in a room with a portal to use this command.
       Portals are found at stairway landings throughout the tower.
       Portals are automatically discovered when you enter a stairway room.
+
+  labyrinth:
+    aliases: ["labyrinth", "labyrinth entrance", "great labyrinth"]
+    text: |
+      THE GREAT LABYRINTH
+      An ancient underground maze connecting all the cities of the realm.
+
+      Each city has a gate leading to the labyrinth:
+        - Ironhaven (Human)     - North Gate
+        - Sylvanthal (Elf)      - Eastern Forest Gate
+        - Khazad-Karn (Dwarf)   - The Labyrinth Gate
+        - Cogsworth (Gnome)     - The Mechanical Gate
+        - Skullgar (Orc)        - The Bone Passage
+
+      Navigation:
+        enter    - Enter the labyrinth from a city gate
+        leave    - Exit the labyrinth back to the city
+
+      Once inside, use normal directions (north, south, east, west) to
+      explore the labyrinth passages.
+
+      Warning: The labyrinth contains dangerous creatures!
 
   quit:
     aliases: ["quit", "exit"]

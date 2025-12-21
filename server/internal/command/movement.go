@@ -259,7 +259,15 @@ func executeMoveDirection(c *Command, p PlayerInterface, direction string) strin
 	}
 
 	// Broadcast exit message to current room
-	exitMsg := fmt.Sprintf("%s leaves %s.\n", p.GetName(), direction)
+	var exitMsg string
+	switch direction {
+	case "enter":
+		exitMsg = fmt.Sprintf("%s enters the labyrinth.\n", p.GetName())
+	case "leave":
+		exitMsg = fmt.Sprintf("%s leaves the labyrinth.\n", p.GetName())
+	default:
+		exitMsg = fmt.Sprintf("%s leaves %s.\n", p.GetName(), direction)
+	}
 	server.BroadcastToRoom(currentRoom.GetID(), exitMsg, p)
 
 	// Move the player
@@ -376,7 +384,18 @@ func executeMoveDirection(c *Command, p PlayerInterface, direction string) strin
 	// Update quest explore progress
 	updateQuestExploreProgress(p, server, nextRoom)
 
-	return fmt.Sprintf("You move %s.\n\n%s", direction, nextRoom.GetDescriptionForPlayer(p.GetName()))
+	// Generate appropriate movement message based on direction
+	var moveMsg string
+	switch direction {
+	case "enter":
+		moveMsg = "You enter the labyrinth."
+	case "leave":
+		moveMsg = "You leave the labyrinth."
+	default:
+		moveMsg = fmt.Sprintf("You move %s.", direction)
+	}
+
+	return fmt.Sprintf("%s\n\n%s", moveMsg, nextRoom.GetDescriptionForPlayer(p.GetName()))
 }
 
 // Direction wrapper functions for the command registry
@@ -413,6 +432,8 @@ func getOppositeDirection(direction string) string {
 		"west":  "east",
 		"up":    "above",
 		"down":  "below",
+		"enter": "outside",
+		"leave": "the labyrinth",
 	}
 	if opposite, ok := opposites[direction]; ok {
 		return opposite

@@ -315,16 +315,18 @@ func (m *TowerManager) ConnectLabyrinthGates() error {
 	}
 
 	// Gate configuration: city room ID and directions
+	// Uses "enter"/"leave" instead of cardinal directions to avoid conflicts
+	// with existing exits in both city gate rooms and labyrinth gate rooms
 	gateConfig := map[string]struct {
 		cityGateRoomID string // Room ID in the city
-		labDir         string // Direction from labyrinth gate to city
-		cityDir        string // Direction from city back to labyrinth
+		labDir         string // Direction from labyrinth gate to city ("leave")
+		cityDir        string // Direction from city to labyrinth ("enter")
 	}{
-		"human": {cityGateRoomID: "human_north_gate", labDir: "north", cityDir: "north"},
-		"elf":   {cityGateRoomID: "elf_east_gate", labDir: "east", cityDir: "east"},
-		"dwarf": {cityGateRoomID: "dwarf_south_gate", labDir: "south", cityDir: "south"},
-		"gnome": {cityGateRoomID: "gnome_west_gate", labDir: "west", cityDir: "west"},
-		"orc":   {cityGateRoomID: "orc_north_gate", labDir: "north", cityDir: "north"},
+		"human": {cityGateRoomID: "human_north_gate", labDir: "leave", cityDir: "enter"},
+		"elf":   {cityGateRoomID: "elf_east_gate", labDir: "leave", cityDir: "enter"},
+		"dwarf": {cityGateRoomID: "dwarf_south_gate", labDir: "leave", cityDir: "enter"},
+		"gnome": {cityGateRoomID: "gnome_west_gate", labDir: "leave", cityDir: "enter"},
+		"orc":   {cityGateRoomID: "orc_north_gate", labDir: "leave", cityDir: "enter"},
 	}
 
 	for _, gate := range m.labyrinth.GetAllGates() {
