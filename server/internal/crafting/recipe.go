@@ -136,19 +136,38 @@ func (r *RecipeRegistry) GetRecipesByIDs(ids []string) []*Recipe {
 }
 
 // FindRecipeByName searches for a recipe by name (case-insensitive partial match)
+// Priority: exact ID > exact name > substring match (preferring shorter/more specific names)
 func (r *RecipeRegistry) FindRecipeByName(name string) *Recipe {
 	// First try exact ID match
 	if recipe := r.recipes[name]; recipe != nil {
 		return recipe
 	}
 
-	// Then try partial name match
+	// Then try exact name match (case-insensitive)
 	for _, recipe := range r.recipes {
-		if containsIgnoreCase(recipe.Name, name) || containsIgnoreCase(recipe.ID, name) {
+		if equalsIgnoreCase(recipe.Name, name) {
 			return recipe
 		}
 	}
-	return nil
+
+	// Finally try substring match, preferring shorter names (more specific)
+	var bestMatch *Recipe
+	for _, recipe := range r.recipes {
+		if containsIgnoreCase(recipe.Name, name) || containsIgnoreCase(recipe.ID, name) {
+			if bestMatch == nil || len(recipe.Name) < len(bestMatch.Name) {
+				bestMatch = recipe
+			}
+		}
+	}
+	return bestMatch
+}
+
+// equalsIgnoreCase checks if two strings are equal (case-insensitive)
+func equalsIgnoreCase(a, b string) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	return toLower(a) == toLower(b)
 }
 
 // containsIgnoreCase checks if s contains substr (case-insensitive)
