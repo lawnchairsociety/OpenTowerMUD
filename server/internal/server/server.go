@@ -1590,8 +1590,13 @@ func (s *Server) handlePlayerDeath(p *player.Player, npc *npc.NPC, room *world.R
 	p.EndCombat()
 	npc.EndCombat(p.GetName())
 
-	// Respawn at starting room (town square)
-	respawnRoom := s.world.GetStartingRoom()
+	// Respawn at the spawn room of the tower the player died in
+	_, towerID := s.world.FindRoomWithTowerID(room.GetID())
+	if towerID == "" {
+		// Fallback to player's home tower if room's tower not found
+		towerID = string(p.GetHomeTower())
+	}
+	respawnRoom := s.world.GetStartingRoomForTower(towerID)
 
 	// Send death message
 	// Note: No gold/XP penalty - respawning at town is the only penalty

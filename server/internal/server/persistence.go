@@ -12,6 +12,7 @@ import (
 	"github.com/lawnchairsociety/opentowermud/server/internal/logger"
 	"github.com/lawnchairsociety/opentowermud/server/internal/player"
 	"github.com/lawnchairsociety/opentowermud/server/internal/race"
+	"github.com/lawnchairsociety/opentowermud/server/internal/tower"
 	"github.com/lawnchairsociety/opentowermud/server/internal/world"
 )
 
@@ -72,6 +73,15 @@ func (s *Server) loadPlayer(client Client, auth *AuthResult) (*player.Player, er
 	}
 	p.SetRace(playerRace)
 
+	// Load home tower - derive from race if not set or mismatched (fixes legacy characters)
+	expectedHomeTower := tower.TowerID(string(playerRace))
+	if char.HomeTower != "" && char.HomeTower == string(playerRace) {
+		p.SetHomeTower(tower.TowerID(char.HomeTower))
+	} else {
+		// Legacy character or mismatch - derive from race
+		p.SetHomeTower(expectedHomeTower)
+	}
+
 	// Set state
 	if err := p.SetState(char.State); err != nil {
 		p.SetState("standing") // Default to standing if invalid
@@ -81,11 +91,12 @@ func (s *Server) loadPlayer(client Client, auth *AuthResult) (*player.Player, er
 	room := s.world.GetRoom(char.RoomID)
 	roomRelocated := false
 	if room == nil {
-		// Room doesn't exist (maybe world changed), use starting room
-		logger.Warning("Player's saved room not found, using starting room",
+		// Room doesn't exist (maybe world changed), use player's home tower spawn room
+		logger.Warning("Player's saved room not found, using home tower spawn room",
 			"player", char.Name,
-			"saved_room_id", char.RoomID)
-		room = s.world.GetStartingRoom()
+			"saved_room_id", char.RoomID,
+			"home_tower", string(p.GetHomeTower()))
+		room = s.world.GetStartingRoomForTower(string(p.GetHomeTower()))
 		roomRelocated = true
 	}
 	if room == nil {
@@ -102,7 +113,7 @@ func (s *Server) loadPlayer(client Client, auth *AuthResult) (*player.Player, er
 
 	// Notify player if they were relocated
 	if roomRelocated {
-		p.SendMessage("\n[Your previous location no longer exists. You have been moved to the town square.]\n")
+		p.SendMessage("\n[Your previous location no longer exists. You have been moved to your home city.]\n")
 	}
 
 	// Load inventory (with deduplication for unique items)
@@ -310,6 +321,7 @@ func (s *Server) savePlayerImpl(p *player.Player) error {
 		ClassLevels:       p.GetClassLevelsJSON(),
 		ActiveClass:       string(p.GetActiveClass()),
 		Race:              string(p.GetRace()),
+		HomeTower:         string(p.GetHomeTower()),
 		CraftingSkills:    p.GetCraftingSkillsString(),
 		KnownRecipes:      p.GetKnownRecipesString(),
 		QuestLog:              p.GetQuestLogJSON(),
