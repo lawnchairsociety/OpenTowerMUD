@@ -19,22 +19,33 @@ func (d *Database) SendMail(senderID int64, senderName string, recipientID int64
 	defer tx.Rollback()
 
 	// Insert the mail record
-	result, err := tx.Exec(`
-		INSERT INTO mail (sender_id, sender_name, recipient_id, recipient_name, subject, body, gold_attached)
-		VALUES (?, ?, ?, ?, ?, ?, ?)`,
-		senderID, senderName, recipientID, recipientName, subject, body, goldAmount)
-	if err != nil {
-		return 0, fmt.Errorf("failed to insert mail: %w", err)
-	}
+	var mailID int64
+	query := `INSERT INTO mail (sender_id, sender_name, recipient_id, recipient_name, subject, body, gold_attached)
+		VALUES (?, ?, ?, ?, ?, ?, ?)`
 
-	mailID, err := result.LastInsertId()
-	if err != nil {
-		return 0, fmt.Errorf("failed to get mail ID: %w", err)
+	if d.dialect.SupportsLastInsertID() {
+		result, err := tx.Exec(d.qb.Build(query),
+			senderID, senderName, recipientID, recipientName, subject, body, goldAmount)
+		if err != nil {
+			return 0, fmt.Errorf("failed to insert mail: %w", err)
+		}
+
+		mailID, err = result.LastInsertId()
+		if err != nil {
+			return 0, fmt.Errorf("failed to get mail ID: %w", err)
+		}
+	} else {
+		// PostgreSQL: use RETURNING clause
+		err := tx.QueryRow(d.qb.BuildWithReturning(query, "id"),
+			senderID, senderName, recipientID, recipientName, subject, body, goldAmount).Scan(&mailID)
+		if err != nil {
+			return 0, fmt.Errorf("failed to insert mail: %w", err)
+		}
 	}
 
 	// Insert item attachments
 	for _, itemID := range itemIDs {
-		_, err = tx.Exec(`INSERT INTO mail_items (mail_id, item_id) VALUES (?, ?)`, mailID, itemID)
+		_, err = tx.Exec(d.qb.Build(`INSERT INTO mail_items (mail_id, item_id) VALUES (?, ?)`), mailID, itemID)
 		if err != nil {
 			return 0, fmt.Errorf("failed to insert mail item: %w", err)
 		}
@@ -50,13 +61,13 @@ func (d *Database) SendMail(senderID int64, senderName string, recipientID int64
 // GetMailbox returns all mail for a recipient, ordered by sent date descending.
 // The ID returned is a per-player sequential index (1, 2, 3...), not the database ID.
 func (d *Database) GetMailbox(recipientID int64) ([]mail.MailSummary, error) {
-	rows, err := d.db.Query(`
+	rows, err := d.db.Query(d.qb.Build(`
 		SELECT ROW_NUMBER() OVER (ORDER BY m.sent_at DESC) as idx,
 		       m.sender_name, m.subject, m.gold_attached, m.gold_collected, m.read, m.sent_at,
 		       (SELECT COUNT(*) FROM mail_items mi WHERE mi.mail_id = m.id AND mi.collected = 0) as uncollected_items
 		FROM mail m
 		WHERE m.recipient_id = ?
-		ORDER BY m.sent_at DESC`,
+		ORDER BY m.sent_at DESC`),
 		recipientID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to query mailbox: %w", err)
@@ -90,12 +101,12 @@ func (d *Database) GetMailbox(recipientID int64) ([]mail.MailSummary, error) {
 // Returns 0 if the index is out of range.
 func (d *Database) GetMailIDByIndex(recipientID int64, index int64) (int64, error) {
 	var mailID int64
-	err := d.db.QueryRow(`
+	err := d.db.QueryRow(d.qb.Build(`
 		SELECT id FROM (
 			SELECT m.id, ROW_NUMBER() OVER (ORDER BY m.sent_at DESC) as idx
 			FROM mail m
 			WHERE m.recipient_id = ?
-		) WHERE idx = ?`,
+		) AS subq WHERE idx = ?`),
 		recipientID, index).Scan(&mailID)
 	if err == sql.ErrNoRows {
 		return 0, nil
@@ -111,11 +122,11 @@ func (d *Database) GetMail(mailID int64, recipientID int64) (*mail.Mail, error) 
 	var m mail.Mail
 	var sentAt string
 
-	err := d.db.QueryRow(`
+	err := d.db.QueryRow(d.qb.Build(`
 		SELECT id, sender_id, sender_name, recipient_id, recipient_name, subject, body,
 		       gold_attached, gold_collected, items_collected, read, sent_at
 		FROM mail
-		WHERE id = ? AND recipient_id = ?`,
+		WHERE id = ? AND recipient_id = ?`),
 		mailID, recipientID).Scan(
 		&m.ID, &m.SenderID, &m.SenderName, &m.RecipientID, &m.RecipientName,
 		&m.Subject, &m.Body, &m.GoldAttached, &m.GoldCollected, &m.ItemsCollected,
@@ -130,10 +141,10 @@ func (d *Database) GetMail(mailID int64, recipientID int64) (*mail.Mail, error) 
 	m.SentAt, _ = time.Parse("2006-01-02 15:04:05", sentAt)
 
 	// Get items
-	rows, err := d.db.Query(`
+	rows, err := d.db.Query(d.qb.Build(`
 		SELECT id, mail_id, item_id, collected
 		FROM mail_items
-		WHERE mail_id = ?`,
+		WHERE mail_id = ?`),
 		mailID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to query mail items: %w", err)
@@ -153,7 +164,7 @@ func (d *Database) GetMail(mailID int64, recipientID int64) (*mail.Mail, error) 
 
 // MarkMailRead marks a mail message as read.
 func (d *Database) MarkMailRead(mailID int64, recipientID int64) error {
-	_, err := d.db.Exec(`UPDATE mail SET read = 1 WHERE id = ? AND recipient_id = ?`, mailID, recipientID)
+	_, err := d.db.Exec(d.qb.Build(`UPDATE mail SET read = 1 WHERE id = ? AND recipient_id = ?`), mailID, recipientID)
 	if err != nil {
 		return fmt.Errorf("failed to mark mail as read: %w", err)
 	}
@@ -165,7 +176,7 @@ func (d *Database) CollectMailGold(mailID int64, recipientID int64) (int, error)
 	var goldAmount int
 	var goldCollected bool
 
-	err := d.db.QueryRow(`SELECT gold_attached, gold_collected FROM mail WHERE id = ? AND recipient_id = ?`,
+	err := d.db.QueryRow(d.qb.Build(`SELECT gold_attached, gold_collected FROM mail WHERE id = ? AND recipient_id = ?`),
 		mailID, recipientID).Scan(&goldAmount, &goldCollected)
 	if err == sql.ErrNoRows {
 		return 0, fmt.Errorf("mail not found")
@@ -178,7 +189,7 @@ func (d *Database) CollectMailGold(mailID int64, recipientID int64) (int, error)
 		return 0, fmt.Errorf("gold already collected")
 	}
 
-	_, err = d.db.Exec(`UPDATE mail SET gold_collected = 1 WHERE id = ? AND recipient_id = ?`, mailID, recipientID)
+	_, err = d.db.Exec(d.qb.Build(`UPDATE mail SET gold_collected = 1 WHERE id = ? AND recipient_id = ?`), mailID, recipientID)
 	if err != nil {
 		return 0, fmt.Errorf("failed to mark gold as collected: %w", err)
 	}
@@ -190,13 +201,13 @@ func (d *Database) CollectMailGold(mailID int64, recipientID int64) (int, error)
 func (d *Database) CollectMailItems(mailID int64, recipientID int64) ([]string, error) {
 	// Verify ownership
 	var count int
-	err := d.db.QueryRow(`SELECT COUNT(*) FROM mail WHERE id = ? AND recipient_id = ?`, mailID, recipientID).Scan(&count)
+	err := d.db.QueryRow(d.qb.Build(`SELECT COUNT(*) FROM mail WHERE id = ? AND recipient_id = ?`), mailID, recipientID).Scan(&count)
 	if err != nil || count == 0 {
 		return nil, fmt.Errorf("mail not found")
 	}
 
 	// Get uncollected items
-	rows, err := d.db.Query(`SELECT item_id FROM mail_items WHERE mail_id = ? AND collected = 0`, mailID)
+	rows, err := d.db.Query(d.qb.Build(`SELECT item_id FROM mail_items WHERE mail_id = ? AND collected = 0`), mailID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to query mail items: %w", err)
 	}
@@ -216,13 +227,13 @@ func (d *Database) CollectMailItems(mailID int64, recipientID int64) ([]string, 
 	}
 
 	// Mark items as collected
-	_, err = d.db.Exec(`UPDATE mail_items SET collected = 1 WHERE mail_id = ?`, mailID)
+	_, err = d.db.Exec(d.qb.Build(`UPDATE mail_items SET collected = 1 WHERE mail_id = ?`), mailID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to mark items as collected: %w", err)
 	}
 
 	// Update the mail record
-	_, err = d.db.Exec(`UPDATE mail SET items_collected = 1 WHERE id = ?`, mailID)
+	_, err = d.db.Exec(d.qb.Build(`UPDATE mail SET items_collected = 1 WHERE id = ?`), mailID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to update mail items_collected: %w", err)
 	}
@@ -237,11 +248,11 @@ func (d *Database) DeleteMail(mailID int64, recipientID int64) error {
 	var goldCollected bool
 	var uncollectedItems int
 
-	err := d.db.QueryRow(`
+	err := d.db.QueryRow(d.qb.Build(`
 		SELECT m.gold_attached, m.gold_collected,
 		       (SELECT COUNT(*) FROM mail_items mi WHERE mi.mail_id = m.id AND mi.collected = 0)
 		FROM mail m
-		WHERE m.id = ? AND m.recipient_id = ?`,
+		WHERE m.id = ? AND m.recipient_id = ?`),
 		mailID, recipientID).Scan(&goldAttached, &goldCollected, &uncollectedItems)
 	if err == sql.ErrNoRows {
 		return fmt.Errorf("mail not found")
@@ -254,7 +265,7 @@ func (d *Database) DeleteMail(mailID int64, recipientID int64) error {
 		return fmt.Errorf("collect all attachments before deleting")
 	}
 
-	_, err = d.db.Exec(`DELETE FROM mail WHERE id = ? AND recipient_id = ?`, mailID, recipientID)
+	_, err = d.db.Exec(d.qb.Build(`DELETE FROM mail WHERE id = ? AND recipient_id = ?`), mailID, recipientID)
 	if err != nil {
 		return fmt.Errorf("failed to delete mail: %w", err)
 	}
@@ -265,7 +276,7 @@ func (d *Database) DeleteMail(mailID int64, recipientID int64) error {
 // GetUnreadMailCount returns the number of unread messages for a player.
 func (d *Database) GetUnreadMailCount(recipientID int64) (int, error) {
 	var count int
-	err := d.db.QueryRow(`SELECT COUNT(*) FROM mail WHERE recipient_id = ? AND read = 0`, recipientID).Scan(&count)
+	err := d.db.QueryRow(d.qb.Build(`SELECT COUNT(*) FROM mail WHERE recipient_id = ? AND read = 0`), recipientID).Scan(&count)
 	if err != nil {
 		return 0, fmt.Errorf("failed to count unread mail: %w", err)
 	}
@@ -275,7 +286,7 @@ func (d *Database) GetUnreadMailCount(recipientID int64) (int, error) {
 // GetMailCount returns the total number of messages for a player.
 func (d *Database) GetMailCount(recipientID int64) (int, error) {
 	var count int
-	err := d.db.QueryRow(`SELECT COUNT(*) FROM mail WHERE recipient_id = ?`, recipientID).Scan(&count)
+	err := d.db.QueryRow(d.qb.Build(`SELECT COUNT(*) FROM mail WHERE recipient_id = ?`), recipientID).Scan(&count)
 	if err != nil {
 		return 0, fmt.Errorf("failed to count mail: %w", err)
 	}
@@ -285,7 +296,9 @@ func (d *Database) GetMailCount(recipientID int64) (int, error) {
 // GetCharacterIDByName returns the character ID for a given name.
 func (d *Database) GetCharacterIDByName(name string) (int64, error) {
 	var id int64
-	err := d.db.QueryRow(`SELECT id FROM characters WHERE name = ? COLLATE NOCASE`, name).Scan(&id)
+	// Note: For PostgreSQL, the name column should be CITEXT type for case-insensitive matching
+	// For SQLite, we use COLLATE NOCASE in the column definition
+	err := d.db.QueryRow(d.qb.Build(`SELECT id FROM characters WHERE name = ?`), name).Scan(&id)
 	if err == sql.ErrNoRows {
 		return 0, nil
 	}

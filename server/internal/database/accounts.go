@@ -53,20 +53,35 @@ func (d *Database) CreateAccount(username, password string) (*Account, error) {
 		return nil, fmt.Errorf("failed to hash password: %w", err)
 	}
 
-	result, err := d.db.Exec(
-		"INSERT INTO accounts (username, password_hash) VALUES (?, ?)",
-		username, string(hash),
-	)
-	if err != nil {
-		if strings.Contains(err.Error(), "UNIQUE constraint failed") {
-			return nil, ErrAccountExists
+	var id int64
+	if d.dialect.SupportsLastInsertID() {
+		result, err := d.db.Exec(
+			d.qb.Build("INSERT INTO accounts (username, password_hash) VALUES (?, ?)"),
+			username, string(hash),
+		)
+		if err != nil {
+			if d.dialect.IsDuplicateKeyError(err) {
+				return nil, ErrAccountExists
+			}
+			return nil, fmt.Errorf("failed to create account: %w", err)
 		}
-		return nil, fmt.Errorf("failed to create account: %w", err)
-	}
 
-	id, err := result.LastInsertId()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get account ID: %w", err)
+		id, err = result.LastInsertId()
+		if err != nil {
+			return nil, fmt.Errorf("failed to get account ID: %w", err)
+		}
+	} else {
+		// PostgreSQL: use RETURNING clause
+		err := d.db.QueryRow(
+			d.qb.BuildWithReturning("INSERT INTO accounts (username, password_hash) VALUES (?, ?)", "id"),
+			username, string(hash),
+		).Scan(&id)
+		if err != nil {
+			if d.dialect.IsDuplicateKeyError(err) {
+				return nil, ErrAccountExists
+			}
+			return nil, fmt.Errorf("failed to create account: %w", err)
+		}
 	}
 
 	return &Account{
@@ -116,7 +131,7 @@ func (d *Database) GetAccountByUsername(username string) (*Account, error) {
 	var isAdmin int
 
 	err := d.db.QueryRow(
-		"SELECT id, username, password_hash, created_at, last_login, last_ip, banned, is_admin FROM accounts WHERE username = ?",
+		d.qb.Build("SELECT id, username, password_hash, created_at, last_login, last_ip, banned, is_admin FROM accounts WHERE username = ?"),
 		username,
 	).Scan(&account.ID, &account.Username, &account.PasswordHash, &account.CreatedAt, &lastLogin, &lastIP, &banned, &isAdmin)
 
@@ -142,7 +157,7 @@ func (d *Database) GetAccountByUsername(username string) (*Account, error) {
 // UpdateLastLogin updates the last_login timestamp for an account.
 func (d *Database) UpdateLastLogin(accountID int64) error {
 	_, err := d.db.Exec(
-		"UPDATE accounts SET last_login = CURRENT_TIMESTAMP WHERE id = ?",
+		d.qb.Build("UPDATE accounts SET last_login = CURRENT_TIMESTAMP WHERE id = ?"),
 		accountID,
 	)
 	if err != nil {
@@ -154,7 +169,7 @@ func (d *Database) UpdateLastLogin(accountID int64) error {
 // UpdateLastLoginAndIP updates the last_login timestamp and IP address for an account.
 func (d *Database) UpdateLastLoginAndIP(accountID int64, ipAddress string) error {
 	_, err := d.db.Exec(
-		"UPDATE accounts SET last_login = CURRENT_TIMESTAMP, last_ip = ? WHERE id = ?",
+		d.qb.Build("UPDATE accounts SET last_login = CURRENT_TIMESTAMP, last_ip = ? WHERE id = ?"),
 		ipAddress, accountID,
 	)
 	if err != nil {
@@ -166,7 +181,7 @@ func (d *Database) UpdateLastLoginAndIP(accountID int64, ipAddress string) error
 // BanAccount sets the banned flag to true for an account.
 func (d *Database) BanAccount(accountID int64) error {
 	_, err := d.db.Exec(
-		"UPDATE accounts SET banned = 1 WHERE id = ?",
+		d.qb.Build("UPDATE accounts SET banned = 1 WHERE id = ?"),
 		accountID,
 	)
 	if err != nil {
@@ -178,7 +193,7 @@ func (d *Database) BanAccount(accountID int64) error {
 // UnbanAccount sets the banned flag to false for an account.
 func (d *Database) UnbanAccount(accountID int64) error {
 	_, err := d.db.Exec(
-		"UPDATE accounts SET banned = 0 WHERE id = ?",
+		d.qb.Build("UPDATE accounts SET banned = 0 WHERE id = ?"),
 		accountID,
 	)
 	if err != nil {
@@ -190,7 +205,7 @@ func (d *Database) UnbanAccount(accountID int64) error {
 // IsAccountBanned checks if an account is banned.
 func (d *Database) IsAccountBanned(accountID int64) (bool, error) {
 	var banned int
-	err := d.db.QueryRow("SELECT banned FROM accounts WHERE id = ?", accountID).Scan(&banned)
+	err := d.db.QueryRow(d.qb.Build("SELECT banned FROM accounts WHERE id = ?"), accountID).Scan(&banned)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return false, ErrAccountNotFound
@@ -212,7 +227,7 @@ func (d *Database) ChangePassword(accountID int64, newPassword string) error {
 	}
 
 	_, err = d.db.Exec(
-		"UPDATE accounts SET password_hash = ? WHERE id = ?",
+		d.qb.Build("UPDATE accounts SET password_hash = ? WHERE id = ?"),
 		string(hash), accountID,
 	)
 	if err != nil {
@@ -225,7 +240,7 @@ func (d *Database) ChangePassword(accountID int64, newPassword string) error {
 func (d *Database) ChangePasswordWithVerify(accountID int64, oldPassword, newPassword string) error {
 	// Get current password hash
 	var currentHash string
-	err := d.db.QueryRow("SELECT password_hash FROM accounts WHERE id = ?", accountID).Scan(&currentHash)
+	err := d.db.QueryRow(d.qb.Build("SELECT password_hash FROM accounts WHERE id = ?"), accountID).Scan(&currentHash)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return ErrAccountNotFound
@@ -246,7 +261,7 @@ func (d *Database) ChangePasswordWithVerify(accountID int64, oldPassword, newPas
 func (d *Database) AccountExists(username string) (bool, error) {
 	var count int
 	err := d.db.QueryRow(
-		"SELECT COUNT(*) FROM accounts WHERE username = ?",
+		d.qb.Build("SELECT COUNT(*) FROM accounts WHERE username = ?"),
 		username,
 	).Scan(&count)
 	if err != nil {
@@ -262,7 +277,7 @@ func (d *Database) SetAdmin(accountID int64, isAdmin bool) error {
 		adminValue = 1
 	}
 	_, err := d.db.Exec(
-		"UPDATE accounts SET is_admin = ? WHERE id = ?",
+		d.qb.Build("UPDATE accounts SET is_admin = ? WHERE id = ?"),
 		adminValue, accountID,
 	)
 	if err != nil {
@@ -274,7 +289,7 @@ func (d *Database) SetAdmin(accountID int64, isAdmin bool) error {
 // IsAdmin checks if an account has admin privileges.
 func (d *Database) IsAdmin(accountID int64) (bool, error) {
 	var isAdmin int
-	err := d.db.QueryRow("SELECT is_admin FROM accounts WHERE id = ?", accountID).Scan(&isAdmin)
+	err := d.db.QueryRow(d.qb.Build("SELECT is_admin FROM accounts WHERE id = ?"), accountID).Scan(&isAdmin)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return false, ErrAccountNotFound
@@ -287,7 +302,7 @@ func (d *Database) IsAdmin(accountID int64) (bool, error) {
 // GetAllAdmins returns all admin accounts.
 func (d *Database) GetAllAdmins() ([]*Account, error) {
 	rows, err := d.db.Query(
-		"SELECT id, username, password_hash, created_at, last_login, last_ip, banned, is_admin FROM accounts WHERE is_admin = 1",
+		d.qb.Build("SELECT id, username, password_hash, created_at, last_login, last_ip, banned, is_admin FROM accounts WHERE is_admin = 1"),
 	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to query admins: %w", err)
@@ -330,7 +345,7 @@ func (d *Database) GetAccountByID(accountID int64) (*Account, error) {
 	var isAdmin int
 
 	err := d.db.QueryRow(
-		"SELECT id, username, password_hash, created_at, last_login, last_ip, banned, is_admin FROM accounts WHERE id = ?",
+		d.qb.Build("SELECT id, username, password_hash, created_at, last_login, last_ip, banned, is_admin FROM accounts WHERE id = ?"),
 		accountID,
 	).Scan(&account.ID, &account.Username, &account.PasswordHash, &account.CreatedAt, &lastLogin, &lastIP, &banned, &isAdmin)
 

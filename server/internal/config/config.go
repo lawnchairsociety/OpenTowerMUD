@@ -3,6 +3,7 @@ package config
 import (
 	"os"
 	"strings"
+	"time"
 	"unicode"
 
 	"gopkg.in/yaml.v3"
@@ -18,6 +19,45 @@ type ServerConfig struct {
 	Paths       PathsConfig       `yaml:"paths"`
 	Game        GameConfig        `yaml:"game"`
 	Website     WebsiteConfig     `yaml:"website"`
+	Database    DatabaseConfig    `yaml:"database"`
+}
+
+// DatabaseConfig holds database connection settings.
+type DatabaseConfig struct {
+	// Driver is the database driver to use: "sqlite" (default) or "postgres"
+	Driver string `yaml:"driver"`
+
+	// SQLite configuration (used when Driver is "sqlite" or empty)
+	SQLitePath string `yaml:"sqlite_path"`
+
+	// PostgreSQL configuration (used when Driver is "postgres")
+	Postgres PostgresConfig `yaml:"postgres"`
+}
+
+// PostgresConfig holds PostgreSQL-specific configuration.
+type PostgresConfig struct {
+	Host            string        `yaml:"host"`
+	Port            int           `yaml:"port"`
+	User            string        `yaml:"user"`
+	Password        string        `yaml:"password"`
+	Database        string        `yaml:"database"`
+	SSLMode         string        `yaml:"sslmode"`
+	MaxOpenConns    int           `yaml:"max_open_conns"`
+	MaxIdleConns    int           `yaml:"max_idle_conns"`
+	ConnMaxLifetime time.Duration `yaml:"conn_max_lifetime"`
+}
+
+// IsPostgres returns true if the database driver is PostgreSQL.
+func (c *DatabaseConfig) IsPostgres() bool {
+	return c.Driver == "postgres"
+}
+
+// GetEffectiveSQLitePath returns the SQLite path, applying command-line override if provided.
+func (c *DatabaseConfig) GetEffectiveSQLitePath(cliPath string) string {
+	if cliPath != "" {
+		return cliPath
+	}
+	return c.SQLitePath
 }
 
 // WebsiteConfig holds companion website settings.
@@ -168,6 +208,18 @@ func DefaultConfig() *ServerConfig {
 		},
 		Website: WebsiteConfig{
 			URL: "", // Empty = in-game registration enabled
+		},
+		Database: DatabaseConfig{
+			Driver:     "sqlite", // Default to SQLite for backward compatibility
+			SQLitePath: "data/opentowermud.db",
+			Postgres: PostgresConfig{
+				Host:            "localhost",
+				Port:            5432,
+				SSLMode:         "disable",
+				MaxOpenConns:    25,
+				MaxIdleConns:    5,
+				ConnMaxLifetime: 5 * time.Minute,
+			},
 		},
 	}
 }

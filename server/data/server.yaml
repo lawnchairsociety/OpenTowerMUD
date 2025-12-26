@@ -1,6 +1,41 @@
 # OpenTowerMUD Server Configuration
 # Security and network settings
 
+# Database configuration
+database:
+  # Driver: "sqlite" (default) or "postgres"
+  driver: postgres
+
+  # SQLite configuration (used when driver is "sqlite")
+  # sqlite_path: data/opentowermud.db
+
+  # PostgreSQL configuration (used when driver is "postgres")
+  # Uncomment the following section and set driver to "postgres" to use PostgreSQL:
+  postgres:
+    host: localhost
+    port: 5435
+    user: opentower
+    password: opentower
+    database: opentower
+    sslmode: disable
+    max_open_conns: 25
+    max_idle_conns: 5
+    conn_max_lifetime: 5m
+
+# Game-specific configuration
+game:
+  # World generation seed (0 = random based on current time)
+  seed: 0
+
+  # Towers to load on startup (human, elf, dwarf, gnome, orc, or "all")
+  # Use ["all"] to load all racial towers
+  enabled_towers:
+    - all
+
+  # Load floors from YAML files instead of generating via WFC
+  static_floors: true
+
+# WebSocket settings for web client
 websocket:
   # Allowed origins for WebSocket connections (CORS policy)
   # Empty list = same-origin only (most secure)
@@ -10,12 +45,47 @@ websocket:
   #   - "http://localhost:3000"
   allowed_origins:
     - "http://localhost:8080"
-    - "https://opentowermud.spiralbound.games"
 
   # Maximum message size in bytes (default: 4096)
   # Prevents memory exhaustion from oversized messages
   max_message_size: 4096
 
+# Connection limits
+connections:
+  # Maximum concurrent connections from a single IP address (default: 3)
+  # Set to 0 for unlimited (not recommended)
+  max_per_ip: 3
+
+  # Maximum total concurrent connections to the server (default: 100)
+  # Set to 0 for unlimited
+  max_total: 100
+
+# Rate limiting for login attempts
+rate_limit:
+  # Maximum failed login attempts before lockout (default: 5)
+  max_attempts: 5
+
+  # Initial lockout duration in seconds (default: 30)
+  lockout_seconds: 30
+
+  # Maximum lockout duration in seconds for exponential backoff (default: 300)
+  # After each lockout, the duration doubles until reaching this maximum
+  max_lockout_seconds: 300
+
+# Session management
+session:
+  # Idle timeout in minutes (default: 30)
+  # Players with no activity for this long will be disconnected
+  # Set to 0 to disable idle timeout (not recommended)
+  # NOTE: Players with open stalls (with items) are exempt from idle timeout
+  idle_timeout_minutes: 30
+
+  # Auto-save interval in minutes (default: 5)
+  # All connected players are automatically saved at this interval
+  # Set to 0 to disable auto-save (players must save manually via the bard)
+  auto_save_interval_minutes: 1
+
+# Password requirements
 password:
   # Minimum password length (default: 8)
   min_length: 8
@@ -32,37 +102,13 @@ password:
   # Require at least one special character (default: false)
   require_special: false
 
-connections:
-  # Maximum concurrent connections from a single IP address (default: 3)
-  # Set to 0 for unlimited (not recommended)
-  max_per_ip: 3
-
-  # Maximum total concurrent connections to the server (default: 100)
-  # Set to 0 for unlimited
-  max_total: 100
-
-rate_limit:
-  # Maximum failed login attempts before lockout (default: 5)
-  max_attempts: 5
-
-  # Initial lockout duration in seconds (default: 30)
-  lockout_seconds: 30
-
-  # Maximum lockout duration in seconds for exponential backoff (default: 300)
-  # After each lockout, the duration doubles until reaching this maximum
-  max_lockout_seconds: 300
-
-session:
-  # Idle timeout in minutes (default: 30)
-  # Players with no activity for this long will be disconnected
-  # Set to 0 to disable idle timeout (not recommended)
-  # NOTE: Players with open stalls (with items) are exempt from idle timeout
-  idle_timeout_minutes: 30
-
-  # Auto-save interval in minutes (default: 5)
-  # All connected players are automatically saved at this interval
-  # Set to 0 to disable auto-save (players must save manually via the bard)
-  auto_save_interval_minutes: 1
+# Companion website configuration
+website:
+  # URL of the companion website for registration
+  # If set, in-game registration is disabled and players are directed to the website
+  # Leave empty to allow in-game registration
+  # Example: "https://opentowermud.example.com"
+  url: ""
 
 # File and directory paths for game data
 paths:
@@ -81,24 +127,3 @@ paths:
   logging: "data/logging.yaml"
   chat_filter: "data/chat_filter.yaml"
   name_filter: "data/name_filter.yaml"
-
-# Game-specific configuration
-game:
-  # World generation seed (0 = random based on current time)
-  seed: 0
-
-  # Towers to load on startup (human, elf, dwarf, gnome, orc, or "all")
-  # Use ["all"] to load all racial towers
-  enabled_towers:
-    - all
-
-  # Load floors from YAML files instead of generating via WFC
-  static_floors: true
-
-# Companion website configuration
-website:
-  # URL of the companion website for registration
-  # If set, in-game registration is disabled and players are directed to the website
-  # Leave empty to allow in-game registration
-  # Example: "https://opentowermud.example.com"
-  url: "https://opentowermud.spiralbound.games"

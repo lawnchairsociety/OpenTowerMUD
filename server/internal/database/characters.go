@@ -124,25 +124,44 @@ func (d *Database) CreateCharacterFull(accountID int64, name string, primaryClas
 	// Calculate starting HP/Mana based on class
 	startingHP, startingMana := calculateStartingStats(primaryClass, str, dex, con, int_, wis, cha)
 
-	result, err := d.db.Exec(
-		`INSERT INTO characters (account_id, name, health, max_health, mana, max_mana,
+	var id int64
+	query := `INSERT INTO characters (account_id, name, health, max_health, mana, max_mana,
 		                         strength, dexterity, constitution, intelligence, wisdom, charisma,
 		                         primary_class, class_levels, active_class, race, home_tower, learned_spells)
-		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-		accountID, name, startingHP, startingHP, startingMana, startingMana,
-		str, dex, con, int_, wis, cha,
-		primaryClass, classLevels, primaryClass, race, homeTower, "",
-	)
-	if err != nil {
-		if strings.Contains(err.Error(), "UNIQUE constraint failed") {
-			return nil, ErrCharacterExists
-		}
-		return nil, fmt.Errorf("failed to create character: %w", err)
-	}
+		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 
-	id, err := result.LastInsertId()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get character ID: %w", err)
+	if d.dialect.SupportsLastInsertID() {
+		result, err := d.db.Exec(
+			d.qb.Build(query),
+			accountID, name, startingHP, startingHP, startingMana, startingMana,
+			str, dex, con, int_, wis, cha,
+			primaryClass, classLevels, primaryClass, race, homeTower, "",
+		)
+		if err != nil {
+			if d.dialect.IsDuplicateKeyError(err) {
+				return nil, ErrCharacterExists
+			}
+			return nil, fmt.Errorf("failed to create character: %w", err)
+		}
+
+		id, err = result.LastInsertId()
+		if err != nil {
+			return nil, fmt.Errorf("failed to get character ID: %w", err)
+		}
+	} else {
+		// PostgreSQL: use RETURNING clause
+		err := d.db.QueryRow(
+			d.qb.BuildWithReturning(query, "id"),
+			accountID, name, startingHP, startingHP, startingMana, startingMana,
+			str, dex, con, int_, wis, cha,
+			primaryClass, classLevels, primaryClass, race, homeTower, "",
+		).Scan(&id)
+		if err != nil {
+			if d.dialect.IsDuplicateKeyError(err) {
+				return nil, ErrCharacterExists
+			}
+			return nil, fmt.Errorf("failed to create character: %w", err)
+		}
 	}
 
 	// Get spawn room from the tower theme
@@ -238,7 +257,7 @@ func calculateStartingStats(primaryClass string, str, dex, con, int_, wis, cha i
 // GetCharactersByAccount returns all characters for an account.
 func (d *Database) GetCharactersByAccount(accountID int64) ([]*Character, error) {
 	rows, err := d.db.Query(
-		`SELECT id, account_id, name, room_id, health, max_health, mana, max_mana,
+		d.qb.Build(`SELECT id, account_id, name, room_id, health, max_health, mana, max_mana,
 		        level, experience, state, max_carry_weight, learned_spells,
 		        discovered_portals, strength, dexterity, constitution, intelligence, wisdom, charisma,
 		        gold, key_ring, primary_class, class_levels, active_class, race,
@@ -250,7 +269,7 @@ func (d *Database) GetCharactersByAccount(accountID int64) ([]*Character, error)
 		        COALESCE(visited_labyrinth_gates, ''), COALESCE(talked_to_lore_npcs, ''),
 		        COALESCE(statistics, '{}'),
 		        created_at, last_played
-		 FROM characters WHERE account_id = ? ORDER BY last_played DESC NULLS LAST, name`,
+		 FROM characters WHERE account_id = ? ORDER BY last_played DESC NULLS LAST, name`),
 		accountID,
 	)
 	if err != nil {
@@ -277,7 +296,7 @@ func (d *Database) GetCharactersByAccount(accountID int64) ([]*Character, error)
 // GetCharacterByName retrieves a character by name (case-insensitive).
 func (d *Database) GetCharacterByName(name string) (*Character, error) {
 	row := d.db.QueryRow(
-		`SELECT id, account_id, name, room_id, health, max_health, mana, max_mana,
+		d.qb.Build(`SELECT id, account_id, name, room_id, health, max_health, mana, max_mana,
 		        level, experience, state, max_carry_weight, learned_spells,
 		        discovered_portals, strength, dexterity, constitution, intelligence, wisdom, charisma,
 		        gold, key_ring, primary_class, class_levels, active_class, race,
@@ -289,7 +308,7 @@ func (d *Database) GetCharacterByName(name string) (*Character, error) {
 		        COALESCE(visited_labyrinth_gates, ''), COALESCE(talked_to_lore_npcs, ''),
 		        COALESCE(statistics, '{}'),
 		        created_at, last_played
-		 FROM characters WHERE name = ?`,
+		 FROM characters WHERE name = ?`),
 		name,
 	)
 
@@ -307,7 +326,7 @@ func (d *Database) GetCharacterByName(name string) (*Character, error) {
 // GetCharacterByID retrieves a character by ID.
 func (d *Database) GetCharacterByID(id int64) (*Character, error) {
 	row := d.db.QueryRow(
-		`SELECT id, account_id, name, room_id, health, max_health, mana, max_mana,
+		d.qb.Build(`SELECT id, account_id, name, room_id, health, max_health, mana, max_mana,
 		        level, experience, state, max_carry_weight, learned_spells,
 		        discovered_portals, strength, dexterity, constitution, intelligence, wisdom, charisma,
 		        gold, key_ring, primary_class, class_levels, active_class, race,
@@ -319,7 +338,7 @@ func (d *Database) GetCharacterByID(id int64) (*Character, error) {
 		        COALESCE(visited_labyrinth_gates, ''), COALESCE(talked_to_lore_npcs, ''),
 		        COALESCE(statistics, '{}'),
 		        created_at, last_played
-		 FROM characters WHERE id = ?`,
+		 FROM characters WHERE id = ?`),
 		id,
 	)
 
@@ -337,7 +356,7 @@ func (d *Database) GetCharacterByID(id int64) (*Character, error) {
 // SaveCharacter saves all character state to the database.
 func (d *Database) SaveCharacter(c *Character) error {
 	_, err := d.db.Exec(
-		`UPDATE characters SET
+		d.qb.Build(`UPDATE characters SET
 			room_id = ?,
 			health = ?,
 			max_health = ?,
@@ -372,7 +391,7 @@ func (d *Database) SaveCharacter(c *Character) error {
 			talked_to_lore_npcs = ?,
 			statistics = ?,
 			last_played = CURRENT_TIMESTAMP
-		 WHERE id = ?`,
+		 WHERE id = ?`),
 		c.RoomID, c.Health, c.MaxHealth, c.Mana, c.MaxMana,
 		c.Level, c.Experience, c.State, c.MaxCarryWeight, c.LearnedSpells,
 		c.DiscoveredPortals, c.Strength, c.Dexterity, c.Constitution, c.Intelligence, c.Wisdom, c.Charisma,
@@ -391,11 +410,11 @@ func (d *Database) SaveCharacter(c *Character) error {
 // DeleteCharacter removes a character and all associated data.
 func (d *Database) DeleteCharacter(characterID int64) error {
 	// Delete mail where character is sender or recipient (mail FK lacks ON DELETE CASCADE)
-	if _, err := d.db.Exec("DELETE FROM mail WHERE sender_id = ? OR recipient_id = ?", characterID, characterID); err != nil {
+	if _, err := d.db.Exec(d.qb.Build("DELETE FROM mail WHERE sender_id = ? OR recipient_id = ?"), characterID, characterID); err != nil {
 		return fmt.Errorf("failed to delete character mail: %w", err)
 	}
 
-	result, err := d.db.Exec("DELETE FROM characters WHERE id = ?", characterID)
+	result, err := d.db.Exec(d.qb.Build("DELETE FROM characters WHERE id = ?"), characterID)
 	if err != nil {
 		return fmt.Errorf("failed to delete character: %w", err)
 	}
@@ -415,7 +434,7 @@ func (d *Database) DeleteCharacter(characterID int64) error {
 func (d *Database) CharacterNameExists(name string) (bool, error) {
 	var count int
 	err := d.db.QueryRow(
-		"SELECT COUNT(*) FROM characters WHERE name = ?",
+		d.qb.Build("SELECT COUNT(*) FROM characters WHERE name = ?"),
 		name,
 	).Scan(&count)
 	if err != nil {
@@ -428,7 +447,7 @@ func (d *Database) CharacterNameExists(name string) (bool, error) {
 func (d *Database) CharacterBelongsToAccount(characterID, accountID int64) (bool, error) {
 	var count int
 	err := d.db.QueryRow(
-		"SELECT COUNT(*) FROM characters WHERE id = ? AND account_id = ?",
+		d.qb.Build("SELECT COUNT(*) FROM characters WHERE id = ? AND account_id = ?"),
 		characterID, accountID,
 	).Scan(&count)
 	if err != nil {

@@ -11,6 +11,7 @@
 /server/utilities/balance/balance
 /server/floorgen
 /server/mazegen
+/server/migrate-to-postgres
 
 # Server generated files
 /server/data/world/*

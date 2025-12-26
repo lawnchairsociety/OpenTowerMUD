@@ -185,13 +185,43 @@ func main() {
 		logger.Info("Text system loaded", "path", serverCfg.Paths.Text)
 	}
 
-	// Initialize player database
-	db, err := database.Open(*dbFile)
-	if err != nil {
-		log.Fatalf("Failed to open database: %v", err)
+	// Initialize player database based on config
+	var db *database.Database
+	if serverCfg.Database.IsPostgres() {
+		// Use PostgreSQL
+		pgCfg := serverCfg.Database.Postgres
+		dbCfg := database.Config{
+			Driver: "postgres",
+			Postgres: database.PostgresConfig{
+				Host:            pgCfg.Host,
+				Port:            pgCfg.Port,
+				User:            pgCfg.User,
+				Password:        pgCfg.Password,
+				Database:        pgCfg.Database,
+				SSLMode:         pgCfg.SSLMode,
+				MaxOpenConns:    pgCfg.MaxOpenConns,
+				MaxIdleConns:    pgCfg.MaxIdleConns,
+				ConnMaxLifetime: pgCfg.ConnMaxLifetime,
+			},
+		}
+		db, err = database.OpenWithConfig(dbCfg)
+		if err != nil {
+			log.Fatalf("Failed to open PostgreSQL database: %v", err)
+		}
+		logger.Info("PostgreSQL database initialized",
+			"host", pgCfg.Host,
+			"port", pgCfg.Port,
+			"database", pgCfg.Database)
+	} else {
+		// Use SQLite (default)
+		dbPath := serverCfg.Database.GetEffectiveSQLitePath(*dbFile)
+		db, err = database.Open(dbPath)
+		if err != nil {
+			log.Fatalf("Failed to open SQLite database: %v", err)
+		}
+		logger.Info("SQLite database initialized", "path", dbPath)
 	}
 	defer db.Close()
-	logger.Info("Player database initialized", "path", *dbFile)
 
 	// Create and start the server
 	addr := fmt.Sprintf(":%d", *port)

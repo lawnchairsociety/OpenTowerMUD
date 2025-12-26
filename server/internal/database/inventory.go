@@ -29,13 +29,13 @@ func (d *Database) SaveInventory(characterID int64, itemIDs []string) error {
 	defer tx.Rollback()
 
 	// Delete existing inventory
-	if _, err := tx.Exec("DELETE FROM inventory WHERE character_id = ?", characterID); err != nil {
+	if _, err := tx.Exec(d.qb.Build("DELETE FROM inventory WHERE character_id = ?"), characterID); err != nil {
 		return fmt.Errorf("failed to clear inventory: %w", err)
 	}
 
 	// Insert new items
 	if len(itemIDs) > 0 {
-		stmt, err := tx.Prepare("INSERT INTO inventory (character_id, item_id) VALUES (?, ?)")
+		stmt, err := tx.Prepare(d.qb.Build("INSERT INTO inventory (character_id, item_id) VALUES (?, ?)"))
 		if err != nil {
 			return fmt.Errorf("failed to prepare statement: %w", err)
 		}
@@ -58,7 +58,7 @@ func (d *Database) SaveInventory(characterID int64, itemIDs []string) error {
 // LoadInventory retrieves all inventory item IDs for a character.
 func (d *Database) LoadInventory(characterID int64) ([]string, error) {
 	rows, err := d.db.Query(
-		"SELECT item_id FROM inventory WHERE character_id = ?",
+		d.qb.Build("SELECT item_id FROM inventory WHERE character_id = ?"),
 		characterID,
 	)
 	if err != nil {
@@ -92,13 +92,13 @@ func (d *Database) SaveEquipment(characterID int64, equipment map[string]string)
 	defer tx.Rollback()
 
 	// Delete existing equipment
-	if _, err := tx.Exec("DELETE FROM equipment WHERE character_id = ?", characterID); err != nil {
+	if _, err := tx.Exec(d.qb.Build("DELETE FROM equipment WHERE character_id = ?"), characterID); err != nil {
 		return fmt.Errorf("failed to clear equipment: %w", err)
 	}
 
 	// Insert new equipment
 	if len(equipment) > 0 {
-		stmt, err := tx.Prepare("INSERT INTO equipment (character_id, slot, item_id) VALUES (?, ?, ?)")
+		stmt, err := tx.Prepare(d.qb.Build("INSERT INTO equipment (character_id, slot, item_id) VALUES (?, ?, ?)"))
 		if err != nil {
 			return fmt.Errorf("failed to prepare statement: %w", err)
 		}
@@ -122,7 +122,7 @@ func (d *Database) SaveEquipment(characterID int64, equipment map[string]string)
 // Returns a map of slot -> item_id.
 func (d *Database) LoadEquipment(characterID int64) (map[string]string, error) {
 	rows, err := d.db.Query(
-		"SELECT slot, item_id FROM equipment WHERE character_id = ?",
+		d.qb.Build("SELECT slot, item_id FROM equipment WHERE character_id = ?"),
 		characterID,
 	)
 	if err != nil {
@@ -156,7 +156,7 @@ func (d *Database) SaveCharacterFull(c *Character, inventoryIDs []string, equipm
 
 	// Save character stats
 	_, err = tx.Exec(
-		`UPDATE characters SET
+		d.qb.Build(`UPDATE characters SET
 			room_id = ?,
 			health = ?,
 			max_health = ?,
@@ -192,7 +192,7 @@ func (d *Database) SaveCharacterFull(c *Character, inventoryIDs []string, equipm
 			talked_to_lore_npcs = ?,
 			statistics = ?,
 			last_played = CURRENT_TIMESTAMP
-		 WHERE id = ?`,
+		 WHERE id = ?`),
 		c.RoomID, c.Health, c.MaxHealth, c.Mana, c.MaxMana,
 		c.Level, c.Experience, c.State, c.MaxCarryWeight, c.LearnedSpells,
 		c.DiscoveredPortals, c.Strength, c.Dexterity, c.Constitution, c.Intelligence, c.Wisdom, c.Charisma,
@@ -207,12 +207,12 @@ func (d *Database) SaveCharacterFull(c *Character, inventoryIDs []string, equipm
 	}
 
 	// Clear and save inventory
-	if _, err := tx.Exec("DELETE FROM inventory WHERE character_id = ?", c.ID); err != nil {
+	if _, err := tx.Exec(d.qb.Build("DELETE FROM inventory WHERE character_id = ?"), c.ID); err != nil {
 		return fmt.Errorf("failed to clear inventory: %w", err)
 	}
 
 	if len(inventoryIDs) > 0 {
-		stmt, err := tx.Prepare("INSERT INTO inventory (character_id, item_id) VALUES (?, ?)")
+		stmt, err := tx.Prepare(d.qb.Build("INSERT INTO inventory (character_id, item_id) VALUES (?, ?)"))
 		if err != nil {
 			return fmt.Errorf("failed to prepare inventory statement: %w", err)
 		}
@@ -226,12 +226,12 @@ func (d *Database) SaveCharacterFull(c *Character, inventoryIDs []string, equipm
 	}
 
 	// Clear and save equipment
-	if _, err := tx.Exec("DELETE FROM equipment WHERE character_id = ?", c.ID); err != nil {
+	if _, err := tx.Exec(d.qb.Build("DELETE FROM equipment WHERE character_id = ?"), c.ID); err != nil {
 		return fmt.Errorf("failed to clear equipment: %w", err)
 	}
 
 	if len(equipment) > 0 {
-		stmt, err := tx.Prepare("INSERT INTO equipment (character_id, slot, item_id) VALUES (?, ?, ?)")
+		stmt, err := tx.Prepare(d.qb.Build("INSERT INTO equipment (character_id, slot, item_id) VALUES (?, ?, ?)"))
 		if err != nil {
 			return fmt.Errorf("failed to prepare equipment statement: %w", err)
 		}

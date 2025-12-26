@@ -1,0 +1,90 @@
+# OpenTowerMUD Server Configuration Example
+#
+# Copy this file to server.yaml and customize as needed.
+# Default values are shown - most can be omitted if you're happy with defaults.
+
+# Database configuration
+database:
+  # Driver: "sqlite" (default) or "postgres"
+  driver: postgres
+
+  # SQLite configuration (used when driver is "sqlite")
+  sqlite_path: data/opentowermud.db
+
+  # PostgreSQL configuration (used when driver is "postgres")
+  # Uncomment the following section and set driver to "postgres" to use PostgreSQL:
+  postgres:
+    host: localhost
+    port: 5435
+    user: opentower
+    password: opentower
+    database: opentower
+    sslmode: disable
+    max_open_conns: 25
+    max_idle_conns: 5
+    conn_max_lifetime: 5m
+
+# Game settings
+game:
+  seed: 0  # 0 = random seed, or specify a number for deterministic generation
+  enabled_towers:
+    - human
+    # - elf
+    # - dwarf
+    # - gnome
+    # - orc
+    # Or use "all" to enable all racial towers
+  static_floors: true
+
+# WebSocket settings for web client
+websocket:
+  # Allowed origins for CORS. Empty list = same-origin only.
+  # Use ["*"] to allow all origins (not recommended for production).
+  allowed_origins: []
+  max_message_size: 4096
+
+# Connection limits
+connections:
+  max_per_ip: 3
+  max_total: 100
+
+# Rate limiting for login attempts
+rate_limit:
+  max_attempts: 5
+  lockout_seconds: 30
+  max_lockout_seconds: 300
+
+# Session management
+session:
+  idle_timeout_minutes: 30
+  auto_save_interval_minutes: 5
+
+# Password requirements
+password:
+  min_length: 8
+  require_uppercase: true
+  require_lowercase: true
+  require_digit: true
+  require_special: false
+
+# Companion website (leave empty to enable in-game registration)
+website:
+  url: ""
+
+# File paths (usually no need to change)
+paths:
+  data_dir: data
+  world_dir: data/world
+  cities_dir: data/cities
+  npcs_dir: data/npcs
+  mobs_dir: data/mobs
+  quests_dir: data/quests
+  items: data/items.yaml
+  races: data/races.yaml
+  spells: data/spells.yaml
+  recipes: data/recipes.yaml
+  help: data/help.yaml
+  text: data/text.yaml
+  logging: data/logging.yaml
+  chat_filter: data/chat_filter.yaml
+  name_filter: data/name_filter.yaml
