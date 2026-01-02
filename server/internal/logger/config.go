@@ -18,6 +18,10 @@ type Config struct {
 	FileMaxSizeMB   int    `yaml:"file_max_size_mb"`
 	FileMaxBackups  int    `yaml:"file_max_backups"`
 	FileMaxAgeDays  int    `yaml:"file_max_age_days"`
+	AxiomEnabled    bool   `yaml:"axiom_enabled"`
+	AxiomDataset    string `yaml:"axiom_dataset"`
+	AxiomToken      string `yaml:"axiom_token"`
+	AxiomService    string `yaml:"axiom_service"`
 }
 
 // LoggingConfig wraps the Config for YAML parsing
@@ -72,6 +76,16 @@ func LoadConfig(configPath string) (Config, error) {
 				if loggingConfig.Logging.FileMaxAgeDays > 0 {
 					config.FileMaxAgeDays = loggingConfig.Logging.FileMaxAgeDays
 				}
+				config.AxiomEnabled = loggingConfig.Logging.AxiomEnabled
+				if loggingConfig.Logging.AxiomDataset != "" {
+					config.AxiomDataset = loggingConfig.Logging.AxiomDataset
+				}
+				if loggingConfig.Logging.AxiomToken != "" {
+					config.AxiomToken = loggingConfig.Logging.AxiomToken
+				}
+				if loggingConfig.Logging.AxiomService != "" {
+					config.AxiomService = loggingConfig.Logging.AxiomService
+				}
 			}
 		}
 		// Silently use defaults if file doesn't exist or can't be parsed
@@ -94,6 +108,24 @@ func LoadConfig(configPath string) (Config, error) {
 
 	if filePath := os.Getenv("LOG_FILE_PATH"); filePath != "" {
 		config.FilePath = filePath
+	}
+
+	if axiomEnabled := os.Getenv("AXIOM_ENABLED"); axiomEnabled != "" {
+		if enabled, err := strconv.ParseBool(axiomEnabled); err == nil {
+			config.AxiomEnabled = enabled
+		}
+	}
+
+	if axiomDataset := os.Getenv("AXIOM_DATASET"); axiomDataset != "" {
+		config.AxiomDataset = axiomDataset
+	}
+
+	if axiomToken := os.Getenv("AXIOM_TOKEN"); axiomToken != "" {
+		config.AxiomToken = axiomToken
+	}
+
+	if axiomService := os.Getenv("AXIOM_SERVICE"); axiomService != "" {
+		config.AxiomService = axiomService
 	}
 
 	return config, nil

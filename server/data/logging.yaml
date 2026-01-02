@@ -18,6 +18,12 @@ logging:
   file_path: logs/server.log
   file_format: text # text or json
 
+  # Axiom logging
+  axiom_enabled: false
+  axiom_dataset:
+  axiom_token:
+  axiom_service: OpenTowerMUD
+
   # Log rotation settings (when file_enabled: true)
   file_max_size_mb: 10 # Rotate when log file reaches 10MB
   file_max_backups: 5 # Keep 5 old log files

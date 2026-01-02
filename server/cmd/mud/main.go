@@ -325,6 +325,9 @@ func main() {
 	}
 
 	logger.Info("Server stopped")
+
+	// Flush any buffered logs (e.g., Axiom) before exiting
+	logger.Close()
 }
 
 // handleMakeAdmin promotes an account to admin and exits

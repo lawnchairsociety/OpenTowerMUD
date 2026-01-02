@@ -6,6 +6,8 @@ import (
 	"log/slog"
 	"os"
 
+	"github.com/axiomhq/axiom-go/axiom"
+	axiomslog "github.com/axiomhq/axiom-go/adapters/slog"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
@@ -13,7 +15,8 @@ import (
 const LevelAlways = slog.Level(12) // Higher than Error (8), ensures it's always logged
 
 var (
-	logger *slog.Logger
+	logger       *slog.Logger
+	axiomHandler *axiomslog.Handler
 )
 
 // Initialize sets up the logger with the provided configuration
@@ -78,6 +81,33 @@ func Initialize(config Config) error {
 			fileHandler = slog.NewTextHandler(logFile, opts)
 		}
 		handlers = append(handlers, fileHandler)
+	}
+
+	// Axiom handler
+	if config.AxiomEnabled && config.AxiomToken != "" && config.AxiomDataset != "" {
+		client, err := axiom.NewClient(
+			axiom.SetToken(config.AxiomToken),
+		)
+		if err != nil {
+			return fmt.Errorf("failed to create axiom client: %w", err)
+		}
+
+		axiomHandler, err = axiomslog.New(
+			axiomslog.SetClient(client),
+			axiomslog.SetDataset(config.AxiomDataset),
+		)
+		if err != nil {
+			return fmt.Errorf("failed to create axiom handler: %w", err)
+		}
+
+		// Add "app" attribute if service name is configured
+		var handler slog.Handler = axiomHandler
+		if config.AxiomService != "" {
+			handler = axiomHandler.WithAttrs([]slog.Attr{
+				slog.String("app", config.AxiomService),
+			})
+		}
+		handlers = append(handlers, handler)
 	}
 
 	// If no handlers configured, use default console handler
@@ -224,4 +254,12 @@ func (h *multiHandler) WithGroup(name string) slog.Handler {
 		handlers[i] = handler.WithGroup(name)
 	}
 	return newMultiHandler(handlers...)
+}
+
+// Close flushes any buffered logs and closes handlers that require cleanup
+// Should be called on application shutdown to ensure all logs are sent
+func Close() {
+	if axiomHandler != nil {
+		axiomHandler.Close()
+	}
 }
